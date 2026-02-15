@@ -1,0 +1,1314 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Member;
+Use App\Models\MemberKin;
+use App\Models\MemberVehicle;
+use App\Models\Stage;
+use App\Models\MemberContribution;
+use App\Models\MemberLoanType;
+use App\Models\MemberBonusType;
+use App\Models\MemberFineType;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\File;
+
+class BodabodaController extends Controller {
+
+    // A. Members (members table) ---------------------------------------------------------------------------------------
+    // Return all members with their next-of-kin and vehicles (JSON)
+    public function listAllMembers(Request $request): JsonResponse
+    {
+        $members = Member::with(['kins', 'vehicles', 'identification']) // ADD identification here
+            ->select('members.*')
+            ->withCount(['transactions as transaction_count'])
+            ->addSelect([
+                'last_contribution_amount' => MemberContribution::select('transactionAmount')
+                    ->whereColumn('memberId', 'members.memberId')
+                    ->where('transactionStatus', 'Confirmed')
+                    ->orderBy('transactionDate', 'desc')
+                    ->limit(1),
+                'last_contribution_date' => MemberContribution::select('transactionDate')
+                    ->whereColumn('memberId', 'members.memberId')
+                    ->where('transactionStatus', 'Confirmed')
+                    ->orderBy('transactionDate', 'desc')
+                    ->limit(1),
+            ])
+            ->orderBy('memberId', 'asc')
+            ->get();
+
+        return response()->json(['data' => $members], 200);
+    }
+ 
+    // Count all members (JSON)
+    public function countAllMembers(): JsonResponse
+    {
+        $total = Member::count();
+        return response()->json(['count' => $total], 200);
+    }
+
+    // Add a new member with file uploads
+    public function addMember(Request $request)
+    {
+        try {
+            // Validate incoming data
+            $validated = $request->validate([
+                'personal.firstName' => 'required|string|max:255',
+                'personal.lastName' => 'required|string|max:255',
+                'personal.email' => 'required|email|max:255',
+                'personal.primaryPhone' => 'required|string|max:20',
+                'personal.secondaryPhone' => 'nullable|string|max:20',
+                'personal.gender' => 'required|in:Male,Female',
+                'personal.dob' => 'required|date_format:d-m-Y',
+
+                'kin.firstName' => 'required|string|max:255',
+                'kin.lastName' => 'required|string|max:255',
+                'kin.email' => 'required|email|max:255',
+                'kin.phone' => 'required|string|max:20',
+                'kin.relation' => 'required|string|max:255',
+
+                'identification.nationalId' => 'required|string|max:50',
+                'identification.drivingLicense' => 'required|string|max:50',
+                'identification.licenseType' => 'required|string|max:255',
+
+                'memberType' => 'required|in:Member,Non-Member',
+
+                'id_front' => 'required|file|mimes:png,jpg,jpeg,webp|max:5120',
+                'id_back' => 'required|file|mimes:png,jpg,jpeg,webp|max:5120',
+            ]);
+
+            // Start database transaction
+            DB::beginTransaction();
+
+            // 1. Insert into members table
+            $memberId = DB::table('members')->insertGetId([
+                'firstname' => $validated['personal']['firstName'],
+                'lastname' => $validated['personal']['lastName'],
+                'email' => $validated['personal']['email'],
+                'phone1' => $validated['personal']['primaryPhone'],
+                'phone2' => $validated['personal']['secondaryPhone'] ?? null,
+                'gender' => $validated['personal']['gender'],
+                'dob' => date('Y-m-d', strtotime($validated['personal']['dob'])),
+                'author' => Auth::id(),
+                'membership' => $validated['memberType'],
+                'status' => 'Active',
+                'created_on' => now(),
+                'updated_on' => now(),
+            ]);
+
+            // 2. Insert into member_kin table
+            DB::table('member_kin')->insert([
+                'member' => $memberId,
+                'firstname' => $validated['kin']['firstName'],
+                'lastname' => $validated['kin']['lastName'],
+                'email' => $validated['kin']['email'],
+                'phone' => $validated['kin']['phone'],
+                'relation' => $validated['kin']['relation'],
+                'status' => 'Pending',
+                'created_on' => now(),
+                'updated_on' => now(),
+            ]);
+
+            // 3. Create directory for identification files (using memberId as folder name)
+            $folderName = $memberId;
+            $directoryPath = database_path("etc/configs/dumps/raw/{$folderName}");
+
+            // Create directory if it doesn't exist
+            if (!File::exists($directoryPath)) {
+                File::makeDirectory($directoryPath, 0755, true);
+            }
+
+            // 4. Save uploaded files
+            $idFrontFile = $request->file('id_front');
+            $idBackFile = $request->file('id_back');
+
+            $frontFileName = 'front.' . $idFrontFile->getClientOriginalExtension();
+            $backFileName = 'back.' . $idBackFile->getClientOriginalExtension();
+
+            $frontPath = "database/etc/configs/dumps/raw/{$folderName}/{$frontFileName}";
+            $backPath = "database/etc/configs/dumps/raw/{$folderName}/{$backFileName}";
+
+            // Move files to directory
+            $idFrontFile->move($directoryPath, $frontFileName);
+            $idBackFile->move($directoryPath, $backFileName);
+
+            // 5. Insert into members_identification table
+            DB::table('member_identifications')->insert([
+                'member_id' => $memberId,
+                'national_id' => $validated['identification']['nationalId'],
+                'driver_license' => $validated['identification']['drivingLicense'],
+                'driving_license_type' => $validated['identification']['licenseType'],
+                'ntsa_compliance' => 'Pending',
+                'national_id_front_path' => $frontPath,
+                'national_id_back_path' => $backPath,
+                'author' => Auth::id(),
+                'status' => 'Pending',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            // Commit transaction
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Member added successfully!',
+                'redirect' => route('treasurer.bodaboda')
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Get all related member data
+    public function getAllMemberData($memberId)
+    {
+        $memberData = [
+            'member' => DB::table('members')->where('memberId', $memberId)->first(),
+            'identification' => DB::table('member_identifications')->where('member_id', $memberId)->first(),
+            'kin' => DB::table('member_kin')->where('member', $memberId)->first(),
+            'vehicles' => DB::table('members_vehicles')->where('member', $memberId)->get(),
+            'contributions' => DB::table('member_contributions')->where('memberId', $memberId)->get(),
+            'savings' => DB::table('member_savings')->where('memberId', $memberId)->get(),
+            'bonuses' => DB::table('member_bonuses')->where('memberId', $memberId)->get(),
+            'fines' => DB::table('member_fines')->where('memberId', $memberId)->get(),
+            'loans' => DB::table('member_loans')->where('memberId', $memberId)->get(),
+            'loan_transactions' => DB::table('member_loans_transactions')->where('memberId', $memberId)->get(),
+        ];
+        
+        return response()->json($memberData);
+    }
+
+    // Get  all member kins
+    public function getMemberKins($memberId)
+    {
+        $kins = DB::table('member_kin')
+            ->where('member', $memberId)
+            ->get();
+        
+        return response()->json($kins);
+    }
+
+    // Get all member vehicles
+    public function getAllMemberVehicles($memberId)
+    {
+        $vehicles = DB::table('members_vehicles')
+            ->where('member', $memberId)
+            ->get();
+        
+        return response()->json($vehicles);
+    }
+
+    // Update Member Personal Info
+    public function updateMemberPersonalInfo(Request $request, $memberId)
+    {
+        try {
+            $validated = $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'primary_phone' => 'required|string|max:255',
+                'secondary_phone' => 'nullable|string|max:255',
+                'gender' => 'required|in:Male,Female',
+                'dob' => 'required|date',
+                'membership' => 'required|in:Member,Non-Member',
+                'status' => 'required|in:Active,In-Active,Suspended,Blacklisted'
+            ]);
+
+            $updated = DB::table('members')
+                ->where('memberId', $memberId)
+                ->update([
+                    'firstname' => $validated['first_name'],
+                    'lastname' => $validated['last_name'],
+                    'email' => $validated['email'],
+                    'phone1' => $validated['primary_phone'],
+                    'phone2' => $validated['secondary_phone'],
+                    'gender' => $validated['gender'],
+                    'dob' => $validated['dob'],
+                    'membership' => $validated['membership'],
+                    'status' => $validated['status'],
+                    'updated_on' => now()
+                ]);
+
+            if ($updated) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Member personal information updated successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No changes were made or member not found'
+                ], 400);
+            }
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating member information: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Update Member Identification and documents
+    public function updateIdentificationDocuments(Request $request, $memberId)
+    {
+        try {
+            $validated = $request->validate([
+                'national_id' => 'required|string|max:50',
+                'driving_license' => 'nullable|string|max:50',
+                'license_type' => 'nullable|string|max:100',
+                'ntsa_compliant' => 'nullable|string|max:20',
+                'status' => 'required|in:Approved,Flagged,Pending',
+                'id_front' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+                'id_back' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120'
+            ]);
+
+            // Check if record exists
+            $existing = DB::table('member_identifications')
+                ->where('member_id', $memberId)
+                ->first();
+
+            $data = [
+                'national_id' => $validated['national_id'],
+                'driver_license' => $validated['driving_license'],
+                'driving_license_type' => $validated['license_type'],
+                'ntsa_compliance' => $validated['ntsa_compliant'],
+                'status' => $validated['status'],
+                'updated_at' => now()
+            ];
+
+            // Define the base directory path
+            $basePath = "database/etc/configs/dumps/raw/{$memberId}";
+            
+            // Ensure directory exists
+            if (!file_exists($basePath)) {
+                mkdir($basePath, 0755, true);
+            }
+
+            // Handle front ID file upload - always save as front with original extension
+            if ($request->hasFile('id_front')) {
+                $frontFile = $request->file('id_front');
+                $extension = $frontFile->getClientOriginalExtension();
+                $frontFilename = "front.{$extension}";
+                $frontPath = "{$basePath}/{$frontFilename}";
+                
+                // Move and rename the file
+                $frontFile->move($basePath, $frontFilename);
+                
+                // Store the path in DB (without changing it)
+                $data['national_id_front_path'] = $frontPath;
+            }
+
+            // Handle back ID file upload - always save as back with original extension
+            if ($request->hasFile('id_back')) {
+                $backFile = $request->file('id_back');
+                $extension = $backFile->getClientOriginalExtension();
+                $backFilename = "back.{$extension}";
+                $backPath = "{$basePath}/{$backFilename}";
+                
+                // Move and rename the file
+                $backFile->move($basePath, $backFilename);
+                
+                // Store the path in DB (without changing it)
+                $data['national_id_back_path'] = $backPath;
+            }
+
+            if ($existing) {
+                // Update existing record
+                $updated = DB::table('member_identifications')
+                    ->where('member_id', $memberId)
+                    ->update($data);
+            } else {
+                // Insert new record
+                $data['member_id'] = $memberId;
+                $data['author'] = Auth::id() ?? 1;
+                $data['created_at'] = now();
+                $updated = DB::table('member_identifications')
+                    ->insert($data);
+            }
+
+            if ($updated) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Member identification documents updated successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No changes were made or member not found'
+                ], 400);
+            }
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating identification documents: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function addMemberKin(Request $request, $memberId)
+    {
+        try {
+            $validated = $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'phone' => 'required|string|max:255',
+                'relation' => 'required|string|max:255'
+            ]);
+
+            $data = [
+                'member' => $memberId,
+                'firstname' => $validated['first_name'],
+                'lastname' => $validated['last_name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'],
+                'relation' => $validated['relation'],
+                'status' => 'Active',
+                'created_on' => now(),
+                'updated_on' => now()
+            ];
+
+            $inserted = DB::table('member_kin')->insert($data);
+
+            if ($inserted) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Next of kin added successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to add next of kin'
+                ], 400);
+            }
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error adding next of kin: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateMemberKin(Request $request, $memberId, $kinId)
+    {
+        try {
+            $validated = $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'phone' => 'required|string|max:255',
+                'relation' => 'required|string|max:255'
+            ]);
+
+            $data = [
+                'firstname' => $validated['first_name'],
+                'lastname' => $validated['last_name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'],
+                'relation' => $validated['relation'],
+                'updated_on' => now()
+            ];
+
+            $updated = DB::table('member_kin')
+                ->where('kin_id', $kinId)
+                ->where('member', $memberId)
+                ->update($data);
+
+            if ($updated) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Next of kin updated successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No changes were made or kin not found'
+                ], 400);
+            }
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating next of kin: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function deleteMemberKin(Request $request, $memberId, $kinId)
+    {
+        try {
+            // Get kin details for confirmation message
+            $kin = DB::table('member_kin')
+                ->where('kin_id', $kinId)
+                ->where('member', $memberId)
+                ->first();
+
+            if (!$kin) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Next of kin not found'
+                ], 404);
+            }
+
+            $deleted = DB::table('member_kin')
+                ->where('kin_id', $kinId)
+                ->where('member', $memberId)
+                ->delete();
+
+            if ($deleted) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Next of kin removed successfully',
+                    'kin_name' => $kin->firstname . ' ' . $kin->lastname
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to delete next of kin'
+                ], 400);
+            }
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error deleting next of kin: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function addMemberVehicle(Request $request, $memberId)
+    {
+        try {
+            $validated = $request->validate([
+                'type' => 'required|in:Motocycle,Tuk Tuk',
+                'plate_number' => 'required|string|max:255',
+                'brand' => 'required|string|max:255',
+                'model' => 'required|string|max:255',
+                'make' => 'required|string|max:255',
+                'cc' => 'required|string|max:255',
+                'insurance' => 'required|in:Comprehesive,Third-Party',
+                'yom' => 'required|integer|min:1900|max:2099',
+                'ntsa_compliant' => 'required|in:Approved,Suspended',
+                'status' => 'required|in:Approved,Suspended,Under Review'
+            ]);
+
+            $data = [
+                'member' => $memberId,
+                'plate_number' => $validated['plate_number'],
+                'make' => $validated['make'],
+                'model' => $validated['model'],
+                'brand' => $validated['brand'],
+                'yom' => $validated['yom'],
+                'CC' => $validated['cc'],
+                'NTSA_compliant' => $validated['ntsa_compliant'] === 'Approved' ? 1 : 0,
+                'insurance' => $validated['insurance'],
+                'status' => $validated['status'],
+                'created_on' => now(),
+                'updated_on' => now()
+            ];
+
+            $inserted = DB::table('members_vehicles')->insert($data);
+
+            if ($inserted) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Vehicle added successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to add vehicle'
+                ], 400);
+            }
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error adding vehicle: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateMemberVehicle(Request $request, $memberId, $vehicleId)
+    {
+        try {
+            $validated = $request->validate([
+                'type' => 'required|in:Motocycle,Tuk Tuk',
+                'plate_number' => 'required|string|max:255',
+                'brand' => 'required|string|max:255',
+                'model' => 'required|string|max:255',
+                'make' => 'required|string|max:255',
+                'cc' => 'required|string|max:255',
+                'insurance' => 'required|in:Comprehesive,Third-Party',
+                'yom' => 'required|integer|min:1900|max:2099',
+                'ntsa_compliant' => 'required|in:Approved,Suspended',
+                'status' => 'required|in:Approved,Suspended,Under Review'
+            ]);
+
+            $data = [
+                'plate_number' => $validated['plate_number'],
+                'make' => $validated['make'],
+                'model' => $validated['model'],
+                'brand' => $validated['brand'],
+                'yom' => $validated['yom'],
+                'CC' => $validated['cc'],
+                'NTSA_compliant' => $validated['ntsa_compliant'] === 'Approved' ? 1 : 0,
+                'insurance' => $validated['insurance'],
+                'status' => $validated['status'],
+                'updated_on' => now()
+            ];
+
+            $updated = DB::table('members_vehicles')
+                ->where('vehicleId', $vehicleId)
+                ->where('member', $memberId)
+                ->update($data);
+
+            if ($updated) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Vehicle updated successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No changes were made or vehicle not found'
+                ], 400);
+            }
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating vehicle: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function deleteMemberVehicle(Request $request, $memberId, $vehicleId)
+    {
+        try {
+            // Get vehicle details for confirmation message
+            $vehicle = DB::table('members_vehicles')
+                ->where('vehicleId', $vehicleId)
+                ->where('member', $memberId)
+                ->first();
+
+            if (!$vehicle) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Vehicle not found'
+                ], 404);
+            }
+
+            $deleted = DB::table('members_vehicles')
+                ->where('vehicleId', $vehicleId)
+                ->where('member', $memberId)
+                ->delete();
+
+            if ($deleted) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Vehicle removed successfully',
+                    'vehicle_details' => $vehicle->model . ' ' . $vehicle->make . ' ' . $vehicle->plate_number
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to delete vehicle'
+                ], 400);
+            }
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error deleting vehicle: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // B. Stages(stages table) Return all stages with manager name (joined from members) (JSON) --------------------------
+    public function listAllStages(Request $request): JsonResponse
+    {
+        $stages = Stage::leftJoin('members', 'stages.manager', '=', 'members.memberId')
+            ->select(
+                'stages.*',
+                DB::raw("COALESCE(CONCAT(members.firstname, ' ', members.lastname), '') as manager_name"),
+                'members.memberId as manager_id'
+            )
+            ->get();
+
+        return response()->json(['data' => $stages], 200);
+    }
+
+    // Count all stages (JSON)
+    public function countAllStages(): JsonResponse
+    {
+        $total = Stage::count();
+        return response()->json(['total' => $total], 200);
+    }
+
+    // Add this method to your existing controller
+    public function storeStage(Request $request)
+    {
+        try {
+            // Validate input
+            $validated = $request->validate([
+                'newStageLocation' => 'required|string|max:255',
+                'newStageStatus' => 'required|string|in:Active,In-Active,Under Review',
+            ], [
+                'newStageLocation.required' => 'Stage location cannot be empty',
+                'newStageStatus.required' => 'Stage status cannot be empty',
+            ]);
+
+            // Create new stage
+            $stage = Stage::create([
+                'location' => $validated['newStageLocation'],
+                'status' => $validated['newStageStatus'],
+                'author' => Auth::id(),
+                'established' => now(),
+                'created_on' => now(),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Stage location created successfully!',
+                'redirect' => route('treasurer.bodaboda')
+            ], 201);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => implode('\n', array_merge(...array_values($e->errors())))
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Get all stages data -----------------------------------------------------------------------------------------------
+    public function getAllStagesData()
+    {
+        $stages = Stage::select('stageId', 'location', 'established', 'status')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $stages
+        ]);
+    }
+
+    // Update Stage entry
+    public function updateStageDetails(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'stageId' => 'required|exists:stages,stageId',
+                'updateStageLocation' => 'required|string|max:255',
+                'updateStageStatus' => 'required|string|in:Active,In-Active,Under Review',
+            ], [
+                'updateStageLocation.required' => 'Stage location cannot be empty',
+                'updateStageStatus.required' => 'Stage status cannot be empty',
+            ]);
+
+            $stage = Stage::find($validated['stageId']);
+            $stage->update([
+                'location' => $validated['updateStageLocation'],
+                'status' => $validated['updateStageStatus'],
+                'updated_on' => now(),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Stage updated successfully!',
+                'redirect' => route('treasurer.bodaboda')
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => implode('\n', array_merge(...array_values($e->errors())))
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Delete Stage entry
+    public function deleteStageLocation(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'stageId' => 'required|exists:stages,stageId',
+            ]);
+
+            Stage::find($validated['stageId'])->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Stage deleted successfully!',
+                'redirect' => route('treasurer.bodaboda')
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Return all vehicles (JSON), optionally include owner info when ?include=owner ------------------------------------
+    public function listAllVehicles(Request $request): JsonResponse
+    {
+        $include = $request->query('include');
+        $query = MemberVehicle::query();
+
+        if ($include === 'owner') {
+            $query->with('owner');
+        }
+
+        $vehicles = $query->get();
+        return response()->json(['data' => $vehicles], 200);
+    }
+
+    public function countMemberVehicles($memberId)
+    {
+        $count = DB::table('members_vehicles')
+            ->where('member', $memberId)
+            ->count();
+        
+        return response()->json(['vehicles_count' => $count]);
+    }
+
+
+    // Contributions -----------------------------------------------------------------------------------------------------
+    // Get all bodaboda contribution data
+    public function getAllContributions(Request $request): JsonResponse
+    {
+        $contributions = MemberContribution::select([
+                'member_contributions.*',
+                DB::raw('CONCAT(members.firstname, " ", members.lastname) as full_name')
+            ])
+            ->join('members', 'member_contributions.memberId', '=', 'members.memberId')
+            ->orderBy('member_contributions.transactionDate', 'desc')
+            ->get();
+
+        return response()->json(['data' => $contributions], 200);
+    }
+
+    public function getAllMemberContributions($memberId)
+    {
+        $contributions = DB::table('member_contributions')
+            ->where('memberId', $memberId)
+            ->orderBy('transactionDate', 'desc')
+            ->get();
+        
+        return response()->json($contributions);
+    }
+
+    // Bonuses ----------------------------------------------------------------------------------------------------------
+    // Get all bodaboda bonus types statistics
+    public function getAllBonusTypesSummary(Request $request): JsonResponse
+    {
+        $bonusSummary = MemberBonusType::select([
+                'member_bonus_types.*',
+                DB::raw('COALESCE(SUM(member_bonuses.transactionAmount), 0) as total_bonus_amount'),
+                DB::raw('COALESCE(COUNT(member_bonuses.transactionId), 0) as total_bonuses_given')
+            ])
+            ->leftJoin('member_bonuses', 'member_bonus_types.bonusId', '=', 'member_bonuses.transactionBonus')
+            ->groupBy('member_bonus_types.bonusId', 'member_bonus_types.bonus_name',
+                    'member_bonus_types.calculation_method', 'member_bonus_types.percentage',
+                    'member_bonus_types.created_on', 'member_bonus_types.status')
+            ->orderBy('member_bonus_types.bonus_name')
+            ->get();
+
+        return response()->json(['data' => $bonusSummary], 200);
+    }
+
+    public function countAllMemberBonusTypes()
+    {
+        $count = \App\Models\MemberBonusType::count();
+
+        return response()->json([
+            'success' => true,
+            'count' => $count
+        ]);
+    }
+
+    // Create new bonus type
+    public function createNewBonusType(Request $request): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'newBonusType' => 'required|string|max:255',
+                'bonusDescription' => 'nullable|string',
+                'newBonusPercentage' => 'required|numeric|min:0|max:100',
+                'newBonusStatus' => 'required|string'
+            ]);
+
+            $bonusType = MemberBonusType::create([
+                'bonus_name' => $validated['newBonusType'],
+                'description' => $validated['bonusDescription'] ?? '',
+                'calculation_method' => 'percentage', // Default as per your structure
+                'percentage' => $validated['newBonusPercentage'],
+                'status' => $validated['newBonusStatus'],
+                'author' => Auth::id(),
+                'created_on' => now(),
+                'updated_on' => now()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Bonus type created successfully',
+                'data' => $bonusType
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create bonus type: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateBonusType(Request $request)
+    {
+        try {
+            $request->validate([
+                'bonus_id' => 'required|integer|exists:member_bonus_types,bonusId',
+                'bonus_name' => 'required|string|max:255',
+                'description' => 'required|string',
+                'percentage' => 'required|numeric|min:0|max:100',
+                'status' => 'required|string'
+            ]);
+
+            $bonusType = MemberBonusType::find($request->bonus_id);
+
+            // Use update() instead of direct property assignment
+            $bonusType->update([
+                'bonus_name' => $request->bonus_name,
+                'description' => $request->description,
+                'calculation_method' => $request->description,
+                'percentage' => $request->percentage,
+                'status' => $request->status,
+                'author' => Auth::id(),
+                'updated_on' => now()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Bonus Type updated successfully!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function deleteBonusType(Request $request)
+    {
+        try {
+            $request->validate([
+                'bonus_id' => 'required|integer|exists:member_bonus_types,bonusId'
+            ]);
+
+            $bonusType = MemberBonusType::find($request->bonus_id);
+
+            // DB is set to CASCADE, so related records will be deleted automatically
+            $bonusType->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Bonus Type deleted successfully!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Fines ------------------------------------------------------------------------------------------------------------
+    // Get all bodaboda Fines types statistics
+    public function getAllFineTypesSummary(Request $request): JsonResponse
+    {
+        $fineSummary = MemberFineType::select([
+                'member_fine_types.*',
+                DB::raw('COALESCE(SUM(member_fines.transactionAmount), 0) as total_fine_amount'),
+                DB::raw('COALESCE(COUNT(member_fines.transactionId), 0) as total_fines_issued')
+            ])
+            ->leftJoin('member_fines', 'member_fine_types.fineId', '=', 'member_fines.transactionFine')
+            ->groupBy('member_fine_types.fineId', 'member_fine_types.fine_name',
+                    'member_fine_types.description', 'member_fine_types.percentage',
+                    'member_fine_types.is_percentage', 'member_fine_types.created_on',
+                    'member_fine_types.status')
+            ->orderBy('member_fine_types.fine_name')
+            ->get();
+
+        return response()->json(['data' => $fineSummary], 200);
+    }
+
+    public function countAllMemberFineTypes()
+    {
+        $count = \App\Models\MemberFineType::count();
+
+        return response()->json([
+            'success' => true,
+            'count' => $count
+        ]);
+    }
+
+    // Create new fine type
+    public function createNewFineType(Request $request): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'newFineType' => 'required|string|max:255',
+                'fineDescription' => 'nullable|string',
+                'newFinePercentage' => 'required|numeric|min:0|max:100',
+                'newFineStatus' => 'required|string'
+            ]);
+
+            $fineType = MemberFineType::create([
+                'fine_name' => $validated['newFineType'],
+                'description' => $validated['fineDescription'] ?? '',
+                'percentage' => $validated['newFinePercentage'],
+                'is_percentage' => 1, // Default to percentage as per your form
+                'status' => $validated['newFineStatus'],
+                'author' => Auth::id(),
+                'created_on' => now(),
+                'updated_on' => now()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Fine type created successfully',
+                'data' => $fineType
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create fine type: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateFineType(Request $request)
+    {
+        try {
+            $request->validate([
+                'fine_id' => 'required|integer|exists:member_fine_types,fineId',
+                'fine_name' => 'required|string|max:255',
+                'description' => 'required|string',
+                'percentage' => 'required|numeric|min:0|max:100',
+                'status' => 'required|string'
+            ]);
+
+            $fineType = MemberFineType::find($request->fine_id);
+
+            // USE update() METHOD INSTEAD OF DIRECT ASSIGNMENT
+            $fineType->update([
+                'fine_name' => $request->fine_name,
+                'description' => $request->description,
+                'percentage' => $request->percentage,
+                'is_percentage' => $request->is_percentage ?? 1,
+                'status' => $request->status,
+                'author' => Auth::id(),
+                'updated_on' => now()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Fine Type updated successfully!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function deleteFineType(Request $request)
+    {
+        try {
+            $request->validate([
+                'fine_id' => 'required|integer|exists:member_fine_types,fineId'
+            ]);
+
+            $fineType = MemberFineType::find($request->fine_id);
+
+            // DB is set to CASCADE, so related records will be deleted automatically
+            $fineType->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Fine Type deleted successfully!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getAllMemberFines($memberId)
+    {
+        $fines = DB::table('member_fines')
+            ->where('memberId', $memberId)
+            ->orderBy('transactionDate', 'desc')
+            ->get();
+        
+        return response()->json($fines);
+    }
+
+    // Loans ------------------------------------------------------------------------------------------------------------
+    // All loan types statistics
+    public function getAllLoansSummary(Request $request): JsonResponse
+    {
+        $loansSummary = MemberLoanType::select([
+                'member_loan_types.*',
+                DB::raw('COALESCE(SUM(member_loans.transactionLoanAmount), 0) as total_loaned'),
+                DB::raw('COALESCE(COUNT(DISTINCT CASE WHEN member_loans.transactionStatus = "Approved" THEN member_loans.transactionId END), 0) as total_loans'),
+                DB::raw('COALESCE(COUNT(DISTINCT CASE WHEN member_loans_transactions.transactionStatus = "Confirmed" THEN member_loans_transactions.transactionId END), 0) as active_loan_transactions')
+            ])
+            ->leftJoin('member_loans', 'member_loan_types.loanId', '=', 'member_loans.transactionLoan')
+            ->leftJoin('member_loans_transactions', function($join) {
+                $join->on('member_loans.transactionId', '=', 'member_loans_transactions.transactionLoan')
+                    ->where('member_loans_transactions.transactionStatus', '=', 'Confirmed');
+            })
+            ->groupBy('member_loan_types.loanId', 'member_loan_types.loan_type_name',
+                    'member_loan_types.interest_rate', 'member_loan_types.repayment_period_months',
+                    'member_loan_types.max_amount', 'member_loan_types.created_on',
+                    'member_loan_types.status')
+            ->orderBy('member_loan_types.loan_type_name')
+            ->get();
+
+        return response()->json(['data' => $loansSummary], 200);
+    }
+
+    public function countAllMemberLoanTypes()
+    {
+        $count = \App\Models\MemberLoanType::count();
+
+        return response()->json([
+            'success' => true,
+            'count' => $count
+        ]);
+    }
+
+    // Create new loan type
+    public function createNewLoanType(Request $request): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'newLoanType' => 'required|string|max:255',
+                'loanInterestRate' => 'required|numeric|min:0',
+                'loanMaxAmount' => 'required|numeric|min:0',
+                'loanRepaymentPeriod' => 'required|integer|min:1',
+                'newLoanStatus' => 'required|string'
+            ]);
+
+            // Create new instance and save manually
+            $loanType = new MemberLoanType();
+            $loanType->loan_type_name = $validated['newLoanType'];
+            $loanType->interest_rate = $validated['loanInterestRate'];
+            $loanType->max_amount = $validated['loanMaxAmount'];
+            $loanType->repayment_period_months = $validated['loanRepaymentPeriod'];
+            $loanType->status = $validated['newLoanStatus'];
+            $loanType->author = Auth::id();
+            $loanType->created_on = now();
+            $loanType->updated_on = now();
+            $loanType->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Loan type created successfully',
+                'data' => $loanType
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create loan type: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // UPDATE LOAN TYPE
+    public function updateLoanType(Request $request)
+    {
+        try {
+            // Get JSON input if sent as JSON
+            $data = $request->json()->all();
+
+            $validator = Validator::make($data, [
+                'loan_type_id' => 'required|integer|exists:member_loan_types,loanId',
+                'loan_type_name' => 'required|string|max:255',
+                'interest_rate' => 'required|numeric|min:0',
+                'max_amount' => 'required|numeric|min:0',
+                'repayment_period_months' => 'required|integer|min:1',
+                'status' => 'required|string'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed: ' . implode(', ', $validator->errors()->all())
+                ], 422);
+            }
+
+            $loanType = MemberLoanType::find($data['loan_type_id']);
+
+            if (!$loanType) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Loan Type not found'
+                ], 404);
+            }
+
+            $loanType->loan_type_name = $data['loan_type_name'];
+            $loanType->interest_rate = $data['interest_rate'];
+            $loanType->max_amount = $data['max_amount'];
+            $loanType->repayment_period_months = $data['repayment_period_months'];
+            $loanType->status = $data['status'];
+            $loanType->author = Auth::id();
+            $loanType->updated_on = now();
+            $loanType->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Loan Type updated successfully!'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Server error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // DELETE LOAN TYPE
+    public function deleteLoanType(Request $request)
+    {
+        try {
+            $request->validate([
+                'loan_type_id' => 'required|integer|exists:member_loan_types,loanId'
+            ]);
+
+            $loanType = MemberLoanType::find($request->loan_type_id);
+
+            // DB is set to CASCADE, so related records will be deleted automatically
+            $loanType->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Loan Type deleted successfully!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Count all member active loans
+    public function countAllMemberLoans($memberId)
+    {
+        $count = DB::table('member_loans')
+            ->where('memberId', $memberId)
+            ->where('transactionLoanStatus', 'Active')
+            ->count();
+        
+        return response()->json(['active_loans_count' => $count]);
+    }
+
+    public function getAllMemberLoans($memberId)
+    {
+        $loans = DB::table('member_loans')
+            ->where('memberId', $memberId)
+            ->orderBy('transactionCreated', 'desc')
+            ->get();
+        
+        return response()->json($loans);
+    }
+
+    // Savings -----------------------------------------------------------------------------------------------------------                                                                                                                                                                                                                                                                                                              
+    public function getAllMemberSavings($memberId)
+    {
+        $savings = DB::table('member_savings')
+            ->where('memberId', $memberId)
+            ->orderBy('transactionDate', 'desc')
+            ->get();
+        
+        return response()->json($savings);
+    }
+
+}
