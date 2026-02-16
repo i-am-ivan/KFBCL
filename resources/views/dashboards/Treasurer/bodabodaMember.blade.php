@@ -698,7 +698,7 @@
                 <!-- Metric Group Two -->
             </div>
 
-            
+
             <!-- Tabbed Section -->
             <div class="rounded-xl border border-gray-200 p-6 bg-white dark:border-gray-800 dark:bg-white/[0.03]" x-data="{ activeTab: 'personal' }">
                 <!-- Top Navigation Menu -->
@@ -894,7 +894,7 @@
                                     <div>
                                         <div class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left p-4">
                                             <p class="text-sm text-gray-500 dark:text-gray-400"  x-text="memberData?.identification?.national_id || 'Not provided'">[ National ID number ]</p>
-                                        
+
                                         </div>
 
                                         <div class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left p-4">
@@ -975,7 +975,7 @@
 
                                                                 <!-- Print Button -->
                                                                 <div>
-                                                                    <button @click="printMembersReport()" 
+                                                                    <button @click="printMembersReport()"
                                                                         class="hover:text-dark-900 shadow-theme-xs relative flex h-11 items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
                                                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                                                             <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
@@ -987,23 +987,25 @@
                                                                     </button>
                                                                 </div>
 
+                                                                <div>
+                                                                    <button @click="withdrawContribution = true"
+                                                                        class="hover:text-dark-900 shadow-theme-xs relative flex inline-flex h-11 items-center justify-center  gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-700 hover:bg-gray-600 sm:w-auto">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                                                            <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                        </svg>
+                                                                        Withdraw
+                                                                    </button>
+                                                                </div>
+
                                                                 <!-- Create new loan type button -->
                                                                 <div>
-                                                                        <button @click="savingsModal = true" 
+                                                                    <button @click="savingsModal = true"
                                                                             class="shadow-theme-xs inline-flex flex w-full justify-center rounded-lg border border-gray-500 bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
                                                                             <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                            </svg>
-                                                                            Add Savings
-                                                                        </button>
-
-                                                                        <button @click="loanTypeModal = true" 
-                                                                        class="hover:text-dark-900 shadow-theme-xs relative flex inline-flex h-11 items-center justify-center  gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-700 hover:bg-gray-600 sm:w-auto">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                                                            <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                            </svg>
-                                                                            Withdraw
-                                                                        </button>
+                                                                        </svg>
+                                                                        Add Savings
+                                                                    </button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1044,7 +1046,7 @@
                                                                                             </p>
                                                                                         </div>
                                                                                     </th>
-                                                                                    
+
                                                                                     <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                                         <div class="flex items-center">
                                                                                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
@@ -1120,10 +1122,10 @@
                                                                                             <!-- Status -->
                                                                                             <td class="p-4 whitespace-nowrap">
                                                                                                 <div class="flex items-center col-span-2">
-                                                                                                    <p :class="saving.transactionStatus === 'Confirmed' || saving.transactionStatus === 'Approved' ? 'bg-success-50 text-theme-xs text-success-700 dark:bg-success-500/15 dark:text-success-500' : 
-                                                                                                            saving.transactionStatus === 'Pending' ? 'bg-warning-50 text-theme-xs text-warning-700 dark:bg-warning-500/15 dark:text-warning-500' : 
-                                                                                                            'bg-error-50 text-theme-xs text-error-600 dark:bg-error-500/15 dark:text-error-500'" 
-                                                                                                    class="rounded-full px-2 py-0.5 font-medium" 
+                                                                                                    <p :class="saving.transactionStatus === 'Confirmed' || saving.transactionStatus === 'Approved' ? 'bg-success-50 text-theme-xs text-success-700 dark:bg-success-500/15 dark:text-success-500' :
+                                                                                                            saving.transactionStatus === 'Pending' ? 'bg-warning-50 text-theme-xs text-warning-700 dark:bg-warning-500/15 dark:text-warning-500' :
+                                                                                                            'bg-error-50 text-theme-xs text-error-600 dark:bg-error-500/15 dark:text-error-500'"
+                                                                                                    class="rounded-full px-2 py-0.5 font-medium"
                                                                                                     x-text="saving.transactionStatus || 'N/A'"></p>
                                                                                                 </div>
                                                                                             </td>
@@ -1357,7 +1359,7 @@
                                                                     </td>
                                                                     <td class="p-4 whitespace-nowrap">
                                                                         <div class="flex items-center col-span-2">
-                                                                            <p :class="kin.status === 'Active' ? 'bg-success-50 text-theme-xs text-success-700 dark:bg-success-500/15 dark:text-success-500' : 'bg-error-50 text-theme-xs text-error-600 dark:bg-error-500/15 dark:text-error-500'" class="rounded-full px-2 py-0.5 font-medium" x-text="kin.status || 'N/A'"></p>
+                                                                            <p :class="kin.status === 'Approved' ? 'bg-success-50 text-theme-xs text-success-700 dark:bg-success-500/15 dark:text-success-500' : 'bg-error-50 text-theme-xs text-error-600 dark:bg-error-500/15 dark:text-error-500'" class="rounded-full px-2 py-0.5 font-medium" x-text="kin.status || 'N/A'"></p>
                                                                         </div>
                                                                     </td>
                                                                     <td class="p-4 whitespace-nowrap">
@@ -1375,7 +1377,7 @@
                                                     </tbody>
                                                     <!-- table body end -->
                                                 </table>
-                                
+
 
                                                     <!-- Pagination -->
                                                 <div class="border-t border-gray-200 px-5 py-4 dark:border-gray-800">
@@ -1441,7 +1443,7 @@
 
                     <!-- Vehicles Table (already complete) -->
                     <div x-show="activeTab === 'vehicles'">
-                      <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+                        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
                                                         <div class="flex flex-col justify-between gap-5 border-b border-gray-200 px-5 py-4 sm:flex-row lg:items-center dark:border-gray-800">
                                                             <div>
                                                                     <h3 class="text-lg font-semibold text-gray-600 dark:text-white/90">
@@ -1476,14 +1478,26 @@
                                                                 </div>
 
                                                                 <!-- Create new loan type button -->
-                                                                <div>
-                                                                        <button @click="vehiclesModal = true" class="shadow-theme-xs inline-flex flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">
+                                                                <div x-data="memberInfo">
+                                                                        <button
+                                                                            x-show="memberData?.member?.membership === 'Member'"
+                                                                            @click="vehiclesModal = true" class="shadow-theme-xs inline-flex flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">
                                                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
                                                                             <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                                                             </svg>
                                                                             Add Vehicle
                                                                         </button>
+
+                                                                        <button
+                                                                            x-show="memberData?.member?.membership === 'Non-Member'"
+                                                                            @click="assignVehiclesModal = true" class="shadow-theme-xs inline-flex flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                                                            <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                            </svg>
+                                                                            Assign Vehicle
+                                                                        </button>
                                                                 </div>
+
                                                             </div>
                                                         </div>
                                                             <!-- Vehicles Table -->
@@ -1593,29 +1607,29 @@
                                                                                                 <div class="flex items-center col-span-2">
                                                                                                     <div class="flex items-center gap-3">
                                                                                                         <div>
-                                                                                                            <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="x-text="vehicle.vehicleId || 'N/A'"></p>
+                                                                                                            <p class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="vehicle.vehicleId || 'N/A'"></p>
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </td>
                                                                                             <!-- Type/Plate Number (stacked as requested) -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <p class="text-xs font-medium text-gray-800 dark:text-white/90" x-text="vehicle.model || 'N/A'"></p>
+                                                                                                <div>
+                                                                                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="vehicle.model || 'N/A'"></span>
                                                                                                     <p class="text-xs text-gray-500 dark:text-gray-400" x-text="vehicle.plate_number || 'N/A'"></p>
                                                                                                 </div>
                                                                                             </td>
                                                                                             <!-- Brand/Model -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <p class="text-xs font-medium text-gray-800 dark:text-white/90" x-text="vehicle.brand || 'N/A'"> </p>
+                                                                                                <div>
+                                                                                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="vehicle.type || 'N/A'"> </span>
                                                                                                     <p class="text-xs text-gray-500 dark:text-gray-400" x-text="vehicle.model || 'N/A'"> </p>
                                                                                                 </div>
                                                                                             </td>
                                                                                              <!-- Make/CC -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <p class="text-xs font-medium text-gray-800 dark:text-white/90" x-text="vehicle.make || 'N/A'"></p>
+                                                                                                <div>
+                                                                                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="vehicle.make || 'N/A'"></span>
                                                                                                     <p class="text-xs text-gray-500 dark:text-gray-400" x-text="vehicle.CC || 'N/A'"></p>
                                                                                                 </div>
                                                                                             </td>
@@ -1765,25 +1779,36 @@
 
                                                 <div>
                                                     <button @click="printMembersReport()" class="hover:text-dark-900 shadow-theme-xs relative flex h-11 items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                        <path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2"></path>
-                                                        <path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4"></path>
-                                                        <rect x="7" y="13" width="10" height="8" rx="2"></rect>
-                                                    </svg>
-                                                    Print
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                            <path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2"></path>
+                                                            <path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4"></path>
+                                                            <rect x="7" y="13" width="10" height="8" rx="2"></rect>
+                                                        </svg>
+                                                        Print
+                                                    </button>
+                                                </div>
+
+                                                <div>
+                                                    <button @click="withdrawContribution = true"
+                                                        class="hover:text-dark-900 shadow-theme-xs relative flex inline-flex h-11 items-center justify-center  gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-700 hover:bg-gray-600 sm:w-auto">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                                            <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                        </svg>
+                                                        Withdraw
                                                     </button>
                                                 </div>
 
                                                 <!-- Create New Fine Type button -->
-                                                    <div>
+                                                <div>
+
                                                         <button @click="contributionsModal = true" class="shadow-theme-xs inline-flex flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
                                                                 <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                                             </svg>
                                                             Make Contribution
                                                         </button>
-                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <!-- Contributions table Table -->
@@ -1882,7 +1907,7 @@
                                                             </template>
                                                         </tbody>
                                                     </template>
-                                                
+
                                                 </table>
                                             </div>
 
@@ -1984,6 +2009,16 @@
                                                                     </button>
                                                                 </div>
 
+                                                                <div>
+                                                                    <button @click="loanTypeModal = true"
+                                                                        class="hover:text-dark-900 shadow-theme-xs relative flex inline-flex h-11 items-center justify-center  gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-700 hover:bg-gray-600 sm:w-auto">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                                                                <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                            </svg>
+                                                                            Repay Loan
+                                                                    </button>
+                                                                </div>
+
                                                                 <!-- Create new loan type button -->
                                                                 <div>
                                                                         <button @click="loansModal = true" class="shadow-theme-xs inline-flex flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">
@@ -2072,7 +2107,7 @@
                                                                             <!-- table header end -->
 
                                                                             <!-- Message if no loans data found -->
-                                                                            <template x-if="loanTypes.length === 0">
+                                                                            <template x-if="loans.length === 0">
                                                                                 <tbody>
                                                                                     <tr>
                                                                                         <td colspan="10" class="px-4 py-12 text-center">
@@ -2092,17 +2127,17 @@
                                                                             </template>
 
                                                                             <!-- If there is data  display the table -->
-                                                                            <template x-if="loanTypes.length &gt; 0">
+                                                                            <template x-if="loans.length > 0">
                                                                                 <!-- table body start -->
                                                                                 <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800">
-                                                                                    <template x-for="loanType in paginatedLoans" :key="loanType.LoanTypeID">
+                                                                                    <template x-for="loan in paginatedLoans" :key="loans.LoanTypeID">
                                                                                         <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-900">
                                                                                             <!-- LoanTypeID -->
                                                                                             <td class="p-4 whitespace-nowrap">
                                                                                                 <div class="flex items-center col-span-2">
                                                                                                     <div class="flex items-center gap-3">
                                                                                                         <div>
-                                                                                                            <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loanType.LoanTypeID"></p>
+                                                                                                            <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loans.LoanTypeID"></p>
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 </div>
@@ -2110,49 +2145,49 @@
                                                                                             <!-- Type -->
                                                                                             <td class="p-4 whitespace-nowrap">
                                                                                                 <div class="flex items-center col-span-2">
-                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loanType.Type"></p>
+                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loans.Type"></p>
                                                                                                 </div>
                                                                                             </td>
                                                                                             <!-- Interest Rate -->
                                                                                             <td class="p-4 whitespace-nowrap">
                                                                                                 <div class="flex items-center col-span-2">
-                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loanType.InterestRate"></p>
+                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loans.InterestRate"></p>
                                                                                                 </div>
                                                                                             </td>
                                                                                             <!-- Repayment Type -->
                                                                                             <td class="p-4 whitespace-nowrap">
                                                                                                 <div class="flex items-center col-span-2">
-                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loanType.Repayment"></p>
+                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loans.Repayment"></p>
                                                                                                 </div>
                                                                                             </td>
                                                                                             <!-- Total Loaned -->
                                                                                             <td class="p-4 whitespace-nowrap">
                                                                                                 <div class="flex items-center col-span-2">
-                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loanType.TotalLoaned"></p>
+                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loans.TotalLoaned"></p>
                                                                                                 </div>
                                                                                             </td>
                                                                                             <!-- Active Loans -->
                                                                                             <td class="p-4 whitespace-nowrap">
                                                                                                 <div class="flex items-center col-span-2">
-                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loanType.ActiveLoans"></p>
+                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loans.ActiveLoans"></p>
                                                                                                 </div>
                                                                                             </td>
                                                                                             <!-- Created On -->
                                                                                             <td class="p-4 whitespace-nowrap">
                                                                                                 <div class="flex items-center col-span-2">
-                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loanType.CreatedOn"></p>
+                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loans.CreatedOn"></p>
                                                                                                 </div>
                                                                                             </td>
                                                                                             <!-- Status -->
                                                                                             <td class="p-4 whitespace-nowrap">
                                                                                                 <div class="flex items-center col-span-2">
-                                                                                                    <p :class="loanType.Status === 'Active' ? 'bg-success-50 text-theme-xs text-success-700 dark:bg-success-500/15 dark:text-success-500' : 'bg-error-50 text-theme-xs text-error-600 dark:bg-error-500/15 dark:text-error-500'" class="rounded-full px-2 py-0.5 font-medium" x-text="loanType.Status"></p>
+                                                                                                    <p :class="loans.Status === 'Active' ? 'bg-success-50 text-theme-xs text-success-700 dark:bg-success-500/15 dark:text-success-500' : 'bg-error-50 text-theme-xs text-error-600 dark:bg-error-500/15 dark:text-error-500'" class="rounded-full px-2 py-0.5 font-medium" x-text="loanType.Status"></p>
                                                                                                 </div>
                                                                                             </td>
                                                                                             <!-- Actions -->
                                                                                             <td class="p-4 whitespace-nowrap">
                                                                                                 <div class="flex items-center col-span-2">
-                                                                                                    <button @click="editLoanTypeModal(loanType)" class="shadow-theme-xs inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+                                                                                                    <button @click="editLoansModal(loans)" class="shadow-theme-xs inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
                                                                                                         <svg class="w-[28px] h-[28px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                                                                                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.1" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"></path>
                                                                                                         </svg>
@@ -2177,7 +2212,7 @@
                                                                                 to
                                                                                 <span class="text-gray-800 dark:text-white/90" x-text="endEntry">1</span>
                                                                                 of
-                                                                                <span class="text-gray-800 dark:text-white/90" x-text="loanTypes.length">1</span>
+                                                                                <span class="text-gray-800 dark:text-white/90" x-text="loans.length">1</span>
                                                                             </span>
                                                                         </div>
 
@@ -2189,14 +2224,14 @@
                                                                                 to
                                                                                 <span class="text-gray-800 dark:text-white/90" x-text="endEntry">1</span>
                                                                                 of
-                                                                                <span class="text-gray-800 dark:text-white/90" x-text="loanTypes.length">1</span>
+                                                                                <span class="text-gray-800 dark:text-white/90" x-text="loans.length">1</span>
                                                                                 </span>
                                                                             </div>
                                                                             <div class="flex w-full items-center justify-between gap-2 rounded-lg bg-gray-50 p-4 sm:w-auto sm:justify-normal sm:rounded-none sm:bg-transparent sm:p-0 dark:bg-gray-900 dark:sm:bg-transparent">
                                                                                 <button class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" :disabled="page === 1" @click="goToPage(page - 1)" disabled="disabled">
                                                                                 <span>
                                                                                     <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M2.58203 9.99868C2.58174 10.1909 2.6549 10.3833 2.80152 10.53L7.79818 15.5301C8.09097 15.8231 8.56584 15.8233 8.85883 15.5305C9.15183 15.2377 8.152 14.7629 8.85921 14.4699L5.13911 10.7472L16.6665 10.7472C17.0807 10.7472 17.4165 10.4114 17.4165 9.99715C17.4165 9.58294 17.0807 9.24715 16.6665 9.24715L5.14456 9.24715L8.85919 5.53016C9.15199 5.23717 9.15184 4.7623 8.85885 4.4695C8.56587 4.1767 8.09099 4.17685 7.79819 4.46984L2.84069 9.43049C2.68224 9.568 2.58203 9.77087 2.58203 9.99715C2.58203 9.99766 2.58203 9.99817 2.58203 9.99868Z" fill=""></path>
+                                                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M2.58203 9.99868C2.58174 10.1909 2.6549 10.3833 2.80152 10.53L7.79818 15.5301C8.09097 15.8231 8.56584 15.8233 8.85883 15.5305C9.15183 15.2377 8.152 14.7629 8.85921 14.4699L5.13911 10.7472L16.6665 10.7472C17.0807 10.7472 17.4165 10.4114 17.4165 9.99715C17.4165 9.58294 17.0807 9.24715 16.6665 9.24715L5.14456 9.24715L8.85919 5.53016C9.15199 5.23717 9.15184 4.7623 8.85885 4.4695C8.56587 4.1767 8.09099 4.17685 7.79819 4.46984L2.84069 9.43049C2.68224 9.568 2.58203 9.77087 2.58203 9.99715C2.58203 9.99766 2.58203 9.99817 2.58203 9.99868Z" fill=""></path>
                                                                                     </svg>
                                                                                 </span>
                                                                                 </button>
@@ -2208,21 +2243,21 @@
                                                                                 <ul class="hidden items-center gap-0.5 sm:flex">
                                                                                 <template x-for="n in totalPages" :key="n">
                                                                                     <li>
-                                                                                    <a href="#" @click.prevent="goToPage(n)" :class="page === n ? 'bg-brand-500 text-white' : 'hover:bg-brand-500 text-gray-700 dark:text-gray-400 hover:text-white dark:hover:text-white'" class="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium">
-                                                                                        <span x-text="n"></span>
-                                                                                    </a>
+                                                                                        <a href="#" @click.prevent="goToPage(n)" :class="page === n ? 'bg-brand-500 text-white' : 'hover:bg-brand-500 text-gray-700 dark:text-gray-400 hover:text-white dark:hover:text-white'" class="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium">
+                                                                                            <span x-text="n"></span>
+                                                                                        </a>
                                                                                     </li>
                                                                                 </template>
-                                                                                
-                                                                                
+
+
                                                                                 </ul>
 
                                                                                 <button class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" :disabled="page === totalPages" @click="goToPage(page + 1)" disabled="disabled">
-                                                                                <span>
-                                                                                    <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M17.4165 9.9986C17.4168 10.1909 17.3437 10.3832 17.197 10.53L12.2004 15.5301C11.9076 15.8231 11.4327 15.8233 11.1397 15.5305C10.8467 15.2377 10.8465 14.7629 11.1393 14.4699L14.8594 10.7472L3.33203 10.7472C2.91782 10.7472 2.58203 10.4114 2.58203 9.99715C2.58203 9.58294 2.91782 9.24715 3.33203 9.24715L14.854 9.24715L11.1393 5.53016C10.8465 5.23717 10.8467 4.7623 11.1397 4.4695C11.4327 4.1767 11.9075 4.17685 12.2003 4.46984L17.1578 9.43049C17.3163 9.568 17.4165 9.77087 17.4165 9.99715C17.4165 9.99763 17.4165 9.99812 17.4165 9.9986Z" fill=""></path>
-                                                                                    </svg>
-                                                                                </span>
+                                                                                    <span>
+                                                                                        <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M17.4165 9.9986C17.4168 10.1909 17.3437 10.3832 17.197 10.53L12.2004 15.5301C11.9076 15.8231 11.4327 15.8233 11.1397 15.5305C10.8467 15.2377 10.8465 14.7629 11.1393 14.4699L14.8594 10.7472L3.33203 10.7472C2.91782 10.7472 2.58203 10.4114 2.58203 9.99715C2.58203 9.58294 2.91782 9.24715 3.33203 9.24715L14.854 9.24715L11.1393 5.53016C10.8465 5.23717 10.8467 4.7623 11.1397 4.4695C11.4327 4.1767 11.9075 4.17685 12.2003 4.46984L17.1578 9.43049C17.3163 9.568 17.4165 9.77087 17.4165 9.99715C17.4165 9.99763 17.4165 9.99812 17.4165 9.9986Z" fill=""></path>
+                                                                                        </svg>
+                                                                                    </span>
                                                                                 </button>
                                                                             </div>
                                                                         </div>
@@ -2381,7 +2416,7 @@
                                                             </template>
                                                         </tbody>
                                                     </template>
-                                                    
+
                                                 </table>
                                             </div>
 
@@ -2529,7 +2564,7 @@
 
             <form class="flex flex-col" method="POST" x-data="memberInfo" @submit.prevent="updatePersonalInfo">
                 @csrf
-                
+
                 <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
                                                                                     <div class="w-full px-2.5">
                                                                                         <h4 class="border-b border-gray-200 pb-4 text-base font-medium text-gray-800 dark:border-gray-800 dark:text-white/90">
@@ -2541,15 +2576,15 @@
                                                                                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                                                                                             First Name
                                                                                         </label>
-                                                                                        <input type="text" 
-                                                                                            id="personal_first_name" 
-                                                                                            name="personal_first_name" 
+                                                                                        <input type="text"
+                                                                                            id="personal_first_name"
+                                                                                            name="personal_first_name"
                                                                                             :value="memberData?.member?.firstname || ''"
-                                                                                            @input="clearError('first_name')" 
+                                                                                            @input="clearError('first_name')"
                                                                                             @blur="validateField('first_name', $event.target.value)"
-                                                                                            :class="errors.first_name ? 'border-red-500' : ''" 
+                                                                                            :class="errors.first_name ? 'border-red-500' : ''"
                                                                                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                                                        
+
                                                                                             <span x-show="errors.first_name" x-text="errors.first_name" class="text-xs text-red-500 mt-1"></span>
                                                                                     </div>
 
@@ -2558,13 +2593,13 @@
                                                                                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                                                                                             Last Name
                                                                                         </label>
-                                                                                        <input type="text" 
-                                                                                            id="personal_last_name" 
-                                                                                            name="personal_last_name" 
+                                                                                        <input type="text"
+                                                                                            id="personal_last_name"
+                                                                                            name="personal_last_name"
                                                                                             :value="memberData?.member?.lastname || ''"
-                                                                                            @input="clearError('last_name')" 
+                                                                                            @input="clearError('last_name')"
                                                                                             @blur="validateField('last_name', $event.target.value)"
-                                                                                            :class="errors.last_name ? 'border-red-500' : ''" 
+                                                                                            :class="errors.last_name ? 'border-red-500' : ''"
                                                                                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                                                                         <span x-show="errors.last_name" x-text="errors.last_name" class="text-xs text-red-500 mt-1"></span>
                                                                                     </div>
@@ -2574,13 +2609,13 @@
                                                                                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                                                                                             Email
                                                                                         </label>
-                                                                                        <input type="email" 
-                                                                                            id="personal_email" 
-                                                                                            name="personal_email" 
+                                                                                        <input type="email"
+                                                                                            id="personal_email"
+                                                                                            name="personal_email"
                                                                                             :value="memberData?.member?.email || ''"
-                                                                                            @input="clearError('email')" 
+                                                                                            @input="clearError('email')"
                                                                                             @blur="validateField('email', $event.target.value)"
-                                                                                            :class="errors.email ? 'border-red-500' : ''" 
+                                                                                            :class="errors.email ? 'border-red-500' : ''"
                                                                                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                                                                         <span x-show="errors.email" x-text="errors.email" class="text-xs text-red-500 mt-1"></span>
                                                                                     </div>
@@ -2591,13 +2626,13 @@
                                                                                             Primary Phone
                                                                                         </label>
                                                                                         <div class="relative">
-                                                                                            <input type="text" 
-                                                                                                        id="personal_primary_phone" 
-                                                                                                        name="personal_primary_phone" 
+                                                                                            <input type="text"
+                                                                                                        id="personal_primary_phone"
+                                                                                                        name="personal_primary_phone"
                                                                                                         :value="memberData?.member?.phone1 || ''"
-                                                                                                        @input="clearError('primary_phone')" 
+                                                                                                        @input="clearError('primary_phone')"
                                                                                                         @blur="validateField('primary_phone', $event.target.value)"
-                                                                                                        :class="errors.primary_phone ? 'border-red-500' : ''" 
+                                                                                                        :class="errors.primary_phone ? 'border-red-500' : ''"
                                                                                                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                                                                         </div>
                                                                                         <span x-show="errors.primary_phone" x-text="errors.primary_phone" class="text-xs text-red-500 mt-1"></span>
@@ -2609,13 +2644,13 @@
                                                                                             Secondary Phone
                                                                                         </label>
                                                                                         <div class="relative">
-                                                                                            <input type="text" 
-                                                                                                id="personal_secondary_phone" 
-                                                                                                name="personal_secondary_phone" 
+                                                                                            <input type="text"
+                                                                                                id="personal_secondary_phone"
+                                                                                                name="personal_secondary_phone"
                                                                                                 :value="memberData?.member?.phone2 || ''"
-                                                                                                @input="clearError('secondary_phone')" 
+                                                                                                @input="clearError('secondary_phone')"
                                                                                                 @blur="validateField('secondary_phone', $event.target.value)"
-                                                                                                :class="errors.secondary_phone ? 'border-red-500' : ''" 
+                                                                                                :class="errors.secondary_phone ? 'border-red-500' : ''"
                                                                                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                                                                         </div>
                                                                                         <span x-show="errors.secondary_phone" x-text="errors.secondary_phone" class="text-xs text-red-500 mt-1"></span>
@@ -2628,12 +2663,12 @@
                                                                                             Gender
                                                                                         </label>
                                                                                         <div class="relative z-20 bg-transparent">
-                                                                                            <select id="personal_gender" 
-                                                                                                    name="personal_gender" 
+                                                                                            <select id="personal_gender"
+                                                                                                    name="personal_gender"
                                                                                                     x-ref="genderSelect"
-                                                                                                    @change="clearError('gender')" 
+                                                                                                    @change="clearError('gender')"
                                                                                                     @blur="validateField('gender', $event.target.value)"
-                                                                                                    :class="errors.gender ? 'border-red-500' : ''" 
+                                                                                                    :class="errors.gender ? 'border-red-500' : ''"
                                                                                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                                                                                 <option value="" :selected="!memberData?.member?.gender">Select Gender</option>
                                                                                                 <option value="Male" :selected="memberData?.member?.gender === 'Male'">Male</option>
@@ -2653,13 +2688,13 @@
                                                                                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                                                                                             Date of Birth
                                                                                         </label>
-                                                                                        <input type="date" 
-                                                                                            id="personal_dob" 
+                                                                                        <input type="date"
+                                                                                            id="personal_dob"
                                                                                             name="personal_dob"
-                                                                                            :value="memberData?.member?.dob ? memberData.member.dob.split(' ')[0] : ''" 
-                                                                                            @input="clearError('dob')" 
+                                                                                            :value="memberData?.member?.dob ? memberData.member.dob.split(' ')[0] : ''"
+                                                                                            @input="clearError('dob')"
                                                                                             @blur="validateField('dob', $event.target.value)"
-                                                                                            :class="errors.dob ? 'border-red-500' : ''" 
+                                                                                            :class="errors.dob ? 'border-red-500' : ''"
                                                                                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                                                                         <span x-show="errors.dob" x-text="errors.dob" class="text-xs text-red-500 mt-1"></span>
                                                                                     </div>
@@ -2669,11 +2704,11 @@
                                                                                             Membership
                                                                                         </label>
                                                                                         <div class="relative z-20 bg-transparent">
-                                                                                            <select id="personal_membership" 
-                                                                                                    name="personal_membership" 
-                                                                                                    @change="clearError('membership')" 
+                                                                                            <select id="personal_membership"
+                                                                                                    name="personal_membership"
+                                                                                                    @change="clearError('membership')"
                                                                                                     @blur="validateField('membership', $event.target.value)"
-                                                                                                    :class="errors.membership ? 'border-red-500' : ''" 
+                                                                                                    :class="errors.membership ? 'border-red-500' : ''"
                                                                                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                                                                                 <option value="" :selected="!memberData?.member?.membership">Select Membership</option>
                                                                                                 <option value="Member" :selected="memberData?.member?.membership === 'Member'">Member</option>
@@ -2694,11 +2729,11 @@
                                                                                             Members Status
                                                                                         </label>
                                                                                         <div class="relative z-20 bg-transparent">
-                                                                                            <select id="personal_status" 
-                                                                                                    name="personal_status" 
-                                                                                                    @change="clearError('status')" 
+                                                                                            <select id="personal_status"
+                                                                                                    name="personal_status"
+                                                                                                    @change="clearError('status')"
                                                                                                     @blur="validateField('status', $event.target.value)"
-                                                                                                    :class="errors.status ? 'border-red-500' : ''" 
+                                                                                                    :class="errors.status ? 'border-red-500' : ''"
                                                                                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                                                                                 <option value="" :selected="!memberData?.member?.status">Select Status</option>
                                                                                                 <option value="Active" :selected="memberData?.member?.status === 'Active'">Active</option>
@@ -2779,17 +2814,17 @@
                                 <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                                     National ID Number
                                 </label>
-                                <input type="text" 
-                                    id="identification_national_id" 
-                                    name="national_id" 
+                                <input type="text"
+                                    id="identification_national_id"
+                                    name="national_id"
                                     :value="memberData?.identification?.national_id || ''"
-                                    @input="clearError('identification.national_id')" 
+                                    @input="clearError('identification.national_id')"
                                     @blur="validateField('identification.national_id', $event.target.value)"
-                                    :class="errors['identification.national_id'] ? 'border-red-500' : ''" 
+                                    :class="errors['identification.national_id'] ? 'border-red-500' : ''"
                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                 <span x-show="errors['identification.national_id']" x-text="errors['identification.national_id']" class="text-xs text-red-500 mt-1"></span>
                             </div>
-                            
+
                             <!-- National ID Front -->
                             <div class="w-full px-2.5 xl:w-1/2">
                                 <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
@@ -2797,8 +2832,8 @@
                                 </label>
                                 <div class="mb-2">
                                     <template x-if="memberData?.identification?.national_id_front_path">
-                                        <a :href="'/storage/' + memberData.identification.national_id_front_path" 
-                                        target="_blank" 
+                                        <a :href="'/storage/' + memberData.identification.national_id_front_path"
+                                        target="_blank"
                                         class="text-sm text-brand-500 hover:underline">
                                             View Current ID Front
                                         </a>
@@ -2808,12 +2843,12 @@
                                     </template>
                                 </div>
                                 <div class="relative">
-                                    <input type="file" 
-                                        id="identification_id_front" 
-                                        name="id_front" 
+                                    <input type="file"
+                                        id="identification_id_front"
+                                        name="id_front"
                                         accept="image/png,image/jpeg,image/webp"
                                         @change="validateFile('identification.id_front', $event)"
-                                        :class="errors['identification.id_front'] ? 'border-red-500' : ''" 
+                                        :class="errors['identification.id_front'] ? 'border-red-500' : ''"
                                         class="focus:border-ring-brand-300 shadow-theme-xs focus:file:ring-brand-300 h-11 w-full overflow-hidden rounded-lg border border-gray-300 bg-transparent text-sm text-gray-500 transition-colors file:mr-5 file:border-collapse file:cursor-pointer file:rounded-l-lg file:border-0 file:border-r file:border-solid file:border-gray-200 file:bg-gray-50 file:py-3 file:pr-3 file:pl-3.5 file:text-sm file:text-gray-700 placeholder:text-gray-400 hover:file:bg-gray-100 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400 dark:text-white/90 dark:file:border-gray-800 dark:file:bg-white/[0.03] dark:file:text-gray-400 dark:placeholder:text-gray-400">
                                 </div>
                                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">PNG, JPG or WebP (Max 5MB)</p>
@@ -2827,8 +2862,8 @@
                                 </label>
                                 <div class="mb-2">
                                     <template x-if="memberData?.identification?.national_id_back_path">
-                                        <a :href="'/storage/' + memberData.identification.national_id_back_path" 
-                                        target="_blank" 
+                                        <a :href="'/storage/' + memberData.identification.national_id_back_path"
+                                        target="_blank"
                                         class="text-sm text-brand-500 hover:underline">
                                             View Current ID Back
                                         </a>
@@ -2838,12 +2873,12 @@
                                     </template>
                                 </div>
                                 <div class="relative">
-                                    <input type="file" 
-                                        id="identification_id_back" 
-                                        name="id_back" 
+                                    <input type="file"
+                                        id="identification_id_back"
+                                        name="id_back"
                                         accept="image/png,image/jpeg,image/webp"
                                         @change="validateFile('identification.id_back', $event)"
-                                        :class="errors['identification.id_back'] ? 'border-red-500' : ''" 
+                                        :class="errors['identification.id_back'] ? 'border-red-500' : ''"
                                         class="focus:border-ring-brand-300 shadow-theme-xs focus:file:ring-brand-300 h-11 w-full overflow-hidden rounded-lg border border-gray-300 bg-transparent text-sm text-gray-500 transition-colors file:mr-5 file:border-collapse file:cursor-pointer file:rounded-l-lg file:border-0 file:border-r file:border-solid file:border-gray-200 file:bg-gray-50 file:py-3 file:pr-3 file:pl-3.5 file:text-sm file:text-gray-700 placeholder:text-gray-400 hover:file:bg-gray-100 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400 dark:text-white/90 dark:file:border-gray-800 dark:file:bg-white/[0.03] dark:file:text-gray-400 dark:placeholder:text-gray-400">
                                 </div>
                                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">PNG, JPG or WebP (Max 5MB)</p>
@@ -2856,13 +2891,13 @@
                                     Driving License Number
                                 </label>
                                 <div class="relative">
-                                    <input type="text" 
-                                        id="identification_driving_license" 
-                                        name="driving_license" 
+                                    <input type="text"
+                                        id="identification_driving_license"
+                                        name="driving_license"
                                         :value="memberData?.identification?.driver_license || ''"
-                                        @input="clearError('identification.driver_license')" 
+                                        @input="clearError('identification.driver_license')"
                                         @blur="validateField('identification.driver_license', $event.target.value)"
-                                        :class="errors['identification.driver_license'] ? 'border-red-500' : ''" 
+                                        :class="errors['identification.driver_license'] ? 'border-red-500' : ''"
                                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                 </div>
                                 <span x-show="errors['identification.driver_license']" x-text="errors['identification.driver_license']" class="text-xs text-red-500 mt-1"></span>
@@ -2874,11 +2909,11 @@
                                     Driving License Type
                                 </label>
                                 <div class="relative z-20 bg-transparent">
-                                    <select id="identification_license_type" 
-                                            name="license_type" 
-                                            @change="clearError('identification.license_type')" 
+                                    <select id="identification_license_type"
+                                            name="license_type"
+                                            @change="clearError('identification.license_type')"
                                             @blur="validateField('identification.license_type', $event.target.value)"
-                                            :class="errors['identification.license_type'] ? 'border-red-500' : ''" 
+                                            :class="errors['identification.license_type'] ? 'border-red-500' : ''"
                                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                         <option value="" :selected="!memberData?.identification?.driving_license_type">Select License Type</option>
                                         <option value="Category A" :selected="memberData?.identification?.driving_license_type === 'Category A'">Category A: Motorcycles and three-wheelers</option>
@@ -2901,11 +2936,11 @@
                                     NTSA Compliance
                                 </label>
                                 <div class="relative z-20 bg-transparent">
-                                    <select id="identification_ntsa_compliant" 
-                                            name="ntsa_compliant" 
-                                            @change="clearError('identification.ntsa_compliant')" 
+                                    <select id="identification_ntsa_compliant"
+                                            name="ntsa_compliant"
+                                            @change="clearError('identification.ntsa_compliant')"
                                             @blur="validateField('identification.ntsa_compliant', $event.target.value)"
-                                            :class="errors['identification.ntsa_compliant'] ? 'border-red-500' : ''" 
+                                            :class="errors['identification.ntsa_compliant'] ? 'border-red-500' : ''"
                                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                         <option value="" :selected="!memberData?.identification?.ntsa_compliance">Select NTSA Compliance</option>
                                         <option value="Approved" :selected="memberData?.identification?.ntsa_compliance === 'Approved'">Approved</option>
@@ -2927,11 +2962,11 @@
                                     Verification Status
                                 </label>
                                 <div class="relative z-20 bg-transparent">
-                                    <select id="identification_status" 
-                                            name="status" 
-                                            @change="clearError('identification.status')" 
+                                    <select id="identification_status"
+                                            name="status"
+                                            @change="clearError('identification.status')"
                                             @blur="validateField('identification.status', $event.target.value)"
-                                            :class="errors['identification.status'] ? 'border-red-500' : ''" 
+                                            :class="errors['identification.status'] ? 'border-red-500' : ''"
                                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                         <option value="" :selected="!memberData?.identification?.status">Select Verification Status</option>
                                         <option value="Approved" :selected="memberData?.identification?.status === 'Approved'">Approved</option>
@@ -2951,12 +2986,12 @@
                 </div>
 
                 <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-                    <button @click="identificationDocumentsModal = false" 
+                    <button @click="identificationDocumentsModal = false"
                             type="button"
                             class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
                         Cancel
                     </button>
-                    <button type="submit" 
+                    <button type="submit"
                             class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
                             :disabled="isUpdating">
                         <span x-show="!isUpdating">Update</span>
@@ -3006,20 +3041,20 @@
                         Next of Kin
                     </h4>
                 </div>
-                
+
                 <!-- First Name -->
                 <div class="w-full px-2.5 xl:w-1/2">
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                         First Name
                     </label>
-                    <input type="text" 
-                        id="kin_first_name" 
-                        name="first_name" 
-                        @input="clearError('first_name')" 
+                    <input type="text"
+                        id="kin_first_name"
+                        name="first_name"
+                        @input="clearError('first_name')"
                         @blur="validateField('first_name', $event.target.value)"
-                        :class="errors.first_name ? 'border-red-500' : ''" 
+                        :class="errors.first_name ? 'border-red-500' : ''"
                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                    <span x-show="errors.first_name" x-text="errors.first_name" class="text-xs text-red-500 mt-1"></span>
+                    <span x-show="errors.first_name" x-text="errors.first_name" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
                 <!-- Last Name -->
@@ -3027,14 +3062,14 @@
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                         Last Name
                     </label>
-                    <input type="text" 
-                        id="kin_last_name" 
-                        name="last_name" 
-                        @input="clearError('last_name')" 
+                    <input type="text"
+                        id="kin_last_name"
+                        name="last_name"
+                        @input="clearError('last_name')"
                         @blur="validateField('last_name', $event.target.value)"
-                        :class="errors.last_name ? 'border-red-500' : ''" 
+                        :class="errors.last_name ? 'border-red-500' : ''"
                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                    <span x-show="errors.last_name" x-text="errors.last_name" class="text-xs text-red-500 mt-1"></span>
+                    <span x-show="errors.last_name" x-text="errors.last_name" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
                 <!-- Email -->
@@ -3042,14 +3077,14 @@
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                         Email
                     </label>
-                    <input type="email" 
-                        id="kin_email" 
-                        name="email" 
-                        @input="clearError('email')" 
+                    <input type="email"
+                        id="kin_email"
+                        name="email"
+                        @input="clearError('email')"
                         @blur="validateField('email', $event.target.value)"
-                        :class="errors.email ? 'border-red-500' : ''" 
+                        :class="errors.email ? 'border-red-500' : ''"
                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                    <span x-show="errors.email" x-text="errors.email" class="text-xs text-red-500 mt-1"></span>
+                    <span x-show="errors.email" x-text="errors.email" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
                 <!-- Phone -->
@@ -3058,15 +3093,15 @@
                         Phone
                     </label>
                     <div class="relative">
-                        <input type="text" 
-                            id="kin_phone" 
-                            name="phone" 
-                            @input="clearError('phone')" 
+                        <input type="text"
+                            id="kin_phone"
+                            name="phone"
+                            @input="clearError('phone')"
                             @blur="validateField('phone', $event.target.value)"
-                            :class="errors.phone ? 'border-red-500' : ''" 
+                            :class="errors.phone ? 'border-red-500' : ''"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     </div>
-                    <span x-show="errors.phone" x-text="errors.phone" class="text-xs text-red-500 mt-1"></span>
+                    <span x-show="errors.phone" x-text="errors.phone" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
                 <!-- Relationship -->
@@ -3075,11 +3110,11 @@
                         Relation
                     </label>
                     <div class="relative z-20 bg-transparent">
-                        <select id="kin_relation" 
-                                name="relation" 
-                                @change="clearError('relation')" 
+                        <select id="kin_relation"
+                                name="relation"
+                                @change="clearError('relation')"
                                 @blur="validateField('relation', $event.target.value)"
-                                :class="errors.relation ? 'border-red-500' : ''" 
+                                :class="errors.relation ? 'border-red-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                             <option value="">Relationship</option>
                             <option value="Aunt">Aunt</option>
@@ -3102,6 +3137,32 @@
                     </div>
                     <span x-show="errors.relation" x-text="errors.relation" class="text-xs text-red-500 mt-1"></span>
                 </div>
+
+                 <!-- Status -->
+                <div class="w-full px-2.5">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Status
+                    </label>
+                    <div class="relative z-20 bg-transparent">
+                        <select id="kin_status"
+                                name="kin_status"
+                                @change="clearError('status')"
+                                @blur="validateField('relstatusation', $event.target.value)"
+                                :class="errors.status ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value="">Status</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Pending">Pending</option>
+                            <option value="In-Active">In-Active</option>
+                        </select>
+                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <span x-show="errors.status" x-text="errors.status" class="text-xs text-error-500 mt-1"></span>
+                </div>
             </div>
 
             <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
@@ -3109,7 +3170,7 @@
                         class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
                     Cancel
                 </button>
-                <button type="submit" 
+                <button type="submit"
                         class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
                         :disabled="$store.kinData.isAdding">
                     <span x-show="!$store.kinData.isAdding">Add Kin</span>
@@ -3125,9 +3186,9 @@
     <!-- editNextKinModal -->
     <div x-show="$store.kinData.editNextKinModal" x-data="kinTable" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999">
         <div class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
-        <div @click.outside="editNextKinModal = false" class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+        <div @click.outside="$store.kinData.editNextKinModal = false" class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
             <!-- close btn -->
-            <button @click="editNextKinModal = false" class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300">
+            <button @click="$store.kinData.editNextKinModal = false" class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300">
                 <svg
                         class="fill-current"
                         width="24"
@@ -3151,7 +3212,7 @@
             </div>
 
             <form class="flex flex-col w-full max-w-2xl bg-white dark:bg-gray-900 rounded-xl" @submit.prevent="updateKin">
-                
+
                 @csrf
 
                 <input type="hidden" id="edit_kin_id" name="kin_id">
@@ -3162,18 +3223,18 @@
                             Edit Next of Kin
                         </h4>
                     </div>
-                    
+
                     <!-- First Name -->
                     <div class="w-full px-2.5 xl:w-1/2">
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                             First Name
                         </label>
-                        <input type="text" 
-                            id="edit_kin_first_name" 
-                            name="first_name" 
-                            @input="clearError('first_name')" 
+                        <input type="text"
+                            id="edit_kin_first_name"
+                            name="first_name"
+                            @input="clearError('first_name')"
                             @blur="validateField('first_name', $event.target.value)"
-                            :class="errors.first_name ? 'border-red-500' : ''" 
+                            :class="errors.first_name ? 'border-red-500' : ''"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                         <span x-show="errors.first_name" x-text="errors.first_name" class="text-xs text-red-500 mt-1"></span>
                     </div>
@@ -3183,12 +3244,12 @@
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                             Last Name
                         </label>
-                        <input type="text" 
-                            id="edit_kin_last_name" 
-                            name="last_name" 
-                            @input="clearError('last_name')" 
+                        <input type="text"
+                            id="edit_kin_last_name"
+                            name="last_name"
+                            @input="clearError('last_name')"
                             @blur="validateField('last_name', $event.target.value)"
-                            :class="errors.last_name ? 'border-red-500' : ''" 
+                            :class="errors.last_name ? 'border-red-500' : ''"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                         <span x-show="errors.last_name" x-text="errors.last_name" class="text-xs text-red-500 mt-1"></span>
                     </div>
@@ -3198,12 +3259,12 @@
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                             Email
                         </label>
-                        <input type="email" 
-                            id="edit_kin_email" 
-                            name="email" 
-                            @input="clearError('email')" 
+                        <input type="email"
+                            id="edit_kin_email"
+                            name="email"
+                            @input="clearError('email')"
                             @blur="validateField('email', $event.target.value)"
-                            :class="errors.email ? 'border-red-500' : ''" 
+                            :class="errors.email ? 'border-red-500' : ''"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                         <span x-show="errors.email" x-text="errors.email" class="text-xs text-red-500 mt-1"></span>
                     </div>
@@ -3214,12 +3275,12 @@
                             Phone
                         </label>
                         <div class="relative">
-                            <input type="text" 
-                                id="edit_kin_phone" 
-                                name="phone" 
-                                @input="clearError('phone')" 
+                            <input type="text"
+                                id="edit_kin_phone"
+                                name="phone"
+                                @input="clearError('phone')"
                                 @blur="validateField('phone', $event.target.value)"
-                                :class="errors.phone ? 'border-red-500' : ''" 
+                                :class="errors.phone ? 'border-red-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                         </div>
                         <span x-show="errors.phone" x-text="errors.phone" class="text-xs text-red-500 mt-1"></span>
@@ -3231,11 +3292,11 @@
                             Relation
                         </label>
                         <div class="relative z-20 bg-transparent">
-                            <select id="edit_kin_relation" 
-                                    name="relation" 
-                                    @change="clearError('relation')" 
+                            <select id="edit_kin_relation"
+                                    name="relation"
+                                    @change="clearError('relation')"
                                     @blur="validateField('relation', $event.target.value)"
-                                    :class="errors.relation ? 'border-red-500' : ''" 
+                                    :class="errors.relation ? 'border-red-500' : ''"
                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                 <option value="">Relationship</option>
                                 <option value="Aunt">Aunt</option>
@@ -3258,25 +3319,52 @@
                         </div>
                         <span x-show="errors.relation" x-text="errors.relation" class="text-xs text-red-500 mt-1"></span>
                     </div>
+
+                    <!-- Status -->
+                    <div class="w-full px-2.5">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Status
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="edit_kin_status"
+                                    name="edit_kin_status"
+                                    @change="clearError('status')"
+                                    @blur="validateField('status', $event.target.value)"
+                                    :class="errors.status ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Status</option>
+                                <option value="Approved">Approved</option>
+                                <option value="Pending">Pending</option>
+                                <option value="In-Active">In-Active</option>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.status" x-text="errors.status" class="text-xs text-red-500 mt-1"></span>
+                    </div>
+
                 </div>
 
                 <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-                    <button @click="$store.kinData.editNextKinModal = false" 
+                    <button @click="$store.kinData.editNextKinModal = false"
                             type="button"
                             class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
                         Cancel
                     </button>
-                    
-                    <button type="button" 
-                            id="deleteMemberKin" 
-                            @click="deleteKin" 
+
+                    <button type="button"
+                            id="deleteMemberKin"
+                            @click="deleteKin"
                             class="rounded-lg border border-error-300 bg-white px-5 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]"
                             :disabled="$store.kinData.isDeleting">
                         <span x-show="!$store.kinData.isDeleting">Delete</span>
                         <span x-show="$store.kinData.isDeleting">Deleting...</span>
                     </button>
-                    
-                    <button type="submit" 
+
+                    <button type="submit"
                             class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
                             :disabled="$store.kinData.isUpdating">
                         <span x-show="!$store.kinData.isUpdating">Update</span>
@@ -3285,7 +3373,7 @@
                 </div>
 
             </form>
-            
+
         </div>
     </div>
 
@@ -3320,7 +3408,7 @@
 
         <form class="flex flex-col" method="POST" x-data="vehiclesTable" @submit.prevent="addVehicle">
             @csrf
-            
+
             <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
                 <div class="w-full px-2.5">
                     <h4 class="border-b border-gray-200 pb-4 text-base font-medium text-gray-800 dark:border-gray-800 dark:text-white/90">
@@ -3334,11 +3422,11 @@
                         Type
                     </label>
                     <div class="relative z-20 bg-transparent">
-                        <select id="vehicle_type" 
-                                name="type" 
-                                @change="clearError('vehicle_type')" 
+                        <select id="vehicle_type"
+                                name="type"
+                                @change="clearError('vehicle_type')"
                                 @blur="validateField('vehicle_type', $event.target.value)"
-                                :class="errors.vehicle_type ? 'border-red-500' : ''" 
+                                :class="errors.vehicle_type ? 'border-red-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                             <option value="">Select Type</option>
                             <option value="Motocycle">Motocycle</option>
@@ -3358,12 +3446,12 @@
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                         Plate Number
                     </label>
-                    <input type="text" 
-                        id="plate_number" 
-                        name="plate_number" 
-                        @input="clearError('plate_number')" 
+                    <input type="text"
+                        id="plate_number"
+                        name="plate_number"
+                        @input="clearError('plate_number')"
                         @blur="validateField('plate_number', $event.target.value)"
-                        :class="errors.plate_number ? 'border-red-500' : ''" 
+                        :class="errors.plate_number ? 'border-red-500' : ''"
                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     <span x-show="errors.plate_number" x-text="errors.plate_number" class="text-xs text-red-500 mt-1"></span>
                 </div>
@@ -3373,12 +3461,12 @@
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                         Brand
                     </label>
-                    <input type="text" 
-                        id="brand" 
-                        name="brand" 
-                        @input="clearError('brand')" 
+                    <input type="text"
+                        id="brand"
+                        name="brand"
+                        @input="clearError('brand')"
                         @blur="validateField('brand', $event.target.value)"
-                        :class="errors.brand ? 'border-red-500' : ''" 
+                        :class="errors.brand ? 'border-red-500' : ''"
                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     <span x-show="errors.brand" x-text="errors.brand" class="text-xs text-red-500 mt-1"></span>
                 </div>
@@ -3388,12 +3476,12 @@
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                         Model
                     </label>
-                    <input type="text" 
-                        id="model" 
-                        name="model" 
-                        @input="clearError('model')" 
+                    <input type="text"
+                        id="model"
+                        name="model"
+                        @input="clearError('model')"
                         @blur="validateField('model', $event.target.value)"
-                        :class="errors.model ? 'border-red-500' : ''" 
+                        :class="errors.model ? 'border-red-500' : ''"
                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     <span x-show="errors.model" x-text="errors.model" class="text-xs text-red-500 mt-1"></span>
                 </div>
@@ -3404,12 +3492,12 @@
                         Make
                     </label>
                     <div class="relative">
-                        <input type="text" 
-                            id="make" 
-                            name="make" 
-                            @input="clearError('make')" 
+                        <input type="text"
+                            id="make"
+                            name="make"
+                            @input="clearError('make')"
                             @blur="validateField('make', $event.target.value)"
-                            :class="errors.make ? 'border-red-500' : ''" 
+                            :class="errors.make ? 'border-red-500' : ''"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     </div>
                     <span x-show="errors.make" x-text="errors.make" class="text-xs text-red-500 mt-1"></span>
@@ -3421,12 +3509,12 @@
                         CC
                     </label>
                     <div class="relative">
-                        <input type="text" 
-                            id="cc" 
-                            name="cc" 
-                            @input="clearError('cc')" 
+                        <input type="text"
+                            id="cc"
+                            name="cc"
+                            @input="clearError('cc')"
                             @blur="validateField('cc', $event.target.value)"
-                            :class="errors.cc ? 'border-red-500' : ''" 
+                            :class="errors.cc ? 'border-red-500' : ''"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     </div>
                     <span x-show="errors.cc" x-text="errors.cc" class="text-xs text-red-500 mt-1"></span>
@@ -3438,11 +3526,11 @@
                         Insurance
                     </label>
                     <div class="relative z-20 bg-transparent">
-                        <select id="insurance" 
-                                name="insurance" 
-                                @change="clearError('insurance')" 
+                        <select id="insurance"
+                                name="insurance"
+                                @change="clearError('insurance')"
                                 @blur="validateField('insurance', $event.target.value)"
-                                :class="errors.insurance ? 'border-red-500' : ''" 
+                                :class="errors.insurance ? 'border-red-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                             <option value="">Select Insurance Type</option>
                             <option value="Comprehesive">Comprehensive</option>
@@ -3462,15 +3550,15 @@
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                         Year of Manufacture
                     </label>
-                    <input type="number" 
-                        id="yom" 
-                        name="yom" 
-                        min="1900" 
-                        max="2099" 
+                    <input type="number"
+                        id="yom"
+                        name="yom"
+                        min="1900"
+                        max="2099"
                         step="1"
-                        @input="clearError('yom')" 
+                        @input="clearError('yom')"
                         @blur="validateField('yom', $event.target.value)"
-                        :class="errors.yom ? 'border-red-500' : ''" 
+                        :class="errors.yom ? 'border-red-500' : ''"
                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     <span x-show="errors.yom" x-text="errors.yom" class="text-xs text-red-500 mt-1"></span>
                 </div>
@@ -3481,11 +3569,11 @@
                         NTSA Compliant
                     </label>
                     <div class="relative z-20 bg-transparent">
-                        <select id="ntsa_compliant" 
-                                name="ntsa_compliant" 
-                                @change="clearError('ntsa_compliant')" 
+                        <select id="ntsa_compliant"
+                                name="ntsa_compliant"
+                                @change="clearError('ntsa_compliant')"
                                 @blur="validateField('ntsa_compliant', $event.target.value)"
-                                :class="errors.ntsa_compliant ? 'border-red-500' : ''" 
+                                :class="errors.ntsa_compliant ? 'border-red-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                             <option value="">NTSA Compliant</option>
                             <option value="Approved">Approved</option>
@@ -3506,11 +3594,11 @@
                         Status
                     </label>
                     <div class="relative z-20 bg-transparent">
-                        <select id="vehicle_status" 
-                                name="status" 
-                                @change="clearError('vehicle_status')" 
+                        <select id="vehicle_status"
+                                name="status"
+                                @change="clearError('vehicle_status')"
                                 @blur="validateField('vehicle_status', $event.target.value)"
-                                :class="errors.vehicle_status ? 'border-red-500' : ''" 
+                                :class="errors.vehicle_status ? 'border-red-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                             <option value="">Select Status</option>
                             <option value="Approved">Approved</option>
@@ -3532,7 +3620,7 @@
                         class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
                     Cancel
                 </button>
-                <button type="submit" 
+                <button type="submit"
                         class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
                         :disabled="$store.vehicleData.isAdding">
                     <span x-show="!$store.vehicleData.isAdding">Add Vehicle</span>
@@ -3576,7 +3664,7 @@
         <form class="flex flex-col" method="POST" @submit.prevent="updateVehicle">
             @csrf
             <input type="hidden" id="edit_vehicle_id" name="vehicle_id">
-            
+
             <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
                 <div class="w-full px-2.5">
                     <h4 class="border-b border-gray-200 pb-4 text-base font-medium text-gray-800 dark:border-gray-800 dark:text-white/90">
@@ -3590,11 +3678,11 @@
                         Type
                     </label>
                     <div class="relative z-20 bg-transparent">
-                        <select id="edit_vehicle_type" 
-                                name="type" 
-                                @change="clearError('vehicle_type')" 
+                        <select id="edit_vehicle_type"
+                                name="type"
+                                @change="clearError('vehicle_type')"
                                 @blur="validateField('vehicle_type', $event.target.value)"
-                                :class="errors.vehicle_type ? 'border-red-500' : ''" 
+                                :class="errors.vehicle_type ? 'border-red-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                             <option value="">Select Type</option>
                             <option value="Motocycle">Motocycle</option>
@@ -3614,12 +3702,12 @@
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                         Plate Number
                     </label>
-                    <input type="text" 
-                           id="edit_plate_number" 
-                           name="plate_number" 
-                           @input="clearError('plate_number')" 
+                    <input type="text"
+                           id="edit_plate_number"
+                           name="plate_number"
+                           @input="clearError('plate_number')"
                            @blur="validateField('plate_number', $event.target.value)"
-                           :class="errors.plate_number ? 'border-red-500' : ''" 
+                           :class="errors.plate_number ? 'border-red-500' : ''"
                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     <span x-show="errors.plate_number" x-text="errors.plate_number" class="text-xs text-red-500 mt-1"></span>
                 </div>
@@ -3629,12 +3717,12 @@
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                         Brand
                     </label>
-                    <input type="text" 
-                           id="edit_brand" 
-                           name="brand" 
-                           @input="clearError('brand')" 
+                    <input type="text"
+                           id="edit_brand"
+                           name="brand"
+                           @input="clearError('brand')"
                            @blur="validateField('brand', $event.target.value)"
-                           :class="errors.brand ? 'border-red-500' : ''" 
+                           :class="errors.brand ? 'border-red-500' : ''"
                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     <span x-show="errors.brand" x-text="errors.brand" class="text-xs text-red-500 mt-1"></span>
                 </div>
@@ -3644,12 +3732,12 @@
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                         Model
                     </label>
-                    <input type="text" 
-                           id="edit_model" 
-                           name="model" 
-                           @input="clearError('model')" 
+                    <input type="text"
+                           id="edit_model"
+                           name="model"
+                           @input="clearError('model')"
                            @blur="validateField('model', $event.target.value)"
-                           :class="errors.model ? 'border-red-500' : ''" 
+                           :class="errors.model ? 'border-red-500' : ''"
                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     <span x-show="errors.model" x-text="errors.model" class="text-xs text-red-500 mt-1"></span>
                 </div>
@@ -3660,12 +3748,12 @@
                         Make
                     </label>
                     <div class="relative">
-                        <input type="text" 
-                               id="edit_make" 
-                               name="make" 
-                               @input="clearError('make')" 
+                        <input type="text"
+                               id="edit_make"
+                               name="make"
+                               @input="clearError('make')"
                                @blur="validateField('make', $event.target.value)"
-                               :class="errors.make ? 'border-red-500' : ''" 
+                               :class="errors.make ? 'border-red-500' : ''"
                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     </div>
                     <span x-show="errors.make" x-text="errors.make" class="text-xs text-red-500 mt-1"></span>
@@ -3677,12 +3765,12 @@
                         CC
                     </label>
                     <div class="relative">
-                        <input type="text" 
-                               id="edit_cc" 
-                               name="cc" 
-                               @input="clearError('cc')" 
+                        <input type="text"
+                               id="edit_cc"
+                               name="cc"
+                               @input="clearError('cc')"
                                @blur="validateField('cc', $event.target.value)"
-                               :class="errors.cc ? 'border-red-500' : ''" 
+                               :class="errors.cc ? 'border-red-500' : ''"
                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     </div>
                     <span x-show="errors.cc" x-text="errors.cc" class="text-xs text-red-500 mt-1"></span>
@@ -3694,11 +3782,11 @@
                         Insurance
                     </label>
                     <div class="relative z-20 bg-transparent">
-                        <select id="edit_insurance" 
-                                name="insurance" 
-                                @change="clearError('insurance')" 
+                        <select id="edit_insurance"
+                                name="insurance"
+                                @change="clearError('insurance')"
                                 @blur="validateField('insurance', $event.target.value)"
-                                :class="errors.insurance ? 'border-red-500' : ''" 
+                                :class="errors.insurance ? 'border-red-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                             <option value="">Select Insurance Type</option>
                             <option value="Comprehesive">Comprehensive</option>
@@ -3718,15 +3806,15 @@
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                         Year of Manufacture
                     </label>
-                    <input type="number" 
-                           id="edit_yom" 
-                           name="yom" 
-                           min="1900" 
-                           max="2099" 
+                    <input type="number"
+                           id="edit_yom"
+                           name="yom"
+                           min="1900"
+                           max="2099"
                            step="1"
-                           @input="clearError('yom')" 
+                           @input="clearError('yom')"
                            @blur="validateField('yom', $event.target.value)"
-                           :class="errors.yom ? 'border-red-500' : ''" 
+                           :class="errors.yom ? 'border-red-500' : ''"
                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     <span x-show="errors.yom" x-text="errors.yom" class="text-xs text-red-500 mt-1"></span>
                 </div>
@@ -3737,11 +3825,11 @@
                         NTSA Compliant
                     </label>
                     <div class="relative z-20 bg-transparent">
-                        <select id="edit_ntsa_compliant" 
-                                name="ntsa_compliant" 
-                                @change="clearError('ntsa_compliant')" 
+                        <select id="edit_ntsa_compliant"
+                                name="ntsa_compliant"
+                                @change="clearError('ntsa_compliant')"
                                 @blur="validateField('ntsa_compliant', $event.target.value)"
-                                :class="errors.ntsa_compliant ? 'border-red-500' : ''" 
+                                :class="errors.ntsa_compliant ? 'border-red-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                             <option value="">NTSA Compliant</option>
                             <option value="Approved">Approved</option>
@@ -3762,11 +3850,11 @@
                         Status
                     </label>
                     <div class="relative z-20 bg-transparent">
-                        <select id="edit_vehicle_status" 
-                                name="status" 
-                                @change="clearError('vehicle_status')" 
+                        <select id="edit_vehicle_status"
+                                name="status"
+                                @change="clearError('vehicle_status')"
                                 @blur="validateField('vehicle_status', $event.target.value)"
-                                :class="errors.vehicle_status ? 'border-red-500' : ''" 
+                                :class="errors.vehicle_status ? 'border-red-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                             <option value="">Select Status</option>
                             <option value="Approved">Approved</option>
@@ -3784,21 +3872,21 @@
             </div>
 
             <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-                <button @click="$store.vehicleData.editMemberVehiclesModal = false" 
+                <button @click="$store.vehicleData.editMemberVehiclesModal = false"
                         type="button"
                         class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
                     Cancel
                 </button>
-                
-                <button type="button" 
-                        @click="deleteVehicle" 
+
+                <button type="button"
+                        @click="deleteVehicle"
                         class="rounded-lg border border-error-300 bg-white px-5 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]"
                         :disabled="$store.vehicleData.isDeleting">
                     <span x-show="!$store.vehicleData.isDeleting">Delete</span>
                     <span x-show="$store.vehicleData.isDeleting">Deleting...</span>
                 </button>
-                
-                <button type="submit" 
+
+                <button type="submit"
                         class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
                         :disabled="$store.vehicleData.isUpdating">
                     <span x-show="!$store.vehicleData.isUpdating">Update</span>
@@ -3806,7 +3894,7 @@
                 </button>
             </div>
         </form>
-        
+
         </div>
     </div>
 
@@ -3836,46 +3924,117 @@
             <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Make Contribution</h4>
             <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the amount you wish to contribute.</p>
         </div>
-        <form class="flex flex-col">
-            <div class="custom-scrollbar h-[450px] overflow-y-auto px-2">
-            <div class="mt-7">
-                <h5 class="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">Contribute</h5>
 
-                <div class="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-                <div class="col-span-2 lg:col-span-1">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Amount</label>
-                    <input type="text" placeholder="Enter Amount ..."
-                        class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"/>
-                </div>
-                <div class="col-span-2 lg:col-span-1">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Mode</label>
-                    <input type="text" placeholder="Enter Amount ..."
-                        class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"/>
-                </div>
+
+            <form class="flex flex-col" x-data="kinTable" @submit.prevent="addKin">
+
+                @csrf
+
+                <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
+                    <div class="w-full px-2.5">
+                        <h4 class="border-b border-gray-200 pb-4 text-base font-medium text-gray-800 dark:border-gray-800 dark:text-white/90">
+                            Contribution
+                        </h4>
+                    </div>
+
+                    <!-- First Name -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Amount
+                        </label>
+                        <input type="number"
+                            id="contribution_Amount"
+                            name="contribution_Amount"
+                            @input="clearError('contribution_Amount')"
+                            @blur="validateField('contribution_Amount', $event.target.value)"
+                            :class="errors.contribution_Amount ? 'border-red-500' : ''"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.contribution_Amount" x-text="errors.contribution_Amount" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Last Name -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Payment Mode
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="payment_mode"
+                                    name="payment_mode"
+                                    @change="clearError('payment_mode')"
+                                    @blur="validateField('payment_mode', $event.target.value)"
+                                    :class="errors.payment_mode ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Payment Mode</option>
+                                <option value="Cash">Cash</option>
+                                <option value="MPesa">MPesa</option>
+                                <option value="Bank">Bank</option>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Transaction Code
+                        </label>
+                        <input type="text"
+                            id="transaction_code"
+                            name="transaction_code"
+                            @input="clearError('transaction_code')"
+                            @blur="validateField('transaction_code', $event.target.value)"
+                            :class="errors.transaction_code ? 'border-red-500' : ''"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Status
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="Status"
+                                    name="Status"
+                                    @change="clearError('Status')"
+                                    @blur="validateField('Status', $event.target.value)"
+                                    :class="errors.Status ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Status</option>
+                                <option value="Confirmed">Confirmed</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.Status" x-text="errors.Status" class="text-xs text-error-500 mt-1"></span>
+                    </div>
                 </div>
 
-                <div class="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-                <div class="col-span-2 lg:col-span-1">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Transaction Code</label>
-                    <input type="text" placeholder="Enter Amount ..."
-                        class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"/>
+                <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+                    <button @click="contributionsModal = false" type="button"
+                            class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                            :disabled="$store.kinData.isAdding">
+                        <span x-show="!$store.kinData.isAdding">Contribute</span>
+                        <span x-show="$store.kinData.isAdding">Transacting ...</span>
+                    </button>
                 </div>
 
-                <div class="col-span-2 lg:col-span-1">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Status</label>
-                    <input type="password" placeholder="Confirm Password"
-                        class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"/>
-                </div>
-                </div>
-            </div>
-            </div>
-            <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-            <button @click="contributionsModal = false" type="button"
-                    class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
-                Cancel</button>
-            <button type="button" class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">Contribute</button>
-            </div>
-        </form>
+            </form>
+
         </div>
     </div>
 
@@ -3905,33 +4064,116 @@
             <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Savings</h4>
             <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the amount you wish to withdraw.</p>
         </div>
-        <form class="flex flex-col">
-            <div class="custom-scrollbar h-[450px] overflow-y-auto px-2">
-            <div class="mt-7">
-                <h5 class="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">Withdraw</h5>
 
-                <div class="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-                <div class="col-span-2 lg:col-span-1">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Amount</label>
-                    <input type="text" placeholder="Enter Amount ..."
-                        class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"/>
+        <form class="flex flex-col" x-data="kinTable" @submit.prevent="addKin">
+
+                @csrf
+
+                <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
+                    <div class="w-full px-2.5">
+                        <h4 class="border-b border-gray-200 pb-4 text-base font-medium text-gray-800 dark:border-gray-800 dark:text-white/90">
+                            Savings
+                        </h4>
+                    </div>
+
+                    <!-- First Name -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Amount
+                        </label>
+                        <input type="number"
+                            id="savings_Amount"
+                            name="savings_Amount"
+                            @input="clearError('savings_Amount')"
+                            @blur="validateField('savings_Amount', $event.target.value)"
+                            :class="errors.savings_Amount ? 'border-red-500' : ''"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.savings_Amount" x-text="errors.savings_Amount" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Last Name -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Payment Mode
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="payment_mode"
+                                    name="payment_mode"
+                                    @change="clearError('payment_mode')"
+                                    @blur="validateField('payment_mode', $event.target.value)"
+                                    :class="errors.payment_mode ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Payment Mode</option>
+                                <option value="Cash">Cash</option>
+                                <option value="MPesa">MPesa</option>
+                                <option value="Bank">Bank</option>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Transaction Code
+                        </label>
+                        <input type="text"
+                            id="transaction_code"
+                            name="transaction_code"
+                            @input="clearError('transaction_code')"
+                            @blur="validateField('transaction_code', $event.target.value)"
+                            :class="errors.transaction_code ? 'border-red-500' : ''"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Status
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="Status"
+                                    name="Status"
+                                    @change="clearError('Status')"
+                                    @blur="validateField('Status', $event.target.value)"
+                                    :class="errors.Status ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Status</option>
+                                <option value="Confirmed">Confirmed</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.Status" x-text="errors.Status" class="text-xs text-error-500 mt-1"></span>
+                    </div>
                 </div>
 
-                <div class="col-span-2 lg:col-span-1">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Confirm Password</label>
-                    <input type="password" placeholder="Confirm Password"
-                        class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"/>
+                <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+                    <button @click="savingsModal = false" type="button"
+                            class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                            :disabled="$store.kinData.isAdding">
+                        <span x-show="!$store.kinData.isAdding">Save</span>
+                        <span x-show="$store.kinData.isAdding">Transacting ...</span>
+                    </button>
                 </div>
-                </div>
-            </div>
-            </div>
-            <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-            <button @click="savingsModal = false" type="button"
-                    class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
-                Cancel</button>
-            <button type="button" class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">Withdraw</button>
-            </div>
-        </form>
+
+            </form>
+
         </div>
     </div>
 
@@ -3982,7 +4224,7 @@
                                                                                     </label>
                                                                                     <div class="relative z-20 bg-transparent">
                                                                                         <select id="personal_gender" name="personal_gender" x-model="formData.personal.gender" @change="clearError('personal.gender')" @blur="validateField('personal.gender')" :class="errors.personal?.gender ? 'border-red-500' : ''" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                                                            <option value="">Type</option>
+                                                                                            <option value="">Loan Type</option>
                                                                                             <option value="Motocycle">Motocycle</option>
                                                                                             <option value="Tuk Tuk">Tuk Tuk</option>
                                                                                         </select>
@@ -4015,16 +4257,46 @@
                                                                                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                                                                                         Period (Months)
                                                                                     </label>
-                                                                                    <input type="email" id="personal_email" name="personal_email" x-model="formData.personal.email" @input="clearError('personal.email')" @blur="validateField('personal.email')" :class="errors.personal?.email ? 'border-red-500' : ''" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                                                    <div class="relative z-20 bg-transparent">
+                                                                                        <select id="loanRepaymentPeriod" name="loanRepaymentPeriod" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" :class="isOptionSelected &amp;&amp; 'text-gray-800 dark:text-white/90'">
+                                                                                            <option value="All" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">Repayment</option>
+                                                                                            <option value="1" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">30 Days</option>
+                                                                                            <option value="12" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">12 Months</option>
+                                                                                            <option value="24" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">24 Months</option>
+                                                                                            <option value="36" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">36 Months</option>
+                                                                                            <option value="48" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">48 Months</option>
+                                                                                            <option value="60" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">60 Months</option>
+                                                                                        </select>
+                                                                                        <span class="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-700 dark:text-gray-400">
+                                                                                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                            <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                                        </svg>
+                                                                                        </span>
+                                                                                    </div>
                                                                                 </div>
 
                                                                                 <!-- Make -->
                                                                                 <div class="w-full px-2.5 xl:w-1/2">
                                                                                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                                                        Repayment Mode
+                                                                                        Payment Mode
                                                                                     </label>
-                                                                                    <div class="relative">
-                                                                                        <input type="text" id="personal_primary_phone" name="personal_primary_phone" x-model="formData.personal.primaryPhone" @input="clearError('personal.primaryPhone')" @blur="validateField('personal.primaryPhone')" :class="errors.personal?.primaryPhone ? 'border-red-500' : ''" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                                                    <div class="relative z-20 bg-transparent">
+                                                                                        <select id="payment_mode"
+                                                                                                name="payment_mode"
+                                                                                                @change="clearError('payment_mode')"
+                                                                                                @blur="validateField('payment_mode', $event.target.value)"
+                                                                                                :class="errors.payment_mode ? 'border-red-500' : ''"
+                                                                                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                                                            <option value="">Payment Mode</option>
+                                                                                            <option value="Cash">Cash</option>
+                                                                                            <option value="MPesa">MPesa</option>
+                                                                                            <option value="Bank">Bank</option>
+                                                                                        </select>
+                                                                                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                                                                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                                            </svg>
+                                                                                        </span>
                                                                                     </div>
                                                                                 </div>
 
@@ -4033,28 +4305,19 @@
                                                                                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                                                                                         Amount
                                                                                     </label>
-                                                                                    <div class="relative">
-                                                                                        <input type="text" id="personal_secondary_phone" name="personal_secondary_phone" x-model="formData.personal.secondaryPhone" @input="clearError('personal.secondaryPhone')" @blur="validateField('personal.secondaryPhone')" :class="errors.personal?.secondaryPhone ? 'border-red-500' : ''" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                                                <div class="relative">
+                                                                                    <input type="number" id="personal_secondary_phone" name="personal_secondary_phone" x-model="formData.personal.secondaryPhone" @input="clearError('personal.secondaryPhone')" @blur="validateField('personal.secondaryPhone')" :class="errors.personal?.secondaryPhone ? 'border-red-500' : ''" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                                                                     </div>
                                                                                 </div>
 
                                                                                 <!-- Insuarance -->
-                                                                                <div class="w-full px-2.5 xl:w-1/2">
+                                                                            <div class="w-full px-2.5 xl:w-1/2">
                                                                                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                                                        Mode
+                                                                                        Transaction Code
                                                                                     </label>
-                                                                                    <div class="relative z-20 bg-transparent">
-                                                                                        <select id="personal_gender" name="personal_gender" x-model="formData.personal.gender" @change="clearError('personal.gender')" @blur="validateField('personal.gender')" :class="errors.personal?.gender ? 'border-red-500' : ''" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                                                            <option value="">Insuarance Type</option>
-                                                                                            <option value="Comprehesive">Comprehesive</option>
-                                                                                            <option value="Third-Party">Third-Party</option>
-                                                                                        </select>
-                                                                                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                                                                                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                                            </svg>
-                                                                                        </span>
-                                                                                    </div>
+                                                                                    <div class="relative">
+                                                                                            <input type="text" readonly id="personal_secondary_phone" name="personal_secondary_phone" x-model="formData.personal.secondaryPhone" @input="clearError('personal.secondaryPhone')" @blur="validateField('personal.secondaryPhone')" :class="errors.personal?.secondaryPhone ? 'border-red-500' : ''" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                                                        </div>
                                                                                 </div>
 
                                                                                 <!-- DoB -->
@@ -4062,24 +4325,15 @@
                                                                                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                                                                                         Start Date
                                                                                     </label>
-                                                                                    <input type="text" id="personal_dob" name="personal_dob" x-model="formData.personal.dob" @input="clearError('personal.dob')" @blur="validateField('personal.dob')" :class="errors.personal?.dob ? 'border-red-500' : ''" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                                                    <input type="text" id="personal_dob" readonly name="personal_dob" x-model="formData.personal.dob" @input="clearError('personal.dob')" @blur="validateField('personal.dob')" :class="errors.personal?.dob ? 'border-red-500' : ''" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                                                                 </div>
                 <!-- Membership -->
                                                                                 <div class="w-full px-2.5 xl:w-1/2">
                                                                                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                                                                                         End Date
                                                                                     </label>
-                                                                                    <div class="relative z-20 bg-transparent">
-                                                                                        <select id="personal_gender" name="personal_gender" x-model="formData.personal.gender" @change="clearError('personal.gender')" @blur="validateField('personal.gender')" :class="errors.personal?.gender ? 'border-red-500' : ''" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                                                            <option value="">NTSA Compliant</option>
-                                                                                            <option value="Male">Approved</option>
-                                                                                            <option value="Female">Suspended</option>
-                                                                                        </select>
-                                                                                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                                                                                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                                            </svg>
-                                                                                        </span>
+                                                                                    <div class="relative">
+                                                                                        <input type="text" id="personal_dob" readonly name="personal_dob" x-model="formData.personal.dob" @input="clearError('personal.dob')" @blur="validateField('personal.dob')" :class="errors.personal?.dob ? 'border-red-500' : ''" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                                                                     </div>
                                                                                 </div>
 
@@ -4090,8 +4344,9 @@
                                                                                     </label>
                                                                                     <div class="relative z-20 bg-transparent">
                                                                                         <select id="personal_gender" name="personal_gender" x-model="formData.personal.gender" @change="clearError('personal.gender')" @blur="validateField('personal.gender')" :class="errors.personal?.gender ? 'border-red-500' : ''" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                                                            <option value="">Vehicle Status</option>
+                                                                                            <option value="">Loan Status</option>
                                                                                             <option value="Approved">Approved</option>
+                                                                                            <option value="Cancelled">Cancelled</option>
                                                                                             <option value="Suspended">Suspended</option>
                                                                                             <option value="Under Review">Under Review</option>
                                                                                         </select>
@@ -4112,6 +4367,7 @@
             </div>
 
         </form>
+
         </div>
     </div>
 
@@ -4231,7 +4487,7 @@
 
     <!-- ===== Custom JS ===== -->
     <script defer src="{{ asset('assets/bundle.js') }}"></script>
-    
+
     <!-- ======================================================== Custom Scripts ======================================================== -->
 
     <!-- Member -->
@@ -4241,7 +4497,7 @@
                 memberData: null,
                 errors: {},
                 isUpdating: false,
-                
+
                 init() {
                     fetch('/treasurer/bodaboda-member/{{ $memberId }}/data')
                         .then(res => res.json())
@@ -4249,7 +4505,7 @@
                             this.memberData = data;
                         });
                 },
-                
+
                 formatDate(dateString) {
                     if (!dateString) return '';
                     const date = new Date(dateString);
@@ -4261,14 +4517,14 @@
                         minute: '2-digit'
                     });
                 },
-                
+
                 // Phone validation for Kenyan numbers
                 validatePhone(phone) {
                     if (!phone || phone === 'N/A') return true; // Optional field
-                    
+
                     // Remove all spaces and common separators
                     const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
-                    
+
                     // Kenyan phone patterns:
                     // 07XX XXXXXX, 01XX XXXXXX
                     // 2547XX XXXXXX, 2541XX XXXXXX
@@ -4285,74 +4541,74 @@
                         /^\+25420\d{7}$/,       // +254201234567 (landline)
                         /^\d{9}$/               // Generic 9-digit (for other formats)
                     ];
-                    
+
                     return patterns.some(pattern => pattern.test(cleanPhone));
                 },
-                
+
                 validateEmail(email) {
                     if (!email || email === 'N/A') return false;
                     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                     return re.test(email);
                 },
-                
+
                 validateFile(field, event) {
                     const file = event.target.files[0];
                     if (!file) {
                         delete this.errors[field];
                         return true;
                     }
-                    
+
                     // Check file size (5MB max)
                     if (file.size > 5 * 1024 * 1024) {
                         this.errors[field] = 'File size must not exceed 5MB';
                         return false;
                     }
-                    
+
                     // Check file type
                     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
                     if (!allowedTypes.includes(file.type)) {
                         this.errors[field] = 'File must be PNG, JPG, or WebP';
                         return false;
                     }
-                    
+
                     delete this.errors[field];
                     return true;
                 },
-                
+
                 validateField(field, value) {
                     // Clear previous error for this field
                     if (!value || value === 'N/A' || value === '' || value === null) {
                         this.errors[field] = 'This field is required';
                         return false;
                     }
-                    
+
                     if (field === 'email' && !this.validateEmail(value)) {
                         this.errors[field] = 'Please enter a valid email address';
                         return false;
                     }
-                    
+
                     if ((field === 'primary_phone' || field === 'secondary_phone') && value !== 'N/A' && value !== '') {
                         if (!this.validatePhone(value)) {
                             this.errors[field] = 'Please enter a valid Kenyan phone number';
                             return false;
                         }
                     }
-                    
+
                     // Clear error if validation passes
                     delete this.errors[field];
                     return true;
                 },
-                
+
                 clearError(field) {
                     if (this.errors[field]) {
                         delete this.errors[field];
                     }
                 },
-                
+
                 validatePersonalForm() {
                     this.errors = {};
                     let isValid = true;
-                    
+
                     // Get form values
                     const firstName = document.getElementById('personal_first_name')?.value;
                     const lastName = document.getElementById('personal_last_name')?.value;
@@ -4363,7 +4619,7 @@
                     const dob = document.getElementById('personal_dob')?.value;
                     const membership = document.getElementById('personal_membership')?.value;
                     const status = document.getElementById('personal_status')?.value;
-                    
+
                     // Validate each field
                     if (!this.validateField('first_name', firstName)) isValid = false;
                     if (!this.validateField('last_name', lastName)) isValid = false;
@@ -4388,19 +4644,19 @@
                         this.errors.status = 'Please select status';
                         isValid = false;
                     }
-                    
+
                     return isValid;
                 },
-                
+
                 updatePersonalInfo() {
                     if (!this.validatePersonalForm()) {
                         alert('Please fix the errors in the form before submitting.');
                         return;
                     }
-                    
+
                     // Change button text
                     this.isUpdating = true;
-                    
+
                     // Get form values
                     const formData = {
                         first_name: document.getElementById('personal_first_name')?.value,
@@ -4414,7 +4670,7 @@
                         status: document.getElementById('personal_status')?.value,
                         _token: document.querySelector('input[name="_token"]')?.value
                     };
-                    
+
                     // Send to backend
                     fetch('/bodaboda-member/{{ $memberId }}/update-personal', {
                         method: 'POST',
@@ -4428,7 +4684,7 @@
                     .then(data => {
                         setTimeout(() => {
                             this.isUpdating = false;
-                            
+
                             if (data.success) {
                                 alert(data.message);
                                 // Reload the current page
@@ -4446,70 +4702,70 @@
                         }, 750);
                     });
                 },
-                
+
                 validateIdentificationForm() {
                     this.errors = {};
                     let isValid = true;
-                    
+
                     // Get form values
                     const nationalId = document.getElementById('identification_national_id')?.value;
                     const drivingLicense = document.getElementById('identification_driving_license')?.value;
                     const licenseType = document.getElementById('identification_license_type')?.value;
                     const ntsaCompliant = document.getElementById('identification_ntsa_compliant')?.value;
                     const status = document.getElementById('identification_status')?.value;
-                    
+
                     // Validate required fields
                     if (!nationalId || nationalId === '') {
                         this.errors['identification.national_id'] = 'National ID number is required';
                         isValid = false;
                     }
-                    
+
                     if (!status || status === '') {
                         this.errors['identification.status'] = 'Verification status is required';
                         isValid = false;
                     }
-                    
+
                     // Check file validation errors (they would have been set during file change)
                     if (this.errors['identification.id_front'] || this.errors['identification.id_back']) {
                         isValid = false;
                     }
-                    
+
                     return isValid;
                 },
-                
+
                 updateIdentificationDocuments() {
                     if (!this.validateIdentificationForm()) {
                         alert('Please fix the errors in the form before submitting.');
                         return;
                     }
-                    
+
                     // Change button text
                     this.isUpdating = true;
-                    
+
                     // Create FormData object for file upload
                     const formData = new FormData();
-                    
+
                     // Add all form fields
                     formData.append('national_id', document.getElementById('identification_national_id')?.value || '');
                     formData.append('driving_license', document.getElementById('identification_driving_license')?.value || '');
                     formData.append('license_type', document.getElementById('identification_license_type')?.value || '');
                     formData.append('ntsa_compliant', document.getElementById('identification_ntsa_compliant')?.value || '');
                     formData.append('status', document.getElementById('identification_status')?.value || '');
-                    
+
                     // Add files if selected
                     const idFront = document.getElementById('identification_id_front')?.files[0];
                     if (idFront) {
                         formData.append('id_front', idFront);
                     }
-                    
+
                     const idBack = document.getElementById('identification_id_back')?.files[0];
                     if (idBack) {
                         formData.append('id_back', idBack);
                     }
-                    
+
                     // Add CSRF token
                     formData.append('_token', document.querySelector('input[name="_token"]')?.value);
-                    
+
                     // Send to backend
                     fetch('/bodaboda-member/{{ $memberId }}/update-identification', {
                         method: 'POST',
@@ -4522,7 +4778,7 @@
                     .then(data => {
                         setTimeout(() => {
                             this.isUpdating = false;
-                            
+
                             if (data.success) {
                                 alert(data.message);
                                 // Reload the current page
@@ -4561,7 +4817,7 @@
                 currentPage: 1,
                 itemsPerPage: 10,
                 errors: {},
-                
+
                 init() {
                     fetch('/bodaboda-member/{{ $memberId }}/kins')
                         .then(res => res.json())
@@ -4574,7 +4830,7 @@
                         const kin = event.detail.kin;
                         Alpine.store('kinData').currentKin = kin;
                         Alpine.store('kinData').editNextKinModal = true;
-                        
+
                         // Populate form fields after modal opens
                         setTimeout(() => {
                             document.getElementById('edit_kin_id') && (document.getElementById('edit_kin_id').value = kin.kin_id || '');
@@ -4583,6 +4839,7 @@
                             document.getElementById('edit_kin_email') && (document.getElementById('edit_kin_email').value = kin.email || '');
                             document.getElementById('edit_kin_phone') && (document.getElementById('edit_kin_phone').value = kin.phone || '');
                             document.getElementById('edit_kin_relation') && (document.getElementById('edit_kin_relation').value = kin.relation || '');
+                            document.getElementById('edit_kin_status') && (document.getElementById('edit_kin_status').value = kin.status || '');
                         }, 100);
                     });
                 },
@@ -4593,7 +4850,7 @@
                     const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
                     const patterns = [
                         /^07\d{8}$/, /^01\d{8}$/, /^2547\d{8}$/, /^2541\d{8}$/,
-                        /^\+2547\d{8}$/, /^\+2541\d{8}$/, /^20\d{7}$/, 
+                        /^\+2547\d{8}$/, /^\+2541\d{8}$/, /^20\d{7}$/,
                         /^\+25420\d{7}$/, /^\d{9}$/
                     ];
                     return patterns.some(pattern => pattern.test(cleanPhone));
@@ -4610,17 +4867,17 @@
                         this.errors[field] = 'This field is required';
                         return false;
                     }
-                    
+
                     if (field === 'email' && !this.validateEmail(value)) {
                         this.errors[field] = 'Please enter a valid email address';
                         return false;
                     }
-                    
+
                     if (field === 'phone' && !this.validatePhone(value)) {
                         this.errors[field] = 'Please enter a valid Kenyan phone number';
                         return false;
                     }
-                    
+
                     delete this.errors[field];
                     return true;
                 },
@@ -4634,44 +4891,54 @@
                 validateAddForm() {
                     this.errors = {};
                     let isValid = true;
-                    
+
                     const firstName = document.getElementById('kin_first_name')?.value;
                     const lastName = document.getElementById('kin_last_name')?.value;
                     const email = document.getElementById('kin_email')?.value;
                     const phone = document.getElementById('kin_phone')?.value;
                     const relation = document.getElementById('kin_relation')?.value;
-                    
+                    const status = document.getElementById('kin_status')?.value; // Fixed: was relation = document.getElementById('kin_status')
+
                     if (!this.validateField('first_name', firstName)) isValid = false;
                     if (!this.validateField('last_name', lastName)) isValid = false;
                     if (!this.validateField('email', email)) isValid = false;
                     if (!this.validateField('phone', phone)) isValid = false;
                     if (!relation || relation === '') {
-                        this.errors.relation = 'Please select a relationship';
+                        this.errors.relation = 'Please specify relationship';
                         isValid = false;
                     }
-                    
+                    if (!status || status === '') {
+                        this.errors.status = 'Please specify status'; // Fixed: was relation
+                        isValid = false;
+                    }
+
                     return isValid;
                 },
 
                 validateEditForm() {
                     this.errors = {};
                     let isValid = true;
-                    
+
                     const firstName = document.getElementById('edit_kin_first_name')?.value;
                     const lastName = document.getElementById('edit_kin_last_name')?.value;
                     const email = document.getElementById('edit_kin_email')?.value;
                     const phone = document.getElementById('edit_kin_phone')?.value;
                     const relation = document.getElementById('edit_kin_relation')?.value;
-                    
+                    const status = document.getElementById('edit_kin_status')?.value; // Fixed: was relation = document.getElementById('kin_status')
+
                     if (!this.validateField('first_name', firstName)) isValid = false;
                     if (!this.validateField('last_name', lastName)) isValid = false;
                     if (!this.validateField('email', email)) isValid = false;
                     if (!this.validateField('phone', phone)) isValid = false;
                     if (!relation || relation === '') {
-                        this.errors.relation = 'Please select a relationship';
+                        this.errors.relation = 'Please specify relationship';
                         isValid = false;
                     }
-                    
+                    if (!status || status === '') {
+                        this.errors.status = 'Please specify status'; // Fixed: was relation
+                        isValid = false;
+                    }
+
                     return isValid;
                 },
 
@@ -4680,18 +4947,19 @@
                         alert('Please fix the errors in the form before submitting.');
                         return;
                     }
-                    
+
                     Alpine.store('kinData').isAdding = true;
-                    
+
                     const formData = {
                         first_name: document.getElementById('kin_first_name')?.value,
                         last_name: document.getElementById('kin_last_name')?.value,
                         email: document.getElementById('kin_email')?.value,
                         phone: document.getElementById('kin_phone')?.value,
                         relation: document.getElementById('kin_relation')?.value,
+                        status: document.getElementById('kin_status')?.value,
                         _token: document.querySelector('input[name="_token"]')?.value
                     };
-                    
+
                     fetch('/bodaboda-member/{{ $memberId }}/kin/add', {
                         method: 'POST',
                         headers: {
@@ -4704,7 +4972,7 @@
                     .then(data => {
                         setTimeout(() => {
                             Alpine.store('kinData').isAdding = false;
-                            
+
                             if (data.success) {
                                 alert(data.message);
                                 window.location.reload();
@@ -4727,9 +4995,9 @@
                         alert('Please fix the errors in the form before submitting.');
                         return;
                     }
-                    
+
                     Alpine.store('kinData').isUpdating = true;
-                    
+
                     const kinId = document.getElementById('edit_kin_id')?.value;
                     const formData = {
                         first_name: document.getElementById('edit_kin_first_name')?.value,
@@ -4737,9 +5005,10 @@
                         email: document.getElementById('edit_kin_email')?.value,
                         phone: document.getElementById('edit_kin_phone')?.value,
                         relation: document.getElementById('edit_kin_relation')?.value,
+                        status: document.getElementById('edit_kin_status')?.value, // Fixed: was document.getElementById('kin_status')
                         _token: document.querySelector('input[name="_token"]')?.value
                     };
-                    
+
                     fetch(`/bodaboda-member/{{ $memberId }}/kin/${kinId}/update`, {
                         method: 'POST',
                         headers: {
@@ -4752,7 +5021,7 @@
                     .then(data => {
                         setTimeout(() => {
                             Alpine.store('kinData').isUpdating = false;
-                            
+
                             if (data.success) {
                                 alert(data.message);
                                 window.location.reload();
@@ -4773,17 +5042,17 @@
                 deleteKin() {
                     const kin = Alpine.store('kinData').currentKin;
                     if (!kin) return;
-                    
+
                     const kinName = kin.firstname + ' ' + kin.lastname;
-                    
+
                     if (!confirm(`Do you want to remove ${kinName} from the list?`)) {
                         return;
                     }
-                    
+
                     Alpine.store('kinData').isDeleting = true;
-                    
+
                     const kinId = kin.kin_id;
-                    
+
                     fetch(`/bodaboda-member/{{ $memberId }}/kin/${kinId}/delete`, {
                         method: 'POST',
                         headers: {
@@ -4796,7 +5065,7 @@
                     .then(data => {
                         setTimeout(() => {
                             Alpine.store('kinData').isDeleting = false;
-                            
+
                             if (data.success) {
                                 alert(data.message);
                                 window.location.reload();
@@ -4879,7 +5148,7 @@
                         const vehicle = event.detail.vehicle;
                         Alpine.store('vehicleData').currentVehicle = vehicle;
                         Alpine.store('vehicleData').editMemberVehiclesModal = true;
-                        
+
                         // Populate form fields after modal opens
                         setTimeout(() => {
                             document.getElementById('edit_vehicle_id') && (document.getElementById('edit_vehicle_id').value = vehicle.vehicleId || '');
@@ -4891,11 +5160,11 @@
                             document.getElementById('edit_cc') && (document.getElementById('edit_cc').value = vehicle.CC || '');
                             document.getElementById('edit_insurance') && (document.getElementById('edit_insurance').value = vehicle.insurance || '');
                             document.getElementById('edit_yom') && (document.getElementById('edit_yom').value = vehicle.yom || '');
-                            
+
                             // Handle NTSA compliant (convert 1/0 to text)
                             const ntsaValue = vehicle.NTSA_compliant == 1 ? 'Approved' : 'Suspended';
                             document.getElementById('edit_ntsa_compliant') && (document.getElementById('edit_ntsa_compliant').value = ntsaValue);
-                            
+
                             document.getElementById('edit_vehicle_status') && (document.getElementById('edit_vehicle_status').value = vehicle.status || '');
                         }, 100);
                     });
@@ -4906,7 +5175,7 @@
                         this.errors[field] = 'This field is required';
                         return false;
                     }
-                    
+
                     if (field === 'yom') {
                         const year = parseInt(value);
                         const currentYear = new Date().getFullYear();
@@ -4915,7 +5184,7 @@
                             return false;
                         }
                     }
-                    
+
                     delete this.errors[field];
                     return true;
                 },
@@ -4929,35 +5198,35 @@
                 validateAddForm() {
                     this.errors = {};
                     let isValid = true;
-                    
+
                     const fields = [
-                        'vehicle_type', 'plate_number', 'brand', 'model', 'make', 
+                        'vehicle_type', 'plate_number', 'brand', 'model', 'make',
                         'cc', 'insurance', 'yom', 'ntsa_compliant', 'vehicle_status'
                     ];
-                    
+
                     fields.forEach(field => {
                         const value = document.getElementById(field)?.value;
                         if (!this.validateField(field, value)) isValid = false;
                     });
-                    
+
                     return isValid;
                 },
 
                 validateEditForm() {
                     this.errors = {};
                     let isValid = true;
-                    
+
                     const fields = [
                         'edit_vehicle_type', 'edit_plate_number', 'edit_brand', 'edit_model', 'edit_make',
                         'edit_cc', 'edit_insurance', 'edit_yom', 'edit_ntsa_compliant', 'edit_vehicle_status'
                     ];
-                    
+
                     fields.forEach(field => {
                         const value = document.getElementById(field)?.value;
                         const errorField = field.replace('edit_', '');
                         if (!this.validateField(errorField, value)) isValid = false;
                     });
-                    
+
                     return isValid;
                 },
 
@@ -4966,9 +5235,9 @@
                         alert('Please fix the errors in the form before submitting.');
                         return;
                     }
-                    
+
                     Alpine.store('vehicleData').isAdding = true;
-                    
+
                     const formData = {
                         type: document.getElementById('vehicle_type')?.value,
                         plate_number: document.getElementById('plate_number')?.value,
@@ -4982,7 +5251,7 @@
                         status: document.getElementById('vehicle_status')?.value,
                         _token: document.querySelector('input[name="_token"]')?.value
                     };
-                    
+
                     fetch('/bodaboda-member/{{ $memberId }}/vehicle/add', {
                         method: 'POST',
                         headers: {
@@ -4995,7 +5264,7 @@
                     .then(data => {
                         setTimeout(() => {
                             Alpine.store('vehicleData').isAdding = false;
-                            
+
                             if (data.success) {
                                 alert(data.message);
                                 window.location.reload();
@@ -5018,9 +5287,9 @@
                         alert('Please fix the errors in the form before submitting.');
                         return;
                     }
-                    
+
                     Alpine.store('vehicleData').isUpdating = true;
-                    
+
                     const vehicleId = document.getElementById('edit_vehicle_id')?.value;
                     const formData = {
                         type: document.getElementById('edit_vehicle_type')?.value,
@@ -5035,7 +5304,7 @@
                         status: document.getElementById('edit_vehicle_status')?.value,
                         _token: document.querySelector('input[name="_token"]')?.value
                     };
-                    
+
                     fetch(`/bodaboda-member/{{ $memberId }}/vehicle/${vehicleId}/update`, {
                         method: 'POST',
                         headers: {
@@ -5048,7 +5317,7 @@
                     .then(data => {
                         setTimeout(() => {
                             Alpine.store('vehicleData').isUpdating = false;
-                            
+
                             if (data.success) {
                                 alert(data.message);
                                 window.location.reload();
@@ -5069,17 +5338,17 @@
                 deleteVehicle() {
                     const vehicle = Alpine.store('vehicleData').currentVehicle;
                     if (!vehicle) return;
-                    
+
                     const vehicleDetails = `${vehicle.model} ${vehicle.make} ${vehicle.plate_number}`;
-                    
+
                     if (!confirm(`Do you want to remove ${vehicleDetails} from the list?`)) {
                         return;
                     }
-                    
+
                     Alpine.store('vehicleData').isDeleting = true;
-                    
+
                     const vehicleId = vehicle.vehicleId;
-                    
+
                     fetch(`/bodaboda-member/{{ $memberId }}/vehicle/${vehicleId}/delete`, {
                         method: 'POST',
                         headers: {
@@ -5092,7 +5361,7 @@
                     .then(data => {
                         setTimeout(() => {
                             Alpine.store('vehicleData').isDeleting = false;
-                            
+
                             if (data.success) {
                                 alert(data.message);
                                 window.location.reload();

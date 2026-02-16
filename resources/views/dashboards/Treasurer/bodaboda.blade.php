@@ -3848,6 +3848,7 @@
                     </div>
                 </div>
             </form>
+            
         </div>
     </div>
     <!-- Edit Loan Type Modal -->
@@ -6196,7 +6197,7 @@
                     setTimeout(() => {
                         // Get CSRF token from meta tag
                         const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-                        
+
                         if (!token) {
                             alert('Error: CSRF token not found');
                             if (updateBtn) {

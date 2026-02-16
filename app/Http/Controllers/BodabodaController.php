@@ -435,7 +435,8 @@ class BodabodaController extends Controller {
                 'last_name' => 'required|string|max:255',
                 'email' => 'required|email|max:255',
                 'phone' => 'required|string|max:255',
-                'relation' => 'required|string|max:255'
+                'relation' => 'required|string|max:255',
+                'status' => 'required|string|max:255'
             ]);
 
             $data = [
@@ -444,6 +445,7 @@ class BodabodaController extends Controller {
                 'email' => $validated['email'],
                 'phone' => $validated['phone'],
                 'relation' => $validated['relation'],
+                'status' => $validated['status'],
                 'updated_on' => now()
             ];
 
