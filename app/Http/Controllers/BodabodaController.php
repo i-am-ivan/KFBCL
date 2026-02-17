@@ -526,7 +526,7 @@ class BodabodaController extends Controller {
     {
         try {
             $validated = $request->validate([
-                'type' => 'required|in:Motocycle,Tuk Tuk',
+                'type' => 'required|in:Motorcycle,Tuk Tuk',
                 'plate_number' => 'required|string|max:255',
                 'brand' => 'required|string|max:255',
                 'model' => 'required|string|max:255',
@@ -585,7 +585,7 @@ class BodabodaController extends Controller {
     {
         try {
             $validated = $request->validate([
-                'type' => 'required|in:Motocycle,Tuk Tuk',
+                'type' => 'required|in:Motorcycle,Tuk Tuk',
                 'plate_number' => 'required|string|max:255',
                 'brand' => 'required|string|max:255',
                 'model' => 'required|string|max:255',
@@ -604,6 +604,7 @@ class BodabodaController extends Controller {
                 'brand' => $validated['brand'],
                 'yom' => $validated['yom'],
                 'CC' => $validated['cc'],
+                'type' => $validated['type'],
                 'NTSA_compliant' => $validated['ntsa_compliant'] === 'Approved' ? 1 : 0,
                 'insurance' => $validated['insurance'],
                 'status' => $validated['status'],
