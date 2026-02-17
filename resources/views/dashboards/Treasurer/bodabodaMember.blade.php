@@ -3899,7 +3899,7 @@
     </div>
 
     <!-- assignMemberVehicle -->
-    <div x-show="assignMemberVehicleModal" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999">
+    <div x-show="assignMemberVehicleModal" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999" x-data="vehiclesTable">
         <div class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
         <div @click.outside="assignMemberVehicle = false" class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
         <!-- close btn -->
@@ -3925,7 +3925,7 @@
             <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Assign an Available vehicle to the Non-Member.</p>
         </div>
 
-            <form class="flex flex-col" x-data="kinTable" @submit.prevent="addKin">
+            <form class="flex flex-col" @submit.prevent="assignVehicle">
 
                 @csrf
 
@@ -3942,11 +3942,11 @@
                             Vehicle Type
                         </label>
                         <div class="relative z-20 bg-transparent">
-                            <select id="vehicle_type"
+                            <select id="assign_vehicle_type"
                                     name="vehicle_type"
-                                    @change="clearError('vehicle_type')"
-                                    @blur="validateField('vehicle_type', $event.target.value)"
-                                    :class="errors.vehicle_type ? 'border-red-500' : ''"
+                                    @change="loadAvailableVehicles($event.target.value); clearError('assign_vehicle_type')"
+                                    @blur="validateField('assign_vehicle_type', $event.target.value)"
+                                  :class="errors.assign_vehicle_type ? 'border-error-500' : ''"
                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                 <option value="">Vehicle Type</option>
                                 <option value="Motorcycle">Motorcycle</option>
@@ -3958,23 +3958,29 @@
                                 </svg>
                             </span>
                         </div>
-                        <span x-show="errors.vehicle_type" x-text="errors.vehicle_type" class="text-xs text-error-500 mt-1"></span>
+                        <span x-show="errors.assign_vehicle_type" x-text="errors.assign_vehicle_type" class="text-xs text-error-500 mt-1"></span>
                     </div>
 
                     <!-- Vehicle -->
                     <div class="w-full px-2.5">
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Vehicle
+                            Select Vehicle
                         </label>
                         <div class="relative z-20 bg-transparent">
-                            <select id="vehicle"
+                            <select id="assign_vehicle_select"
                                     name="vehicle"
-                                    @change="clearError('vehicle')"
-                                    @blur="validateField('vehicle', $event.target.value)"
-                                    :class="errors.vehicle ? 'border-red-500' : ''"
+                                    @change="clearError('assign_vehicle')"
+                                    @blur="validateField('assign_vehicle', $event.target.value)"
+                                    :class="errors.assign_vehicle ? 'border-error-500' : ''"
                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                <option value="">Vehicle</option>
-                                <option value="Cash">Motorcycle/Tuk Tuk: Brand: Plate number:</option>
+                                <option value="">Find Vehicle</option>
+                                <template x-for="vehicle in $store.vehicleData.availableVehicles" :key="vehicle.vehicleId">
+                                    <option 
+                                        :value="vehicle.vehicleId + '|' + vehicle.type + '|' + vehicle.brand + ' ' + vehicle.model + '|' + vehicle.plate_number" 
+                                        x-text="vehicle.type + ': ' + vehicle.brand + ' ' + vehicle.model + ' - ' + vehicle.plate_number"
+                                        >
+                                    </option>
+                                </template>
                             </select>
                             <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                                 <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -3982,7 +3988,8 @@
                                 </svg>
                             </span>
                         </div>
-                        <span x-show="errors.vehicle" x-text="errors.vehicle" class="text-xs text-error-500 mt-1"></span>
+                        <span x-show="errors.assign_vehicle_select" x-text="errors.assign_vehicle_select" class="text-xs text-error-500 mt-1"></span>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Type to search by Plate number ...</p>
                     </div>
 
                     <!-- Status -->
@@ -3991,11 +3998,11 @@
                             Status
                         </label>
                         <div class="relative z-20 bg-transparent">
-                            <select id="Status"
-                                    name="Status"
-                                    @change="clearError('Status')"
-                                    @blur="validateField('Status', $event.target.value)"
-                                    :class="errors.Status ? 'border-red-500' : ''"
+                            <select id="assign_status"
+                                    name="status"
+                                    @change="clearError('assign_status')"
+                                    @blur="validateField('assign_status', $event.target.value)"
+                                    :class="errors.Status ? 'border-error-500' : ''"
                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                 <option value="">Status</option>
                                 <option value="Approved">Approved</option>
@@ -4008,7 +4015,7 @@
                                 </svg>
                             </span>
                         </div>
-                        <span x-show="errors.Status" x-text="errors.Status" class="text-xs text-error-500 mt-1"></span>
+                        <span x-show="errors.assign_status" x-text="errors.assign_status" class="text-xs text-error-500 mt-1"></span>
                     </div>
                 </div>
 
@@ -4019,9 +4026,9 @@
                     </button>
                     <button type="submit"
                             class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
-                            :disabled="$store.kinData.isAdding">
-                        <span x-show="!$store.kinData.isAdding">Assign Vehicle</span>
-                        <span x-show="$store.kinData.isAdding">Assigning ...</span>
+                            :disabled="$store.vehicleData.isAssigning">
+                        <span x-show="!$store.vehicleData.isAssigning">Assign Vehicle</span>
+                        <span x-show="$store.vehicleData.isAssigning">Assigning ...</span>
                     </button>
                 </div>
 
@@ -4031,7 +4038,7 @@
     </div>
 
     <!-- reAssignMemberVehicleModal -->
-    <div x-show="$store.vehicleData.reAssignMemberVehicleModal" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999">
+    <div x-show="$store.vehicleData.reAssignMemberVehicleModal" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999" x-data="vehiclesTable">
         <div class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
         <div @click.outside="$store.vehicleData.reAssignMemberVehicleModal = false" class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
         <!-- close btn -->
@@ -4057,7 +4064,7 @@
             <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Re-Assign an Available vehicle to the Non-Member.</p>
         </div>
 
-            <form class="flex flex-col" x-data="kinTable" @submit.prevent="addKin">
+            <form class="flex flex-col" @submit.prevent="reassignVehicle">
 
                 @csrf
 
@@ -4066,12 +4073,15 @@
                         <h4 class="border-b border-gray-200 pb-4 text-base font-medium text-gray-800 dark:border-gray-800 dark:text-white/90">
                             Re-Assign Vehcicle
                         </h4>
+                        <p class="text-sm text-gray-500 mt-2">This will make the vehicle available for other members.</p>
                     </div>
+
+                    <input type="hidden" id="reassign_vehicle_id" name="vehicle_id">
 
                     <!-- Vehicle Type -->
                     <div class="w-full px-2.5">
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Vehicle Type
+                            Vehicle to Re-Assign
                         </label>
                         <div class="relative z-20 bg-transparent">
                             <select id="vehicle_type"
@@ -4151,9 +4161,9 @@
                     </button>
                     <button type="submit"
                             class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
-                            :disabled="$store.kinData.isAdding">
-                        <span x-show="!$store.kinData.isAdding">Re-Assign Vehicle</span>
-                        <span x-show="$store.kinData.isAdding">Re-Assigning ...</span>
+                            :disabled="$store.vehicleData.isReassigning">
+                        <span x-show="!$store.vehicleData.isReassigning">Re-Assign Vehicle</span>
+                        <span x-show="$store.vehicleData.isReassigning">Re-Assigning ...</span>
                     </button>
                 </div>
 
@@ -5389,23 +5399,51 @@
             Alpine.store('vehicleData', {
                 currentVehicle: null,
                 editMemberVehiclesModal: false,
+                assignMemberVehicleModal: false,
+                reAssignMemberVehicleModal: false,
                 isAdding: false,
                 isUpdating: false,
-                isDeleting: false
+                isDeleting: false,
+                isAssigning: false,
+                isReassigning: false,
+                availableVehicles: [],
+                assignedVehicles: [],
+                selectedVehicleType: 'all'
             });
 
             Alpine.data('vehiclesTable', () => ({
                 vehicles: [],
+                assignedVehicles: [],
+                availableVehicles: [],
                 page: 1,
                 itemsPerPage: 10,
                 errors: {},
+                searchDropdown: null,
 
                 init() {
-                    fetch('/bodaboda-member/{{ $memberId }}/vehicles')
-                        .then(res => res.json())
-                        .then(data => {
-                            this.vehicles = data;
-                        });
+                    // Check membership type to load appropriate data
+                    const membership = document.querySelector('[x-data="memberInfo"]')?.__x?.$data?.memberData?.member?.membership;
+                    
+                    if (membership === 'Member') {
+                        // Load owned vehicles
+                        fetch('/bodaboda-member/{{ $memberId }}/vehicles')
+                            .then(res => res.json())
+                            .then(data => {
+                                this.vehicles = data;
+                            });
+                    } else {
+                        // Load assigned vehicles for non-members
+                        fetch('/bodaboda-member/{{ $memberId }}/vehicles/assigned')
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    this.assignedVehicles = data.vehicles;
+                                }
+                            });
+                    }
+
+                    // Load available vehicles for assignment
+                    this.loadAvailableVehicles();
 
                     // Listen for edit event from table
                     window.addEventListener('open-edit-vehicle-modal', (event) => {
@@ -5432,6 +5470,73 @@
                             document.getElementById('edit_vehicle_status') && (document.getElementById('edit_vehicle_status').value = vehicle.status || '');
                         }, 100);
                     });
+
+                    // Listen for reassign event from table
+                    window.addEventListener('open-reassign-vehicle-modal', (event) => {
+                        const vehicle = event.detail.vehicle;
+                        Alpine.store('vehicleData').currentVehicle = vehicle;
+                        Alpine.store('vehicleData').reAssignMemberVehicleModal = true;
+
+                        // Populate reassign form fields
+                        setTimeout(() => {
+                            document.getElementById('reassign_vehicle_id') && (document.getElementById('reassign_vehicle_id').value = vehicle.vehicleId || '');
+                            
+                            // Set vehicle display in select (if using hidden input + display)
+                            const vehicleDisplay = `${vehicle.type}: ${vehicle.brand} ${vehicle.model} - ${vehicle.plate_number}`;
+                            document.getElementById('reassign_vehicle_display') && (document.getElementById('reassign_vehicle_display').value = vehicleDisplay);
+                        }, 100);
+                    });
+                },
+
+                loadAvailableVehicles(type = 'all') {
+                    Alpine.store('vehicleData').selectedVehicleType = type;
+                    
+                    let url = `/bodaboda-member/{{ $memberId }}/vehicles/available`;
+                    if (type !== 'all') {
+                        url += `?type=${type}`;
+                    }
+                    
+                    fetch(url)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                Alpine.store('vehicleData').availableVehicles = data.vehicles;
+                                this.initSearchDropdown();
+                            }
+                        });
+                },
+
+                initSearchDropdown() {
+                    // Initialize Tom Select for searchable dropdown
+                    if (this.searchDropdown) {
+                        this.searchDropdown.destroy();
+                    }
+                    
+                    setTimeout(() => {
+                        const select = document.getElementById('assign_vehicle_select');
+                        if (select && !select.tomselect) {
+                            this.searchDropdown = new TomSelect(select, {
+                                create: false,
+                                sortField: {
+                                    field: 'text',
+                                    direction: 'asc'
+                                },
+                                render: {
+                                    option: function(data, escape) {
+                                        const vehicle = data.value.split('|');
+                                        return `<div class="py-2 px-3">
+                                            <div class="font-medium">${escape(vehicle[1])}</div>
+                                            <div class="text-xs text-gray-500">${escape(vehicle[2])} - ${escape(vehicle[3])}</div>
+                                        </div>`;
+                                    },
+                                    item: function(data, escape) {
+                                        const vehicle = data.value.split('|');
+                                        return `<div>${escape(vehicle[1])}</div>`;
+                                    }
+                                }
+                            });
+                        }
+                    }, 200);
                 },
 
                 validateField(field, value) {
@@ -5459,64 +5564,64 @@
                     }
                 },
 
-                validateAddForm() {
+                validateAssignForm() {
                     this.errors = {};
                     let isValid = true;
 
-                    const fields = [
-                        'vehicle_type', 'plate_number', 'brand', 'model', 'make',
-                        'cc', 'insurance', 'yom', 'ntsa_compliant', 'vehicle_status'
-                    ];
+                    const vehicleType = document.getElementById('assign_vehicle_type')?.value;
+                    const vehicleSelect = document.getElementById('assign_vehicle_select')?.value;
+                    const status = document.getElementById('assign_status')?.value;
 
-                    fields.forEach(field => {
-                        const value = document.getElementById(field)?.value;
-                        if (!this.validateField(field, value)) isValid = false;
-                    });
+                    if (!vehicleType || vehicleType === '') {
+                        this.errors.assign_vehicle_type = 'Please select vehicle type';
+                        isValid = false;
+                    }
+
+                    if (!vehicleSelect || vehicleSelect === '') {
+                        this.errors.assign_vehicle = 'Please select a vehicle';
+                        isValid = false;
+                    }
+
+                    if (!status || status === '') {
+                        this.errors.assign_status = 'Please select status';
+                        isValid = false;
+                    }
 
                     return isValid;
                 },
 
-                validateEditForm() {
+                validateReassignForm() {
                     this.errors = {};
                     let isValid = true;
 
-                    const fields = [
-                        'edit_vehicle_type', 'edit_plate_number', 'edit_brand', 'edit_model', 'edit_make',
-                        'edit_cc', 'edit_insurance', 'edit_yom', 'edit_ntsa_compliant', 'edit_vehicle_status'
-                    ];
+                    const vehicleDisplay = document.getElementById('reassign_vehicle_display')?.value;
 
-                    fields.forEach(field => {
-                        const value = document.getElementById(field)?.value;
-                        const errorField = field.replace('edit_', '');
-                        if (!this.validateField(errorField, value)) isValid = false;
-                    });
+                    if (!vehicleDisplay || vehicleDisplay === '') {
+                        this.errors.reassign_vehicle = 'No vehicle selected for reassignment';
+                        isValid = false;
+                    }
 
                     return isValid;
                 },
 
-                addVehicle() {
-                    if (!this.validateAddForm()) {
+                assignVehicle() {
+                    if (!this.validateAssignForm()) {
                         alert('Please fix the errors in the form before submitting.');
                         return;
                     }
 
-                    Alpine.store('vehicleData').isAdding = true;
+                    Alpine.store('vehicleData').isAssigning = true;
+
+                    const vehicleSelect = document.getElementById('assign_vehicle_select')?.value;
+                    const vehicleId = vehicleSelect ? vehicleSelect.split('|')[0] : '';
 
                     const formData = {
-                        type: document.getElementById('vehicle_type')?.value,
-                        plate_number: document.getElementById('plate_number')?.value,
-                        brand: document.getElementById('brand')?.value,
-                        model: document.getElementById('model')?.value,
-                        make: document.getElementById('make')?.value,
-                        cc: document.getElementById('cc')?.value,
-                        insurance: document.getElementById('insurance')?.value,
-                        yom: document.getElementById('yom')?.value,
-                        ntsa_compliant: document.getElementById('ntsa_compliant')?.value,
-                        status: document.getElementById('vehicle_status')?.value,
+                        vehicle_id: vehicleId,
+                        status: document.getElementById('assign_status')?.value,
                         _token: document.querySelector('input[name="_token"]')?.value
                     };
 
-                    fetch('/bodaboda-member/{{ $memberId }}/vehicle/add', {
+                    fetch('/bodaboda-member/{{ $memberId }}/vehicle/assign', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -5527,7 +5632,7 @@
                     .then(res => res.json())
                     .then(data => {
                         setTimeout(() => {
-                            Alpine.store('vehicleData').isAdding = false;
+                            Alpine.store('vehicleData').isAssigning = false;
 
                             if (data.success) {
                                 alert(data.message);
@@ -5539,37 +5644,29 @@
                     })
                     .catch(error => {
                         setTimeout(() => {
-                            Alpine.store('vehicleData').isAdding = false;
-                            alert('Error adding vehicle. Please try again.');
+                            Alpine.store('vehicleData').isAssigning = false;
+                            alert('Error assigning vehicle. Please try again.');
                             console.error('Error:', error);
                         }, 750);
                     });
                 },
 
-                updateVehicle() {
-                    if (!this.validateEditForm()) {
+                reassignVehicle() {
+                    if (!this.validateReassignForm()) {
                         alert('Please fix the errors in the form before submitting.');
                         return;
                     }
 
-                    Alpine.store('vehicleData').isUpdating = true;
+                    Alpine.store('vehicleData').isReassigning = true;
 
-                    const vehicleId = document.getElementById('edit_vehicle_id')?.value;
+                    const vehicleId = document.getElementById('reassign_vehicle_id')?.value;
+                    
                     const formData = {
-                        type: document.getElementById('edit_vehicle_type')?.value,
-                        plate_number: document.getElementById('edit_plate_number')?.value,
-                        brand: document.getElementById('edit_brand')?.value,
-                        model: document.getElementById('edit_model')?.value,
-                        make: document.getElementById('edit_make')?.value,
-                        cc: document.getElementById('edit_cc')?.value,
-                        insurance: document.getElementById('edit_insurance')?.value,
-                        yom: document.getElementById('edit_yom')?.value,
-                        ntsa_compliant: document.getElementById('edit_ntsa_compliant')?.value,
-                        status: document.getElementById('edit_vehicle_status')?.value,
+                        vehicle_id: vehicleId,
                         _token: document.querySelector('input[name="_token"]')?.value
                     };
 
-                    fetch(`/bodaboda-member/{{ $memberId }}/vehicle/${vehicleId}/update`, {
+                    fetch('/bodaboda-member/{{ $memberId }}/vehicle/reassign', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -5580,7 +5677,7 @@
                     .then(res => res.json())
                     .then(data => {
                         setTimeout(() => {
-                            Alpine.store('vehicleData').isUpdating = false;
+                            Alpine.store('vehicleData').isReassigning = false;
 
                             if (data.success) {
                                 alert(data.message);
@@ -5592,58 +5689,14 @@
                     })
                     .catch(error => {
                         setTimeout(() => {
-                            Alpine.store('vehicleData').isUpdating = false;
-                            alert('Error updating vehicle. Please try again.');
+                            Alpine.store('vehicleData').isReassigning = false;
+                            alert('Error reassigning vehicle. Please try again.');
                             console.error('Error:', error);
                         }, 750);
                     });
                 },
 
-                deleteVehicle() {
-                    const vehicle = Alpine.store('vehicleData').currentVehicle;
-                    if (!vehicle) return;
-
-                    const vehicleDetails = `${vehicle.model} ${vehicle.make} ${vehicle.plate_number}`;
-
-                    if (!confirm(`Do you want to remove ${vehicleDetails} from the list?`)) {
-                        return;
-                    }
-
-                    Alpine.store('vehicleData').isDeleting = true;
-
-                    const vehicleId = vehicle.vehicleId;
-
-                    fetch(`/bodaboda-member/{{ $memberId }}/vehicle/${vehicleId}/delete`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value
-                        },
-                        body: JSON.stringify({ _token: document.querySelector('input[name="_token"]')?.value })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        setTimeout(() => {
-                            Alpine.store('vehicleData').isDeleting = false;
-
-                            if (data.success) {
-                                alert(data.message);
-                                window.location.reload();
-                            } else {
-                                alert('Error: ' + data.message);
-                            }
-                        }, 750);
-                    })
-                    .catch(error => {
-                        setTimeout(() => {
-                            Alpine.store('vehicleData').isDeleting = false;
-                            alert('Error deleting vehicle. Please try again.');
-                            console.error('Error:', error);
-                        }, 750);
-                    });
-                },
-
-                // Pagination methods
+                // Pagination methods (keep existing)
                 prevPage() {
                     if (this.page > 1) this.page--;
                 },
@@ -5657,22 +5710,26 @@
                 },
 
                 get totalPages() {
-                    return Math.ceil(this.vehicles.length / this.itemsPerPage);
+                    const items = this.memberData?.member?.membership === 'Member' ? this.vehicles : this.assignedVehicles;
+                    return Math.ceil(items.length / this.itemsPerPage);
                 },
 
                 get paginatedVehicles() {
+                    const items = this.memberData?.member?.membership === 'Member' ? this.vehicles : this.assignedVehicles;
                     const start = (this.page - 1) * this.itemsPerPage;
                     const end = start + this.itemsPerPage;
-                    return this.vehicles.slice(start, end);
+                    return items.slice(start, end);
                 },
 
                 get startEntry() {
+                    const items = this.memberData?.member?.membership === 'Member' ? this.vehicles : this.assignedVehicles;
                     return (this.page - 1) * this.itemsPerPage + 1;
                 },
 
                 get endEntry() {
+                    const items = this.memberData?.member?.membership === 'Member' ? this.vehicles : this.assignedVehicles;
                     const end = this.page * this.itemsPerPage;
-                    return end > this.vehicles.length ? this.vehicles.length : end;
+                    return end > items.length ? items.length : end;
                 }
             }));
         });

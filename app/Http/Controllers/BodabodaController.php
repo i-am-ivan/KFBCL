@@ -843,6 +843,231 @@ class BodabodaController extends Controller {
         return response()->json(['vehicles_count' => $count]);
     }
 
+    // Get available vehicles for assignment
+    public function getAvailableMemberVehicles(Request $request, $memberId)
+    {
+        try {
+            $type = $request->query('type', 'all');
+            
+            $query = DB::table('members_vehicles')
+                ->where('availability', 'Available');
+            
+            if ($type !== 'all' && !empty($type)) {
+                $query->where('type', $type);
+            }
+            
+            $vehicles = $query->get();
+            
+            return response()->json([
+                'success' => true,
+                'vehicles' => $vehicles
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching available vehicles: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Assign vehicle to non-member
+    public function assignMemberVehicle(Request $request, $memberId)
+    {
+        try {
+            $validated = $request->validate([
+                'vehicle_id' => 'required|integer|exists:members_vehicles,vehicleId',
+                'status' => 'required|in:Approved,Pending,Cancelled'
+            ]);
+
+            // Begin transaction
+            DB::beginTransaction();
+
+            // Check if vehicle is still available
+            $vehicle = DB::table('members_vehicles')
+                ->where('vehicleId', $validated['vehicle_id'])
+                ->where('availability', 'Available')
+                ->first();
+
+            if (!$vehicle) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Vehicle is no longer available'
+                ], 400);
+            }
+
+            // Insert into member_assign_vehicles
+            $assignedData = [
+                'rider' => $memberId,
+                'vehicle' => $validated['vehicle_id'],
+                'assignedDate' => now(),
+                'status' => 'Assigned',
+                'author' => Auth::id(),
+                'updated_on' => now(),
+                'created_at' => now(),
+            ];
+            
+            $assigned = DB::table('member_assign_vehicles')->insert($assignedData);
+
+            if (!$assigned) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to assign vehicle'
+                ], 400);
+            }
+
+            // Update vehicle availability to Assigned
+            $updated = DB::table('members_vehicles')
+                ->where('vehicleId', $validated['vehicle_id'])
+                ->update([
+                    'availability' => 'Assigned',
+                    'updated_on' => now()
+                ]);
+
+            if (!$updated) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to update vehicle status'
+                ], 400);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Vehicle assigned successfully'
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Error assigning vehicle: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Reassign vehicle (make available again)
+    public function reassignMemberVehicle(Request $request, $memberId)
+    {
+        try {
+            $validated = $request->validate([
+                'vehicle_id' => 'required|integer|exists:members_vehicles,vehicleId'
+            ]);
+
+            // Begin transaction
+            DB::beginTransaction();
+
+            // Get current assignment
+            $currentAssignment = DB::table('member_assign_vehicles')
+                ->where('vehicle', $validated['vehicle_id'])
+                ->where('rider', $memberId)
+                ->where('status', 'Assigned')
+                ->latest('assignedDate')
+                ->first();
+
+            if (!$currentAssignment) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No active assignment found for this vehicle'
+                ], 400);
+            }
+
+            // Update assignment status to Re-Assigned
+            $updated = DB::table('member_assign_vehicles')
+                ->where('assignedId', $currentAssignment->assignedId)
+                ->update([
+                    'status' => 'Re-Assigned',
+                    'updated_on' => now(),
+
+                ]);
+
+            if (!$updated) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to update assignment status'
+                ], 400);
+            }
+
+            // Update vehicle availability to Available
+            $vehicleUpdated = DB::table('members_vehicles')
+                ->where('vehicleId', $validated['vehicle_id'])
+                ->update([
+                    'availability' => 'Available',
+                    'updated_on' => now()
+                ]);
+
+            if (!$vehicleUpdated) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to update vehicle availability'
+                ], 400);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Vehicle reassigned successfully'
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Error reassigning vehicle: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Get assigned vehicles for current member
+    public function getMemberAssignedVehicles($memberId)
+    {
+        try {
+            $assignedVehicles = DB::table('member_assign_vehicles as mav')
+                ->join('members_vehicles as mv', 'mav.vehicle', '=', 'mv.vehicleId')
+                ->where('mav.rider', $memberId)
+                ->where('mav.status', 'Assigned')
+                ->select(
+                    'mv.*',
+                    'mav.assignedDate',
+                    'mav.status as assignment_status',
+                    'mav.assignedId'
+                )
+                ->get();
+            
+            return response()->json([
+                'success' => true,
+                'vehicles' => $assignedVehicles
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching assigned vehicles: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 
     // Contributions -----------------------------------------------------------------------------------------------------
     // Get all bodaboda contribution data

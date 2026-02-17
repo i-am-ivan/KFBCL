@@ -162,6 +162,15 @@ Route::post('/bodaboda-member/{memberId}/vehicle/{vehicleId}/update', [BodabodaC
 
 Route::post('/bodaboda-member/{memberId}/vehicle/{vehicleId}/delete', [BodabodaController::class, 'deleteMemberVehicle']);
 
+// Vehicle assignment routes
+Route::get('/bodaboda-member/{memberId}/vehicles/available', [BodabodaController::class, 'getAvailableMemberVehicles']);
+
+Route::post('/bodaboda-member/{memberId}/vehicle/assign', [BodabodaController::class, 'assignMemberVehicle']);
+
+Route::post('/bodaboda-member/{memberId}/vehicle/reassign', [BodabodaController::class, 'reassignMemberVehicle']);
+
+Route::get('/bodaboda-member/{memberId}/vehicles/assigned', [BodabodaController::class, 'getMemberAssignedVehicles']);
+
 Route::get('/members/count', [BodabodaController::class, 'countAllMembers']);
 
 Route::post('/treasurer/bodaboda/add-member', [BodabodaController::class, 'addMember'])->name('treasurer.bodaboda.addMember');
