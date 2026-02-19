@@ -616,7 +616,14 @@
                                 <div class="mt-3 flex items-end justify-between">
                                     <div>
                                         <h4 class="text-xl font-bold text-gray-500 dark:text-white/90" >
-                                            <span x-text="memberData?.vehicles?.length || 0">0</span>
+                                            <span x-show="memberData?.member?.membership === 'Member'" x-text="memberData?.vehicles?.length || 0">0</span>
+                                            <!-- Show based on membership -->
+                                            <span x-data="{ count: 0 }" 
+                                                x-init="fetch('/bodaboda-member/{{ $memberId }}/vehicles/assigned/count')
+                                                        .then(res => res.json())
+                                                        .then(data => { if(data.success) count = data.count; })">
+                                                <span x-text="count">0</span>
+                                            </span>
                                         </h4>
                                     </div>
                                 </div>
@@ -1490,7 +1497,7 @@
 
                                                                         <button
                                                                             x-show="memberData?.member?.membership === 'Non-Member'"
-                                                                            @click="assignVehiclesModal = true" class="shadow-theme-xs inline-flex flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">
+                                                                            @click="assignMemberVehicle = true" class="shadow-theme-xs inline-flex flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">
                                                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
                                                                             <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                                                             </svg>
@@ -1501,10 +1508,251 @@
                                                             </div>
                                                         </div>
                                                             <!-- Vehicles Table -->
-                                                        <div>
+                                                        <div x-data="memberInfo">
                                                             <!-- Vehicles Table -->
-                                                            <div x-data="vehiclesTable()" x-init="init()">
-                                                                <div class="custom-scrollbar overflow-x-auto">
+                                                            <!-- Members Vehicle Table -->
+                                                            <div x-show="memberData?.member?.membership === 'Member'">
+
+                                                                <div x-data="vehiclesTable()" x-init="init()">
+                                                                    <div class="custom-scrollbar overflow-x-auto">
+                                                                            <table class="w-full">
+                                                                                <!-- table header start -->
+                                                                                <thead>
+                                                                                    <tr class="border-b border-gray-200 dark:divide-gray-800 dark:border-gray-800">
+                                                                                        <th class="p-4 whitespace-nowrap">
+                                                                                            <div class="flex items-center">
+                                                                                                <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                                                                                    Vehicle Code
+                                                                                                </p>
+                                                                                            </div>
+                                                                                        </th>
+                                                                                        <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                                            <div class="flex items-center">
+                                                                                                <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                                                                                    Type/Plate Number
+                                                                                                </p>
+                                                                                            </div>
+                                                                                        </th>
+                                                                                        <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                                            <div class="flex items-center">
+                                                                                                <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                                                                                    Brand/Model
+                                                                                                </p>
+                                                                                            </div>
+                                                                                        </th>
+                                                                                        <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                                            <div class="flex items-center">
+                                                                                                <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                                                                                    Make/CC
+                                                                                                </p>
+                                                                                            </div>
+                                                                                        </th>
+                                                                                        <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                                            <div class="flex items-center">
+                                                                                                <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                                                                                    Insuarance
+                                                                                                </p>
+                                                                                            </div>
+                                                                                        </th>
+                                                                                        <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                                            <div class="flex items-center">
+                                                                                                <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                                                                                    NTSA Compliant
+                                                                                                </p>
+                                                                                            </div>
+                                                                                        </th>
+                                                                                        <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                                            <div class="flex items-center">
+                                                                                                <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                                                                                    Year of Manufacture
+                                                                                                </p>
+                                                                                            </div>
+                                                                                        </th>
+                                                                                        <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                                            <div class="flex items-center">
+                                                                                                <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                                                                                    Status
+                                                                                                </p>
+                                                                                            </div>
+                                                                                        </th>
+                                                                                        <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                                            <div class="flex items-center">
+                                                                                                <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                                                                                    Actions
+                                                                                                </p>
+                                                                                            </div>
+                                                                                        </th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <!-- table header end -->
+
+                                                                                <!-- Message if no loans data found -->
+                                                                                <template x-if="vehicles.length === 0">
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td colspan="10" class="px-4 py-12 text-center">
+                                                                                                <div class="inline-flex flex-col items-center justify-center space-y-4 p-4">
+                                                                                                    <!-- Documents Outline SVG Icon -->
+                                                                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.801 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.801 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"></path>
+                                                                                                    </svg>
+                                                                                                    <div class="space-y-2">
+                                                                                                        <h2 class="text-xl font-semibold text-gray-700">No Vehicle records found</h2>
+                                                                                                        <p class="text-gray-500">Add a new vehicle record to manage.</p>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </template>
+
+                                                                                <!-- If there is data  display the table -->
+                                                                                <template x-if="vehicles.length > 0">
+                                                                                    <!-- table body start -->
+                                                                                    <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800">
+                                                                                        <template x-for="vehicle in paginatedVehicles" :key="vehicle.vehicleId">
+                                                                                            <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-900">
+                                                                                                <!-- LoanTypeID -->
+                                                                                                <td class="p-4 whitespace-nowrap">
+                                                                                                    <div class="flex items-center col-span-2">
+                                                                                                        <div class="flex items-center gap-3">
+                                                                                                            <div>
+                                                                                                                <p class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="vehicle.vehicleId || 'N/A'"></p>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </td>
+                                                                                                <!-- Type/Plate Number (stacked as requested) -->
+                                                                                                <td class="p-4 whitespace-nowrap">
+                                                                                                    <div>
+                                                                                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="vehicle.type || 'N/A'"></span>
+                                                                                                        <p class="text-xs text-gray-500 dark:text-gray-400" x-text="vehicle.plate_number || 'N/A'"></p>
+                                                                                                    </div>
+                                                                                                </td>
+                                                                                                <!-- Brand/Model -->
+                                                                                                <td class="p-4 whitespace-nowrap">
+                                                                                                    <div>
+                                                                                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="vehicle.brand || 'N/A'"> </span>
+                                                                                                        <p class="text-xs text-gray-500 dark:text-gray-400" x-text="vehicle.model || 'N/A'"> </p>
+                                                                                                    </div>
+                                                                                                </td>
+                                                                                                <!-- Make/CC -->
+                                                                                                <td class="p-4 whitespace-nowrap">
+                                                                                                    <div>
+                                                                                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="vehicle.make || 'N/A'"></span>
+                                                                                                        <p class="text-xs text-gray-500 dark:text-gray-400" x-text="vehicle.CC || 'N/A'"></p>
+                                                                                                    </div>
+                                                                                                </td>
+                                                                                                <!-- Insurance -->
+                                                                                                <td class="p-4 whitespace-nowrap">
+                                                                                                    <div class="flex items-center col-span-2">
+                                                                                                        <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="vehicle.insurance || 'N/A'"></p>
+                                                                                                    </div>
+                                                                                                </td>
+                                                                                                <!-- NTSA Compliant -->
+                                                                                                <td class="p-4 whitespace-nowrap">
+                                                                                                    <div class="flex items-center col-span-2">
+                                                                                                        <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="vehicle.NTSA_compliant || 'N/A'"></p>
+                                                                                                    </div>
+                                                                                                </td>
+                                                                                                <!-- Created On -->
+                                                                                                <td class="p-4 whitespace-nowrap">
+                                                                                                    <div class="flex items-center col-span-2">
+                                                                                                        <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="vehicle.yom || 'N/A'"></p>
+                                                                                                    </div>
+                                                                                                </td>
+                                                                                                <!-- Status -->
+                                                                                                <td class="p-4 whitespace-nowrap">
+                                                                                                    <div class="flex items-center col-span-2">
+                                                                                                        <p :class="vehicle.status === 'Approved' || vehicle.status === 'Active' ? 'bg-success-50 text-theme-xs text-success-700 dark:bg-success-500/15 dark:text-success-500' : 'bg-error-50 text-theme-xs text-error-600 dark:bg-error-500/15 dark:text-error-500'" class="rounded-full px-2 py-0.5 font-medium" x-text="vehicle.status || 'N/A'"></p>
+                                                                                                    </div>
+                                                                                                </td>
+                                                                                                <!-- Actions -->
+                                                                                                <td class="p-4 whitespace-nowrap">
+                                                                                                    <div class="flex items-center col-span-2">
+                                                                                                        <button @click="$dispatch('open-edit-vehicle-modal', { vehicle: vehicle })"
+                                                                                                            class="shadow-theme-xs inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+                                                                                                            <svg class="w-[28px] h-[28px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                                                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.1" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"></path>
+                                                                                                            </svg>
+                                                                                                        </button>
+                                                                                                    </div>
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        </template>
+                                                                                    </tbody>
+                                                                                    <!-- table body end -->
+                                                                                </template>
+
+
+                                                                            </table>
+                                                                    </div>
+                                                                        <!-- Table Navigations -->
+                                                                    <div class="border-t border-gray-200 px-5 py-4 dark:border-gray-800">
+                                                                            <div class="flex justify-center pb-4 sm:hidden">
+                                                                                <span class="block text-sm font-medium text-gray-500 dark:text-gray-400">
+                                                                                    Showing
+                                                                                    <span class="text-gray-800 dark:text-white/90" x-text="startEntry">1</span>
+                                                                                    to
+                                                                                    <span class="text-gray-800 dark:text-white/90" x-text="endEntry">1</span>
+                                                                                    of
+                                                                                    <span class="text-gray-800 dark:text-white/90" x-text="vehicles.length">1</span>
+                                                                                </span>
+                                                                            </div>
+
+                                                                            <div class="flex items-center justify-between">
+                                                                                <div class="hidden sm:block">
+                                                                                    <span class="block text-sm font-medium text-gray-500 dark:text-gray-400">
+                                                                                    Showing
+                                                                                    <span class="text-gray-800 dark:text-white/90" x-text="startEntry">1</span>
+                                                                                    to
+                                                                                    <span class="text-gray-800 dark:text-white/90" x-text="endEntry">1</span>
+                                                                                    of
+                                                                                    <span class="text-gray-800 dark:text-white/90" x-text="vehicles.length">1</span>
+                                                                                    </span>
+                                                                                </div>
+                                                                                <div class="flex w-full items-center justify-between gap-2 rounded-lg bg-gray-50 p-4 sm:w-auto sm:justify-normal sm:rounded-none sm:bg-transparent sm:p-0 dark:bg-gray-900 dark:sm:bg-transparent">
+                                                                                    <button class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" :disabled="page === 1" @click="goToPage(page - 1)" disabled="disabled">
+                                                                                        <span>
+                                                                                            <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M2.58203 9.99868C2.58174 10.1909 2.6549 10.3833 2.80152 10.53L7.79818 15.5301C8.09097 15.8231 8.56584 15.8233 8.85883 15.5305C9.15183 15.2377 8.152 14.7629 8.85921 14.4699L5.13911 10.7472L16.6665 10.7472C17.0807 10.7472 17.4165 10.4114 17.4165 9.99715C17.4165 9.58294 17.0807 9.24715 16.6665 9.24715L5.14456 9.24715L8.85919 5.53016C9.15199 5.23717 9.15184 4.7623 8.85885 4.4695C8.56587 4.1767 8.09099 4.17685 7.79819 4.46984L2.84069 9.43049C2.68224 9.568 2.58203 9.77087 2.58203 9.99715C2.58203 9.99766 2.58203 9.99817 2.58203 9.99868Z" fill=""></path>
+                                                                                            </svg>
+                                                                                        </span>
+                                                                                    </button>
+
+                                                                                    <span class="block text-sm font-medium text-gray-700 sm:hidden dark:text-gray-400">
+                                                                                    Page <span x-text="page">1</span> of <span x-text="totalPages">1</span>
+                                                                                    </span>
+
+                                                                                    <ul class="hidden items-center gap-0.5 sm:flex">
+                                                                                        <template x-for="n in totalPages" :key="n">
+                                                                                            <li>
+                                                                                                <a href="#" @click.prevent="goToPage(n)" :class="page === n ? 'bg-brand-500 text-white' : 'hover:bg-brand-500 text-gray-700 dark:text-gray-400 hover:text-white dark:hover:text-white'" class="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium">
+                                                                                                    <span x-text="n"></span>
+                                                                                                </a>
+                                                                                            </li>
+                                                                                        </template>
+                                                                                    </ul>
+
+                                                                                    <button class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" :disabled="page === totalPages" @click="goToPage(page + 1)" disabled="disabled">
+                                                                                    <span>
+                                                                                        <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M17.4165 9.9986C17.4168 10.1909 17.3437 10.3832 17.197 10.53L12.2004 15.5301C11.9076 15.8231 11.4327 15.8233 11.1397 15.5305C10.8467 15.2377 10.8465 14.7629 11.1393 14.4699L14.8594 10.7472L3.33203 10.7472C2.91782 10.7472 2.58203 10.4114 2.58203 9.99715C2.58203 9.58294 2.91782 9.24715 3.33203 9.24715L14.854 9.24715L11.1393 5.53016C10.8465 5.23717 10.8467 4.7623 11.1397 4.4695C11.4327 4.1767 11.9075 4.17685 12.2003 4.46984L17.1578 9.43049C17.3163 9.568 17.4165 9.77087 17.4165 9.99715C17.4165 9.99763 17.4165 9.99812 17.4165 9.9986Z" fill=""></path>
+                                                                                        </svg>
+                                                                                    </span>
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
+                                                            
+                                                            <!-- Non-Member Vehicles Table (Assigned Vehicles) -->
+                                                            <div x-show="memberData?.member?.membership === 'Non-Member'">
+                                                                <div x-data="vehiclesTable()" x-init="loadAssignedVehicles()">
+                                                                    <div class="custom-scrollbar overflow-x-auto">
                                                                         <table class="w-full">
                                                                             <!-- table header start -->
                                                                             <thead>
@@ -1519,42 +1767,42 @@
                                                                                     <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                                         <div class="flex items-center">
                                                                                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Type/Plate Number
+                                                                                                Type
                                                                                             </p>
                                                                                         </div>
                                                                                     </th>
                                                                                     <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                                         <div class="flex items-center">
                                                                                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Brand/Model
+                                                                                                Plate Number
                                                                                             </p>
                                                                                         </div>
                                                                                     </th>
                                                                                     <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                                         <div class="flex items-center">
                                                                                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Make/CC
+                                                                                                Brand
                                                                                             </p>
                                                                                         </div>
                                                                                     </th>
                                                                                     <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                                         <div class="flex items-center">
                                                                                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Insuarance
+                                                                                                Model
                                                                                             </p>
                                                                                         </div>
                                                                                     </th>
                                                                                     <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                                         <div class="flex items-center">
                                                                                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                NTSA Compliant
+                                                                                                Make
                                                                                             </p>
                                                                                         </div>
                                                                                     </th>
                                                                                     <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                                         <div class="flex items-center">
                                                                                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Year of Manufacture
+                                                                                                Date Assigned
                                                                                             </p>
                                                                                         </div>
                                                                                     </th>
@@ -1576,19 +1824,19 @@
                                                                             </thead>
                                                                             <!-- table header end -->
 
-                                                                            <!-- Message if no loans data found -->
+                                                                            <!-- Message if no assigned vehicles found -->
                                                                             <template x-if="vehicles.length === 0">
                                                                                 <tbody>
                                                                                     <tr>
-                                                                                        <td colspan="10" class="px-4 py-12 text-center">
+                                                                                        <td colspan="9" class="px-4 py-12 text-center">
                                                                                             <div class="inline-flex flex-col items-center justify-center space-y-4 p-4">
                                                                                                 <!-- Documents Outline SVG Icon -->
                                                                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.801 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.801 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"></path>
                                                                                                 </svg>
                                                                                                 <div class="space-y-2">
-                                                                                                    <h2 class="text-xl font-semibold text-gray-700">No Vehicle records found</h2>
-                                                                                                    <p class="text-gray-500">Add a new vehicle record to manage.</p>
+                                                                                                    <h2 class="text-xl font-semibold text-gray-700">No assigned vehicles found</h2>
+                                                                                                    <p class="text-gray-500">This member has no vehicles assigned.</p>
                                                                                                 </div>
                                                                                             </div>
                                                                                         </td>
@@ -1596,89 +1844,75 @@
                                                                                 </tbody>
                                                                             </template>
 
-                                                                            <!-- If there is data  display the table -->
+                                                                            <!-- If there is data display the table -->
                                                                             <template x-if="vehicles.length > 0">
-                                                                                <!-- table body start -->
                                                                                 <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800">
                                                                                     <template x-for="vehicle in paginatedVehicles" :key="vehicle.vehicleId">
                                                                                         <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-900">
-                                                                                            <!-- LoanTypeID -->
+                                                                                            <!-- Vehicle Code -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <div class="flex items-center gap-3">
-                                                                                                        <div>
-                                                                                                            <p class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="vehicle.vehicleId || 'N/A'"></p>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                </div>
+                                                                                                <p class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="vehicle.vehicleId || 'N/A'"></p>
                                                                                             </td>
-                                                                                            <!-- Type/Plate Number (stacked as requested) -->
+                                                                                            
+                                                                                            <!-- Type -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <div>
-                                                                                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="vehicle.type || 'N/A'"></span>
-                                                                                                    <p class="text-xs text-gray-500 dark:text-gray-400" x-text="vehicle.plate_number || 'N/A'"></p>
-                                                                                                </div>
+                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="vehicle.type || 'N/A'"></p>
                                                                                             </td>
-                                                                                            <!-- Brand/Model -->
+                                                                                            
+                                                                                            <!-- Plate Number -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <div>
-                                                                                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="vehicle.brand || 'N/A'"> </span>
-                                                                                                    <p class="text-xs text-gray-500 dark:text-gray-400" x-text="vehicle.model || 'N/A'"> </p>
-                                                                                                </div>
+                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="vehicle.plate_number || 'N/A'"></p>
                                                                                             </td>
-                                                                                             <!-- Make/CC -->
+                                                                                            
+                                                                                            <!-- Brand -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <div>
-                                                                                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="vehicle.make || 'N/A'"></span>
-                                                                                                    <p class="text-xs text-gray-500 dark:text-gray-400" x-text="vehicle.CC || 'N/A'"></p>
-                                                                                                </div>
+                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="vehicle.brand || 'N/A'"></p>
                                                                                             </td>
-                                                                                            <!-- Insurance -->
+                                                                                            
+                                                                                            <!-- Model -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="vehicle.insurance || 'N/A'"></p>
-                                                                                                </div>
+                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="vehicle.model || 'N/A'"></p>
                                                                                             </td>
-                                                                                            <!-- NTSA Compliant -->
+                                                                                            
+                                                                                            <!-- Make -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="vehicle.NTSA_compliant || 'N/A'"></p>
-                                                                                                </div>
+                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="vehicle.make || 'N/A'"></p>
                                                                                             </td>
-                                                                                            <!-- Created On -->
+                                                                                            
+                                                                                            <!-- Date Assigned -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="vehicle.yom || 'N/A'"></p>
-                                                                                                </div>
+                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="vehicle.assignedDate ? new Date(vehicle.assignedDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'"></p>
                                                                                             </td>
+                                                                                            
                                                                                             <!-- Status -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <p :class="vehicle.status === 'Approved' || vehicle.status === 'Active' ? 'bg-success-50 text-theme-xs text-success-700 dark:bg-success-500/15 dark:text-success-500' : 'bg-error-50 text-theme-xs text-error-600 dark:bg-error-500/15 dark:text-error-500'" class="rounded-full px-2 py-0.5 font-medium" x-text="vehicle.status || 'N/A'"></p>
-                                                                                                </div>
+                                                                                                <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full"
+                                                                                                    :class="vehicle.vehicle_status === 'Approved' ? 'bg-success-50 text-success-700 dark:bg-success-500/15 dark:text-success-500' : 
+                                                                                                            vehicle.vehicle_status === 'Pending' ? 'bg-warning-50 text-warning-700 dark:bg-warning-500/15 dark:text-warning-500' : 
+                                                                                                            vehicle.vehicle_status === 'Suspended' ? 'bg-error-50 text-error-700 dark:bg-error-500/15 dark:text-error-500' : 
+                                                                                                            'bg-gray-50 text-gray-700 dark:bg-gray-500/15 dark:text-gray-400'"
+                                                                                                    x-text="vehicle.vehicle_status || 'N/A'">
+                                                                                                </span>
                                                                                             </td>
-                                                                                            <!-- Actions -->
+                                                                                            
+                                                                                            <!-- Actions - Reassign button -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <button @click="$dispatch('open-edit-vehicle-modal', { vehicle: vehicle })"
-                                                                                                        class="shadow-theme-xs inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-                                                                                                        <svg class="w-[28px] h-[28px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.1" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"></path>
-                                                                                                        </svg>
-                                                                                                    </button>
-                                                                                                </div>
+                                                                                                <button @click="$dispatch('open-reassign-vehicle-modal', { vehicle: vehicle })"
+                                                                                                    class="shadow-theme-xs inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+                                                                                                    <svg class="w-[22px] h-[22px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 12h4m-2 2v-4M4 18v-4a2 2 0 0 1 2-2h6m0 0-2-2m2 2-2 2"></path>
+                                                                                                    </svg>
+                                                                                                </button>
                                                                                             </td>
                                                                                         </tr>
                                                                                     </template>
                                                                                 </tbody>
-                                                                                <!-- table body end -->
                                                                             </template>
-
-
                                                                         </table>
-                                                                </div>
+                                                                    </div>
+                                                                    
                                                                     <!-- Table Navigations -->
-                                                                <div class="border-t border-gray-200 px-5 py-4 dark:border-gray-800">
+                                                                    <div class="border-t border-gray-200 px-5 py-4 dark:border-gray-800">
                                                                         <div class="flex justify-center pb-4 sm:hidden">
                                                                             <span class="block text-sm font-medium text-gray-500 dark:text-gray-400">
                                                                                 Showing
@@ -1686,58 +1920,66 @@
                                                                                 to
                                                                                 <span class="text-gray-800 dark:text-white/90" x-text="endEntry">1</span>
                                                                                 of
-                                                                                <span class="text-gray-800 dark:text-white/90" x-text="vehicles.length">1</span>
+                                                                                <span class="text-gray-800 dark:text-white/90" x-text="vehicles.length">0</span>
                                                                             </span>
                                                                         </div>
 
                                                                         <div class="flex items-center justify-between">
                                                                             <div class="hidden sm:block">
                                                                                 <span class="block text-sm font-medium text-gray-500 dark:text-gray-400">
-                                                                                Showing
-                                                                                <span class="text-gray-800 dark:text-white/90" x-text="startEntry">1</span>
-                                                                                to
-                                                                                <span class="text-gray-800 dark:text-white/90" x-text="endEntry">1</span>
-                                                                                of
-                                                                                <span class="text-gray-800 dark:text-white/90" x-text="vehicles.length">1</span>
+                                                                                    Showing
+                                                                                    <span class="text-gray-800 dark:text-white/90" x-text="startEntry">1</span>
+                                                                                    to
+                                                                                    <span class="text-gray-800 dark:text-white/90" x-text="endEntry">1</span>
+                                                                                    of
+                                                                                    <span class="text-gray-800 dark:text-white/90" x-text="vehicles.length">0</span>
                                                                                 </span>
                                                                             </div>
+                                                                            
                                                                             <div class="flex w-full items-center justify-between gap-2 rounded-lg bg-gray-50 p-4 sm:w-auto sm:justify-normal sm:rounded-none sm:bg-transparent sm:p-0 dark:bg-gray-900 dark:sm:bg-transparent">
-                                                                                <button class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" :disabled="page === 1" @click="goToPage(page - 1)" disabled="disabled">
+                                                                                <button class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" 
+                                                                                        :disabled="page === 1" 
+                                                                                        @click="prevPage">
                                                                                     <span>
                                                                                         <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M2.58203 9.99868C2.58174 10.1909 2.6549 10.3833 2.80152 10.53L7.79818 15.5301C8.09097 15.8231 8.56584 15.8233 8.85883 15.5305C9.15183 15.2377 8.152 14.7629 8.85921 14.4699L5.13911 10.7472L16.6665 10.7472C17.0807 10.7472 17.4165 10.4114 17.4165 9.99715C17.4165 9.58294 17.0807 9.24715 16.6665 9.24715L5.14456 9.24715L8.85919 5.53016C9.15199 5.23717 9.15184 4.7623 8.85885 4.4695C8.56587 4.1767 8.09099 4.17685 7.79819 4.46984L2.84069 9.43049C2.68224 9.568 2.58203 9.77087 2.58203 9.99715C2.58203 9.99766 2.58203 9.99817 2.58203 9.99868Z" fill=""></path>
+                                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M2.58203 9.99868C2.58174 10.1909 2.6549 10.3833 2.80152 10.53L7.79818 15.5301C8.09097 15.8231 8.56584 15.8233 8.85883 15.5305C9.15183 15.2377 9.152 14.7629 8.85921 14.4699L5.13911 10.7472L16.6665 10.7472C17.0807 10.7472 17.4165 10.4114 17.4165 9.99715C17.4165 9.58294 17.0807 9.24715 16.6665 9.24715L5.14456 9.24715L8.85919 5.53016C9.15199 5.23717 9.15184 4.7623 8.85885 4.4695C8.56587 4.1767 8.09099 4.17685 7.79819 4.46984L2.84069 9.43049C2.68224 9.568 2.58203 9.77087 2.58203 9.99715C2.58203 9.99766 2.58203 9.99817 2.58203 9.99868Z" fill=""></path>
                                                                                         </svg>
                                                                                     </span>
                                                                                 </button>
 
                                                                                 <span class="block text-sm font-medium text-gray-700 sm:hidden dark:text-gray-400">
-                                                                                Page <span x-text="page">1</span> of <span x-text="totalPages">1</span>
+                                                                                    Page <span x-text="page">1</span> of <span x-text="totalPages">1</span>
                                                                                 </span>
 
                                                                                 <ul class="hidden items-center gap-0.5 sm:flex">
                                                                                     <template x-for="n in totalPages" :key="n">
                                                                                         <li>
-                                                                                            <a href="#" @click.prevent="goToPage(n)" :class="page === n ? 'bg-brand-500 text-white' : 'hover:bg-brand-500 text-gray-700 dark:text-gray-400 hover:text-white dark:hover:text-white'" class="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium">
+                                                                                            <a href="#" @click.prevent="goToPage(n)" 
+                                                                                            :class="page === n ? 'bg-brand-500 text-white' : 'hover:bg-brand-500 text-gray-700 dark:text-gray-400 hover:text-white dark:hover:text-white'" 
+                                                                                            class="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium">
                                                                                                 <span x-text="n"></span>
                                                                                             </a>
                                                                                         </li>
                                                                                     </template>
                                                                                 </ul>
 
-                                                                                <button class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" :disabled="page === totalPages" @click="goToPage(page + 1)" disabled="disabled">
-                                                                                <span>
-                                                                                    <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M17.4165 9.9986C17.4168 10.1909 17.3437 10.3832 17.197 10.53L12.2004 15.5301C11.9076 15.8231 11.4327 15.8233 11.1397 15.5305C10.8467 15.2377 10.8465 14.7629 11.1393 14.4699L14.8594 10.7472L3.33203 10.7472C2.91782 10.7472 2.58203 10.4114 2.58203 9.99715C2.58203 9.58294 2.91782 9.24715 3.33203 9.24715L14.854 9.24715L11.1393 5.53016C10.8465 5.23717 10.8467 4.7623 11.1397 4.4695C11.4327 4.1767 11.9075 4.17685 12.2003 4.46984L17.1578 9.43049C17.3163 9.568 17.4165 9.77087 17.4165 9.99715C17.4165 9.99763 17.4165 9.99812 17.4165 9.9986Z" fill=""></path>
-                                                                                    </svg>
-                                                                                </span>
+                                                                                <button class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" 
+                                                                                        :disabled="page === totalPages" 
+                                                                                        @click="nextPage">
+                                                                                    <span>
+                                                                                        <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M17.4165 9.9986C17.4168 10.1909 17.3437 10.3832 17.197 10.53L12.2004 15.5301C11.9076 15.8231 11.4327 15.8233 11.1397 15.5305C10.8467 15.2377 10.8465 14.7629 11.1393 14.4699L14.8594 10.7472L3.33203 10.7472C2.91782 10.7472 2.58203 10.4114 2.58203 9.99715C2.58203 9.58294 2.91782 9.24715 3.33203 9.24715L14.854 9.24715L11.1393 5.53016C10.8465 5.23717 10.8467 4.7623 11.1397 4.4695C11.4327 4.1767 11.9075 4.17685 12.2003 4.46984L17.1578 9.43049C17.3163 9.568 17.4165 9.77087 17.4165 9.99715C17.4165 9.99763 17.4165 9.99812 17.4165 9.9986Z" fill=""></path>
+                                                                                        </svg>
+                                                                                    </span>
                                                                                 </button>
                                                                             </div>
                                                                         </div>
+                                                                    </div>
                                                                 </div>
-
                                                             </div>
 
                                                         </div>
+
                                                     </div>
 
                     </div>
@@ -3899,7 +4141,7 @@
     </div>
 
     <!-- assignMemberVehicle -->
-    <div x-show="assignMemberVehicleModal" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999" x-data="vehiclesTable">
+    <div x-show="assignMemberVehicle" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999" x-data="vehiclesTable">
         <div class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
         <div @click.outside="assignMemberVehicle = false" class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
         <!-- close btn -->
@@ -4061,7 +4303,7 @@
         </button>
         <div class="px-2 pr-14">
             <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Re-Assign Vehicle</h4>
-            <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Re-Assign an Available vehicle to the Non-Member.</p>
+            <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">This will make the vehicle available for other members.</p>
         </div>
 
             <form class="flex flex-col" @submit.prevent="reassignVehicle">
@@ -4069,88 +4311,69 @@
                 @csrf
 
                 <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
-                    <div class="w-full px-2.5">
-                        <h4 class="border-b border-gray-200 pb-4 text-base font-medium text-gray-800 dark:border-gray-800 dark:text-white/90">
-                            Re-Assign Vehcicle
-                        </h4>
-                        <p class="text-sm text-gray-500 mt-2">This will make the vehicle available for other members.</p>
-                    </div>
+                    <!-- Hidden Vehicle ID -->
+                    <input type="hidden" 
+                        id="reassign_vehicle_id" 
+                        name="vehicle_id" 
+                        :value="$store.vehicleData.currentVehicle?.vehicleId || ''"
+                        readonly>
 
-                    <input type="hidden" id="reassign_vehicle_id" name="vehicle_id">
-
-                    <!-- Vehicle Type -->
+                    <!-- Vehicle Type - Plate Number (Availability) -->
                     <div class="w-full px-2.5">
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Vehicle to Re-Assign
+                            Vehicle Type
                         </label>
-                        <div class="relative z-20 bg-transparent">
-                            <select id="vehicle_type"
-                                    name="vehicle_type"
-                                    @change="clearError('vehicle_type')"
-                                    @blur="validateField('vehicle_type', $event.target.value)"
-                                    :class="errors.vehicle_type ? 'border-red-500' : ''"
-                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                <option value="">Vehicle Type</option>
-                                <option value="Motorcycle">Motorcycle</option>
-                                <option value="Tuk Tuk">Tuk Tuk</option>
-                            </select>
-                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </span>
-                        </div>
-                        <span x-show="errors.vehicle_type" x-text="errors.vehicle_type" class="text-xs text-error-500 mt-1"></span>
+                        <input type="text"
+                            id="vehicle_type"
+                            name="vehicle_type"
+                            readonly
+                            :value="$store.vehicleData.currentVehicle ? 
+                                    `${$store.vehicleData.currentVehicle.type || 'N/A'} - ${$store.vehicleData.currentVehicle.plate_number || 'N/A'}` : 
+                                    ''"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     </div>
 
-                    <!-- Vehicle -->
+                    <!-- Brand: Make Model YoM - CC -->
                     <div class="w-full px-2.5">
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Vehicle
+                            Brand: Make Model YoM - CC
                         </label>
-                        <div class="relative z-20 bg-transparent">
-                            <select id="vehicle"
-                                    name="vehicle"
-                                    @change="clearError('vehicle')"
-                                    @blur="validateField('vehicle', $event.target.value)"
-                                    :class="errors.vehicle ? 'border-red-500' : ''"
-                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                <option value="">Vehicle</option>
-                                <option value="Cash">Motorcycle/Tuk Tuk: Brand: Plate number:</option>
-                            </select>
-                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </span>
-                        </div>
-                        <span x-show="errors.vehicle" x-text="errors.vehicle" class="text-xs text-error-500 mt-1"></span>
+                        <input type="text"
+                            id="brand"
+                            name="brand"
+                            readonly
+                            :value="$store.vehicleData.currentVehicle ? 
+                                    `${$store.vehicleData.currentVehicle.brand || 'N/A'}: ${$store.vehicleData.currentVehicle.make || 'N/A'} ${$store.vehicleData.currentVehicle.model || 'N/A'} ${$store.vehicleData.currentVehicle.yom || 'N/A'} - ${$store.vehicleData.currentVehicle.CC || 'N/A'}` : 
+                                    ''"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    </div>
+
+                    <!-- Date Assigned -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Date Assigned
+                        </label>
+                        <input type="text"
+                            id="assignedDate"
+                            name="assignedDate"
+                            readonly
+                            :value="$store.vehicleData.currentVehicle?.assignedDate ? 
+                                    new Date($store.vehicleData.currentVehicle.assignedDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 
+                                    'N/A'"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     </div>
 
                     <!-- Status -->
-                    <div class="w-full px-2.5">
+                    <div class="w-full px-2.5 xl:w-1/2">
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                             Status
                         </label>
-                        <div class="relative z-20 bg-transparent">
-                            <select id="Status"
-                                    name="Status"
-                                    @change="clearError('Status')"
-                                    @blur="validateField('Status', $event.target.value)"
-                                    :class="errors.Status ? 'border-red-500' : ''"
-                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                <option value="">Status</option>
-                                <option value="Approved">Approved</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Re-Assign">Re-Assign</option>
-                            </select>
-                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </span>
-                        </div>
-                        <span x-show="errors.Status" x-text="errors.Status" class="text-xs text-error-500 mt-1"></span>
+                        <input type="text"
+                            id="status"
+                            name="status"
+                            readonly
+                            :value="$store.vehicleData.currentVehicle?.vehicle_status || 'N/A'"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     </div>
                 </div>
 
@@ -4205,12 +4428,6 @@
                 @csrf
 
                 <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
-                    <div class="w-full px-2.5">
-                        <h4 class="border-b border-gray-200 pb-4 text-base font-medium text-gray-800 dark:border-gray-800 dark:text-white/90">
-                            Contribution
-                        </h4>
-                    </div>
-
                     <!-- First Name -->
                     <div class="w-full px-2.5 xl:w-1/2">
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
@@ -4344,11 +4561,6 @@
                 @csrf
 
                 <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
-                    <div class="w-full px-2.5">
-                        <h4 class="border-b border-gray-200 pb-4 text-base font-medium text-gray-800 dark:border-gray-800 dark:text-white/90">
-                            Savings
-                        </h4>
-                    </div>
 
                     <!-- First Name -->
                     <div class="w-full px-2.5 xl:w-1/2">
@@ -4486,14 +4698,9 @@
             <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
 
                 <input type="hidden" id="" name=""/>
-                                                                                <div class="w-full px-2.5">
-                                                                                    <h4 class="border-b border-gray-200 pb-4 text-base font-medium text-gray-800 dark:border-gray-800 dark:text-white/90">
-                                                                                        Loan Details
-                                                                                    </h4>
-                                                                                </div>
 
-                                                                                <div class="w-full px-2.5">
-                                                                                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                    <div class="w-full px-2.5">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                                                                                         Loan Type
                                                                                     </label>
                                                                                     <div class="relative z-20 bg-transparent">
@@ -4508,7 +4715,7 @@
                                                                                             </svg>
                                                                                         </span>
                                                                                     </div>
-                                                                                </div>
+                    </div>
 
                                                                                 <!-- Plate Number -->
                                                                                 <div class="w-full px-2.5 xl:w-1/2">
@@ -5415,31 +5622,29 @@
                 vehicles: [],
                 assignedVehicles: [],
                 availableVehicles: [],
+                assignedCount: 0,
                 page: 1,
                 itemsPerPage: 10,
                 errors: {},
                 searchDropdown: null,
+                memberData: null,
 
                 init() {
+                    // Get member data from the memberInfo component
+                    const memberInfoEl = document.querySelector('[x-data="memberInfo"]');
+                    if (memberInfoEl && memberInfoEl.__x) {
+                        this.memberData = memberInfoEl.__x.$data.memberData;
+                    }
+
                     // Check membership type to load appropriate data
-                    const membership = document.querySelector('[x-data="memberInfo"]')?.__x?.$data?.memberData?.member?.membership;
+                    const membership = this.memberData?.member?.membership;
                     
                     if (membership === 'Member') {
                         // Load owned vehicles
-                        fetch('/bodaboda-member/{{ $memberId }}/vehicles')
-                            .then(res => res.json())
-                            .then(data => {
-                                this.vehicles = data;
-                            });
-                    } else {
+                        this.loadOwnedVehicles();
+                    } else if (membership === 'Non-Member') {
                         // Load assigned vehicles for non-members
-                        fetch('/bodaboda-member/{{ $memberId }}/vehicles/assigned')
-                            .then(res => res.json())
-                            .then(data => {
-                                if (data.success) {
-                                    this.assignedVehicles = data.vehicles;
-                                }
-                            });
+                        this.loadAssignedVehicles();
                     }
 
                     // Load available vehicles for assignment
@@ -5481,11 +5686,48 @@
                         setTimeout(() => {
                             document.getElementById('reassign_vehicle_id') && (document.getElementById('reassign_vehicle_id').value = vehicle.vehicleId || '');
                             
-                            // Set vehicle display in select (if using hidden input + display)
+                            // Set vehicle display
                             const vehicleDisplay = `${vehicle.type}: ${vehicle.brand} ${vehicle.model} - ${vehicle.plate_number}`;
                             document.getElementById('reassign_vehicle_display') && (document.getElementById('reassign_vehicle_display').value = vehicleDisplay);
                         }, 100);
                     });
+                },
+
+                loadOwnedVehicles() {
+                    fetch('/bodaboda-member/{{ $memberId }}/vehicles')
+                        .then(res => res.json())
+                        .then(data => {
+                            this.vehicles = data;
+                        })
+                        .catch(error => {
+                            console.error('Error loading owned vehicles:', error);
+                        });
+                },
+
+                loadAssignedVehicles() {
+                    // Load assigned vehicles
+                    fetch('/bodaboda-member/{{ $memberId }}/vehicles/assigned/all')
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                this.vehicles = data.vehicles;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error loading assigned vehicles:', error);
+                        });
+                    
+                    // Load assigned count
+                    fetch('/bodaboda-member/{{ $memberId }}/vehicles/assigned/count')
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                this.assignedCount = data.count;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error loading assigned count:', error);
+                        });
                 },
 
                 loadAvailableVehicles(type = 'all') {
@@ -5503,6 +5745,9 @@
                                 Alpine.store('vehicleData').availableVehicles = data.vehicles;
                                 this.initSearchDropdown();
                             }
+                        })
+                        .catch(error => {
+                            console.error('Error loading available vehicles:', error);
                         });
                 },
 
@@ -5652,11 +5897,8 @@
                 },
 
                 reassignVehicle() {
-                    if (!this.validateReassignForm()) {
-                        alert('Please fix the errors in the form before submitting.');
-                        return;
-                    }
-
+                    // No validation needed - data is already present and read-only
+                    
                     Alpine.store('vehicleData').isReassigning = true;
 
                     const vehicleId = document.getElementById('reassign_vehicle_id')?.value;
@@ -5696,7 +5938,191 @@
                     });
                 },
 
-                // Pagination methods (keep existing)
+                addVehicle() {
+                    if (!this.validateAddForm()) {
+                        alert('Please fix the errors in the form before submitting.');
+                        return;
+                    }
+
+                    Alpine.store('vehicleData').isAdding = true;
+
+                    const formData = {
+                        type: document.getElementById('vehicle_type')?.value,
+                        plate_number: document.getElementById('plate_number')?.value,
+                        brand: document.getElementById('brand')?.value,
+                        model: document.getElementById('model')?.value,
+                        make: document.getElementById('make')?.value,
+                        cc: document.getElementById('cc')?.value,
+                        insurance: document.getElementById('insurance')?.value,
+                        yom: document.getElementById('yom')?.value,
+                        ntsa_compliant: document.getElementById('ntsa_compliant')?.value,
+                        status: document.getElementById('vehicle_status')?.value,
+                        _token: document.querySelector('input[name="_token"]')?.value
+                    };
+
+                    fetch('/bodaboda-member/{{ $memberId }}/vehicle/add', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        setTimeout(() => {
+                            Alpine.store('vehicleData').isAdding = false;
+
+                            if (data.success) {
+                                alert(data.message);
+                                window.location.reload();
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        }, 750);
+                    })
+                    .catch(error => {
+                        setTimeout(() => {
+                            Alpine.store('vehicleData').isAdding = false;
+                            alert('Error adding vehicle. Please try again.');
+                            console.error('Error:', error);
+                        }, 750);
+                    });
+                },
+
+                updateVehicle() {
+                    if (!this.validateEditForm()) {
+                        alert('Please fix the errors in the form before submitting.');
+                        return;
+                    }
+
+                    Alpine.store('vehicleData').isUpdating = true;
+
+                    const vehicleId = document.getElementById('edit_vehicle_id')?.value;
+                    const formData = {
+                        type: document.getElementById('edit_vehicle_type')?.value,
+                        plate_number: document.getElementById('edit_plate_number')?.value,
+                        brand: document.getElementById('edit_brand')?.value,
+                        model: document.getElementById('edit_model')?.value,
+                        make: document.getElementById('edit_make')?.value,
+                        cc: document.getElementById('edit_cc')?.value,
+                        insurance: document.getElementById('edit_insurance')?.value,
+                        yom: document.getElementById('edit_yom')?.value,
+                        ntsa_compliant: document.getElementById('edit_ntsa_compliant')?.value,
+                        status: document.getElementById('edit_vehicle_status')?.value,
+                        _token: document.querySelector('input[name="_token"]')?.value
+                    };
+
+                    fetch(`/bodaboda-member/{{ $memberId }}/vehicle/${vehicleId}/update`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        setTimeout(() => {
+                            Alpine.store('vehicleData').isUpdating = false;
+
+                            if (data.success) {
+                                alert(data.message);
+                                window.location.reload();
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        }, 750);
+                    })
+                    .catch(error => {
+                        setTimeout(() => {
+                            Alpine.store('vehicleData').isUpdating = false;
+                            alert('Error updating vehicle. Please try again.');
+                            console.error('Error:', error);
+                        }, 750);
+                    });
+                },
+
+                deleteVehicle() {
+                    const vehicle = Alpine.store('vehicleData').currentVehicle;
+                    if (!vehicle) return;
+
+                    const vehicleDetails = `${vehicle.model} ${vehicle.make} ${vehicle.plate_number}`;
+
+                    if (!confirm(`Do you want to remove ${vehicleDetails} from the list?`)) {
+                        return;
+                    }
+
+                    Alpine.store('vehicleData').isDeleting = true;
+
+                    const vehicleId = vehicle.vehicleId;
+
+                    fetch(`/bodaboda-member/{{ $memberId }}/vehicle/${vehicleId}/delete`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value
+                        },
+                        body: JSON.stringify({ _token: document.querySelector('input[name="_token"]')?.value })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        setTimeout(() => {
+                            Alpine.store('vehicleData').isDeleting = false;
+
+                            if (data.success) {
+                                alert(data.message);
+                                window.location.reload();
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        }, 750);
+                    })
+                    .catch(error => {
+                        setTimeout(() => {
+                            Alpine.store('vehicleData').isDeleting = false;
+                            alert('Error deleting vehicle. Please try again.');
+                            console.error('Error:', error);
+                        }, 750);
+                    });
+                },
+
+                validateAddForm() {
+                    this.errors = {};
+                    let isValid = true;
+
+                    const fields = [
+                        'vehicle_type', 'plate_number', 'brand', 'model', 'make',
+                        'cc', 'insurance', 'yom', 'ntsa_compliant', 'vehicle_status'
+                    ];
+
+                    fields.forEach(field => {
+                        const value = document.getElementById(field)?.value;
+                        if (!this.validateField(field, value)) isValid = false;
+                    });
+
+                    return isValid;
+                },
+
+                validateEditForm() {
+                    this.errors = {};
+                    let isValid = true;
+
+                    const fields = [
+                        'edit_vehicle_type', 'edit_plate_number', 'edit_brand', 'edit_model', 'edit_make',
+                        'edit_cc', 'edit_insurance', 'edit_yom', 'edit_ntsa_compliant', 'edit_vehicle_status'
+                    ];
+
+                    fields.forEach(field => {
+                        const value = document.getElementById(field)?.value;
+                        const errorField = field.replace('edit_', '');
+                        if (!this.validateField(errorField, value)) isValid = false;
+                    });
+
+                    return isValid;
+                },
+
+                // Pagination methods
                 prevPage() {
                     if (this.page > 1) this.page--;
                 },
@@ -5710,26 +6136,22 @@
                 },
 
                 get totalPages() {
-                    const items = this.memberData?.member?.membership === 'Member' ? this.vehicles : this.assignedVehicles;
-                    return Math.ceil(items.length / this.itemsPerPage);
+                    return Math.ceil(this.vehicles.length / this.itemsPerPage);
                 },
 
                 get paginatedVehicles() {
-                    const items = this.memberData?.member?.membership === 'Member' ? this.vehicles : this.assignedVehicles;
                     const start = (this.page - 1) * this.itemsPerPage;
                     const end = start + this.itemsPerPage;
-                    return items.slice(start, end);
+                    return this.vehicles.slice(start, end);
                 },
 
                 get startEntry() {
-                    const items = this.memberData?.member?.membership === 'Member' ? this.vehicles : this.assignedVehicles;
                     return (this.page - 1) * this.itemsPerPage + 1;
                 },
 
                 get endEntry() {
-                    const items = this.memberData?.member?.membership === 'Member' ? this.vehicles : this.assignedVehicles;
                     const end = this.page * this.itemsPerPage;
-                    return end > items.length ? items.length : end;
+                    return end > this.vehicles.length ? this.vehicles.length : end;
                 }
             }));
         });

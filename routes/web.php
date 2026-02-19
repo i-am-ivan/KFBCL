@@ -171,6 +171,11 @@ Route::post('/bodaboda-member/{memberId}/vehicle/reassign', [BodabodaController:
 
 Route::get('/bodaboda-member/{memberId}/vehicles/assigned', [BodabodaController::class, 'getMemberAssignedVehicles']);
 
+// Assigned vehicles routes for Non-Members
+Route::get('/bodaboda-member/{memberId}/vehicles/assigned/all', [BodabodaController::class, 'getAllAssignedMemberVehicles']);
+
+Route::get('/bodaboda-member/{memberId}/vehicles/assigned/count', [BodabodaController::class, 'getCountAssignedMemberVehicles']);
+
 Route::get('/members/count', [BodabodaController::class, 'countAllMembers']);
 
 Route::post('/treasurer/bodaboda/add-member', [BodabodaController::class, 'addMember'])->name('treasurer.bodaboda.addMember');

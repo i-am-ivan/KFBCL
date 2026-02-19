@@ -1069,6 +1069,67 @@ class BodabodaController extends Controller {
         }
     }
 
+    // Get all assigned vehicles for a member (Non-Members)
+    public function getAllAssignedMemberVehicles($memberId)
+    {
+        try {
+            $assignedVehicles = DB::table('member_assign_vehicles as mav')
+                ->join('members_vehicles as mv', 'mav.vehicle', '=', 'mv.vehicleId')
+                ->where('mav.rider', $memberId)
+                ->where('mav.status', 'Assigned')
+                ->select(
+                    'mv.vehicleId',
+                    'mv.type',
+                    'mv.plate_number',
+                    'mv.brand',
+                    'mv.model',
+                    'mv.make',
+                    'mv.CC',
+                    'mv.insurance',
+                    'mv.NTSA_compliant',
+                    'mv.yom',
+                    'mv.status as vehicle_status',
+                    'mav.assignedDate',
+                    'mav.status as assignment_status'
+                )
+                ->orderBy('mav.assignedDate', 'desc')
+                ->get();
+            
+            return response()->json([
+                'success' => true,
+                'vehicles' => $assignedVehicles
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching assigned vehicles: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Get count of assigned vehicles for a member (Non-Members)
+    public function getCountAssignedMemberVehicles($memberId)
+    {
+        try {
+            $count = DB::table('member_assign_vehicles')
+                ->where('rider', $memberId)
+                ->where('status', 'Assigned')
+                ->count();
+            
+            return response()->json([
+                'success' => true,
+                'count' => $count
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error counting assigned vehicles: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     // Contributions -----------------------------------------------------------------------------------------------------
     // Get all bodaboda contribution data
     public function getAllContributions(Request $request): JsonResponse
