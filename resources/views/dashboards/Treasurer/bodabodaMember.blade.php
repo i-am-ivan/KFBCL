@@ -20,7 +20,7 @@
 
     </head>
 
-<body x-data="{ page: 'profile', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'loanTypeModal' : false, 'personalInformationModal': false , 'sidebarToggle': false, 'scrollTop': false, 'identificationDocumentsModal': false, 'nextKinModal': false, 'vehiclesModal': false, 'contributionsModal': false, 'savingsModal': false, 'loansModal': false, 'finesPenaltiesModal': false, 'deleteMemberAccount': false, 'editNextKinModal': false, 'editMemberVehiclesModal': false, 'assignMemberVehicle': false, 'reassignMemberVehicle': false, 'withdrawContribution':false, 'withdrawSavings': false, 'payLoan': false}"
+<body x-data="{ page: 'profile', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'loanTypeModal' : false, 'personalInformationModal': false , 'sidebarToggle': false, 'scrollTop': false, 'identificationDocumentsModal': false, 'nextKinModal': false, 'vehiclesModal': false, 'contributionsModal': false, 'savingsModal': false, 'loansModal': false, 'finesPenaltiesModal': false, 'deleteMemberAccount': false, 'editNextKinModal': false, 'editMemberVehiclesModal': false, 'assignMemberVehicle': false, 'reassignMemberVehicle': false, 'withdrawContribution':false, 'withdrawSavings': false, 'payLoan': false, 'withdrawContributionModal': false, 'updateContributionTransactionModal': false, 'awardBonusModal': false}"
       x-init="
          darkMode = JSON.parse(localStorage.getItem('darkMode'));
          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
@@ -2032,7 +2032,7 @@
                                                 </div>
 
                                                 <div>
-                                                    <button @click="withdrawContribution = true"
+                                                    <button @click="withdrawContributionModal = true"
                                                         class="hover:text-dark-900 shadow-theme-xs relative flex inline-flex h-11 items-center justify-center  gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-700 hover:bg-gray-600 sm:w-auto">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
                                                             <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -2052,6 +2052,7 @@
                                                         </button>
                                                 </div>
                                             </div>
+
                                         </div>
                                         <!-- Contributions table Table -->
                                         <div x-data="contributionsTable()" x-init="init()">
@@ -2139,7 +2140,7 @@
                                                                         </span>
                                                                     </td>
                                                                     <td class="p-4 whitespace-nowrap">
-                                                                        <button @click="editContributionModal(contribution)" class="shadow-theme-xs inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+                                                                        <button @click="updateContributionTransactionModal(contribution)" class="shadow-theme-xs inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
                                                                             <svg class="w-[22px] h-[22px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                                                                 <path stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.1" d="M7 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h1m4-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm7.441 1.559a1.907 1.907 0 0 1 0 2.698l-6.069 6.069L10 19l.674-3.372 6.07-6.07a1.907 1.907 0 0 1 2.697 0Z"></path>
                                                                             </svg>
@@ -2210,6 +2211,7 @@
                                                 </div>
                                             </div>
                                         </div>
+
                                     </div>
                     </div>
 
@@ -4521,6 +4523,279 @@
                             :disabled="$store.kinData.isAdding">
                         <span x-show="!$store.kinData.isAdding">Contribute</span>
                         <span x-show="$store.kinData.isAdding">Transacting ...</span>
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <!-- withdrawContributionModal -->
+    <div x-show="withdrawContributionModal" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999">
+        <div class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
+        <div @click.outside="withdrawContributionModal = false" class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+        <!-- close btn -->
+        <button @click="withdrawContributionModal = false" class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300">
+            <svg
+                    class="fill-current"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+            >
+            <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M6.04289 16.5418C5.65237 16.9323 5.65237 17.5655 6.04289 17.956C6.43342 18.3465 7.06658 18.3465 7.45711 17.956L11.9987 13.4144L16.5408 17.9565C16.9313 18.347 17.5645 18.347 17.955 17.9565C18.3455 17.566 18.3455 16.9328 17.955 16.5423L13.4129 12.0002L17.955 7.45808C18.3455 7.06756 18.3455 6.43439 17.955 6.04387C17.5645 5.65335 16.9313 5.65335 16.5408 6.04387L11.9987 10.586L7.45711 6.04439C7.06658 5.65386 6.43342 5.65386 6.04289 6.04439C5.65237 6.43491 5.65237 7.06808 6.04289 7.4586L10.5845 12.0002L6.04289 16.5418Z"
+                    fill=""
+            />
+            </svg>
+        </button>
+
+        <div class="px-2 pr-14">
+            <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Withraw Contribution</h4>
+            <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the amount you wish to withdraw.</p>
+        </div>
+
+
+            <form class="flex flex-col" x-data="kinTable" @submit.prevent="addKin">
+
+                @csrf
+
+                <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
+                    <!-- First Name -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Amount
+                        </label>
+                        <input type="number"
+                            id="contribution_Amount"
+                            name="contribution_Amount"
+                            @input="clearError('contribution_Amount')"
+                            @blur="validateField('contribution_Amount', $event.target.value)"
+                            :class="errors.contribution_Amount ? 'border-red-500' : ''"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.contribution_Amount" x-text="errors.contribution_Amount" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Last Name -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Payment Mode
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="payment_mode"
+                                    name="payment_mode"
+                                    @change="clearError('payment_mode')"
+                                    @blur="validateField('payment_mode', $event.target.value)"
+                                    :class="errors.payment_mode ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Payment Mode</option>
+                                <option value="Cash">Cash</option>
+                                <option value="MPesa">MPesa</option>
+                                <option value="Bank">Bank</option>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Transaction Code
+                        </label>
+                        <input type="text"
+                            id="transaction_code"
+                            name="transaction_code"
+                            @input="clearError('transaction_code')"
+                            @blur="validateField('transaction_code', $event.target.value)"
+                            :class="errors.transaction_code ? 'border-red-500' : ''"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Status
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="Status"
+                                    name="Status"
+                                    @change="clearError('Status')"
+                                    @blur="validateField('Status', $event.target.value)"
+                                    :class="errors.Status ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Status</option>
+                                <option value="Confirmed">Confirmed</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.Status" x-text="errors.Status" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+                    <button @click="withdrawContributionModal = false" type="button"
+                            class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                            :disabled="$store.kinData.isAdding">
+                        <span x-show="!$store.kinData.isAdding">Withdraw</span>
+                        <span x-show="$store.kinData.isAdding">Withdrawing ...</span>
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <!-- updateContributionTransactionModal -->
+    <div x-show="updateContributionTransactionModal" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999">
+        <div class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
+        <div @click.outside="updateContributionTransactionModal = false" class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+        <!-- close btn -->
+        <button @click="updateContributionTransactionModal = false" class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300">
+            <svg
+                    class="fill-current"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+            >
+            <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M6.04289 16.5418C5.65237 16.9323 5.65237 17.5655 6.04289 17.956C6.43342 18.3465 7.06658 18.3465 7.45711 17.956L11.9987 13.4144L16.5408 17.9565C16.9313 18.347 17.5645 18.347 17.955 17.9565C18.3455 17.566 18.3455 16.9328 17.955 16.5423L13.4129 12.0002L17.955 7.45808C18.3455 7.06756 18.3455 6.43439 17.955 6.04387C17.5645 5.65335 16.9313 5.65335 16.5408 6.04387L11.9987 10.586L7.45711 6.04439C7.06658 5.65386 6.43342 5.65386 6.04289 6.04439C5.65237 6.43491 5.65237 7.06808 6.04289 7.4586L10.5845 12.0002L6.04289 16.5418Z"
+                    fill=""
+            />
+            </svg>
+        </button>
+
+        <div class="px-2 pr-14">
+            <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Update Contribution</h4>
+            <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the details you wish to update.</p>
+        </div>
+
+
+            <form class="flex flex-col" x-data="kinTable" @submit.prevent="addKin">
+
+                @csrf
+
+                <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
+
+                    <input type="hidden" id="" value="" name="" readonly/>
+
+                    <!-- First Name -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Amount
+                        </label>
+                        <input type="number"
+                            id="contribution_Amount"
+                            name="contribution_Amount"
+                            @input="clearError('contribution_Amount')"
+                            @blur="validateField('contribution_Amount', $event.target.value)"
+                            :class="errors.contribution_Amount ? 'border-red-500' : ''"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.contribution_Amount" x-text="errors.contribution_Amount" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Last Name -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Payment Mode
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="payment_mode"
+                                    name="payment_mode"
+                                    @change="clearError('payment_mode')"
+                                    @blur="validateField('payment_mode', $event.target.value)"
+                                    :class="errors.payment_mode ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Payment Mode</option>
+                                <option value="Cash">Cash</option>
+                                <option value="MPesa">MPesa</option>
+                                <option value="Bank">Bank</option>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Transaction Code
+                        </label>
+                        <input type="text"
+                            id="transaction_code"
+                            name="transaction_code"
+                            @input="clearError('transaction_code')"
+                            @blur="validateField('transaction_code', $event.target.value)"
+                            :class="errors.transaction_code ? 'border-red-500' : ''"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Status
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="Status"
+                                    name="Status"
+                                    @change="clearError('Status')"
+                                    @blur="validateField('Status', $event.target.value)"
+                                    :class="errors.Status ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Status</option>
+                                <option value="Confirmed">Confirmed</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.Status" x-text="errors.Status" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+                    <button @click="updateContributionTransactionModal = false" type="button"
+                            class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                            :disabled="$store.kinData.isAdding">
+                        <span x-show="!$store.kinData.isAdding">Update</span>
+                        <span x-show="$store.kinData.isAdding">Updating ...</span>
                     </button>
                 </div>
 
