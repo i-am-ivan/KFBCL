@@ -12,7 +12,7 @@ class MemberVehicle extends Model
     protected $keyType = 'int';
     public $timestamps = false;
 
-    protected $fillable = ['member','plate_number','make','model','brand','yom','CC','NTSA_compliant','insurance','status','type'];
+    protected $fillable = ['member','plate_number','make','model','brand','yom','CC','NTSA_compliant', 'availability','insurance','status','type'];
 
     public function owner()
     {

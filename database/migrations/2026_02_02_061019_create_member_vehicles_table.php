@@ -19,7 +19,7 @@ class CreateMemberVehiclesTable extends Migration
             $table->year('yom')->nullable();
             $table->string('CC')->nullable();
             $table->boolean('NTSA_compliant')->default(false);
-            $table->string('status')->default('Pending');
+            $table->string('availability')->default('Available');
             $table->timestamp('created_on')->useCurrent();
             $table->timestamp('updated_on')->nullable()->useCurrentOnUpdate();
             $table->string('insurance')->nullable();

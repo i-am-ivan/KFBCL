@@ -23,9 +23,8 @@ class BodabodaController extends Controller {
     // Return all members with their next-of-kin and vehicles (JSON)
     public function listAllMembers(Request $request): JsonResponse
     {
-        $members = Member::with(['kins', 'vehicles', 'identification']) // ADD identification here
-            ->select('members.*')
-            ->withCount(['transactions as transaction_count'])
+        $members = Member::select('members.*')
+            ->with(['kins', 'vehicles', 'identification'])
             ->addSelect([
                 'last_contribution_amount' => MemberContribution::select('transactionAmount')
                     ->whereColumn('memberId', 'members.memberId')
@@ -43,7 +42,7 @@ class BodabodaController extends Controller {
 
         return response()->json(['data' => $members], 200);
     }
- 
+
     // Count all members (JSON)
     public function countAllMembers(): JsonResponse
     {
@@ -183,15 +182,10 @@ class BodabodaController extends Controller {
             'member' => DB::table('members')->where('memberId', $memberId)->first(),
             'identification' => DB::table('member_identifications')->where('member_id', $memberId)->first(),
             'kin' => DB::table('member_kin')->where('member', $memberId)->first(),
-            'vehicles' => DB::table('members_vehicles')->where('member', $memberId)->get(),
+            //'vehicles' => DB::table('members_vehicles')->where('member', $memberId)->get(),
             'contributions' => DB::table('member_contributions')->where('memberId', $memberId)->get(),
-            'savings' => DB::table('member_savings')->where('memberId', $memberId)->get(),
-            'bonuses' => DB::table('member_bonuses')->where('memberId', $memberId)->get(),
-            'fines' => DB::table('member_fines')->where('memberId', $memberId)->get(),
-            'loans' => DB::table('member_loans')->where('memberId', $memberId)->get(),
-            'loan_transactions' => DB::table('member_loans_transactions')->where('memberId', $memberId)->get(),
         ];
-        
+
         return response()->json($memberData);
     }
 
@@ -201,18 +195,8 @@ class BodabodaController extends Controller {
         $kins = DB::table('member_kin')
             ->where('member', $memberId)
             ->get();
-        
-        return response()->json($kins);
-    }
 
-    // Get all member vehicles
-    public function getAllMemberVehicles($memberId)
-    {
-        $vehicles = DB::table('members_vehicles')
-            ->where('member', $memberId)
-            ->get();
-        
-        return response()->json($vehicles);
+        return response()->json($kins);
     }
 
     // Update Member Personal Info
@@ -302,7 +286,7 @@ class BodabodaController extends Controller {
 
             // Define the base directory path
             $basePath = "database/etc/configs/dumps/raw/{$memberId}";
-            
+
             // Ensure directory exists
             if (!file_exists($basePath)) {
                 mkdir($basePath, 0755, true);
@@ -314,10 +298,10 @@ class BodabodaController extends Controller {
                 $extension = $frontFile->getClientOriginalExtension();
                 $frontFilename = "front.{$extension}";
                 $frontPath = "{$basePath}/{$frontFilename}";
-                
+
                 // Move and rename the file
                 $frontFile->move($basePath, $frontFilename);
-                
+
                 // Store the path in DB (without changing it)
                 $data['national_id_front_path'] = $frontPath;
             }
@@ -328,10 +312,10 @@ class BodabodaController extends Controller {
                 $extension = $backFile->getClientOriginalExtension();
                 $backFilename = "back.{$extension}";
                 $backPath = "{$basePath}/{$backFilename}";
-                
+
                 // Move and rename the file
                 $backFile->move($basePath, $backFilename);
-                
+
                 // Store the path in DB (without changing it)
                 $data['national_id_back_path'] = $backPath;
             }
@@ -522,6 +506,8 @@ class BodabodaController extends Controller {
         }
     }
 
+    // Vehicles --------------------------------------------------------------------------------------
+
     public function addMemberVehicle(Request $request, $memberId)
     {
         try {
@@ -684,7 +670,7 @@ class BodabodaController extends Controller {
         }
     }
 
-    // B. Stages(stages table) Return all stages with manager name (joined from members) (JSON) --------------------------
+    // B. Stages -----------------------------------------------------------------------------------
     public function listAllStages(Request $request): JsonResponse
     {
         $stages = Stage::leftJoin('members', 'stages.manager', '=', 'members.memberId')
@@ -746,7 +732,7 @@ class BodabodaController extends Controller {
         }
     }
 
-    // Get all stages data -----------------------------------------------------------------------------------------------
+    //
     public function getAllStagesData()
     {
         $stages = Stage::select('stageId', 'location', 'established', 'status')->get();
@@ -820,49 +806,78 @@ class BodabodaController extends Controller {
         }
     }
 
-    // Return all vehicles (JSON), optionally include owner info when ?include=owner ------------------------------------
-    public function listAllVehicles(Request $request): JsonResponse
+    // Vehicles ---------------------------------------------------------------------------------------------------------
+    public function getAllMemberVehicleData($memberId)
     {
-        $include = $request->query('include');
-        $query = MemberVehicle::query();
+        $vehicles = DB::table('members_vehicles')
+            ->where('member', $memberId)
+            ->get();
 
-        if ($include === 'owner') {
-            $query->with('owner');
-        }
-
-        $vehicles = $query->get();
-        return response()->json(['data' => $vehicles], 200);
+        return response()->json([
+            'success' => true,
+            'vehicles' => $vehicles
+        ]);
     }
 
-    public function countMemberVehicles($memberId)
+    public function getCountMemberVehicles($memberId)
     {
         $count = DB::table('members_vehicles')
             ->where('member', $memberId)
             ->count();
-        
-        return response()->json(['vehicles_count' => $count]);
+
+        return response()->json([
+            'success' => true,
+            'count' => $count
+        ]);
     }
 
-    // Get available vehicles for assignment
+    public function getAllNonMemberVehicleData($memberId)
+    {
+        $vehicles = DB::table('member_assign_vehicles')
+            ->join('members_vehicles', 'member_assign_vehicles.vehicle', '=', 'members_vehicles.vehicleId')
+            ->where('member_assign_vehicles.rider', $memberId)
+            ->select('member_assign_vehicles.*', 'members_vehicles.*')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'vehicles' => $vehicles
+        ]);
+    }
+
+    public function getCountNonMemberVehicles($memberId)
+    {
+        $count = DB::table('members_vehicles')
+            ->join('member_assign_vehicles', 'members_vehicles.vehicleId', '=', 'member_assign_vehicles.vehicle')
+            ->where('member_assign_vehicles.rider', $memberId)
+            ->distinct('members_vehicles.vehicleId')
+            ->count('members_vehicles.vehicleId');
+
+        return response()->json([
+            'success' => true,
+            'count' => $count
+        ]);
+    }
+        // Get available vehicles for assignment
     public function getAvailableMemberVehicles(Request $request, $memberId)
     {
         try {
             $type = $request->query('type', 'all');
-            
+
             $query = DB::table('members_vehicles')
                 ->where('availability', 'Available');
-            
+
             if ($type !== 'all' && !empty($type)) {
                 $query->where('type', $type);
             }
-            
+
             $vehicles = $query->get();
-            
+
             return response()->json([
                 'success' => true,
                 'vehicles' => $vehicles
             ]);
-            
+
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -907,7 +922,7 @@ class BodabodaController extends Controller {
                 'updated_on' => now(),
                 'created_at' => now(),
             ];
-            
+
             $assigned = DB::table('member_assign_vehicles')->insert($assignedData);
 
             if (!$assigned) {
@@ -1040,95 +1055,6 @@ class BodabodaController extends Controller {
         }
     }
 
-    // Get assigned vehicles for current member
-    public function getMemberAssignedVehicles($memberId)
-    {
-        try {
-            $assignedVehicles = DB::table('member_assign_vehicles as mav')
-                ->join('members_vehicles as mv', 'mav.vehicle', '=', 'mv.vehicleId')
-                ->where('mav.rider', $memberId)
-                ->where('mav.status', 'Assigned')
-                ->select(
-                    'mv.*',
-                    'mav.assignedDate',
-                    'mav.status as assignment_status',
-                    'mav.assignedId'
-                )
-                ->get();
-            
-            return response()->json([
-                'success' => true,
-                'vehicles' => $assignedVehicles
-            ]);
-            
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error fetching assigned vehicles: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    // Get all assigned vehicles for a member (Non-Members)
-    public function getAllAssignedMemberVehicles($memberId)
-    {
-        try {
-            $assignedVehicles = DB::table('member_assign_vehicles as mav')
-                ->join('members_vehicles as mv', 'mav.vehicle', '=', 'mv.vehicleId')
-                ->where('mav.rider', $memberId)
-                ->where('mav.status', 'Assigned')
-                ->select(
-                    'mv.vehicleId',
-                    'mv.type',
-                    'mv.plate_number',
-                    'mv.brand',
-                    'mv.model',
-                    'mv.make',
-                    'mv.CC',
-                    'mv.insurance',
-                    'mv.NTSA_compliant',
-                    'mv.yom',
-                    'mv.status as vehicle_status',
-                    'mav.assignedDate',
-                    'mav.status as assignment_status'
-                )
-                ->orderBy('mav.assignedDate', 'desc')
-                ->get();
-            
-            return response()->json([
-                'success' => true,
-                'vehicles' => $assignedVehicles
-            ]);
-            
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error fetching assigned vehicles: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    // Get count of assigned vehicles for a member (Non-Members)
-    public function getCountAssignedMemberVehicles($memberId)
-    {
-        try {
-            $count = DB::table('member_assign_vehicles')
-                ->where('rider', $memberId)
-                ->where('status', 'Assigned')
-                ->count();
-            
-            return response()->json([
-                'success' => true,
-                'count' => $count
-            ]);
-            
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error counting assigned vehicles: ' . $e->getMessage()
-            ], 500);
-        }
-    }
 
     // Contributions -----------------------------------------------------------------------------------------------------
     // Get all bodaboda contribution data
@@ -1151,7 +1077,7 @@ class BodabodaController extends Controller {
             ->where('memberId', $memberId)
             ->orderBy('transactionDate', 'desc')
             ->get();
-        
+
         return response()->json($contributions);
     }
 
@@ -1412,7 +1338,7 @@ class BodabodaController extends Controller {
             ->where('memberId', $memberId)
             ->orderBy('transactionDate', 'desc')
             ->get();
-        
+
         return response()->json($fines);
     }
 
@@ -1575,7 +1501,7 @@ class BodabodaController extends Controller {
             ->where('memberId', $memberId)
             ->where('transactionLoanStatus', 'Active')
             ->count();
-        
+
         return response()->json(['active_loans_count' => $count]);
     }
 
@@ -1585,18 +1511,18 @@ class BodabodaController extends Controller {
             ->where('memberId', $memberId)
             ->orderBy('transactionCreated', 'desc')
             ->get();
-        
+
         return response()->json($loans);
     }
 
-    // Savings -----------------------------------------------------------------------------------------------------------                                                                                                                                                                                                                                                                                                              
+    // Savings -----------------------------------------------------------------------------------------------------------
     public function getAllMemberSavings($memberId)
     {
         $savings = DB::table('member_savings')
             ->where('memberId', $memberId)
             ->orderBy('transactionDate', 'desc')
             ->get();
-        
+
         return response()->json($savings);
     }
 

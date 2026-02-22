@@ -136,8 +136,6 @@ Route::get('/treasurer/bodaboda-member/{memberId}/data', [BodabodaController::cl
 
 Route::get('/bodaboda-member/{memberId}/kins', [BodabodaController::class, 'getMemberKins']);
 
-Route::get('/bodaboda-member/{memberId}/vehicles', [BodabodaController::class, 'getAllMemberVehicles']);
-
 Route::get('/bodaboda-member/{memberId}/contributions', [BodabodaController::class, 'getAllMemberContributions']);
 
 Route::get('/bodaboda-member/{memberId}/savings', [BodabodaController::class, 'getAllMemberSavings']);
@@ -171,18 +169,9 @@ Route::post('/bodaboda-member/{memberId}/vehicle/reassign', [BodabodaController:
 
 Route::get('/bodaboda-member/{memberId}/vehicles/assigned', [BodabodaController::class, 'getMemberAssignedVehicles']);
 
-// Assigned vehicles routes for Non-Members
-Route::get('/bodaboda-member/{memberId}/vehicles/assigned/all', [BodabodaController::class, 'getAllAssignedMemberVehicles']);
-
-Route::get('/bodaboda-member/{memberId}/vehicles/assigned/count', [BodabodaController::class, 'getCountAssignedMemberVehicles']);
-
 Route::get('/members/count', [BodabodaController::class, 'countAllMembers']);
 
 Route::post('/treasurer/bodaboda/add-member', [BodabodaController::class, 'addMember'])->name('treasurer.bodaboda.addMember');
-
-Route::get('/bodaboda-member/{memberId}/vehicles/count', [BodabodaController::class, 'countMemberVehicles']);
-
-Route::get('/bodaboda-member/{memberId}/loans/active/count', [BodabodaController::class, 'countAllMemberLoans']);
 
 // Stages
 Route::post('/treasurer/bodaboda/stages', [BodabodaController::class, 'storeStage'])->name('treasurer.bodaboda.store');
@@ -222,6 +211,15 @@ Route::post('/treasurer/bodaboda/fine-types/update', [BodabodaController::class,
 
 Route::post('/treasurer/bodaboda/fine-types/delete', [BodabodaController::class, 'deleteFineType'])->name('treasurer.bodaboda.fine-types.delete');
 
+// Vehicles
+Route::get('/bodaboda-member/{memberId}/vehicles/member/all', [BodabodaController::class, 'getAllMemberVehicleData']);
+
+Route::get('/bodaboda-member/{memberId}/vehicles/member/count', [BodabodaController::class, 'getCountMemberVehicles']);
+
+Route::get('/bodaboda-member/{memberId}/vehicles/nonmember/all', [BodabodaController::class, 'getAllNonMemberVehicleData']);
+
+Route::get('/bodaboda-member/{memberId}/vehicles/nonmember/count', [BodabodaController::class, 'getCountNonMemberVehicles']);
+
 // Count all types
 Route::get('/member-loan-types/count', [BodabodaController::class, 'countAllMemberLoanTypes']);
 
@@ -232,8 +230,12 @@ Route::get('/member-fine-types/count', [BodabodaController::class, 'countAllMemb
 // Count active loan transactions
 Route::get('/member-transactions/count-active-loans', [BodabodaController::class, 'countActiveLoanTransactions']);
 
-// Vehicles
-Route::get('/vehicles/all', [BodabodaController::class, 'listAllVehicles']);
+Route::get('/bodaboda/vehicles/count/all', [BodabodaController::class, 'getCountVehicles']);
+
+// Your existing routes
+Route::get('/bodaboda-member/{memberId}/vehicles/available', [BodabodaController::class, 'getAvailableMemberVehicles']);
+
+// Route::get('/bodaboda-member/{memberId}/vehicles/assigned/current', [BodabodaController::class, 'getMemberAssignedVehicles']);
 
 // Contributions
 Route::get('/contributions/all', [BodabodaController::class, 'getAllContributions']);
