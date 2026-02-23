@@ -256,6 +256,17 @@ Route::get('/stats/loans/monthly', [BodabodaController::class, 'getMonthlyLoans'
 
 Route::get('/stats/loans/status', [BodabodaController::class, 'getLoanStatusDistribution']);
 
+// Loan routes
+Route::get('/loans/all-data', [BodabodaController::class, 'getAllLoanData']);
+
+Route::post('/bodaboda-member/{memberId}/loan/assign', [BodabodaController::class, 'assignMemberLoan']);
+
+Route::post('/bodaboda-member/{memberId}/loan/repay', [BodabodaController::class, 'repayMemberLoan']);
+
+Route::post('/bodaboda-member/{memberId}/loan/transaction/{transactionId}/update', [BodabodaController::class, 'updateMemberLoanTransaction']);
+
+Route::get('/bodaboda-member/{memberId}/loans/current', [BodabodaController::class, 'getCurrentMemberLoans']);
+
 // Contributions ------------------------------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/contributions/all', [BodabodaController::class, 'getAllContributions']);
 

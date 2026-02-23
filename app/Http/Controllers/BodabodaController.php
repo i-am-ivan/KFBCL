@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Member;
+use Carbon\Carbon;
 Use App\Models\MemberKin;
 use App\Models\MemberVehicle;
 use App\Models\Stage;
 use App\Models\MemberContribution;
 use App\Models\MemberLoanType;
+use App\Models\MemberLoan;
+use App\Models\MemberLoanTransaction;
 use App\Models\MemberBonusType;
 use App\Models\MemberFineType;
 use Illuminate\Support\Facades\Validator;
@@ -1894,6 +1897,300 @@ class BodabodaController extends Controller {
             'repaid' => $repaid,
             'defaulted' => $defaulted
         ]);
+    }
+
+    // Get all loan types for dropdown
+    public function getAllLoanData()
+    {
+        try {
+            $loanTypes = DB::table('member_loan_types')
+                ->where('status', 'Active')
+                ->select('loanId', 'loan_type_name', 'interest_rate', 'max_amount', 'repayment_period_months')
+                ->get();
+
+            // Get all loans with related data
+            $loans = DB::table('member_loans as ml')
+                ->join('member_loan_types as mlt', 'ml.transactionLoan', '=', 'mlt.loanId')
+                ->join('members as m', 'ml.memberId', '=', 'm.memberId')
+                ->select(
+                    'ml.*',
+                    'mlt.loan_type_name',
+                    'mlt.interest_rate',
+                    'm.firstname',
+                    'm.lastname',
+                    'm.membership'
+                )
+                ->orderBy('ml.transactionCreated', 'desc')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'loanTypes' => $loanTypes,
+                'loans' => $loans
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching loan data: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Assign loan to member
+    public function assignMemberLoan(Request $request, $memberId)
+    {
+        try {
+            $validated = $request->validate([
+                'loan_type_id' => 'required|integer|exists:member_loan_types,loanId',
+                'amount' => 'required|numeric|min:1',
+                'period_months' => 'required|integer|min:1',
+                'payment_mode' => 'required|in:Cash,MPesa,Bank',
+                'transaction_code' => 'nullable|string|max:255',
+                'status' => 'required|in:Approved,Under Review,Cancelled'
+            ]);
+
+            // Get loan type details
+            $loanType = DB::table('member_loan_types')
+                ->where('loanId', $validated['loan_type_id'])
+                ->first();
+
+            if (!$loanType) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Loan type not found'
+                ], 404);
+            }
+
+            // Check if amount exceeds max borrowable
+            if ($validated['amount'] > $loanType->max_amount) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Amount exceeds maximum borrowable of ' . number_format($loanType->max_amount, 2)
+                ], 400);
+            }
+
+            // Calculate dates
+            $startDate = Carbon::now()->addDays(30);
+            $endDate = Carbon::now()->addDays(30 + ($validated['period_months'] * 30));
+
+            // Generate transaction code
+            $transactionCode = $validated['transaction_code'] ?? 'LOAN-' . strtoupper(uniqid());
+
+            DB::beginTransaction();
+
+            // Insert into member_loans
+            $loanData = [
+                'memberId' => $memberId,
+                'transactionLoan' => $validated['loan_type_id'],
+                'transactionLoanAmount' => $validated['amount'],
+                'transactionLoanPeriod' => $validated['period_months'],
+                'transactionLoanStartDate' => $startDate,
+                'transactionLoanRepaymentMode' => 1, // Default repayment mode
+                'transactionAuthor' => Auth::id(),
+                'transactionCreated' => now(),
+                'transactionUpdatedOn' => now(),
+                'transactionLoanStatus' => 'Active',
+                'transactionStatus' => $validated['status']
+            ];
+
+            $loanId = DB::table('member_loans')->insertGetId($loanData);
+
+            // Insert into member_loans_transactions (initial disbursement)
+            $transactionData = [
+                'memberId' => $memberId,
+                'transactionLoan' => $loanId,
+                'transactionCode' => $transactionCode,
+                'transactionAmount' => $validated['amount'],
+                'transactionDate' => now(),
+                'transactionMode' => $validated['payment_mode'],
+                'transactionAuthor' => Auth::id(),
+                'transactionUpdatedOn' => now(),
+                'transactionStatus' => 'Confirmed'
+            ];
+
+            DB::table('member_loans_transactions')->insert($transactionData);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Loan assigned successfully'
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Error assigning loan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Repay loan (make payment)
+    public function repayMemberLoan(Request $request, $memberId)
+    {
+        try {
+            $validated = $request->validate([
+                'loan_id' => 'required|integer|exists:member_loans,transactionId',
+                'amount' => 'required|numeric|min:1',
+                'payment_mode' => 'required|in:Cash,MPesa,Bank',
+                'transaction_code' => 'nullable|string|max:255',
+                'status' => 'required|in:Confirmed,Pending,Cancelled'
+            ]);
+
+            // Check if loan exists and is active
+            $loan = DB::table('member_loans')
+                ->where('transactionId', $validated['loan_id'])
+                ->where('memberId', $memberId)
+                ->where('transactionLoanStatus', 'Active')
+                ->first();
+
+            if (!$loan) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Active loan not found'
+                ], 404);
+            }
+
+            // Generate transaction code
+            $transactionCode = $validated['transaction_code'] ?? 'REPAY-' . strtoupper(uniqid());
+
+            // Insert repayment transaction
+            $transactionData = [
+                'memberId' => $memberId,
+                'transactionLoan' => $validated['loan_id'],
+                'transactionCode' => $transactionCode,
+                'transactionAmount' => $validated['amount'],
+                'transactionDate' => now(),
+                'transactionMode' => $validated['payment_mode'],
+                'transactionAuthor' => Auth::id(),
+                'transactionUpdatedOn' => now(),
+                'transactionStatus' => $validated['status']
+            ];
+
+            DB::table('member_loans_transactions')->insert($transactionData);
+
+            // Calculate total repaid
+            $totalRepaid = DB::table('member_loans_transactions')
+                ->where('transactionLoan', $validated['loan_id'])
+                ->where('transactionStatus', 'Confirmed')
+                ->sum('transactionAmount');
+
+            // If fully repaid, update loan status
+            if ($totalRepaid >= $loan->transactionLoanAmount) {
+                DB::table('member_loans')
+                    ->where('transactionId', $validated['loan_id'])
+                    ->update([
+                        'transactionLoanStatus' => 'Repaid',
+                        'transactionUpdatedOn' => now()
+                    ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Loan repayment processed successfully'
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error processing repayment: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Update loan transaction
+    public function updateMemberLoanTransaction(Request $request, $memberId, $transactionId)
+    {
+        try {
+            $validated = $request->validate([
+                'amount' => 'required|numeric|min:1',
+                'payment_mode' => 'required|in:Cash,MPesa,Bank',
+                'transaction_code' => 'nullable|string|max:255',
+                'status' => 'required|in:Confirmed,Pending,Cancelled,Reversed'
+            ]);
+
+            $data = [
+                'transactionAmount' => $validated['amount'],
+                'transactionMode' => $validated['payment_mode'],
+                'transactionCode' => $validated['transaction_code'],
+                'transactionStatus' => $validated['status'],
+                'transactionUpdatedOn' => now()
+            ];
+
+            $updated = DB::table('member_loans_transactions')
+                ->where('transactionId', $transactionId)
+                ->where('memberId', $memberId)
+                ->update($data);
+
+            if ($updated) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Transaction updated successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Transaction not found'
+                ], 404);
+            }
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating transaction: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Get current member's loans
+    public function getCurrentMemberLoans($memberId)
+    {
+        try {
+            $loans = DB::table('member_loans as ml')
+                ->join('member_loan_types as mlt', 'ml.transactionLoan', '=', 'mlt.loanId')
+                ->leftJoin('member_loans_transactions as mlt2', 'ml.transactionId', '=', 'mlt2.transactionLoan')
+                ->where('ml.memberId', $memberId)
+                ->select(
+                    'ml.*',
+                    'mlt.loan_type_name',
+                    'mlt.interest_rate',
+                    DB::raw('COALESCE(SUM(mlt2.transactionAmount), 0) as total_repaid'),
+                    DB::raw('ml.transactionLoanAmount - COALESCE(SUM(mlt2.transactionAmount), 0) as outstanding_balance')
+                )
+                ->groupBy('ml.transactionId')
+                ->orderBy('ml.transactionCreated', 'desc')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'loans' => $loans
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching member loans: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     // Savings -----------------------------------------------------------------------------------------------------------

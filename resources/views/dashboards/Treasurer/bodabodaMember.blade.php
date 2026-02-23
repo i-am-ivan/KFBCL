@@ -20,7 +20,7 @@
 
     </head>
 
-<body x-data="{ page: 'profile', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'loanTypeModal' : false, 'personalInformationModal': false , 'sidebarToggle': false, 'scrollTop': false, 'identificationDocumentsModal': false, 'nextKinModal': false, 'vehiclesModal': false, 'contributionsModal': false, 'savingsModal': false, 'loansModal': false, 'finesPenaltiesModal': false, 'deleteMemberAccount': false, 'editNextKinModal': false, 'editMemberVehiclesModal': false, 'assignMemberVehicle': false, 'reassignMemberVehicle': false, 'withdrawContribution':false, 'withdrawSavings': false, 'payLoan': false, 'withdrawContributionModal': false, 'editContributionModal': false, 'awardBonusModal': false}"
+<body x-data="{ page: 'profile', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'loanTypeModal' : false, 'personalInformationModal': false , 'sidebarToggle': false, 'scrollTop': false, 'identificationDocumentsModal': false, 'nextKinModal': false, 'vehiclesModal': false, 'contributionsModal': false, 'savingsModal': false, 'loansModal': false, 'finesPenaltiesModal': false, 'deleteMemberAccount': false, 'editNextKinModal': false, 'editMemberVehiclesModal': false, 'assignMemberVehicle': false, 'reassignMemberVehicle': false, 'withdrawContribution':false, 'withdrawSavings': false, 'payLoan': false, 'withdrawContributionModal': false, 'editContributionModal': false, 'awardBonusModal': false, 'repayLoanModal': false}"
       x-init="
          darkMode = JSON.parse(localStorage.getItem('darkMode'));
          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
@@ -2286,7 +2286,7 @@
                                                                 </div>
 
                                                                 <div>
-                                                                    <button @click="loanTypeModal = true"
+                                                                    <button @click="repayLoanModal = true"
                                                                         class="hover:text-dark-900 shadow-theme-xs relative flex inline-flex h-11 items-center justify-center  gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-700 hover:bg-gray-600 sm:w-auto">
                                                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
                                                                                 <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -4994,162 +4994,432 @@
             <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the amount you wish to withdraw.</p>
         </div>
 
-        <form class="flex flex-col" method="POST">
-
+        <form class="flex flex-col" method="POST" x-data="loansTable" @submit.prevent="assignLoan">
             @csrf
 
             <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
-
-                <input type="hidden" id="" name=""/>
-
-                    <div class="w-full px-2.5">
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                                                        Loan Type
-                                                                                    </label>
-                                                                                    <div class="relative z-20 bg-transparent">
-                                                                                        <select id="personal_gender" name="personal_gender" x-model="formData.personal.gender" @change="clearError('personal.gender')" @blur="validateField('personal.gender')" :class="errors.personal?.gender ? 'border-red-500' : ''" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                                                            <option value="">Loan Type</option>
-                                                                                            <option value="Motocycle">Motocycle</option>
-                                                                                            <option value="Tuk Tuk">Tuk Tuk</option>
-                                                                                        </select>
-                                                                                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                                                                                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                                            </svg>
-                                                                                        </span>
-                                                                                    </div>
+                <!-- Loan Type Dropdown -->
+                <div class="w-full px-2.5">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Loan Type
+                    </label>
+                    <div class="relative z-20 bg-transparent">
+                        <select id="loan_type_id"
+                                name="loan_type_id"
+                                @change="Alpine.store('loanData').updateLoanDetails($event.target.value); clearError('loan_type')"
+                                @blur="validateField('loan_type', $event.target.value)"
+                                :class="errors.loan_type ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value="">Select Loan Type</option>
+                            <template x-for="loanType in $store.loanData.loanTypes" :key="loanType.loanId">
+                                <option :value="loanType.loanId"
+                                        x-text="loanType.loan_type_name + ' @ ' + loanType.interest_rate + '%'"></option>
+                            </template>
+                        </select>
+                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
                     </div>
+                    <span x-show="errors.loan_type" x-text="errors.loan_type" class="text-xs text-error-500 mt-1"></span>
+                </div>
 
-                                                                                <!-- Plate Number -->
-                                                                                <div class="w-full px-2.5 xl:w-1/2">
-                                                                                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                                                        Interest Rate
-                                                                                    </label>
-                                                                                    <input readonly type="text" id="personal_first_name" name="personal_first_name" x-model="formData.personal.firstName" @input="clearError('personal.firstName')" @blur="validateField('personal.firstName')" :class="errors.personal?.firstName ? 'border-red-500' : ''" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                                                </div>
+                <!-- Interest Rate (Read-only) -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Interest Rate
+                    </label>
+                    <input readonly type="text"
+                        id="interest_rate"
+                        name="interest_rate"
+                        :value="$store.loanData.currentLoanType ? $store.loanData.currentLoanType.interest_rate + '%' : ''"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                </div>
 
-                                                                                <!-- Brand -->
-                                                                                <div class="w-full px-2.5 xl:w-1/2">
-                                                                                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                                                        Max Borrowable
-                                                                                    </label>
-                                                                                    <input readonly type="text" id="personal_last_name" name="personal_last_name" x-model="formData.personal.lastName" @input="clearError('personal.lastName')" @blur="validateField('personal.lastName')" :class="errors.personal?.lastName ? 'border-red-500' : ''" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                                                </div>
+                <!-- Max Borrowable (Read-only) -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Max Borrowable
+                    </label>
+                    <input readonly type="text"
+                        id="max_borrowable"
+                        name="max_borrowable"
+                        :value="$store.loanData.currentLoanType ? 'KES ' + Number($store.loanData.currentLoanType.max_amount).toLocaleString() : ''"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                </div>
 
-                                                                                <!-- Model -->
-                                                                                <div class="w-full px-2.5 xl:w-1/2">
-                                                                                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                                                        Period (Months)
-                                                                                    </label>
-                                                                                    <div class="relative z-20 bg-transparent">
-                                                                                        <select id="loanRepaymentPeriod" name="loanRepaymentPeriod" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" :class="isOptionSelected &amp;&amp; 'text-gray-800 dark:text-white/90'">
-                                                                                            <option value="All" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">Repayment</option>
-                                                                                            <option value="1" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">30 Days</option>
-                                                                                            <option value="12" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">12 Months</option>
-                                                                                            <option value="24" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">24 Months</option>
-                                                                                            <option value="36" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">36 Months</option>
-                                                                                            <option value="48" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">48 Months</option>
-                                                                                            <option value="60" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">60 Months</option>
-                                                                                        </select>
-                                                                                        <span class="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-700 dark:text-gray-400">
-                                                                                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                            <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                                        </svg>
-                                                                                        </span>
-                                                                                    </div>
-                                                                                </div>
+                <!-- Period (Months) -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Period (Months)
+                    </label>
+                    <div class="relative z-20 bg-transparent">
+                        <select id="loan_period"
+                                name="loan_period"
+                                @change="$store.loanData.calculateDates($event.target.value); clearError('loan_period')"
+                                @blur="validateField('loan_period', $event.target.value)"
+                                :class="errors.loan_period ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value="">Select Period</option>
+                            <option value="1">1 Month (30 Days)</option>
+                            <option value="3">3 Months</option>
+                            <option value="6">6 Months</option>
+                            <option value="12">12 Months</option>
+                            <option value="24">24 Months</option>
+                            <option value="36">36 Months</option>
+                        </select>
+                        <span class="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-700 dark:text-gray-400">
+                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <span x-show="errors.loan_period" x-text="errors.loan_period" class="text-xs text-error-500 mt-1"></span>
+                </div>
 
-                                                                                <!-- Make -->
-                                                                                <div class="w-full px-2.5 xl:w-1/2">
-                                                                                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                                                        Payment Mode
-                                                                                    </label>
-                                                                                    <div class="relative z-20 bg-transparent">
-                                                                                        <select id="payment_mode"
-                                                                                                name="payment_mode"
-                                                                                                @change="clearError('payment_mode')"
-                                                                                                @blur="validateField('payment_mode', $event.target.value)"
-                                                                                                :class="errors.payment_mode ? 'border-red-500' : ''"
-                                                                                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                                                            <option value="">Payment Mode</option>
-                                                                                            <option value="Cash">Cash</option>
-                                                                                            <option value="MPesa">MPesa</option>
-                                                                                            <option value="Bank">Bank</option>
-                                                                                        </select>
-                                                                                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                                                                                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                                            </svg>
-                                                                                        </span>
-                                                                                    </div>
-                                                                                </div>
+                <!-- Payment Mode -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Payment Mode
+                    </label>
+                    <div class="relative z-20 bg-transparent">
+                        <select id="assign_payment_mode"
+                                name="payment_mode"
+                                @change="handlePaymentModeChange($event.target.value, 'assign_'); clearError('payment_mode')"
+                                @blur="validateField('payment_mode', $event.target.value)"
+                                :class="errors.payment_mode ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value="">Select Payment Mode</option>
+                            <option value="Cash">Cash</option>
+                            <option value="MPesa">MPesa</option>
+                            <option value="Bank">Bank</option>
+                        </select>
+                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
+                </div>
 
-                                                                                <!-- SCC -->
-                                                                                <div class="w-full px-2.5 xl:w-1/2">
-                                                                                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                                                        Amount
-                                                                                    </label>
-                                                                                <div class="relative">
-                                                                                    <input type="number" id="personal_secondary_phone" name="personal_secondary_phone" x-model="formData.personal.secondaryPhone" @input="clearError('personal.secondaryPhone')" @blur="validateField('personal.secondaryPhone')" :class="errors.personal?.secondaryPhone ? 'border-red-500' : ''" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                                                    </div>
-                                                                                </div>
+                <!-- Amount -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Amount
+                    </label>
+                    <div class="relative">
+                        <input type="number"
+                            id="assign_amount"
+                            name="amount"
+                            step="0.01"
+                            min="1"
+                            @input="clearError('amount')"
+                            @blur="validateField('amount', $event.target.value)"
+                            :class="errors.amount ? 'border-red-500' : ''"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    </div>
+                    <span x-show="errors.amount" x-text="errors.amount" class="text-xs text-error-500 mt-1"></span>
+                </div>
 
-                                                                                <!-- Insuarance -->
-                                                                            <div class="w-full px-2.5 xl:w-1/2">
-                                                                                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                                                        Transaction Code
-                                                                                    </label>
-                                                                                    <div class="relative">
-                                                                                            <input type="text" readonly id="personal_secondary_phone" name="personal_secondary_phone" x-model="formData.personal.secondaryPhone" @input="clearError('personal.secondaryPhone')" @blur="validateField('personal.secondaryPhone')" :class="errors.personal?.secondaryPhone ? 'border-red-500' : ''" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                                                        </div>
-                                                                                </div>
+                <!-- Transaction Code -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Transaction Code
+                    </label>
+                    <div class="relative">
+                        <input type="text"
+                            id="assign_transaction_code"
+                            name="transaction_code"
+                            readonly
+                            @input="clearError('transaction_code')"
+                            @blur="validateField('transaction_code', $event.target.value)"
+                            :class="errors.transaction_code ? 'border-red-500' : ''"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    </div>
+                    <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
+                </div>
 
-                                                                                <!-- DoB -->
-                                                                                <div class="w-full px-2.5 xl:w-1/2">
-                                                                                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                                                        Start Date
-                                                                                    </label>
-                                                                                    <input type="text" id="personal_dob" readonly name="personal_dob" x-model="formData.personal.dob" @input="clearError('personal.dob')" @blur="validateField('personal.dob')" :class="errors.personal?.dob ? 'border-red-500' : ''" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                                                </div>
-                <!-- Membership -->
-                                                                                <div class="w-full px-2.5 xl:w-1/2">
-                                                                                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                                                        End Date
-                                                                                    </label>
-                                                                                    <div class="relative">
-                                                                                        <input type="text" id="personal_dob" readonly name="personal_dob" x-model="formData.personal.dob" @input="clearError('personal.dob')" @blur="validateField('personal.dob')" :class="errors.personal?.dob ? 'border-red-500' : ''" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                                                    </div>
-                                                                                </div>
+                <!-- Start Date (Read-only) -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Start Date
+                    </label>
+                    <input type="text"
+                        id="start_date"
+                        name="start_date"
+                        readonly
+                        :value="$store.loanData.startDate"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                </div>
 
-                                                                                <!-- Status -->
-                                                                                <div class="w-full px-2.5">
-                                                                                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                                                        Status
-                                                                                    </label>
-                                                                                    <div class="relative z-20 bg-transparent">
-                                                                                        <select id="personal_gender" name="personal_gender" x-model="formData.personal.gender" @change="clearError('personal.gender')" @blur="validateField('personal.gender')" :class="errors.personal?.gender ? 'border-red-500' : ''" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                                                            <option value="">Loan Status</option>
-                                                                                            <option value="Approved">Approved</option>
-                                                                                            <option value="Cancelled">Cancelled</option>
-                                                                                            <option value="Suspended">Suspended</option>
-                                                                                            <option value="Under Review">Under Review</option>
-                                                                                        </select>
-                                                                                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                                                                                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                                            </svg>
-                                                                                        </span>
-                                                                                    </div>
-                                                                                </div>
+                <!-- End Date (Read-only) -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        End Date
+                    </label>
+                    <input type="text"
+                        id="end_date"
+                        name="end_date"
+                        readonly
+                        :value="$store.loanData.endDate"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                </div>
+
+                <!-- Loan Status -->
+                <div class="w-full px-2.5">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Loan Status
+                    </label>
+                    <div class="relative z-20 bg-transparent">
+                        <select id="assign_loan_status"
+                                name="status"
+                                @change="clearError('loan_status')"
+                                @blur="validateField('loan_status', $event.target.value)"
+                                :class="errors.loan_status ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value="">Select Status</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Under Review">Under Review</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <span x-show="errors.loan_status" x-text="errors.loan_status" class="text-xs text-error-500 mt-1"></span>
+                </div>
             </div>
 
             <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
                 <button @click="loansModal = false" type="button"
                         class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
-                    Cancel</button>
-                <button type="button" class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">Assign Loan</button>
+                    Cancel
+                </button>
+                <button type="submit"
+                        class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                        :disabled="$store.loanData.isAssigning">
+                    <span x-show="!$store.loanData.isAssigning">Assign Loan</span>
+                    <span x-show="$store.loanData.isAssigning">Assigning...</span>
+                </button>
+            </div>
+        </form>
+
+        </div>
+    </div>
+
+    <!-- repayLoanModal -->
+    <div x-show="repayLoanModal" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999">
+        <div class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
+        <div @click.outside="repayLoanModal = false" class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+        <!-- close btn -->
+        <button @click="repayLoanModal = false" class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300">
+            <svg
+                    class="fill-current"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+            >
+            <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M6.04289 16.5418C5.65237 16.9323 5.65237 17.5655 6.04289 17.956C6.43342 18.3465 7.06658 18.3465 7.45711 17.956L11.9987 13.4144L16.5408 17.9565C16.9313 18.347 17.5645 18.347 17.955 17.9565C18.3455 17.566 18.3455 16.9328 17.955 16.5423L13.4129 12.0002L17.955 7.45808C18.3455 7.06756 18.3455 6.43439 17.955 6.04387C17.5645 5.65335 16.9313 5.65335 16.5408 6.04387L11.9987 10.586L7.45711 6.04439C7.06658 5.65386 6.43342 5.65386 6.04289 6.04439C5.65237 6.43491 5.65237 7.06808 6.04289 7.4586L10.5845 12.0002L6.04289 16.5418Z"
+                    fill=""
+            />
+            </svg>
+        </button>
+
+        <div class="px-2 pr-14">
+            <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Repay Loan</h4>
+            <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the amount you wish to pay.</p>
+        </div>
+
+        <form class="flex flex-col" method="POST" x-data="loansTable" @submit.prevent="repayLoan">
+            @csrf
+
+            <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
+                <!-- Select Loan to Repay -->
+                <div class="w-full px-2.5">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Select Loan to Repay
+                    </label>
+                    <div class="relative z-20 bg-transparent">
+                        <select id="repay_loan_id"
+                                name="loan_id"
+                                @change="clearError('repay_loan')"
+                                @blur="validateField('repay_loan', $event.target.value)"
+                                :class="errors.repay_loan ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value="">Select Loan</option>
+                            <template x-for="loan in loans" :key="loan.transactionId">
+                                <option :value="loan.transactionId"
+                                        x-text="loan.loan_type_name + ' - KES ' + Number(loan.transactionLoanAmount).toLocaleString() + ' (' + loan.transactionLoanStatus + ')'"></option>
+                            </template>
+                        </select>
+                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <span x-show="errors.repay_loan" x-text="errors.repay_loan" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <!-- Borrowed (Read-only) -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Borrowed
+                    </label>
+                    <input readonly type="text"
+                        id="borrowed_amount"
+                        name="borrowed_amount"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                </div>
+
+                <!-- Period (Months) (Read-only) -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Period (Months)
+                    </label>
+                    <input readonly type="text"
+                        id="loan_period_display"
+                        name="loan_period_display"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                </div>
+
+                <!-- Start Date (Read-only) -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Start Date
+                    </label>
+                    <input type="text"
+                        id="loan_start_date"
+                        name="loan_start_date"
+                        readonly
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                </div>
+
+                <!-- End Date (Read-only) -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        End Date
+                    </label>
+                    <input type="text"
+                        id="loan_end_date"
+                        name="loan_end_date"
+                        readonly
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                </div>
+
+                <div class="w-full px-2.5 border-b border-gray-200 dark:border-gray-700 my-2"></div>
+
+                <!-- Amount to Pay -->
+                <div class="w-full px-2.5">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Amount
+                    </label>
+                    <div class="relative">
+                        <input type="number"
+                            id="repay_amount"
+                            name="amount"
+                            step="0.01"
+                            min="1"
+                            @input="clearError('amount')"
+                            @blur="validateField('amount', $event.target.value)"
+                            :class="errors.amount ? 'border-red-500' : ''"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    </div>
+                    <span x-show="errors.amount" x-text="errors.amount" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <!-- Payment Mode -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Payment Mode
+                    </label>
+                    <div class="relative z-20 bg-transparent">
+                        <select id="repay_payment_mode"
+                                name="payment_mode"
+                                @change="handlePaymentModeChange($event.target.value, 'repay_'); clearError('payment_mode')"
+                                @blur="validateField('payment_mode', $event.target.value)"
+                                :class="errors.payment_mode ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value="">Select Payment Mode</option>
+                            <option value="Cash">Cash</option>
+                            <option value="MPesa">MPesa</option>
+                            <option value="Bank">Bank</option>
+                        </select>
+                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <!-- Transaction Code -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Transaction Code
+                    </label>
+                    <div class="relative">
+                        <input type="text"
+                            id="repay_transaction_code"
+                            name="transaction_code"
+                            readonly
+                            @input="clearError('transaction_code')"
+                            @blur="validateField('transaction_code', $event.target.value)"
+                            :class="errors.transaction_code ? 'border-red-500' : ''"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    </div>
+                    <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <!-- Status -->
+                <div class="w-full px-2.5">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Status
+                    </label>
+                    <div class="relative z-20 bg-transparent">
+                        <select id="repay_status"
+                                name="status"
+                                @change="clearError('status')"
+                                @blur="validateField('status', $event.target.value)"
+                                :class="errors.status ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value="">Select Status</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <span x-show="errors.status" x-text="errors.status" class="text-xs text-error-500 mt-1"></span>
+                </div>
             </div>
 
+            <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+                <button @click="repayLoanModal = false" type="button"
+                        class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
+                    Cancel
+                </button>
+                <button type="submit"
+                        class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                        :disabled="$store.loanData.isRepaying">
+                    <span x-show="!$store.loanData.isRepaying">Pay Loan</span>
+                    <span x-show="$store.loanData.isRepaying">Paying...</span>
+                </button>
+            </div>
         </form>
 
         </div>
@@ -6898,17 +7168,317 @@
     <!-- Member Loans -->
     <script>
         document.addEventListener('alpine:init', () => {
+            // Store for loan data and modal states
+            Alpine.store('loanData', {
+                currentLoan: null,
+                currentTransaction: null,
+                editLoanModal: false,
+                repayLoanModal: false,
+                assignLoanModal: false,
+                loanTypes: [],
+                isAssigning: false,
+                isRepaying: false,
+                isUpdating: false,
+
+                // Auto-calculated fields
+                startDate: '',
+                endDate: '',
+
+                // Initialize loan types
+                init() {
+                    this.loadLoanTypes();
+                },
+
+                loadLoanTypes() {
+                    fetch('/loans/all-data')
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                this.loanTypes = data.loanTypes;
+                            }
+                        });
+                },
+
+                updateLoanDetails(loanTypeId) {
+                    const selected = this.loanTypes.find(lt => lt.loanId == loanTypeId);
+                    if (selected) {
+                        this.currentLoanType = selected;
+                    }
+                },
+
+                calculateDates(periodMonths) {
+                    const today = new Date();
+                    const start = new Date(today);
+                    start.setDate(start.getDate() + 30);
+
+                    const end = new Date(start);
+                    end.setDate(end.getDate() + (periodMonths * 30));
+
+                    this.startDate = start.toLocaleDateString('en-GB', {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric'
+                    });
+
+                    this.endDate = end.toLocaleDateString('en-GB', {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric'
+                    });
+                }
+            });
+
             Alpine.data('loansTable', () => ({
                 loans: [],
                 page: 1,
                 itemsPerPage: 10,
+                errors: {},
 
                 init() {
-                    fetch('/bodaboda-member/{{ $memberId }}/loans')
+                    // Load all loans data
+                    fetch('/loans/all-data')
                         .then(res => res.json())
                         .then(data => {
-                            this.loans = data;
+                            if (data.success) {
+                                this.loans = data.loans;
+                                Alpine.store('loanData').loanTypes = data.loanTypes;
+                            }
                         });
+
+                    // Listen for edit events
+                    window.addEventListener('open-edit-loan-modal', (event) => {
+                        const loan = event.detail.loan;
+                        Alpine.store('loanData').currentLoan = loan;
+                        Alpine.store('loanData').editLoanModal = true;
+
+                        // Populate form fields
+                        setTimeout(() => {
+                            document.getElementById('edit_loan_id') && (document.getElementById('edit_loan_id').value = loan.transactionId || '');
+                            document.getElementById('edit_amount') && (document.getElementById('edit_amount').value = loan.transactionLoanAmount || '');
+                            document.getElementById('edit_payment_mode') && (document.getElementById('edit_payment_mode').value = loan.transactionMode || '');
+                            document.getElementById('edit_transaction_code') && (document.getElementById('edit_transaction_code').value = loan.transactionCode || '');
+                            document.getElementById('edit_status') && (document.getElementById('edit_status').value = loan.transactionStatus || '');
+                        }, 100);
+                    });
+                },
+
+                // Validation methods
+                validateField(field, value) {
+                    if (!value || value === '' || value === null) {
+                        this.errors[field] = 'This field is required';
+                        return false;
+                    }
+
+                    if (field === 'amount' && (isNaN(value) || parseFloat(value) <= 0)) {
+                        this.errors[field] = 'Please enter a valid amount greater than 0';
+                        return false;
+                    }
+
+                    delete this.errors[field];
+                    return true;
+                },
+
+                clearError(field) {
+                    if (this.errors[field]) {
+                        delete this.errors[field];
+                    }
+                },
+
+                handlePaymentModeChange(mode, prefix = '') {
+                    const codeField = document.getElementById(prefix + 'transaction_code');
+                    if (codeField) {
+                        if (mode === 'Cash') {
+                            codeField.readOnly = true;
+                            codeField.value = '';
+                        } else {
+                            codeField.readOnly = false;
+                        }
+                    }
+                },
+
+                validateAssignForm() {
+                    this.errors = {};
+                    let isValid = true;
+
+                    const loanType = document.getElementById('loan_type_id')?.value;
+                    const amount = document.getElementById('assign_amount')?.value;
+                    const period = document.getElementById('loan_period')?.value;
+                    const paymentMode = document.getElementById('assign_payment_mode')?.value;
+                    const status = document.getElementById('assign_loan_status')?.value;
+
+                    if (!loanType || loanType === '') {
+                        this.errors.loan_type = 'Please select a loan type';
+                        isValid = false;
+                    }
+
+                    if (!this.validateField('amount', amount)) isValid = false;
+
+                    if (!period || period === '') {
+                        this.errors.loan_period = 'Please select repayment period';
+                        isValid = false;
+                    }
+
+                    if (!paymentMode || paymentMode === '') {
+                        this.errors.payment_mode = 'Please select payment mode';
+                        isValid = false;
+                    }
+
+                    if (!status || status === '') {
+                        this.errors.loan_status = 'Please select loan status';
+                        isValid = false;
+                    }
+
+                    // If payment mode is not Cash, transaction code is required
+                    const transactionCode = document.getElementById('assign_transaction_code')?.value;
+                    if (paymentMode !== 'Cash' && (!transactionCode || transactionCode === '')) {
+                        this.errors.transaction_code = 'Transaction code is required for non-cash payments';
+                        isValid = false;
+                    }
+
+                    return isValid;
+                },
+
+                validateRepayForm() {
+                    this.errors = {};
+                    let isValid = true;
+
+                    const loanSelect = document.getElementById('repay_loan_id')?.value;
+                    const amount = document.getElementById('repay_amount')?.value;
+                    const paymentMode = document.getElementById('repay_payment_mode')?.value;
+                    const status = document.getElementById('repay_status')?.value;
+
+                    if (!loanSelect || loanSelect === '') {
+                        this.errors.repay_loan = 'Please select a loan to repay';
+                        isValid = false;
+                    }
+
+                    if (!this.validateField('amount', amount)) isValid = false;
+
+                    if (!paymentMode || paymentMode === '') {
+                        this.errors.payment_mode = 'Please select payment mode';
+                        isValid = false;
+                    }
+
+                    if (!status || status === '') {
+                        this.errors.status = 'Please select status';
+                        isValid = false;
+                    }
+
+                    const transactionCode = document.getElementById('repay_transaction_code')?.value;
+                    if (paymentMode !== 'Cash' && (!transactionCode || transactionCode === '')) {
+                        this.errors.transaction_code = 'Transaction code is required for non-cash payments';
+                        isValid = false;
+                    }
+
+                    return isValid;
+                },
+
+                assignLoan() {
+                    if (!this.validateAssignForm()) {
+                        alert('Please fix the errors in the form before submitting.');
+                        return;
+                    }
+
+                    Alpine.store('loanData').isAssigning = true;
+
+                    const formData = {
+                        loan_type_id: document.getElementById('loan_type_id')?.value,
+                        amount: document.getElementById('assign_amount')?.value,
+                        period_months: document.getElementById('loan_period')?.value,
+                        payment_mode: document.getElementById('assign_payment_mode')?.value,
+                        transaction_code: document.getElementById('assign_transaction_code')?.value || '',
+                        status: document.getElementById('assign_loan_status')?.value,
+                        _token: document.querySelector('input[name="_token"]')?.value
+                    };
+
+                    fetch('/bodaboda-member/{{ $memberId }}/loan/assign', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        setTimeout(() => {
+                            Alpine.store('loanData').isAssigning = false;
+
+                            if (data.success) {
+                                alert(data.message);
+                                window.location.reload();
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        }, 750);
+                    })
+                    .catch(error => {
+                        setTimeout(() => {
+                            Alpine.store('loanData').isAssigning = false;
+                            alert('Error assigning loan. Please try again.');
+                            console.error('Error:', error);
+                        }, 750);
+                    });
+                },
+
+                repayLoan() {
+                    if (!this.validateRepayForm()) {
+                        alert('Please fix the errors in the form before submitting.');
+                        return;
+                    }
+
+                    Alpine.store('loanData').isRepaying = true;
+
+                    const formData = {
+                        loan_id: document.getElementById('repay_loan_id')?.value,
+                        amount: document.getElementById('repay_amount')?.value,
+                        payment_mode: document.getElementById('repay_payment_mode')?.value,
+                        transaction_code: document.getElementById('repay_transaction_code')?.value || '',
+                        status: document.getElementById('repay_status')?.value,
+                        _token: document.querySelector('input[name="_token"]')?.value
+                    };
+
+                    fetch('/bodaboda-member/{{ $memberId }}/loan/repay', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        setTimeout(() => {
+                            Alpine.store('loanData').isRepaying = false;
+
+                            if (data.success) {
+                                alert(data.message);
+                                window.location.reload();
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        }, 750);
+                    })
+                    .catch(error => {
+                        setTimeout(() => {
+                            Alpine.store('loanData').isRepaying = false;
+                            alert('Error processing repayment. Please try again.');
+                            console.error('Error:', error);
+                        }, 750);
+                    });
+                },
+
+                // Pagination methods
+                prevPage() {
+                    if (this.page > 1) this.page--;
+                },
+
+                nextPage() {
+                    if (this.page < this.totalPages) this.page++;
+                },
+
+                goToPage(page) {
+                    if (page >= 1 && page <= this.totalPages) this.page = page;
                 },
 
                 get totalPages() {
@@ -6928,31 +7498,7 @@
                 get endEntry() {
                     const end = this.page * this.itemsPerPage;
                     return end > this.loans.length ? this.loans.length : end;
-                },
-
-                prevPage() {
-                    if (this.page > 1) this.page--;
-                },
-
-                nextPage() {
-                    if (this.page < this.totalPages) this.page++;
-                },
-
-                goToPage(page) {
-                    if (page >= 1 && page <= this.totalPages) this.page = page;
-                },
-
-                editLoanModal(loan) {
-                    if (Alpine.store('loanData')) {
-                        Alpine.store('loanData').currentLoan = loan;
-                        Alpine.store('loanData').editLoanModal = true;
-                    }
                 }
-            }));
-
-            Alpine.store('loanData', () => ({
-                editLoanModal: false,
-                currentLoan: null
             }));
         });
     </script>
