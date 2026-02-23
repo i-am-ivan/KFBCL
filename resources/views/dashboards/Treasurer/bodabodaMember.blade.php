@@ -1863,7 +1863,7 @@
                                                                                 </tbody>
                                                                             </template>
 
-                                                                            
+
                                                                             <!-- If there is data display the table -->
                                                                             <template x-if="nonMemberVehicles.length > 0">
                                                                                 <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800">
@@ -4445,109 +4445,107 @@
             <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the amount you wish to contribute.</p>
         </div>
 
+        <form class="flex flex-col" x-data="contributionsTable" @submit.prevent="contribute">
+            @csrf
 
-            <form class="flex flex-col" x-data="kinTable" @submit.prevent="addKin">
-
-                @csrf
-
-                <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
-                    <!-- First Name -->
-                    <div class="w-full px-2.5 xl:w-1/2">
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Amount
-                        </label>
-                        <input type="number"
-                            id="contribution_Amount"
-                            name="contribution_Amount"
-                            @input="clearError('contribution_Amount')"
-                            @blur="validateField('contribution_Amount', $event.target.value)"
-                            :class="errors.contribution_Amount ? 'border-red-500' : ''"
-                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                        <span x-show="errors.contribution_Amount" x-text="errors.contribution_Amount" class="text-xs text-error-500 mt-1"></span>
-                    </div>
-
-                    <!-- Last Name -->
-                    <div class="w-full px-2.5 xl:w-1/2">
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Payment Mode
-                        </label>
-                        <div class="relative z-20 bg-transparent">
-                            <select id="payment_mode"
-                                    name="payment_mode"
-                                    @change="clearError('payment_mode')"
-                                    @blur="validateField('payment_mode', $event.target.value)"
-                                    :class="errors.payment_mode ? 'border-red-500' : ''"
-                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                <option value="">Payment Mode</option>
-                                <option value="Cash">Cash</option>
-                                <option value="MPesa">MPesa</option>
-                                <option value="Bank">Bank</option>
-                            </select>
-                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </span>
-                        </div>
-                        <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
-                    </div>
-
-                    <!-- Email -->
-                    <div class="w-full px-2.5 xl:w-1/2">
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Transaction Code
-                        </label>
-                        <input type="text"
-                            id="transaction_code"
-                            name="transaction_code"
-                            @input="clearError('transaction_code')"
-                            @blur="validateField('transaction_code', $event.target.value)"
-                            :class="errors.transaction_code ? 'border-red-500' : ''"
-                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                        <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
-                    </div>
-
-                    <!-- Status -->
-                    <div class="w-full px-2.5 xl:w-1/2">
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Status
-                        </label>
-                        <div class="relative z-20 bg-transparent">
-                            <select id="Status"
-                                    name="Status"
-                                    @change="clearError('Status')"
-                                    @blur="validateField('Status', $event.target.value)"
-                                    :class="errors.Status ? 'border-red-500' : ''"
-                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                <option value="">Status</option>
-                                <option value="Confirmed">Confirmed</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Cancelled">Cancelled</option>
-                            </select>
-                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </span>
-                        </div>
-                        <span x-show="errors.Status" x-text="errors.Status" class="text-xs text-error-500 mt-1"></span>
-                    </div>
+            <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
+                <!-- Amount -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Amount
+                    </label>
+                    <input type="number" step="0.01" min="0.01"
+                        id="contribute_amount"
+                        name="amount"
+                        @input="clearError('amount')"
+                        @blur="validateField('amount', $event.target.value)"
+                        :class="errors.amount ? 'border-red-500' : ''"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    <span x-show="errors.amount" x-text="errors.amount" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
-                <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-                    <button @click="contributionsModal = false" type="button"
-                            class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
-                        Cancel
-                    </button>
-                    <button type="submit"
-                            class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
-                            :disabled="$store.kinData.isAdding">
-                        <span x-show="!$store.kinData.isAdding">Contribute</span>
-                        <span x-show="$store.kinData.isAdding">Transacting ...</span>
-                    </button>
+                <!-- Payment Mode -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Payment Mode
+                    </label>
+                    <div class="relative z-20 bg-transparent">
+                        <select id="contribute_payment_mode"
+                                name="payment_mode"
+                                @change="handlePaymentModeChange($event.target.value, 'contribute'); clearError('payment_mode')"
+                                @blur="validateField('payment_mode', $event.target.value)"
+                                :class="errors.payment_mode ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value="">Select Payment Mode</option>
+                            <option value="Cash">Cash</option>
+                            <option value="MPesa">MPesa</option>
+                            <option value="Bank">Bank</option>
+                        </select>
+                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
-            </form>
+                <!-- Transaction Code -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Transaction Code
+                    </label>
+                    <input type="text"
+                        id="contribute_transaction_code"
+                        name="transaction_code"
+                        readonly
+                        @input="clearError('transaction_code')"
+                        @blur="validateField('transaction_code', $event.target.value)"
+                        :class="errors.transaction_code ? 'border-red-500' : ''"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <!-- Status -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Status
+                    </label>
+                    <div class="relative z-20 bg-transparent">
+                        <select id="contribute_status"
+                                name="status"
+                                @change="clearError('status')"
+                                @blur="validateField('status', $event.target.value)"
+                                :class="errors.status ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value="">Select Status</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <span x-show="errors.status" x-text="errors.status" class="text-xs text-error-500 mt-1"></span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+                <button @click="contributionsModal = false" type="button"
+                        class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
+                    Cancel
+                </button>
+                <button type="submit"
+                        class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                        :disabled="$store.contributionData.isContributing">
+                    <span x-show="!$store.contributionData.isContributing">Contribute</span>
+                    <span x-show="$store.contributionData.isContributing">Contributing ...</span>
+                </button>
+            </div>
+        </form>
 
         </div>
     </div>
@@ -4580,109 +4578,107 @@
             <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the amount you wish to withdraw.</p>
         </div>
 
+            <form class="flex flex-col" x-data="contributionsTable" @submit.prevent="withdraw">
+            @csrf
 
-            <form class="flex flex-col" x-data="kinTable" @submit.prevent="addKin">
-
-                @csrf
-
-                <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
-                    <!-- First Name -->
-                    <div class="w-full px-2.5 xl:w-1/2">
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Amount
-                        </label>
-                        <input type="number"
-                            id="contribution_Amount"
-                            name="contribution_Amount"
-                            @input="clearError('contribution_Amount')"
-                            @blur="validateField('contribution_Amount', $event.target.value)"
-                            :class="errors.contribution_Amount ? 'border-red-500' : ''"
-                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                        <span x-show="errors.contribution_Amount" x-text="errors.contribution_Amount" class="text-xs text-error-500 mt-1"></span>
-                    </div>
-
-                    <!-- Last Name -->
-                    <div class="w-full px-2.5 xl:w-1/2">
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Payment Mode
-                        </label>
-                        <div class="relative z-20 bg-transparent">
-                            <select id="payment_mode"
-                                    name="payment_mode"
-                                    @change="clearError('payment_mode')"
-                                    @blur="validateField('payment_mode', $event.target.value)"
-                                    :class="errors.payment_mode ? 'border-red-500' : ''"
-                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                <option value="">Payment Mode</option>
-                                <option value="Cash">Cash</option>
-                                <option value="MPesa">MPesa</option>
-                                <option value="Bank">Bank</option>
-                            </select>
-                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </span>
-                        </div>
-                        <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
-                    </div>
-
-                    <!-- Email -->
-                    <div class="w-full px-2.5 xl:w-1/2">
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Transaction Code
-                        </label>
-                        <input type="text"
-                            id="transaction_code"
-                            name="transaction_code"
-                            @input="clearError('transaction_code')"
-                            @blur="validateField('transaction_code', $event.target.value)"
-                            :class="errors.transaction_code ? 'border-red-500' : ''"
-                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                        <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
-                    </div>
-
-                    <!-- Status -->
-                    <div class="w-full px-2.5 xl:w-1/2">
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Status
-                        </label>
-                        <div class="relative z-20 bg-transparent">
-                            <select id="Status"
-                                    name="Status"
-                                    @change="clearError('Status')"
-                                    @blur="validateField('Status', $event.target.value)"
-                                    :class="errors.Status ? 'border-red-500' : ''"
-                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                <option value="">Status</option>
-                                <option value="Confirmed">Confirmed</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Cancelled">Cancelled</option>
-                            </select>
-                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </span>
-                        </div>
-                        <span x-show="errors.Status" x-text="errors.Status" class="text-xs text-error-500 mt-1"></span>
-                    </div>
+            <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
+                <!-- Amount -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Amount
+                    </label>
+                    <input type="number" step="0.01" min="0.01"
+                        id="withdraw_amount"
+                        name="amount"
+                        @input="clearError('amount')"
+                        @blur="validateField('amount', $event.target.value)"
+                        :class="errors.amount ? 'border-red-500' : ''"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    <span x-show="errors.amount" x-text="errors.amount" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
-                <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-                    <button @click="withdrawContributionModal = false" type="button"
-                            class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
-                        Cancel
-                    </button>
-                    <button type="submit"
-                            class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
-                            :disabled="$store.kinData.isAdding">
-                        <span x-show="!$store.kinData.isAdding">Withdraw</span>
-                        <span x-show="$store.kinData.isAdding">Withdrawing ...</span>
-                    </button>
+                <!-- Payment Mode -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Payment Mode
+                    </label>
+                    <div class="relative z-20 bg-transparent">
+                        <select id="withdraw_payment_mode"
+                                name="payment_mode"
+                                @change="handlePaymentModeChange($event.target.value, 'withdraw'); clearError('payment_mode')"
+                                @blur="validateField('payment_mode', $event.target.value)"
+                                :class="errors.payment_mode ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value="">Select Payment Mode</option>
+                            <option value="Cash">Cash</option>
+                            <option value="MPesa">MPesa</option>
+                            <option value="Bank">Bank</option>
+                        </select>
+                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
-            </form>
+                <!-- Transaction Code -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Transaction Code
+                    </label>
+                    <input type="text"
+                        id="withdraw_transaction_code"
+                        name="transaction_code"
+                        readonly
+                        @input="clearError('transaction_code')"
+                        @blur="validateField('transaction_code', $event.target.value)"
+                        :class="errors.transaction_code ? 'border-red-500' : ''"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <!-- Status -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Status
+                    </label>
+                    <div class="relative z-20 bg-transparent">
+                        <select id="withdraw_status"
+                                name="status"
+                                @change="clearError('status')"
+                                @blur="validateField('status', $event.target.value)"
+                                :class="errors.status ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value="">Select Status</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <span x-show="errors.status" x-text="errors.status" class="text-xs text-error-500 mt-1"></span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+                <button @click="withdrawContributionModal = false" type="button"
+                        class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
+                    Cancel
+                </button>
+                <button type="submit"
+                        class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                        :disabled="$store.contributionData.isWithdrawing">
+                    <span x-show="!$store.contributionData.isWithdrawing">Withdraw</span>
+                    <span x-show="$store.contributionData.isWithdrawing">Withdrawing ...</span>
+                </button>
+            </div>
+        </form>
 
         </div>
     </div>
@@ -4715,112 +4711,112 @@
             <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the details you wish to update.</p>
         </div>
 
+        <form class="flex flex-col" x-data="contributionsTable" @submit.prevent="updateContribution">
+            @csrf
 
-            <form class="flex flex-col" x-data="kinTable" @submit.prevent="addKin">
+            <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
+                <!-- Hidden Transaction ID -->
+                <input type="hidden" id="edit_transaction_id" name="transaction_id" :value="$store.contributionData.currentContribution?.transactionId">
 
-                @csrf
-
-                <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
-
-                    <input type="hidden" id="" value="" name="" readonly/>
-
-                    <!-- First Name -->
-                    <div class="w-full px-2.5 xl:w-1/2">
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Amount
-                        </label>
-                        <input type="number"
-                            id="contribution_Amount"
-                            name="contribution_Amount"
-                            @input="clearError('contribution_Amount')"
-                            @blur="validateField('contribution_Amount', $event.target.value)"
-                            :class="errors.contribution_Amount ? 'border-red-500' : ''"
-                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                        <span x-show="errors.contribution_Amount" x-text="errors.contribution_Amount" class="text-xs text-error-500 mt-1"></span>
-                    </div>
-
-                    <!-- Last Name -->
-                    <div class="w-full px-2.5 xl:w-1/2">
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Payment Mode
-                        </label>
-                        <div class="relative z-20 bg-transparent">
-                            <select id="payment_mode"
-                                    name="payment_mode"
-                                    @change="clearError('payment_mode')"
-                                    @blur="validateField('payment_mode', $event.target.value)"
-                                    :class="errors.payment_mode ? 'border-red-500' : ''"
-                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                <option value="">Payment Mode</option>
-                                <option value="Cash">Cash</option>
-                                <option value="MPesa">MPesa</option>
-                                <option value="Bank">Bank</option>
-                            </select>
-                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </span>
-                        </div>
-                        <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
-                    </div>
-
-                    <!-- Email -->
-                    <div class="w-full px-2.5 xl:w-1/2">
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Transaction Code
-                        </label>
-                        <input type="text"
-                            id="transaction_code"
-                            name="transaction_code"
-                            @input="clearError('transaction_code')"
-                            @blur="validateField('transaction_code', $event.target.value)"
-                            :class="errors.transaction_code ? 'border-red-500' : ''"
-                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                        <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
-                    </div>
-
-                    <!-- Status -->
-                    <div class="w-full px-2.5 xl:w-1/2">
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Status
-                        </label>
-                        <div class="relative z-20 bg-transparent">
-                            <select id="Status"
-                                    name="Status"
-                                    @change="clearError('Status')"
-                                    @blur="validateField('Status', $event.target.value)"
-                                    :class="errors.Status ? 'border-red-500' : ''"
-                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                <option value="">Status</option>
-                                <option value="Confirmed">Confirmed</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Cancelled">Cancelled</option>
-                            </select>
-                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </span>
-                        </div>
-                        <span x-show="errors.Status" x-text="errors.Status" class="text-xs text-error-500 mt-1"></span>
-                    </div>
+                <!-- Amount -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Amount
+                    </label>
+                    <input type="number" step="0.01" min="0.01"
+                        id="edit_contribution_Amount"
+                        name="amount"
+                        :value="$store.contributionData.currentContribution?.transactionAmount"
+                        @input="clearError('amount')"
+                        @blur="validateField('amount', $event.target.value)"
+                        :class="errors.amount ? 'border-red-500' : ''"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    <span x-show="errors.amount" x-text="errors.amount" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
-                <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-                    <button @click="updateContributionTransactionModal = false" type="button"
-                            class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
-                        Cancel
-                    </button>
-                    <button type="submit"
-                            class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
-                            :disabled="$store.kinData.isAdding">
-                        <span x-show="!$store.kinData.isAdding">Update</span>
-                        <span x-show="$store.kinData.isAdding">Updating ...</span>
-                    </button>
+                <!-- Payment Mode -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Payment Mode
+                    </label>
+                    <div class="relative z-20 bg-transparent">
+                        <select id="edit_payment_mode"
+                                name="payment_mode"
+                                @change="handlePaymentModeChange($event.target.value, 'edit'); clearError('payment_mode')"
+                                @blur="validateField('payment_mode', $event.target.value)"
+                                :class="errors.payment_mode ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value="">Select Payment Mode</option>
+                            <option value="Cash" :selected="$store.contributionData.currentContribution?.transactionMode === 'Cash'">Cash</option>
+                            <option value="MPesa" :selected="$store.contributionData.currentContribution?.transactionMode === 'MPesa'">MPesa</option>
+                            <option value="Bank" :selected="$store.contributionData.currentContribution?.transactionMode === 'Bank'">Bank</option>
+                        </select>
+                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
-            </form>
+                <!-- Transaction Code -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Transaction Code
+                    </label>
+                    <input type="text"
+                        id="edit_transaction_code"
+                        name="transaction_code"
+                        :value="$store.contributionData.currentContribution?.transactionCode"
+                        :readonly="$store.contributionData.currentContribution?.transactionMode === 'Cash'"
+                        @input="clearError('transaction_code')"
+                        @blur="validateField('transaction_code', $event.target.value)"
+                        :class="errors.transaction_code ? 'border-red-500' : ''"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <!-- Status -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Status
+                    </label>
+                    <div class="relative z-20 bg-transparent">
+                        <select id="edit_status"
+                                name="status"
+                                @change="clearError('status')"
+                                @blur="validateField('status', $event.target.value)"
+                                :class="errors.status ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value="">Select Status</option>
+                            <option value="Confirmed" :selected="$store.contributionData.currentContribution?.transactionStatus === 'Confirmed'">Confirmed</option>
+                            <option value="Pending" :selected="$store.contributionData.currentContribution?.transactionStatus === 'Pending'">Pending</option>
+                            <option value="Cancelled" :selected="$store.contributionData.currentContribution?.transactionStatus === 'Cancelled'">Cancelled</option>
+                        </select>
+                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <span x-show="errors.status" x-text="errors.status" class="text-xs text-error-500 mt-1"></span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+                <button @click="$store.contributionData.editContributionModal = false" type="button"
+                        class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
+                    Cancel
+                </button>
+                <button type="submit"
+                        class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                        :disabled="$store.contributionData.isUpdating">
+                    <span x-show="!$store.contributionData.isUpdating">Update</span>
+                    <span x-show="$store.contributionData.isUpdating">Updating ...</span>
+                </button>
+            </div>
+        </form>
 
         </div>
     </div>
@@ -5974,7 +5970,7 @@
                                 // Force a new array reference
                                 this.nonMemberVehicles = [...(data.vehicles || [])];
                                 console.log('Non-member vehicles set:', this.nonMemberVehicles);
-                                
+
                                 // Reset page to trigger re-evaluation
                                 this.pageNonMember = 1;
                             }
@@ -6408,11 +6404,22 @@
 
     <!-- Member Contributions -->
     <script>
+
         document.addEventListener('alpine:init', () => {
+            // Store for contribution data and modal states
+            Alpine.store('contributionData', {
+                currentContribution: null,
+                editContributionModal: false,
+                isContributing: false,
+                isWithdrawing: false,
+                isUpdating: false
+            });
+
             Alpine.data('contributionsTable', () => ({
                 contributions: [],
                 page: 1,
                 itemsPerPage: 10,
+                errors: {},
 
                 init() {
                     fetch('/bodaboda-member/{{ $memberId }}/contributions')
@@ -6420,9 +6427,301 @@
                         .then(data => {
                             this.contributions = data;
                         });
+
+                    // Listen for edit event from table
+                    window.addEventListener('open-edit-contribution-modal', (event) => {
+                        const contribution = event.detail.contribution;
+                        Alpine.store('contributionData').currentContribution = contribution;
+                        Alpine.store('contributionData').editContributionModal = true;
+
+                        // Populate form fields after modal opens
+                        setTimeout(() => {
+                            document.getElementById('edit_transaction_id') && (document.getElementById('edit_transaction_id').value = contribution.transactionId || '');
+                            document.getElementById('edit_contribution_Amount') && (document.getElementById('edit_contribution_Amount').value = contribution.transactionAmount || '');
+                            document.getElementById('edit_payment_mode') && (document.getElementById('edit_payment_mode').value = contribution.transactionMode || '');
+                            document.getElementById('edit_transaction_code') && (document.getElementById('edit_transaction_code').value = contribution.transactionCode || '');
+                            document.getElementById('edit_status') && (document.getElementById('edit_status').value = contribution.transactionStatus || '');
+                        }, 100);
+                    });
                 },
 
-                // Computed properties for pagination
+                // Validation methods
+                validateField(field, value) {
+                    if (!value || value === '' || value === null) {
+                        this.errors[field] = 'This field is required';
+                        return false;
+                    }
+
+                    if (field === 'amount' && (isNaN(value) || parseFloat(value) <= 0)) {
+                        this.errors[field] = 'Please enter a valid amount greater than 0';
+                        return false;
+                    }
+
+                    delete this.errors[field];
+                    return true;
+                },
+
+                clearError(field) {
+                    if (this.errors[field]) {
+                        delete this.errors[field];
+                    }
+                },
+
+                validateContributeForm() {
+                    this.errors = {};
+                    let isValid = true;
+
+                    const amount = document.getElementById('contribute_amount')?.value;
+                    const paymentMode = document.getElementById('contribute_payment_mode')?.value;
+                    const status = document.getElementById('contribute_status')?.value;
+
+                    if (!this.validateField('amount', amount)) isValid = false;
+                    if (!paymentMode || paymentMode === '') {
+                        this.errors.payment_mode = 'Please select payment mode';
+                        isValid = false;
+                    }
+                    if (!status || status === '') {
+                        this.errors.status = 'Please select status';
+                        isValid = false;
+                    }
+
+                    // If payment mode is not Cash, transaction code is required
+                    const transactionCode = document.getElementById('contribute_transaction_code')?.value;
+                    if (paymentMode !== 'Cash' && (!transactionCode || transactionCode === '')) {
+                        this.errors.transaction_code = 'Transaction code is required for non-cash payments';
+                        isValid = false;
+                    }
+
+                    return isValid;
+                },
+
+                validateWithdrawForm() {
+                    this.errors = {};
+                    let isValid = true;
+
+                    const amount = document.getElementById('withdraw_amount')?.value;
+                    const paymentMode = document.getElementById('withdraw_payment_mode')?.value;
+                    const status = document.getElementById('withdraw_status')?.value;
+
+                    if (!this.validateField('amount', amount)) isValid = false;
+                    if (!paymentMode || paymentMode === '') {
+                        this.errors.payment_mode = 'Please select payment mode';
+                        isValid = false;
+                    }
+                    if (!status || status === '') {
+                        this.errors.status = 'Please select status';
+                        isValid = false;
+                    }
+
+                    // If payment mode is not Cash, transaction code is required
+                    const transactionCode = document.getElementById('withdraw_transaction_code')?.value;
+                    if (paymentMode !== 'Cash' && (!transactionCode || transactionCode === '')) {
+                        this.errors.transaction_code = 'Transaction code is required for non-cash payments';
+                        isValid = false;
+                    }
+
+                    return isValid;
+                },
+
+                validateUpdateForm() {
+                    this.errors = {};
+                    let isValid = true;
+
+                    const amount = document.getElementById('edit_contribution_Amount')?.value;
+                    const paymentMode = document.getElementById('edit_payment_mode')?.value;
+                    const status = document.getElementById('edit_status')?.value;
+
+                    if (!this.validateField('amount', amount)) isValid = false;
+                    if (!paymentMode || paymentMode === '') {
+                        this.errors.payment_mode = 'Please select payment mode';
+                        isValid = false;
+                    }
+                    if (!status || status === '') {
+                        this.errors.status = 'Please select status';
+                        isValid = false;
+                    }
+
+                    // If payment mode is not Cash, transaction code is required
+                    const transactionCode = document.getElementById('edit_transaction_code')?.value;
+                    if (paymentMode !== 'Cash' && (!transactionCode || transactionCode === '')) {
+                        this.errors.transaction_code = 'Transaction code is required for non-cash payments';
+                        isValid = false;
+                    }
+
+                    return isValid;
+                },
+
+                // Handle transaction code readonly based on payment mode
+                handlePaymentModeChange(mode, type) {
+                    const codeField = type === 'contribute' ? document.getElementById('contribute_transaction_code') :
+                                    type === 'withdraw' ? document.getElementById('withdraw_transaction_code') :
+                                    document.getElementById('edit_transaction_code');
+
+                    if (codeField) {
+                        if (mode === 'Cash') {
+                            codeField.readOnly = true;
+                            codeField.value = ''; // Clear value for cash transactions
+                        } else {
+                            codeField.readOnly = false;
+                        }
+                    }
+                },
+
+                // Contribute function
+                contribute() {
+                    if (!this.validateContributeForm()) {
+                        alert('Please fix the errors in the form before submitting.');
+                        return;
+                    }
+
+                    Alpine.store('contributionData').isContributing = true;
+
+                    const formData = {
+                        amount: document.getElementById('contribute_amount')?.value,
+                        payment_mode: document.getElementById('contribute_payment_mode')?.value,
+                        transaction_code: document.getElementById('contribute_transaction_code')?.value || '',
+                        status: document.getElementById('contribute_status')?.value,
+                        _token: document.querySelector('input[name="_token"]')?.value
+                    };
+
+                    fetch('/bodaboda-member/{{ $memberId }}/contribute', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        setTimeout(() => {
+                            Alpine.store('contributionData').isContributing = false;
+
+                            if (data.success) {
+                                alert(data.message);
+                                window.location.reload();
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        }, 750);
+                    })
+                    .catch(error => {
+                        setTimeout(() => {
+                            Alpine.store('contributionData').isContributing = false;
+                            alert('Error processing contribution. Please try again.');
+                            console.error('Error:', error);
+                        }, 750);
+                    });
+                },
+
+                // Withdraw function
+                withdraw() {
+                    if (!this.validateWithdrawForm()) {
+                        alert('Please fix the errors in the form before submitting.');
+                        return;
+                    }
+
+                    Alpine.store('contributionData').isWithdrawing = true;
+
+                    const formData = {
+                        amount: document.getElementById('withdraw_amount')?.value,
+                        payment_mode: document.getElementById('withdraw_payment_mode')?.value,
+                        transaction_code: document.getElementById('withdraw_transaction_code')?.value || '',
+                        status: document.getElementById('withdraw_status')?.value,
+                        _token: document.querySelector('input[name="_token"]')?.value
+                    };
+
+                    fetch('/bodaboda-member/{{ $memberId }}/withdraw', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        setTimeout(() => {
+                            Alpine.store('contributionData').isWithdrawing = false;
+
+                            if (data.success) {
+                                alert(data.message);
+                                window.location.reload();
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        }, 750);
+                    })
+                    .catch(error => {
+                        setTimeout(() => {
+                            Alpine.store('contributionData').isWithdrawing = false;
+                            alert('Error processing withdrawal. Please try again.');
+                            console.error('Error:', error);
+                        }, 750);
+                    });
+                },
+
+                // Update function
+                updateContribution() {
+                    if (!this.validateUpdateForm()) {
+                        alert('Please fix the errors in the form before submitting.');
+                        return;
+                    }
+
+                    Alpine.store('contributionData').isUpdating = true;
+
+                    const transactionId = document.getElementById('edit_transaction_id')?.value;
+                    const formData = {
+                        amount: document.getElementById('edit_contribution_Amount')?.value,
+                        payment_mode: document.getElementById('edit_payment_mode')?.value,
+                        transaction_code: document.getElementById('edit_transaction_code')?.value || '',
+                        status: document.getElementById('edit_status')?.value,
+                        _token: document.querySelector('input[name="_token"]')?.value
+                    };
+
+                    fetch(`/bodaboda-member/{{ $memberId }}/contribution/${transactionId}/update`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        setTimeout(() => {
+                            Alpine.store('contributionData').isUpdating = false;
+
+                            if (data.success) {
+                                alert(data.message);
+                                window.location.reload();
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        }, 750);
+                    })
+                    .catch(error => {
+                        setTimeout(() => {
+                            Alpine.store('contributionData').isUpdating = false;
+                            alert('Error updating transaction. Please try again.');
+                            console.error('Error:', error);
+                        }, 750);
+                    });
+                },
+
+                // Pagination methods
+                prevPage() {
+                    if (this.page > 1) this.page--;
+                },
+
+                nextPage() {
+                    if (this.page < this.totalPages) this.page++;
+                },
+
+                goToPage(page) {
+                    if (page >= 1 && page <= this.totalPages) this.page = page;
+                },
+
                 get totalPages() {
                     return Math.ceil(this.contributions.length / this.itemsPerPage);
                 },
@@ -6440,36 +6739,10 @@
                 get endEntry() {
                     const end = this.page * this.itemsPerPage;
                     return end > this.contributions.length ? this.contributions.length : end;
-                },
-
-                // Pagination methods
-                prevPage() {
-                    if (this.page > 1) this.page--;
-                },
-
-                nextPage() {
-                    if (this.page < this.totalPages) this.page++;
-                },
-
-                goToPage(page) {
-                    if (page >= 1 && page <= this.totalPages) this.page = page;
-                },
-
-                // Edit contribution function
-                editContributionModal(contribution) {
-                    if (Alpine.store('contributionData')) {
-                        Alpine.store('contributionData').currentContribution = contribution;
-                        Alpine.store('contributionData').editContributionModal = true;
-                    }
                 }
             }));
-
-            // Store for contribution data
-            Alpine.store('contributionData', () => ({
-                editContributionModal: false,
-                currentContribution: null
-            }));
         });
+
     </script>
 
     <!-- Member Savings -->

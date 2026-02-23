@@ -140,8 +140,6 @@ Route::get('/bodaboda-member/{memberId}/contributions', [BodabodaController::cla
 
 Route::get('/bodaboda-member/{memberId}/savings', [BodabodaController::class, 'getAllMemberSavings']);
 
-Route::get('/bodaboda-member/{memberId}/loans', [BodabodaController::class, 'getAllMemberLoans']);
-
 Route::get('/bodaboda-member/{memberId}/fines', [BodabodaController::class, 'getAllMemberFines']);
 
 Route::post('/bodaboda-member/{memberId}/update-personal', [BodabodaController::class, 'updateMemberPersonalInfo']);
@@ -187,20 +185,6 @@ Route::post('/treasurer/bodaboda/stages/update', [BodabodaController::class, 'up
 Route::post('/treasurer/bodaboda/stages/delete', [BodabodaController::class, 'deleteStageLocation'])->name('treasurer.bodaboda.delete');
 
 // Members transactions
-// Loans
-Route::get('/loans/summary', [BodabodaController::class, 'getAllLoansSummary']);
-
-Route::get('/member-bonus-types/all', [BodabodaController::class, 'getAllMemberBonusTypes']);
-
-Route::get('/member-fine-types/all', [BodabodaController::class, 'getAllMemberFineTypes']);
-
-Route::post('/loans/create', [BodabodaController::class, 'createNewLoanType']);
-
-// Loan Types
-Route::post('/treasurer/bodaboda/loan-types/update', [BodabodaController::class, 'updateLoanType'])->name('treasurer.bodaboda.loan-types.update');
-
-Route::post('/treasurer/bodaboda/loan-types/delete', [BodabodaController::class, 'deleteLoanType'])->name('treasurer.bodaboda.loan-types.delete');
-
 // Bonus Types
 Route::post('/treasurer/bodaboda/bonus-types/update', [BodabodaController::class, 'updateBonusType'])->name('treasurer.bodaboda.bonus-types.update');
 
@@ -220,14 +204,11 @@ Route::get('/bodaboda-member/{memberId}/vehicles/nonmember/all', [BodabodaContro
 
 Route::get('/bodaboda-member/{memberId}/vehicles/nonmember/count', [BodabodaController::class, 'getCountNonMemberVehicles']);
 
-// Count all types
-Route::get('/member-loan-types/count', [BodabodaController::class, 'countAllMemberLoanTypes']);
-
 Route::get('/member-bonus-types/count', [BodabodaController::class, 'countAllMemberBonusTypes']);
 
 Route::get('/member-fine-types/count', [BodabodaController::class, 'countAllMemberFineTypes']);
 
-// Count active loan transactions
+// Loans --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/member-transactions/count-active-loans', [BodabodaController::class, 'countActiveLoanTransactions']);
 
 Route::get('/bodaboda/vehicles/count/all', [BodabodaController::class, 'getCountVehicles']);
@@ -235,12 +216,34 @@ Route::get('/bodaboda/vehicles/count/all', [BodabodaController::class, 'getCount
 // Your existing routes
 Route::get('/bodaboda-member/{memberId}/vehicles/available', [BodabodaController::class, 'getAvailableMemberVehicles']);
 
-// Route::get('/bodaboda-member/{memberId}/vehicles/assigned/current', [BodabodaController::class, 'getMemberAssignedVehicles']);
+Route::get('/member-loan-types/count', [BodabodaController::class, 'countAllMemberLoanTypes']);
 
-// Contributions
+// Loans
+Route::get('/loans/summary', [BodabodaController::class, 'getAllLoansSummary']);
+
+Route::get('/member-bonus-types/all', [BodabodaController::class, 'getAllMemberBonusTypes']);
+
+Route::get('/member-fine-types/all', [BodabodaController::class, 'getAllMemberFineTypes']);
+
+Route::post('/loans/create', [BodabodaController::class, 'createNewLoanType']);
+
+// Loan Types
+Route::post('/treasurer/bodaboda/loan-types/update', [BodabodaController::class, 'updateLoanType'])->name('treasurer.bodaboda.loan-types.update');
+
+Route::post('/treasurer/bodaboda/loan-types/delete', [BodabodaController::class, 'deleteLoanType'])->name('treasurer.bodaboda.loan-types.delete');
+
+Route::get('/bodaboda-member/{memberId}/loans', [BodabodaController::class, 'getAllMemberLoans']);
+
+// Contributions ------------------------------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/contributions/all', [BodabodaController::class, 'getAllContributions']);
 
-// Bonuses
+Route::post('/bodaboda-member/{memberId}/contribute', [BodabodaController::class, 'makeMemberContribution']);
+
+Route::post('/bodaboda-member/{memberId}/withdraw', [BodabodaController::class, 'withdrawMemberContribution']);
+
+Route::post('/bodaboda-member/{memberId}/contribution/{transactionId}/update', [BodabodaController::class, 'updateMemberContribution']);
+
+// Bonuses ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/bonus-types/summary', [BodabodaController::class, 'getAllBonusTypesSummary']);
 
 Route::post('/bonuses/create', [BodabodaController::class, 'createNewBonusType']);
@@ -250,7 +253,7 @@ Route::get('/fine-types/summary', [BodabodaController::class, 'getAllFineTypesSu
 
 Route::post('/fines/create', [BodabodaController::class, 'createNewFineType']);
 
-// End bodaboda module manage ----------------------------------------------------------------------------------------------------------
+// End bodaboda module manage ------------------------------------------------------------------------------------------------------------------------------------------------
 
 Route::get('/forgotPassword', function () {
 

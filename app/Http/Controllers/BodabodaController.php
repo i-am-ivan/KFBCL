@@ -1055,7 +1055,6 @@ class BodabodaController extends Controller {
         }
     }
 
-
     // Contributions -----------------------------------------------------------------------------------------------------
     // Get all bodaboda contribution data
     public function getAllContributions(Request $request): JsonResponse
@@ -1079,6 +1078,205 @@ class BodabodaController extends Controller {
             ->get();
 
         return response()->json($contributions);
+    }
+
+    // Make a contribution (Paid-In)
+    public function makeMemberContribution(Request $request, $memberId)
+    {
+        try {
+            $validated = $request->validate([
+                'amount' => 'required|numeric|min:0.01',
+                'payment_mode' => 'required|in:Cash,MPesa,Bank',
+                'transaction_code' => 'nullable|string|max:255',
+                'status' => 'required|in:Confirmed,Pending,Cancelled'
+            ]);
+
+            // Generate transaction code if not provided
+            $transactionCode = $validated['transaction_code'] ?? 'CONT-' . strtoupper(uniqid());
+
+            $data = [
+                'memberId' => $memberId,
+                'transactionCode' => $transactionCode,
+                'transactionAmount' => $validated['amount'],
+                'transactionDate' => now(),
+                'transactionMode' => $validated['payment_mode'],
+                'transactionType' => 'Paid-In',
+                'transactionStatus' => $validated['status'],
+                'transactionAuthor' => Auth::id(),
+                'transactionUpdatedOn' => now()
+            ];
+
+            $inserted = DB::table('member_contributions')->insert($data);
+
+            if ($inserted) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Contribution added successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to add contribution'
+                ], 400);
+            }
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error adding contribution: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Withdraw from contribution (Paid-Out)
+    public function withdrawMemberContribution(Request $request, $memberId)
+    {
+        try {
+            $validated = $request->validate([
+                'amount' => 'required|numeric|min:0.01',
+                'payment_mode' => 'required|in:Cash,MPesa,Bank',
+                'transaction_code' => 'nullable|string|max:255',
+                'status' => 'required|in:Confirmed,Pending,Cancelled'
+            ]);
+
+            // Check if member has sufficient balance
+            $totalIn = DB::table('member_contributions')
+                ->where('memberId', $memberId)
+                ->where('transactionType', 'Paid-In')
+                ->whereIn('transactionStatus', ['Confirmed', 'Approved'])
+                ->sum('transactionAmount');
+
+            $totalOut = DB::table('member_contributions')
+                ->where('memberId', $memberId)
+                ->where('transactionType', 'Paid-Out')
+                ->whereIn('transactionStatus', ['Confirmed', 'Approved'])
+                ->sum('transactionAmount');
+
+            $balance = $totalIn - $totalOut;
+
+            if ($balance < $validated['amount']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Insufficient balance. Available: ' . number_format($balance, 2)
+                ], 400);
+            }
+
+            // Generate transaction code if not provided
+            $transactionCode = $validated['transaction_code'] ?? 'WITH-' . strtoupper(uniqid());
+
+            $data = [
+                'memberId' => $memberId,
+                'transactionCode' => $transactionCode,
+                'transactionAmount' => $validated['amount'],
+                'transactionDate' => now(),
+                'transactionMode' => $validated['payment_mode'],
+                'transactionType' => 'Paid-Out',
+                'transactionStatus' => $validated['status'],
+                'transactionAuthor' => Auth::id(),
+                'transactionUpdatedOn' => now()
+            ];
+
+            $inserted = DB::table('member_contributions')->insert($data);
+
+            if ($inserted) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Withdrawal processed successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to process withdrawal'
+                ], 400);
+            }
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error processing withdrawal: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Update contribution transaction
+    public function updateMemberContribution(Request $request, $memberId, $transactionId)
+    {
+        try {
+            $validated = $request->validate([
+                'amount' => 'required|numeric|min:0.01',
+                'payment_mode' => 'required|in:Cash,MPesa,Bank',
+                'transaction_code' => 'nullable|string|max:255',
+                'status' => 'required|in:Confirmed,Pending,Cancelled'
+            ]);
+
+            // Get the original transaction to check type
+            $original = DB::table('member_contributions')
+                ->where('transactionId', $transactionId)
+                ->where('memberId', $memberId)
+                ->first();
+
+            if (!$original) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Transaction not found'
+                ], 404);
+            }
+
+            // If changing from Paid-In to Paid-Out or vice versa, check balance
+            if ($original->transactionType !== $validated['transaction_type'] ?? $original->transactionType) {
+                // This would need additional balance checks
+                // For simplicity, we'll keep the original type
+            }
+
+            $data = [
+                'transactionAmount' => $validated['amount'],
+                'transactionMode' => $validated['payment_mode'],
+                'transactionCode' => $validated['transaction_code'] ?? $original->transactionCode,
+                'transactionStatus' => $validated['status'],
+                'transactionUpdatedOn' => now()
+            ];
+
+            $updated = DB::table('member_contributions')
+                ->where('transactionId', $transactionId)
+                ->where('memberId', $memberId)
+                ->update($data);
+
+            if ($updated) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Transaction updated successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No changes were made or transaction not found'
+                ], 400);
+            }
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating transaction: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     // Bonuses ----------------------------------------------------------------------------------------------------------
