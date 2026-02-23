@@ -607,23 +607,18 @@
                         </div>
                         <!-- Metric Item End -->
 
-                        <!-- Metric Item Start -->
-                        <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
-                            <p class="text-theme-sm text-gray-500 dark:text-gray-400">Cashflow</p>
+                        <!-- Metric Item Start - Contributions Wallet -->
+                        <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]"
+                            x-data="{ balance: 'KES 0.00' }"
+                            x-init="fetch('/contributions/balance/total')
+                                    .then(res => res.json())
+                                    .then(data => { if(data.success) balance = data.formatted; })">
+
+                            <p class="text-theme-sm text-gray-500 dark:text-gray-400">Contributions Wallet</p>
 
                             <div class="mt-3 flex items-end justify-between">
                                 <div>
-                                <h4 class="text-xl font-semibold text-gray-500 dark:text-white/90">KES 0.00</h4>
-                                </div>
-
-                                <div class="flex items-center gap-1">
-                                <span class="flex items-center gap-1 rounded-full bg-error-50 px-2 py-0.5 text-theme-xs font-medium text-error-600 dark:bg-error-500/15 dark:text-error-500">
-                                    0 %
-                                </span>
-
-                                <span class="text-theme-xs text-gray-500 dark:text-gray-400">
-                                    Vs Yesterday
-                                </span>
+                                    <h4 class="text-xl font-semibold text-gray-500 dark:text-white/90" x-text="balance">KES 0.00</h4>
                                 </div>
                             </div>
                         </div>
@@ -631,23 +626,13 @@
 
                         <!-- Metric Item Start -->
                         <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
-                            <p class="text-theme-sm text-gray-500 dark:text-gray-400">Wallet</p>
+                            <p class="text-theme-sm text-gray-500 dark:text-gray-400">Savings Wallet</p>
 
                             <div class="mt-3 flex items-end justify-between">
                                 <div>
                                 <h4 class="text-xl font-semibold text-gray-500 dark:text-white/90">
                                     KES 0.00
                                 </h4>
-                                </div>
-
-                                <div class="flex items-center gap-1">
-                                <span class="flex items-center gap-1 rounded-full bg-success-50 px-2 py-0.5 text-theme-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500">
-                                    0%
-                                </span>
-
-                                <span class="text-theme-xs text-gray-500 dark:text-gray-400">
-                                    Vs last month
-                                </span>
                                 </div>
                             </div>
                         </div>
@@ -2458,35 +2443,26 @@
                                                 <table class="w-full table-auto">
                                                     <thead>
                                                         <tr class="border-b border-gray-200 dark:divide-gray-800 dark:border-gray-800">
-                                                            <th class="p-4 whitespace-nowrap">
-                                                                <div class="flex w-full items-center gap-3" @click="sortBy('memberId')">
-                                                                <p class="text-theme-xs font-medium text-gray-500 dark:text-gray-400">
-                                                                    #Controbutions ID
-                                                                </p>
-                                                                <span class="flex flex-col gap-0.5">
-                                                                    <svg :class="sort.key === 'appointmentDate' && sort.asc ? 'text-gray-800 dark:text-gray-400' : 'text-gray-300'"
-                                                                        width="8" height="5" viewBox="0 0 8 5" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                        <path
-                                                                                d="M4.40962 0.585167C4.21057 0.300808 3.78943 0.300807 3.59038 0.585166L1.05071 4.21327C0.81874 4.54466 1.05582 5 1.46033 5H6.53967C6.94418 5 7.18126 4.54466 6.94929 4.21327L4.40962 0.585167Z"
-                                                                                fill="currentColor" />
-                                                                    </svg>
-                                                                    <svg :class="sort.key === 'appointmentDate' && !sort.asc ? 'text-gray-800 dark:text-gray-400' : 'text-gray-300'"
-                                                                        width="8" height="5" viewBox="0 0 8 5" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                        <path
-                                                                                d="M4.40962 4.41483C4.21057 4.69919 3.78943 4.69919 3.59038 4.41483L1.05071 0.786732C0.81874 0.455343 1.05582 0 1.46033 0H6.53967C6.94418 0 7.18126 0.455342 6.94929 0.786731L4.40962 4.41483Z"
-                                                                                fill="currentColor" />
-                                                                    </svg>
-                                                                </span>
-                                                                </div>
+                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400"">
+                                                                #Transaction Code
                                                             </th>
                                                             <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                Type
+                                                                Member
+                                                            </th>
+                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                Membership
                                                             </th>
                                                             <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                 Amount
                                                             </th>
                                                             <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                 Date
+                                                            </th>
+                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                Type
+                                                            </th>
+                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                Mode
                                                             </th>
                                                             <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                 Status
@@ -2517,52 +2493,47 @@
                                                     <!-- If there are Contribution records display in table -->
                                                     <template x-if="contributions.length > 0">
                                                         <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800">
-                                                            <template x-for="row in paginatedRows" :key="row.id">
+                                                            <template x-for="contribution in paginatedContributions" :key="contribution.transactionCode">
                                                                 <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-900">
                                                                     <td class="p-4 whitespace-nowrap">
                                                                         <div class="group flex items-center gap-3">
-                                                                        <a href="view-member.php"
-                                                                            class="text-theme-xs font-medium text-gray-700 group-hover:underline dark:text-gray-400"
-                                                                            x-text="row.memberId"></a>
+                                                                            <p class="text-theme-xs font-medium text-gray-700 group-hover:underline dark:text-gray-400"
+                                                                                    x-text="contribution.transactionCode">
+                                                                                </p>
                                                                         </div>
                                                                     </td>
                                                                     <td class="p-4 whitespace-nowrap">
                                                                         <div>
-                                                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-400"
-                                                                            x-text="row.member"></span>
-                                                                        <p class="text-xs text-gray-500 dark:text-gray-400" x-text="row.memberEmail"></p>
+                                                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400"
+                                                                                x-text="contribution.memberName">
+                                                                            </span>
+                                                                            <p class="text-xs text-gray-500 dark:text-gray-400" x-text="row.memberEmail"></p>
                                                                         </div>
                                                                     </td>
                                                                     <td class="p-4 whitespace-nowrap">
-                                                                        <span class="text-sm text-gray-700 dark:text-gray-400" x-text="row.role"></span>
+                                                                        <span class="text-sm text-gray-700 dark:text-gray-400" x-text="contribution.membership"></span>
                                                                     </td>
                                                                     <td class="p-4 whitespace-nowrap">
-                                                                        <p class="text-sm text-gray-700 dark:text-gray-400 truncate max-w-[200px]" x-text="row.joined" :title="row.joined"></p>
+                                                                        <p class="text-sm text-gray-700 dark:text-gray-400" x-text="contribution.amount"></p>
                                                                     </td>
                                                                     <td class="p-4 whitespace-nowrap">
-                                                                        <div>
-                                                                        <p class="text-sm font-medium text-gray-700 dark:text-gray-400"
-                                                                            x-text="row.lastContribution"></p>
-                                                                        <p class="text-xs text-gray-500 dark:text-gray-400" x-text="row.lastContributionDate"></p>
-                                                                        </div>
+                                                                        <p class="text-sm text-gray-700 dark:text-gray-400" x-text="contribution.date"></p>
+                                                                    </td>
+                                                                    <td class="p-4 whitespace-nowrap">
+                                                                        <span class="text-sm text-gray-700 dark:text-gray-400" x-text="contribution.type"></span>
+                                                                    </td>
+                                                                    <td class="p-4 whitespace-nowrap">
+                                                                        <span class="text-sm text-gray-700 dark:text-gray-400" x-text="contribution.mode"></span>
                                                                     </td>
                                                                     <td class="p-4 whitespace-nowrap">
                                                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
                                                                             :class="{
-                                                                                'bg-success-100 text-success-600 dark:bg-success-900/30 dark:text-success-400': row.status === 'Active',
-                                                                                'bg-warning-100 text-warning-600 dark:bg-warning-900/30 dark:text-warning-400': row.status === 'Suspended',
-                                                                                'bg-error-100 text-error-600 dark:bg-error-900/30 dark:text-error-400': row.status === 'Blacklisted'
+                                                                                'bg-success-100 text-success-600 dark:bg-success-900/30 dark:text-success-400': contribution.status === 'Confirmed',
+                                                                                'bg-warning-100 text-warning-600 dark:bg-warning-900/30 dark:text-warning-400': contribution.status === 'Pending',
+                                                                                'bg-error-100 text-error-600 dark:bg-error-900/30 dark:text-error-400': contribution.status === 'Cancelled' || contribution.status === 'Reversed'
                                                                             }"
-                                                                                x-text="row.status.charAt(0).toUpperCase() + row.status.slice(1)">
+                                                                            x-text="contribution.status">
                                                                         </span>
-                                                                    </td>
-                                                                    <td class="p-4 whitespace-nowrap">
-                                                                        <button @click="editLoanTypeModal(loanType)"
-                                                                            class="shadow-theme-xs inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-                                                                            <svg class="w-[22px] h-[22px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                                                <path stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.1" d="M7 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h1m4-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm7.441 1.559a1.907 1.907 0 0 1 0 2.698l-6.069 6.069L10 19l.674-3.372 6.07-6.07a1.907 1.907 0 0 1 2.697 0Z"></path>
-                                                                            </svg>
-                                                                        </button>
                                                                     </td>
                                                                 </tr>
                                                             </template>
@@ -3848,7 +3819,7 @@
                     </div>
                 </div>
             </form>
-            
+
         </div>
     </div>
     <!-- Edit Loan Type Modal -->
@@ -5517,29 +5488,24 @@
                         const data = await response.json();
 
                         if (data && data.data) {
-                            // Transform Laravel data for frontend display
+                            // Transform Laravel data for frontend display - ONLY Paid-In, Confirmed transactions
                             this.contributions = data.data.map(item => ({
-                                TransactionID: item.transactionId || '',
-                                MemberName: item.full_name || '',
-                                TransactionType: item.transactionType || '',
-                                Amount: `Ksh ${parseFloat(item.transactionAmount || 0).toLocaleString()}`,
-                                TransactionDate: new Date(item.transactionDate || Date.now()).toLocaleDateString('en-GB', {
+                                transactionCode: item.transactionCode || 'N/A',
+                                memberName: item.full_name || 'N/A',
+                                membership: item.membership || 'N/A',
+                                amount: 'KES ' + (parseFloat(item.transactionAmount || 0).toLocaleString()),
+                                date: new Date(item.transactionDate || Date.now()).toLocaleDateString('en-GB', {
                                     day: '2-digit',
                                     month: 'short',
                                     year: 'numeric'
                                 }),
-                                TransactionMode: item.transactionMode || '',
-                                TransactionStatus: item.transactionStatus || '',
-                                UpdatedOn: new Date(item.transactionUpdatedOn || Date.now()).toLocaleDateString('en-GB', {
-                                    day: '2-digit',
-                                    month: 'short',
-                                    year: 'numeric'
-                                })
+                                type: item.transactionType || 'N/A',
+                                mode: item.transactionMode || 'N/A',
+                                status: item.transactionStatus || 'N/A'
                             }));
                         }
                     } catch (error) {
                         console.error('Error loading contributions:', error);
-                        // Keep empty array if error
                         this.contributions = [];
                     }
                 },
@@ -5566,21 +5532,15 @@
 
                 // Pagination methods
                 prevPage() {
-                    if (this.page > 1) {
-                        this.page--;
-                    }
+                    if (this.page > 1) this.page--;
                 },
 
                 nextPage() {
-                    if (this.page < this.totalPages) {
-                        this.page++;
-                    }
+                    if (this.page < this.totalPages) this.page++;
                 },
 
                 goToPage(page) {
-                    if (page >= 1 && page <= this.totalPages) {
-                        this.page = page;
-                    }
+                    if (page >= 1 && page <= this.totalPages) this.page = page;
                 }
             };
         }

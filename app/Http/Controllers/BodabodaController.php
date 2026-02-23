@@ -29,11 +29,13 @@ class BodabodaController extends Controller {
                 'last_contribution_amount' => MemberContribution::select('transactionAmount')
                     ->whereColumn('memberId', 'members.memberId')
                     ->where('transactionStatus', 'Confirmed')
+                    ->where('transactionType', 'Paid-In')
                     ->orderBy('transactionDate', 'desc')
                     ->limit(1),
                 'last_contribution_date' => MemberContribution::select('transactionDate')
                     ->whereColumn('memberId', 'members.memberId')
                     ->where('transactionStatus', 'Confirmed')
+                    ->where('transactionType', 'Paid-In')
                     ->orderBy('transactionDate', 'desc')
                     ->limit(1),
             ])
@@ -48,6 +50,19 @@ class BodabodaController extends Controller {
     {
         $total = Member::count();
         return response()->json(['count' => $total], 200);
+    }
+
+
+    public function countMembers()
+    {
+        $count = DB::table('members')->where('membership', 'Member')->count();
+        return response()->json(['count' => $count]);
+    }
+
+    public function countNonMembers()
+    {
+        $count = DB::table('members')->where('membership', 'Non-Member')->count();
+        return response()->json(['count' => $count]);
     }
 
     // Add a new member with file uploads
@@ -670,6 +685,25 @@ class BodabodaController extends Controller {
         }
     }
 
+    // Vehicle Stats
+    public function countAllVehicles()
+    {
+        $count = DB::table('members_vehicles')->count();
+        return response()->json(['count' => $count]);
+    }
+
+    public function countAllMotorcycles()
+    {
+        $count = DB::table('members_vehicles')->where('type', 'Motorcycle')->count();
+        return response()->json(['count' => $count]);
+    }
+
+    public function countAllTukTuks()
+    {
+        $count = DB::table('members_vehicles')->where('type', 'Tuk Tuk')->count();
+        return response()->json(['count' => $count]);
+    }
+
     // B. Stages -----------------------------------------------------------------------------------
     public function listAllStages(Request $request): JsonResponse
     {
@@ -1061,9 +1095,12 @@ class BodabodaController extends Controller {
     {
         $contributions = MemberContribution::select([
                 'member_contributions.*',
-                DB::raw('CONCAT(members.firstname, " ", members.lastname) as full_name')
+                DB::raw('CONCAT(members.firstname, " ", members.lastname) as full_name'),
+                'members.membership'
             ])
             ->join('members', 'member_contributions.memberId', '=', 'members.memberId')
+            ->where('member_contributions.transactionType', 'Paid-In')
+            ->where('member_contributions.transactionStatus', 'Confirmed')
             ->orderBy('member_contributions.transactionDate', 'desc')
             ->get();
 
@@ -1078,6 +1115,46 @@ class BodabodaController extends Controller {
             ->get();
 
         return response()->json($contributions);
+    }
+
+    public function getTotalContributionBalance(Request $request): JsonResponse
+    {
+        $totalPaidIn = MemberContribution::where('transactionType', 'Paid-In')
+            ->where('transactionStatus', 'Confirmed')
+            ->sum('transactionAmount');
+
+        $totalPaidOut = MemberContribution::where('transactionType', 'Paid-Out')
+            ->where('transactionStatus', 'Confirmed')
+            ->sum('transactionAmount');
+
+        $balance = $totalPaidIn - $totalPaidOut;
+
+        return response()->json([
+            'success' => true,
+            'balance' => $balance,
+            'formatted' => 'KES ' . number_format($balance, 2)
+        ], 200);
+    }
+
+    public function getMemberContributionBalance(Request $request, $memberId): JsonResponse
+    {
+        $totalPaidIn = MemberContribution::where('memberId', $memberId)
+            ->where('transactionType', 'Paid-In')
+            ->where('transactionStatus', 'Confirmed')
+            ->sum('transactionAmount');
+
+        $totalPaidOut = MemberContribution::where('memberId', $memberId)
+            ->where('transactionType', 'Paid-Out')
+            ->where('transactionStatus', 'Confirmed')
+            ->sum('transactionAmount');
+
+        $balance = $totalPaidIn - $totalPaidOut;
+
+        return response()->json([
+            'success' => true,
+            'balance' => $balance,
+            'formatted' => 'KES ' . number_format($balance, 2)
+        ], 200);
     }
 
     // Make a contribution (Paid-In)
@@ -1221,7 +1298,7 @@ class BodabodaController extends Controller {
                 'status' => 'required|in:Confirmed,Pending,Cancelled'
             ]);
 
-            // Get the original transaction to check type
+            // Get the original transaction to check if it exists
             $original = DB::table('member_contributions')
                 ->where('transactionId', $transactionId)
                 ->where('memberId', $memberId)
@@ -1232,12 +1309,6 @@ class BodabodaController extends Controller {
                     'success' => false,
                     'message' => 'Transaction not found'
                 ], 404);
-            }
-
-            // If changing from Paid-In to Paid-Out or vice versa, check balance
-            if ($original->transactionType !== $validated['transaction_type'] ?? $original->transactionType) {
-                // This would need additional balance checks
-                // For simplicity, we'll keep the original type
             }
 
             $data = [
@@ -1277,6 +1348,41 @@ class BodabodaController extends Controller {
                 'message' => 'Error updating transaction: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    // Monthly Contribution Data for Chart
+    public function getMonthlyContributions()
+    {
+        $months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        $currentYear = now()->year;
+
+        $data = [];
+        foreach ($months as $index => $month) {
+            $monthNum = $index + 1;
+
+            $paidIn = DB::table('member_contributions')
+                ->whereYear('transactionDate', $currentYear)
+                ->whereMonth('transactionDate', $monthNum)
+                ->where('transactionType', 'Paid-In')
+                ->where('transactionStatus', 'Confirmed')
+                ->sum('transactionAmount');
+
+            $paidOut = DB::table('member_contributions')
+                ->whereYear('transactionDate', $currentYear)
+                ->whereMonth('transactionDate', $monthNum)
+                ->where('transactionType', 'Paid-Out')
+                ->where('transactionStatus', 'Confirmed')
+                ->sum('transactionAmount');
+
+            $data[] = [
+                'month' => $month,
+                'paid_in' => $paidIn,
+                'paid_out' => $paidOut,
+                'net' => $paidIn - $paidOut
+            ];
+        }
+
+        return response()->json(['data' => $data]);
     }
 
     // Bonuses ----------------------------------------------------------------------------------------------------------
@@ -1711,6 +1817,83 @@ class BodabodaController extends Controller {
             ->get();
 
         return response()->json($loans);
+    }
+
+    // Loan Stats
+    public function countAllLoansAwarded()
+    {
+        $count = DB::table('member_loans')->count();
+        return response()->json(['count' => $count]);
+    }
+
+    public function countAllActiveLoans()
+    {
+        $count = DB::table('member_loans')
+            ->where('transactionLoanStatus', 'Active')
+            ->count();
+        return response()->json(['count' => $count]);
+    }
+
+    public function countAllBadLoans()
+    {
+        $count = DB::table('member_loans')
+            ->whereIn('transactionLoanStatus', ['Defaulted', 'Stopped'])
+            ->count();
+        return response()->json(['count' => $count]);
+    }
+
+    // Monthly Loan Data for Chart
+    public function getMonthlyLoans()
+    {
+        $months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        $currentYear = now()->year;
+
+        $data = [];
+        foreach ($months as $index => $month) {
+            $monthNum = $index + 1;
+
+            $disbursed = DB::table('member_loans')
+                ->whereYear('transactionCreated', $currentYear)
+                ->whereMonth('transactionCreated', $monthNum)
+                ->where('transactionStatus', 'Approved')
+                ->sum('transactionLoanAmount');
+
+            $repaid = DB::table('member_loans_transactions')
+                ->whereYear('transactionDate', $currentYear)
+                ->whereMonth('transactionDate', $monthNum)
+                ->where('transactionStatus', 'Confirmed')
+                ->sum('transactionAmount');
+
+            $data[] = [
+                'month' => $month,
+                'disbursed' => $disbursed,
+                'repaid' => $repaid
+            ];
+        }
+
+        return response()->json(['data' => $data]);
+    }
+
+    // Loan Status Distribution for Pie Chart
+    public function getLoanStatusDistribution()
+    {
+        $active = DB::table('member_loans')
+            ->where('transactionLoanStatus', 'Active')
+            ->count();
+
+        $repaid = DB::table('member_loans')
+            ->where('transactionLoanStatus', 'Repaid')
+            ->count();
+
+        $defaulted = DB::table('member_loans')
+            ->whereIn('transactionLoanStatus', ['Defaulted', 'Stopped'])
+            ->count();
+
+        return response()->json([
+            'active' => $active,
+            'repaid' => $repaid,
+            'defaulted' => $defaulted
+        ]);
     }
 
     // Savings -----------------------------------------------------------------------------------------------------------

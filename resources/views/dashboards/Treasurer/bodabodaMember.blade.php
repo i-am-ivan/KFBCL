@@ -20,7 +20,7 @@
 
     </head>
 
-<body x-data="{ page: 'profile', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'loanTypeModal' : false, 'personalInformationModal': false , 'sidebarToggle': false, 'scrollTop': false, 'identificationDocumentsModal': false, 'nextKinModal': false, 'vehiclesModal': false, 'contributionsModal': false, 'savingsModal': false, 'loansModal': false, 'finesPenaltiesModal': false, 'deleteMemberAccount': false, 'editNextKinModal': false, 'editMemberVehiclesModal': false, 'assignMemberVehicle': false, 'reassignMemberVehicle': false, 'withdrawContribution':false, 'withdrawSavings': false, 'payLoan': false, 'withdrawContributionModal': false, 'updateContributionTransactionModal': false, 'awardBonusModal': false}"
+<body x-data="{ page: 'profile', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'loanTypeModal' : false, 'personalInformationModal': false , 'sidebarToggle': false, 'scrollTop': false, 'identificationDocumentsModal': false, 'nextKinModal': false, 'vehiclesModal': false, 'contributionsModal': false, 'savingsModal': false, 'loansModal': false, 'finesPenaltiesModal': false, 'deleteMemberAccount': false, 'editNextKinModal': false, 'editMemberVehiclesModal': false, 'assignMemberVehicle': false, 'reassignMemberVehicle': false, 'withdrawContribution':false, 'withdrawSavings': false, 'payLoan': false, 'withdrawContributionModal': false, 'editContributionModal': false, 'awardBonusModal': false}"
       x-init="
          darkMode = JSON.parse(localStorage.getItem('darkMode'));
          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
@@ -622,7 +622,7 @@
                                                 x-init="fetch('/bodaboda-member/{{ $memberId }}/vehicles/member/count')
                                                     .then(res => res.json())
                                                     .then(data => { if(data.success) memberCount = data.count })">
-                                                <span x-text="memberCount"></span>
+                                                <span x-text="memberCount"></span> Owned
                                             </span>
 
                                             <!-- Non-Member Vehicles Count -->
@@ -631,7 +631,7 @@
                                                 x-init="fetch('/bodaboda-member/{{ $memberId }}/vehicles/nonmember/count')
                                                     .then(res => res.json())
                                                     .then(data => { if(data.success) nonMemberCount = data.count })">
-                                                <span x-text="nonMemberCount"></span>
+                                                <span x-text="nonMemberCount"></span> Assigned
                                             </span>
                                         </h4>
                                     </div>
@@ -639,31 +639,34 @@
                             </div>
                             <!-- Metric Item End -->
 
-                            <!-- Metric Item Start -->
-                            <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+                            <!-- Metric Item Start - Member's Contribution Balance -->
+                            <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]"
+                                x-data x-init="$store.contributionData.memberBalanceFormatted">
+
                                 <p class="text-theme-sm text-gray-500 dark:text-gray-400">
                                     Contributions
                                 </p>
 
                                 <div class="mt-3 flex items-end justify-between">
                                     <div>
-                                    <h4 class="text-xl font-bold text-gray-500 dark:text-white/90">
-                                        0
-                                    </h4>
+                                        <h4 class="text-xl font-bold text-gray-500 dark:text-white/90"
+                                            x-text="$store.contributionData.memberBalanceFormatted">
+                                            0
+                                        </h4>
                                     </div>
 
                                     <div class="flex items-center gap-1">
-                                    <span class="flex items-center gap-1 rounded-full bg-success-50 px-2 py-0.5 text-theme-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500">
-                                        0%
-                                    </span>
+                                        <span class="flex items-center gap-1 rounded-full bg-success-50 px-2 py-0.5 text-theme-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500">
+                                            0%
+                                        </span>
 
-                                    <span class="text-theme-xs text-gray-500 dark:text-gray-400">
-                                        Vs last month
-                                    </span>
+                                        <span class="text-theme-xs text-gray-500 dark:text-gray-400">
+                                            Vs last month
+                                        </span>
                                     </div>
                                 </div>
                             </div>
-                        <!-- Metric Item End -->
+                            <!-- Metric Item End -->
 
                         <!-- Metric Item Start -->
                         <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
@@ -2007,7 +2010,7 @@
 
                     <!-- Contributions Table -->
                     <div x-show="activeTab === 'contributions'">
-                        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+                        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]" x-data="contributionsTable()" x-init="init()">
                                         <!-- Contributions content here -->
                                         <div class="flex flex-col justify-between gap-5 border-b border-gray-200 px-5 py-4 sm:flex-row lg:items-center dark:border-gray-800">
                                             <div>
@@ -2022,8 +2025,7 @@
                                             <div class="hidden flex-col gap-3 sm:flex sm:flex-row sm:items-center">
 
                                                 <div class="hidden lg:block">
-                                                    <select x-model="statusFilter" @change="performFilter()" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                        <option value="Daily">Frequency</option>
+                                                    <select x-model="frequencyFilter" @change="performFilter()" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                                         <option value="Daily">Daily</option>
                                                         <option value="Weekly">Weekly</option>
                                                         <option value="Monthly">Monthly</option>
@@ -2032,8 +2034,16 @@
                                                 </div>
 
                                                 <div class="hidden lg:block">
-                                                    <select x-model="statusFilter" @change="performFilter()" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                        <option value="All">Payment Type</option>
+                                                    <select x-model="transactionFilter" @change="performFilter()" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                        <option value="All">All Transactions</option>
+                                                        <option value="Paid-In">Paid-In</option>
+                                                        <option value="Paid-Out">Paid-Out</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="hidden lg:block">
+                                                    <select x-model="paymentFilter" @change="performFilter()" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                        <option value="All">All Payment Types</option>
                                                         <option value="Cash">Cash</option>
                                                         <option value="MPesa">MPesa</option>
                                                         <option value="Bank">Bank</option>
@@ -2076,7 +2086,7 @@
 
                                         </div>
                                         <!-- Contributions table Table -->
-                                        <div x-data="contributionsTable()" x-init="init()">
+                                        <div>
                                             <div class="custom-scrollbar overflow-x-auto">
                                                 <table class="w-full table-auto">
                                                     <thead>
@@ -2161,7 +2171,8 @@
                                                                         </span>
                                                                     </td>
                                                                     <td class="p-4 whitespace-nowrap">
-                                                                        <button @click="updateContributionTransactionModal(contribution)" class="shadow-theme-xs inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+                                                                        <button @click="$dispatch('open-edit-contribution-modal', { contribution: contribution })"
+                                                                            class="shadow-theme-xs inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
                                                                             <svg class="w-[22px] h-[22px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                                                                 <path stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.1" d="M7 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h1m4-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm7.441 1.559a1.907 1.907 0 0 1 0 2.698l-6.069 6.069L10 19l.674-3.372 6.07-6.07a1.907 1.907 0 0 1 2.697 0Z"></path>
                                                                             </svg>
@@ -4683,12 +4694,12 @@
         </div>
     </div>
 
-    <!-- updateContributionTransactionModal -->
-    <div x-show="updateContributionTransactionModal" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999">
+    <!-- editContributionModal -->
+    <div x-show="$store.contributionData.editContributionModal" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999">
         <div class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
-        <div @click.outside="updateContributionTransactionModal = false" class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+        <div @click.outside="$store.contributionData.editContributionModal = false" class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
         <!-- close btn -->
-        <button @click="updateContributionTransactionModal = false" class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300">
+        <button @click="$store.contributionData.editContributionModal = false" class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300">
             <svg
                     class="fill-current"
                     width="24"
@@ -6412,20 +6423,44 @@
                 editContributionModal: false,
                 isContributing: false,
                 isWithdrawing: false,
-                isUpdating: false
+                isUpdating: false,
+                memberBalance: 0, // Added for member balance
+                memberBalanceFormatted: 'KES 0.00' // Added formatted balance
             });
 
             Alpine.data('contributionsTable', () => ({
+                // Original data
+                allContributions: [],
+                // Filtered data (what gets displayed)
                 contributions: [],
+                // Filter states
+                frequencyFilter: 'Daily',
+                transactionFilter: 'All',
+                paymentFilter: 'All',
                 page: 1,
                 itemsPerPage: 10,
                 errors: {},
 
                 init() {
+                    // Load all contributions
                     fetch('/bodaboda-member/{{ $memberId }}/contributions')
                         .then(res => res.json())
                         .then(data => {
-                            this.contributions = data;
+                            this.allContributions = data;
+                            this.applyFilters(); // Apply filters after data loads
+                        });
+
+                    // Load member contribution balance
+                    fetch('/contributions/balance/member/{{ $memberId }}')
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                Alpine.store('contributionData').memberBalance = data.balance;
+                                Alpine.store('contributionData').memberBalanceFormatted = data.formatted;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error loading member balance:', error);
                         });
 
                     // Listen for edit event from table
@@ -6445,7 +6480,67 @@
                     });
                 },
 
-                // Validation methods
+                // Filter methods
+                applyFilters() {
+                    let filtered = [...this.allContributions];
+
+                    // Apply transaction type filter (Paid-In/Paid-Out)
+                    if (this.transactionFilter !== 'All') {
+                        filtered = filtered.filter(c => c.transactionType === this.transactionFilter);
+                    }
+
+                    // Apply payment mode filter (Cash/MPesa/Bank)
+                    if (this.paymentFilter !== 'All') {
+                        filtered = filtered.filter(c => c.transactionMode === this.paymentFilter);
+                    }
+
+                    // Apply frequency filter based on transaction date
+                    if (this.frequencyFilter !== 'Daily') {
+                        const now = new Date();
+                        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+                        filtered = filtered.filter(c => {
+                            if (!c.transactionDate) return false;
+                            const transDate = new Date(c.transactionDate);
+
+                            switch(this.frequencyFilter) {
+                                case 'Daily':
+                                    // Daily shows today's transactions
+                                    return transDate >= today;
+
+                                case 'Weekly':
+                                    // Weekly shows last 7 days
+                                    const weekAgo = new Date(today);
+                                    weekAgo.setDate(weekAgo.getDate() - 7);
+                                    return transDate >= weekAgo;
+
+                                case 'Monthly':
+                                    // Monthly shows last 30 days
+                                    const monthAgo = new Date(today);
+                                    monthAgo.setDate(monthAgo.getDate() - 30);
+                                    return transDate >= monthAgo;
+
+                                case 'Yearly':
+                                    // Yearly shows last 365 days
+                                    const yearAgo = new Date(today);
+                                    yearAgo.setDate(yearAgo.getDate() - 365);
+                                    return transDate >= yearAgo;
+
+                                default:
+                                    return true;
+                            }
+                        });
+                    }
+
+                    this.contributions = filtered;
+                    this.page = 1; // Reset to first page after filtering
+                },
+
+                performFilter() {
+                    this.applyFilters();
+                },
+
+                // Validation methods (keep all existing validation methods)
                 validateField(field, value) {
                     if (!value || value === '' || value === null) {
                         this.errors[field] = 'This field is required';
@@ -6485,7 +6580,6 @@
                         isValid = false;
                     }
 
-                    // If payment mode is not Cash, transaction code is required
                     const transactionCode = document.getElementById('contribute_transaction_code')?.value;
                     if (paymentMode !== 'Cash' && (!transactionCode || transactionCode === '')) {
                         this.errors.transaction_code = 'Transaction code is required for non-cash payments';
@@ -6513,7 +6607,6 @@
                         isValid = false;
                     }
 
-                    // If payment mode is not Cash, transaction code is required
                     const transactionCode = document.getElementById('withdraw_transaction_code')?.value;
                     if (paymentMode !== 'Cash' && (!transactionCode || transactionCode === '')) {
                         this.errors.transaction_code = 'Transaction code is required for non-cash payments';
@@ -6541,7 +6634,6 @@
                         isValid = false;
                     }
 
-                    // If payment mode is not Cash, transaction code is required
                     const transactionCode = document.getElementById('edit_transaction_code')?.value;
                     if (paymentMode !== 'Cash' && (!transactionCode || transactionCode === '')) {
                         this.errors.transaction_code = 'Transaction code is required for non-cash payments';
@@ -6551,7 +6643,6 @@
                     return isValid;
                 },
 
-                // Handle transaction code readonly based on payment mode
                 handlePaymentModeChange(mode, type) {
                     const codeField = type === 'contribute' ? document.getElementById('contribute_transaction_code') :
                                     type === 'withdraw' ? document.getElementById('withdraw_transaction_code') :
@@ -6560,14 +6651,13 @@
                     if (codeField) {
                         if (mode === 'Cash') {
                             codeField.readOnly = true;
-                            codeField.value = ''; // Clear value for cash transactions
+                            codeField.value = '';
                         } else {
                             codeField.readOnly = false;
                         }
                     }
                 },
 
-                // Contribute function
                 contribute() {
                     if (!this.validateContributeForm()) {
                         alert('Please fix the errors in the form before submitting.');
@@ -6614,7 +6704,6 @@
                     });
                 },
 
-                // Withdraw function
                 withdraw() {
                     if (!this.validateWithdrawForm()) {
                         alert('Please fix the errors in the form before submitting.');
@@ -6661,7 +6750,6 @@
                     });
                 },
 
-                // Update function
                 updateContribution() {
                     if (!this.validateUpdateForm()) {
                         alert('Please fix the errors in the form before submitting.');

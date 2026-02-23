@@ -384,10 +384,10 @@
                         <div class="relative w-8 h-8">
                             <!-- Outer circular orange/brown border with thin grayish margin -->
                             <div class="absolute inset-0 rounded-full border-2 border-amber-600/20 dark:border-amber-500/30"></div>
-                            
+
                             <!-- Inner circular orange/brown border with thin grayish margin -->
                             <div class="absolute inset-1 rounded-full border border-amber-600/30 dark:border-amber-500/40"></div>
-                            
+
                             <!-- Logo image -->
                             <div class="absolute inset-2 rounded-full overflow-hidden">
                                 <img class="w-full h-full object-cover dark:hidden" src="{{ asset('company_logo.png') }}" alt="Logo" />
@@ -558,199 +558,272 @@
                 </div>
               </div>
               <!-- Greeting card End -->
-              <!-- Analytics Start -->
-              <div class="col-span-12">
-                <!-- Metric Group Two -->
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 xl:grid-cols-3">
-                  <!-- Metric Item Start -->
-                  <div class="flex flex-col justify-between space-y-6 rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3">
-                    <div class="flex items-start justify-between">
-                      <div class="items-center justify-center">
-                        <p class="items-center justify-center text-lg font-semibold text-gray-500 dark:text-white/90">
-                          Bodaboda group wallet
-                        </p>
-                        <h3 class="text-2xl font-semibold text-gray-600 dark:text-white/90">
-                          KES 0.00
-                        </h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">
-                          <span class="text-success-600 font-medium">0 %</span>
-                          than last Month
-                        </p>
-                      </div>
-                      <div x-data="{openDropDown: false}" class="relative h-fit">
-                      </div>
-                    </div>
-                    <div class="items-center justify-between">
-                      <div>
-                        <div class="mt-5 flex items-center gap-2">
-                          <div class="flex items-center justify-center gap-6">
-                            <div>
-                              <p class="text-lg font-semibold text-center text-gray-500 dark:text-white/90">
-                                2
-                              </p>
-                              <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">
-                                Total Members
-                              </p>
+
+                <div class="col-span-12">
+                    <!-- Metric Group Two -->
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 xl:grid-cols-4"
+                        x-data x-init="$store.stats.init()">
+
+                        <!-- Members Metric -->
+                        <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+                            <p class="text-theme-sm text-gray-500 dark:text-gray-400">Members</p>
+                            <div class="mt-3 flex items-end justify-between">
+                                <div class="items-center justify-between">
+                                    <div>
+                                        <div class="mt-5 flex items-center gap-2">
+                                            <div class="flex items-center justify-center gap-6">
+                                                <div>
+                                                    <p class="text-lg font-semibold text-center text-gray-500 dark:text-white/90"
+                                                    x-text="$store.stats.allMembers">0</p>
+                                                    <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">All Members</p>
+                                                </div>
+                                                <div class="w-px bg-gray-200 h-11 dark:bg-gray-800"></div>
+                                                <div>
+                                                    <p class="text-lg font-semibold text-center text-success-700 dark:text-white/90"
+                                                    x-text="$store.stats.members">0</p>
+                                                    <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Member</p>
+                                                </div>
+                                                <div class="w-px bg-gray-200 h-11 dark:bg-gray-800"></div>
+                                                <div>
+                                                    <p class="text-lg font-semibold text-center text-warning-700 dark:text-white/90"
+                                                    x-text="$store.stats.nonMembers">0</p>
+                                                    <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Non-Members</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-
-                            <div class="w-px bg-gray-200 h-11 dark:bg-gray-800"></div>
-
-                            <div>
-                              <p class="text-lg font-semibold text-center text-success-700 dark:text-white/90">
-                                0
-                              </p>
-                              <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">
-                                Active Loans
-                              </p>
-                            </div>
-
-                            <div class="w-px bg-gray-200 h-11 dark:bg-gray-800"></div>
-
-                            <div>
-                              <p class="text-lg font-semibold text-center text-warning-700 dark:text-white/90">
-                                0
-                              </p>
-                              <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">
-                                Real Estate Units
-                              </p>
-                            </div>
-                          </div>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- Metric Item End -->
 
-                  <!-- Metric Item Start -->
-                  <div class="space-y5 rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3">
-                    <div class="flex items-start justify-between">
-                      <div>
-                        <h3 class="text-lg font-semibold text-gray-500 dark:text-white/90">
-                          Loans
-                        </h3>
-                        <p class="dark:text-gray-40 text-sm text-gray-500">
-                          Active Loans Balance
-                        </p>
-                      </div>
-                    </div>
-                    <div class="relative mt-5 flex justify-between">
-                      <div>
-                        <h3 class="mb-1 text-2xl font-bold text-gray-500 dark:text-white/90">
-                          KES 0.00
-                        </h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">
-                          <span class="text-success-600 font-medium">0 %</span>
-                          than last Month
-                        </p>
-                        <div class="mt-5 flex items-center gap-2">
-                          <div class="flex items-center justify-center gap-6">
-                            <div>
-                              <p class="text-lg font-semibold text-center text-gray-500 dark:text-white/90">
-                                0
-                              </p>
-                              <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">
-                                Borrowers
-                              </p>
+                        <!-- Vehicles Metric -->
+                        <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+                            <p class="text-theme-sm text-gray-500 dark:text-gray-400">Vehicles</p>
+                            <div class="mt-3 flex items-end justify-between">
+                                <div class="items-center justify-between">
+                                    <div>
+                                        <div class="mt-5 flex items-center gap-2">
+                                            <div class="flex items-center justify-center gap-6">
+                                                <div>
+                                                    <p class="text-lg font-semibold text-center text-gray-500 dark:text-white/90"
+                                                    x-text="$store.stats.allVehicles">0</p>
+                                                    <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Total Vehicles</p>
+                                                </div>
+                                                <div class="w-px bg-gray-200 h-11 dark:bg-gray-800"></div>
+                                                <div>
+                                                    <p class="text-lg font-semibold text-center text-success-700 dark:text-white/90"
+                                                    x-text="$store.stats.motorcycles">0</p>
+                                                    <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Motorcycles</p>
+                                                </div>
+                                                <div class="w-px bg-gray-200 h-11 dark:bg-gray-800"></div>
+                                                <div>
+                                                    <p class="text-lg font-semibold text-center text-warning-700 dark:text-white/90"
+                                                    x-text="$store.stats.tukTuks">0</p>
+                                                    <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Tuk Tuk</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-
-                            <div class="w-px bg-gray-200 h-11 dark:bg-gray-800"></div>
-
-                            <div>
-                              <p class="text-lg font-semibold text-center text-success-700 dark:text-white/90">
-                                0
-                              </p>
-                              <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">
-                                Active Clients
-                              </p>
-                            </div>
-
-                            <div class="w-px bg-gray-200 h-11 dark:bg-gray-800"></div>
-
-                            <div>
-                              <p class="text-lg font-semibold text-center text-warning-500 dark:text-white/90">
-                                0
-                              </p>
-                              <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">
-                                Pending Loan Applications
-                              </p>
-                            </div>
-                          </div>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- Metric Item End -->
 
-                  <!-- Metric Item Start -->
-                  <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
-                    <div class="flex items-start justify-between">
-                      <div>
-                        <h3 class="text-lg font-semibold text-gray-500 dark:text-white/90">
-                          Real Estate
-                        </h3>
-                        <p class="dark:text-gray-40 text-sm text-gray-500">
-                          Wallet
-                        </p>
-                      </div>
-                    </div>
-                    <div class="relative mt-5 flex justify-between">
-                      <div>
-                        <h3 class="mb-1 text-2xl font-bold text-gray-500 dark:text-white/90">
-                          KES 0.00
-                        </h3>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">
-                          <span class="text-success-600 font-medium">0 %</span>
-                          than last Month
-                        </p>
-                        <div class="mt-5 flex items-center gap-2">
-                          <div class="flex items-center justify-center gap-6">
-                            <div>
-                              <p class="text-lg font-semibold text-center text-gray-500 dark:text-white/90">
-                                0
-                              </p>
-                              <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">
-                                Total Units
-                              </p>
+                        <!-- Loans Metric -->
+                        <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+                            <p class="text-theme-sm text-gray-500 dark:text-gray-400">Loans</p>
+                            <div class="mt-3 flex items-end justify-between">
+                                <div class="items-center justify-between">
+                                    <div>
+                                        <div class="mt-5 flex items-center gap-2">
+                                            <div class="flex items-center justify-center gap-6">
+                                                <div>
+                                                    <p class="text-lg font-semibold text-center text-gray-500 dark:text-white/90"
+                                                    x-text="$store.stats.allLoans">0</p>
+                                                    <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Total Loans</p>
+                                                </div>
+                                                <div class="w-px bg-gray-200 h-11 dark:bg-gray-800"></div>
+                                                <div>
+                                                    <p class="text-lg font-semibold text-center text-success-700 dark:text-white/90"
+                                                    x-text="$store.stats.activeLoans">0</p>
+                                                    <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Active</p>
+                                                </div>
+                                                <div class="w-px bg-gray-200 h-11 dark:bg-gray-800"></div>
+                                                <div>
+                                                    <p class="text-lg font-semibold text-center text-warning-700 dark:text-white/90"
+                                                    x-text="$store.stats.badLoans">0</p>
+                                                    <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Defaulted/Stopped</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-
-                            <div class="w-px bg-gray-200 h-11 dark:bg-gray-800"></div>
-
-                            <div>
-                              <p class="text-lg font-semibold text-center text-success-500 dark:text-white/90">
-                                0
-                              </p>
-                              <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">
-                                Units Sold
-                              </p>
-                            </div>
-
-                            <div class="w-px bg-gray-200 h-11 dark:bg-gray-800"></div>
-
-                            <div>
-                              <p class="text-lg font-semibold text-center text-warning-500 dark:text-white/90">
-                                0
-                              </p>
-                              <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">
-                                Available Units
-                              </p>
-                            </div>
-                          </div>
                         </div>
-                      </div>
+
+                        <!-- Contributions Wallet Metric (already had binding) -->
+                        <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+                            <p class="text-theme-sm text-gray-500 dark:text-gray-400">Contributions Wallet</p>
+                            <div class="mt-3 flex items-end justify-between">
+                                <div>
+                                    <h4 class="text-xl font-semibold text-gray-500 dark:text-white/90"
+                                        x-text="$store.stats.contributionBalance">KES 0.00</h4>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                  <!-- Metric Item End -->
+
                 </div>
-                <!-- Metric Group Two -->
-              </div>
-              <!-- Analytics End -->
-              <!-- Appointment Table -->
-                    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-                      <div class="hidden flex-col gap-3 sm:flex sm:flex-row sm:items-center">
-                        <!-- View More Drop Down -->
-                      </div>
-                    </div>
 
+                <!-- Analytics Start -->
+                <div class="col-span-12">
+                    <!-- Charts Grid -->
+                    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+
+                        <!-- Contributions Chart -->
+                        <div class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+
+                            <div class="flex items-center justify-between gap-5">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
+                                    Contributions Statistics
+                                    </h3>
+                                    <p class="dark:text-gray-40 text-sm text-gray-500">
+                                    Contributions Performance analysis.
+                                    </p>
+                                </div>
+                                <div>
+                                    <div x-data="{ isOptionSelected: false }" class="relative z-20 bg-transparent">
+                                        <select class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" :class="isOptionSelected &amp;&amp; 'text-gray-800 dark:text-white/90'" @change="isOptionSelected = true">
+                                            <option value="" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">
+                                            Monthly
+                                            </option>
+
+                                            <option value="" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">
+                                            Yearly
+                                            </option>
+                                        </select>
+                                        <span class="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex items-center gap-5 pt-5">
+
+                                    <div class="flex items-center gap-1.5">
+                                        <div class="bg-brand-500 h-2.5 w-2.5 rounded-full"></div>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                                            Paid-In
+                                        </p>
+                                    </div>
+
+                                    <div class="flex items-center gap-1.5">
+                                        <div class="bg-brand-200 h-2.5 w-2.5 rounded-full"></div>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                                            Paid-Out
+                                        </p>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="h-[256px] w-full" style="min-height: 320px;">
+                                <canvas id="contributionChart" class="apexcharts-canvas apexchartsdsp79uk4k apexcharts-theme-" style="width: 617px; height: 256px;"></canvas>
+                            </div>
+
+                        </div>
+
+                        <!-- Loans Performance Chart -->
+                        <div class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+
+                            <div class="flex items-center justify-between gap-5">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
+                                    Loans Statistics
+                                    </h3>
+                                    <p class="dark:text-gray-40 text-sm text-gray-500">
+                                    Loans Performance Analytics.
+                                    </p>
+                                </div>
+                                <div>
+                                    <div x-data="{ isOptionSelected: false }" class="relative z-20 bg-transparent">
+                                        <select class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" :class="isOptionSelected &amp;&amp; 'text-gray-800 dark:text-white/90'" @change="isOptionSelected = true">
+                                            <option value="" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">
+                                            Monthly
+                                            </option>
+
+                                            <option value="" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">
+                                            Yearly
+                                            </option>
+                                        </select>
+                                        <span class="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex items-center gap-5 pt-5">
+
+                                    <div class="flex items-center gap-1.5">
+                                        <div class="bg-brand-500 h-2.5 w-2.5 rounded-full"></div>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                                            Disbursed
+                                        </p>
+                                    </div>
+
+                                    <div class="flex items-center gap-1.5">
+                                        <div class="bg-success-500 h-2.5 w-2.5 rounded-full"></div>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                                            Repaid
+                                        </p>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="h-[256px] w-full" style="min-height: 320px;">
+                                <canvas id="loansChart" style="width: 617px; height: 256px;"></canvas>
+                            </div>
+
+                            <!-- Loan Status Mini Chart -->
+                            <div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-800">
+                                <div class="mb-3 flex items-center justify-between">
+                                    <h4 class="text-sm font-medium text-gray-700 dark:text-gray-400">
+                                        Loan Status Distribution
+                                    </h4>
+                                    <div class="flex items-center gap-3">
+                                        <div class="flex items-center gap-2">
+                                            <span class="h-3 w-3 rounded-full bg-brand-500"></span>
+                                            <span class="text-xs text-gray-600 dark:text-gray-400">Active</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="h-3 w-3 rounded-full bg-success-500"></span>
+                                            <span class="text-xs text-gray-600 dark:text-gray-400">Repaid</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="h-3 w-3 rounded-full bg-error-500"></span>
+                                            <span class="text-xs text-gray-600 dark:text-gray-400">Defaulted</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="h-40 w-full">
+                                    <canvas id="loanStatusChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Analytics End -->
+
+              <!-- Appointment Table -->
                       <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
                         <div class="flex flex-col justify-between gap-5 border-b border-gray-200 px-5 py-4 sm:flex-row sm:items-center dark:border-gray-800">
                             <div>
@@ -947,53 +1020,314 @@
       <!-- ===== Content Area End ===== -->
     </div>
     <!-- ===== Page Wrapper End ===== -->
-    <script defer src="{{ asset('assets/bundle.js') }}"></script>
 
+    <script defer src="{{ asset('assets/bundle.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Appointments -->
     <script>
         function todayConfirmedTop10() {
-        return {
-            originalRows: [],
-            sort: { key: "appointmentDate", asc: true },
+            return {
+                originalRows: [],
+                sort: { key: "appointmentDate", asc: true },
 
-            init() {
-                this.fetchTodayConfirmedTop10();
-            },
+                init() {
+                    this.fetchTodayConfirmedTop10();
+                },
 
-            async fetchTodayConfirmedTop10() {
-                try {
-                    const response = await fetch('/appointments/my-today-confirmed-top10');
-                    const result = await response.json();
+                async fetchTodayConfirmedTop10() {
+                    try {
+                        const response = await fetch('/appointments/my-today-confirmed-top10');
+                        const result = await response.json();
 
-                    if (result.success) {
-                        this.originalRows = result.data;
+                        if (result.success) {
+                            this.originalRows = result.data;
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
                     }
-                } catch (error) {
-                    console.error('Error:', error);
-                }
-            },
+                },
 
-            get sortedRows() {
-                return this.originalRows.slice().sort((a, b) => {
-                    let valA = a[this.sort.key];
-                    let valB = b[this.sort.key];
-                    if (typeof valA === "string") valA = valA.toLowerCase();
-                    if (typeof valB === "string") valB = valB.toLowerCase();
-                    if (valA < valB) return this.sort.asc ? -1 : 1;
-                    if (valA > valB) return this.sort.asc ? 1 : -1;
-                    return 0;
-                });
-            },
+                get sortedRows() {
+                    return this.originalRows.slice().sort((a, b) => {
+                        let valA = a[this.sort.key];
+                        let valB = b[this.sort.key];
+                        if (typeof valA === "string") valA = valA.toLowerCase();
+                        if (typeof valB === "string") valB = valB.toLowerCase();
+                        if (valA < valB) return this.sort.asc ? -1 : 1;
+                        if (valA > valB) return this.sort.asc ? 1 : -1;
+                        return 0;
+                    });
+                },
 
-            sortBy(key) {
-                if (this.sort.key === key) {
-                    this.sort.asc = !this.sort.asc;
-                } else {
-                    this.sort.key = key;
-                    this.sort.asc = true;
+                sortBy(key) {
+                    if (this.sort.key === key) {
+                        this.sort.asc = !this.sort.asc;
+                    } else {
+                        this.sort.key = key;
+                        this.sort.asc = true;
+                    }
                 }
-            }
-        };
-    }
+            };
+        }
+    </script>
+
+    <!-- Stats and Charts Alpine JS -->
+    <script>
+
+        document.addEventListener('alpine:init', () => {
+            // Stats Store
+            Alpine.store('stats', {
+                // Member stats
+                allMembers: 0,
+                members: 0,
+                nonMembers: 0,
+
+                // Vehicle stats
+                allVehicles: 0,
+                motorcycles: 0,
+                tukTuks: 0,
+
+                // Loan stats
+                allLoans: 0,
+                activeLoans: 0,
+                badLoans: 0,
+
+                // Contribution wallet
+                contributionBalance: 'KES 0.00',
+
+                // Chart data
+                monthlyContributions: [],
+                monthlyLoans: [],
+                loanStatus: { active: 0, repaid: 0, defaulted: 0 },
+
+                // Initialize all stats
+                init() {
+                    this.loadMemberStats();
+                    this.loadVehicleStats();
+                    this.loadLoanStats();
+                    this.loadContributionBalance();
+                    this.loadChartData();
+                },
+
+                loadMemberStats() {
+                    // All members
+                    fetch('/stats/members/all')
+                        .then(res => res.json())
+                        .then(data => this.allMembers = data.count);
+
+                    // Members
+                    fetch('/stats/members/member')
+                        .then(res => res.json())
+                        .then(data => this.members = data.count);
+
+                    // Non-members
+                    fetch('/stats/members/non-member')
+                        .then(res => res.json())
+                        .then(data => this.nonMembers = data.count);
+                },
+
+                loadVehicleStats() {
+                    // All vehicles
+                    fetch('/stats/vehicles/all')
+                        .then(res => res.json())
+                        .then(data => this.allVehicles = data.count);
+
+                    // Motorcycles
+                    fetch('/stats/vehicles/motorcycles')
+                        .then(res => res.json())
+                        .then(data => this.motorcycles = data.count);
+
+                    // Tuk Tuks
+                    fetch('/stats/vehicles/tuktuk')
+                        .then(res => res.json())
+                        .then(data => this.tukTuks = data.count);
+                },
+
+                loadLoanStats() {
+                    // All loans
+                    fetch('/stats/loans/all')
+                        .then(res => res.json())
+                        .then(data => this.allLoans = data.count);
+
+                    // Active loans
+                    fetch('/stats/loans/active')
+                        .then(res => res.json())
+                        .then(data => this.activeLoans = data.count);
+
+                    // Bad loans (Defaulted/Stopped)
+                    fetch('/stats/loans/bad')
+                        .then(res => res.json())
+                        .then(data => this.badLoans = data.count);
+                },
+
+                loadContributionBalance() {
+                    fetch('/contributions/balance/total')
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) this.contributionBalance = data.formatted;
+                        });
+                },
+
+                loadChartData() {
+                    // Monthly contributions
+                    fetch('/stats/contributions/monthly')
+                        .then(res => res.json())
+                        .then(data => {
+                            this.monthlyContributions = data.data;
+                            this.initContributionChart();
+                        });
+
+                    // Monthly loans
+                    fetch('/stats/loans/monthly')
+                        .then(res => res.json())
+                        .then(data => {
+                            this.monthlyLoans = data.data;
+                            this.initLoansChart();
+                        });
+
+                    // Loan status distribution
+                    fetch('/stats/loans/status')
+                        .then(res => res.json())
+                        .then(data => {
+                            this.loanStatus = data;
+                            this.initLoanStatusChart();
+                        });
+                },
+
+                initContributionChart() {
+                    const ctx = document.getElementById('contributionChart');
+                    if (!ctx) return;
+
+                    const months = this.monthlyContributions.map(d => d.month);
+                    const paidIn = this.monthlyContributions.map(d => d.paid_in / 1000); // Convert to thousands
+                    const paidOut = this.monthlyContributions.map(d => d.paid_out / 1000);
+
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: months,
+                            datasets: [
+                                {
+                                    label: 'Paid-In (Ksh 000.00)',
+                                    data: paidIn,
+                                    backgroundColor: '#CC561E',
+                                    borderRadius: 4
+                                },
+                                {
+                                    label: 'Paid-Out (Ksh 000.00)',
+                                    data: paidOut,
+                                    backgroundColor: '#e2b085',
+                                    borderRadius: 4
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    position: 'bottom'
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    grid: {
+                                        display: true,
+                                        color: 'rgba(0,0,0,0.05)'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                },
+
+                initLoansChart() {
+                    const ctx = document.getElementById('loansChart');
+                    if (!ctx) return;
+
+                    const months = this.monthlyLoans.map(d => d.month);
+                    const disbursed = this.monthlyLoans.map(d => d.disbursed / 1000);
+                    const repaid = this.monthlyLoans.map(d => d.repaid / 1000);
+
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: months,
+                            datasets: [
+                                {
+                                    label: 'Disbursed (Ksh 000.00)',
+                                    data: disbursed,
+                                    borderColor: '#c5480e',
+                                    backgroundColor: 'rgba(59,130,246,0.1)',
+                                    tension: 0.5,
+                                    fill: false
+                                },
+                                {
+                                    label: 'Repaid (Ksh 000.00)',
+                                    data: repaid,
+                                    borderColor: '#6ce9a6',
+                                    backgroundColor: 'rgba(16,185,129,0.1)',
+                                    tension: 0.5,
+                                    fill: false
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    position: 'bottom'
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    grid: {
+                                        display: true,
+                                        color: 'rgba(0,0,0,0.05)'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                },
+
+                initLoanStatusChart() {
+                    const ctx = document.getElementById('loanStatusChart');
+                    if (!ctx) return;
+
+                    new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Active', 'Repaid', 'Defaulted/Stopped'],
+                            datasets: [{
+                                data: [this.loanStatus.active, this.loanStatus.repaid, this.loanStatus.defaulted],
+                                backgroundColor: ['#e2b085', '#10b981', '#FF6500'],
+                                borderWidth: 0
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    position: 'bottom'
+                                }
+                            },
+                            cutout: '60%'
+                        }
+                    });
+                }
+            });
+
+        });
+
     </script>
 
   </body>
