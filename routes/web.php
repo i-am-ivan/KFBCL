@@ -229,6 +229,8 @@ Route::get('/bodaboda-member/{memberId}/vehicles/available', [BodabodaController
 
 Route::get('/member-loan-types/count', [BodabodaController::class, 'countAllMemberLoanTypes']);
 
+Route::get('/bodaboda-member/{memberId}/loans/active/count', [BodabodaController::class, 'countAllMemberLoans']);
+
 // Loans
 Route::get('/loans/summary', [BodabodaController::class, 'getAllLoansSummary']);
 

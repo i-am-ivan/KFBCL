@@ -583,29 +583,30 @@
 
                             <!-- Metric Item Start -->
                             <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
-                            <p class="text-theme-sm text-gray-500 dark:text-gray-400">
-                                Active Loans
-                            </p>
+                                <p class="text-theme-sm text-gray-500 dark:text-gray-400">
+                                    Active Loans
+                                </p>
 
-                            <div class="mt-3 flex items-end justify-between">
-                                <div>
-                                <h4 class="text-xl font-bold text-gray-500 dark:text-white/90">
-                                    0
-                                </h4>
-                                </div>
+                                <div class="mt-3 flex items-end justify-between">
+                                    <div x-data>
+                                        <h4 class="text-xl font-bold text-gray-500 dark:text-white/90"
+                                            x-text="$store.loanStats.activeLoans">
+                                            0
+                                        </h4>
+                                    </div>
 
-                                <div class="flex items-center gap-1">
-                                <span class="flex items-center gap-1 rounded-full bg-success-50 px-2 py-0.5 text-theme-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500">
-                                    0%
-                                </span>
+                                    <div class="flex items-center gap-1">
+                                        <span class="flex items-center gap-1 rounded-full bg-success-50 px-2 py-0.5 text-theme-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500">
+                                            0%
+                                        </span>
 
-                                <span class="text-theme-xs text-gray-500 dark:text-gray-400">
-                                    Vs last month
-                                </span>
+                                        <span class="text-theme-xs text-gray-500 dark:text-gray-400">
+                                            Vs last month
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <!-- Metric Item End -->
+                            <!-- Metric Item End -->
 
                         <!-- Metric Item Start - Contributions Wallet -->
                         <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]"
@@ -719,17 +720,7 @@
                                                     Fines
                                                 </button>
 
-                                                <!-- Settings -->
-                                                <button class="inline-flex items-center gap-2 border-b-2 px-2.5 py-2 text-sm font-medium transition-colors duration-200 ease-in-out"
-                                                        x-bind:class="activeTab === 'settings' ? 'text-brand-500 border-brand-500 dark:text-brand-400 dark:border-brand-400' : 'bg-transparent text-gray-500 border-transparent hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
-                                                        x-on:click="activeTab = 'settings'">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-settings">
-                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                    <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"/>
-                                                    <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/>
-                                                    </svg>
-                                                    Settings
-                                                </button>
+
                             </nav>
                         </div>
 
@@ -787,43 +778,47 @@
                                                             </div>
 
                                                             <div class="hidden flex-col gap-3 sm:flex sm:flex-row sm:items-center">
-                                                                <div class="relative flex-1 sm:flex-auto">
-                                                                    <span class="absolute top-1/2 left-4 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                                            <!-- Search -->
+                                                            <div class="relative flex-1 sm:flex-auto">
+                                                                <span class="absolute top-1/2 left-4 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                                                                     <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                                         <path fill-rule="evenodd" clip-rule="evenodd" d="M3.04199 9.37363C3.04199 5.87693 5.87735 3.04199 9.37533 3.04199C12.8733 3.04199 15.7087 5.87693 15.7087 9.37363C15.7087 12.8703 12.8733 15.7053 9.37533 15.7053C5.87735 15.7053 3.04199 12.8703 3.04199 9.37363ZM9.37533 1.54199C5.04926 1.54199 1.54199 5.04817 1.54199 9.37363C1.54199 13.6991 5.04926 17.2053 9.37533 17.2053C11.2676 17.2053 13.0032 16.5344 14.3572 15.4176L17.1773 18.238C17.4702 18.5309 17.945 18.5309 18.2379 18.238C18.5308 17.9451 18.5309 17.4703 18.238 17.1773L15.4182 14.3573C16.5367 13.0033 17.2087 11.2669 17.2087 9.37363C17.2087 5.04817 13.7014 1.54199 9.37533 1.54199Z" fill=""></path>
                                                                     </svg>
-                                                                    </span>
-                                                                    <input type="text"
-                                                                        x-model="searchQuery"
-                                                                        @input="performSearch()"
-                                                                        placeholder="Search"
-                                                                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pr-4 pl-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden sm:w-[300px] sm:min-w-[300px] dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                                </div>
+                                                                </span>
+                                                                <input type="text"
+                                                                    x-model="searchQuery"
+                                                                    @input="performSearch()"
+                                                                    placeholder="Search"
+                                                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pr-4 pl-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden sm:w-[300px] sm:min-w-[300px] dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                            </div>
 
-                                                                <div class="hidden lg:block">
-                                                                    <select x-model="statusFilter"
-                                                                            @change="performFilter()"
-                                                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                                        <option value="All">All Members</option>
-                                                                        <option value="Member">Members</option>
-                                                                        <option value="Non-Member">Non-members</option>
-                                                                    </select>
-                                                                </div>
+                                                            <!-- Membership Filter (Member/Non-Member) -->
+                                                            <div class="hidden lg:block">
+                                                                <select x-model="membershipFilter"
+                                                                        @change="performFilter()"
+                                                                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                                    <option value="All">All Members</option>
+                                                                    <option value="Member">Members</option>
+                                                                    <option value="Non-Member">Non-members</option>
+                                                                </select>
+                                                            </div>
 
-                                                                <div class="hidden lg:block">
-                                                                    <select x-model="statusFilter"
-                                                                            @change="performFilter()"
-                                                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                                        <option value="All">Status</option>
-                                                                        <option value="Active">Active Members</option>
-                                                                        <option value="Suspended">Suspended Members</option>
-                                                                        <option value="Blacklisted">Blacklisted Members</option>
-                                                                    </select>
-                                                                </div>
+                                                            <!-- Status Filter (Active/Suspended/Blacklisted) -->
+                                                            <div class="hidden lg:block">
+                                                                <select x-model="statusFilter"
+                                                                        @change="performFilter()"
+                                                                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                                    <option value="All">All Status</option>
+                                                                    <option value="Active">Active Members</option>
+                                                                    <option value="Suspended">Suspended Members</option>
+                                                                    <option value="Blacklisted">Blacklisted Members</option>
+                                                                </select>
+                                                            </div>
 
-                                                                <div>
-                                                                    <button @click="printMembersReport()"
-                                                                            class="hover:text-dark-900 shadow-theme-xs relative flex h-11 items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
+                                                            <!-- Print Button -->
+                                                            <div>
+                                                                <button @click="printMembersReport()"
+                                                                        class="hover:text-dark-900 shadow-theme-xs relative flex h-11 items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                                                         <path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2" />
@@ -831,13 +826,15 @@
                                                                         <rect x="7" y="13" width="10" height="8" rx="2" />
                                                                     </svg>
                                                                     Print
-                                                                    </button>
-                                                                </div>
+                                                                </button>
                                                             </div>
+                                                        </div>
+
                                                         </div>
                                                         <!-- Members Table -->
                                                         <div>
                                                             <div class="custom-scrollbar overflow-x-auto">
+
                                                                 <table class="w-full table-auto">
                                                                     <thead>
                                                                         <tr class="border-b border-gray-200 dark:divide-gray-800 dark:border-gray-800">
@@ -973,8 +970,8 @@
 
                                                                             </tbody>
                                                                         </template>
-
                                                                 </table>
+
                                                             </div>
 
                                                             <div class="border-t border-gray-200 px-5 py-4 dark:border-gray-800">
@@ -1518,7 +1515,7 @@
 
                                 </div>
 
-                                <div x-show="activeTab === 'stages'" style="display: none;">
+                                <div x-show="activeTab === 'stages'" style="display: none;" x-data="stageTable()">
                                     <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
                                         <!-- Stages table -->
                                         <div class="flex flex-col justify-between gap-5 border-b border-gray-200 px-5 py-4 sm:flex-row lg:items-center dark:border-gray-800">
@@ -1532,20 +1529,22 @@
                                             </div>
 
                                             <div class="hidden flex-col gap-3 sm:flex sm:flex-row sm:items-center">
-                                                    <div class="hidden lg:block">
-                                                        <select x-model="statusFilter"
-                                                                @change="performFilter()"
-                                                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                            <option value="All">Status</option>
-                                                            <option value="Active">Active</option>
-                                                            <option value="In-Active">In-Active</option>
-                                                            <option value="Under Review">Under Review</option>
-                                                        </select>
-                                                    </div>
+                                                <!-- Status Filter Dropdown -->
+                                                <div class="hidden lg:block">
+                                                    <select x-model="statusFilter"
+                                                            @change="performFilter()"
+                                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                        <option value="All">All Status</option>
+                                                        <option value="Active">Active</option>
+                                                        <option value="In-Active">In-Active</option>
+                                                        <option value="Under Review">Under Review</option>
+                                                    </select>
+                                                </div>
 
-                                                    <div>
-                                                        <button @click="printMembersReport()"
-                                                                class="hover:text-dark-900 shadow-theme-xs relative flex h-11 items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
+                                                <!-- Print Button -->
+                                                <div>
+                                                    <button @click="printStagesReport()"
+                                                            class="hover:text-dark-900 shadow-theme-xs relative flex h-11 items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                                             <path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2" />
@@ -1553,23 +1552,24 @@
                                                             <rect x="7" y="13" width="10" height="8" rx="2" />
                                                         </svg>
                                                         Print
-                                                        </button>
-                                                    </div>
+                                                    </button>
+                                                </div>
 
-                                                    <button @click="$dispatch('open-new-stage-modal')"
-                                                                    class="shadow-theme-xs inline-flex flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                                                <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                </svg>
-                                                                New Stage
-                                                            </button>
-
+                                                <!-- New Stage Button -->
+                                                <button @click="$dispatch('open-new-stage-modal')"
+                                                        class="shadow-theme-xs inline-flex flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                                        <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                    </svg>
+                                                    New Stage
+                                                </button>
                                             </div>
+
                                         </div>
 
                                         <div>
                                             <!-- Table Container -->
-                                            <div class="custom-scrollbar overflow-x-auto" x-data="stageTable()">
+                                            <div class="custom-scrollbar overflow-x-auto">
                                                     <table class="w-full">
                                                             <!-- table header start -->
                                                             <thead>
@@ -1769,7 +1769,7 @@
                                     </div>
                                 </div>
 
-                                <div x-show="activeTab === 'loans'">
+                                <div x-show="activeTab === 'loans'" x-data="loanTypesTable()">
                                     <!-- Loan Settings Content -->
                                     <div class="relative ">
                                         <!-- Tabbed content -->
@@ -1810,6 +1810,7 @@
                                                 <div x-show="activeTab === 'loans-type'">
                                                     <!-- Loan types table -->
                                                     <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+
                                                         <div class="flex flex-col justify-between gap-5 border-b border-gray-200 px-5 py-4 sm:flex-row lg:items-center dark:border-gray-800">
                                                             <div>
                                                                     <h3 class="text-lg font-semibold text-gray-600 dark:text-white/90">
@@ -1822,27 +1823,42 @@
 
                                                             <div class="hidden flex-col gap-3 sm:flex sm:flex-row sm:items-center">
                                                                 <!-- Filter by Frequency -->
-                                                                <div class="hidden lg:block">
-                                                                    <select x-model="statusFilter" @change="performFilter()" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                                        <option value="All">Frequency</option>
-                                                                        <option value="Daily">Daily</option>
-                                                                        <option value="Weekly">Weekly</option>
-                                                                        <option value="Monthly">Monthly</option>
-                                                                    </select>
-                                                                </div>
+                                                                    <div class="hidden lg:block">
+                                                                        <select x-model="frequencyFilter"
+                                                                                @change="performFilter()"
+                                                                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                                            <option value="All">All Time</option>
+                                                                            <option value="Daily">Daily</option>
+                                                                            <option value="Weekly">Weekly</option>
+                                                                            <option value="Monthly">Monthly</option>
+                                                                        </select>
+                                                                    </div>
 
-                                                                <!-- Print Button -->
-                                                                <div>
-                                                                    <button @click="printMembersReport()" class="hover:text-dark-900 shadow-theme-xs relative flex h-11 items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                                            <path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2"></path>
-                                                                            <path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4"></path>
-                                                                            <rect x="7" y="13" width="10" height="8" rx="2"></rect>
-                                                                        </svg>
-                                                                        Print
-                                                                    </button>
-                                                                </div>
+                                                                    <!-- Filter by Status -->
+                                                                    <div class="hidden lg:block">
+                                                                        <select x-model="statusFilter"
+                                                                                @change="performFilter()"
+                                                                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                                            <option value="All">All Status</option>
+                                                                            <option value="Active">Active</option>
+                                                                            <option value="In-Active">In-Active</option>
+                                                                            <option value="Under Review">Under Review</option>
+                                                                        </select>
+                                                                    </div>
+
+                                                                    <!-- Print Button -->
+                                                                    <div>
+                                                                        <button @click="printLoansReport()"
+                                                                                class="hover:text-dark-900 shadow-theme-xs relative flex h-11 items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                                                <path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2"></path>
+                                                                                <path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4"></path>
+                                                                                <rect x="7" y="13" width="10" height="8" rx="2"></rect>
+                                                                            </svg>
+                                                                            Print
+                                                                        </button>
+                                                                    </div>
 
                                                                 <!-- Create new loan type button -->
                                                                 <div>
@@ -1859,7 +1875,7 @@
                                                             <!-- Loan Types Table -->
                                                         <div>
                                                             <!-- Loan Types Table -->
-                                                            <div x-data="loanTypesTable()" x-init="init()">
+                                                            <div x-init="init()">
                                                                 <div class="custom-scrollbar overflow-x-auto">
                                                                         <table class="w-full">
                                                                             <!-- table header start -->
@@ -2385,7 +2401,7 @@
                                     </div>
                                 </div>
 
-                                <div class="" x-show="activeTab === 'contributions'">
+                                <div class="" x-show="activeTab === 'contributions'" x-data="contributionsTable()">
                                     <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
                                         <!-- Contributions content here -->
                                         <div class="flex flex-col justify-between gap-5 border-b border-gray-200 px-5 py-4 sm:flex-row lg:items-center dark:border-gray-800">
@@ -2399,46 +2415,59 @@
                                             </div>
 
                                             <div class="hidden flex-col gap-3 sm:flex sm:flex-row sm:items-center">
+                                                    <!-- Membership Filter -->
+                                                    <div class="hidden lg:block">
+                                                        <select x-model="membershipFilter"
+                                                                @change="performFilter()"
+                                                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                            <option value="All">All Members</option>
+                                                            <option value="Member">Members</option>
+                                                            <option value="Non-Member">Non-members</option>
+                                                        </select>
+                                                    </div>
 
-                                                <div class="hidden lg:block">
-                                                    <select x-model="statusFilter"
-                                                            @change="performFilter()"
-                                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                        <option value="Daily">Frequency</option>
-                                                        <option value="Daily">Daily</option>
-                                                        <option value="Weekly">Weekly</option>
-                                                        <option value="Monthly">Monthly</option>
-                                                        <option value="Yearly">Yearly</option>
-                                                    </select>
+                                                    <!-- Frequency Filter -->
+                                                    <div class="hidden lg:block">
+                                                        <select x-model="frequencyFilter"
+                                                                @change="performFilter()"
+                                                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                            <option value="Daily">Daily</option>
+                                                            <option value="Weekly">Weekly</option>
+                                                            <option value="Monthly">Monthly</option>
+                                                            <option value="Yearly">Yearly</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <!-- Payment Type Filter -->
+                                                    <div class="hidden lg:block">
+                                                        <select x-model="paymentFilter"
+                                                                @change="performFilter()"
+                                                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                            <option value="All">All Payment Types</option>
+                                                            <option value="Cash">Cash</option>
+                                                            <option value="MPesa">MPesa</option>
+                                                            <option value="Bank">Bank</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <!-- Print Button -->
+                                                    <div>
+                                                        <button @click="printContributionsReport()"
+                                                                class="hover:text-dark-900 shadow-theme-xs relative flex h-11 items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                                <path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2" />
+                                                                <path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4" />
+                                                                <rect x="7" y="13" width="10" height="8" rx="2" />
+                                                            </svg>
+                                                            Print
+                                                        </button>
+                                                    </div>
                                                 </div>
 
-                                                <div class="hidden lg:block">
-                                                    <select x-model="statusFilter"
-                                                            @change="performFilter()"
-                                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                        <option value="All">Payment Type</option>
-                                                        <option value="Cash">Cash</option>
-                                                        <option value="MPesa">MPesa</option>
-                                                        <option value="Bank">Bank</option>
-                                                    </select>
-                                                </div>
-
-                                                <div>
-                                                    <button @click="printMembersReport()"
-                                                            class="hover:text-dark-900 shadow-theme-xs relative flex h-11 items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                        <path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2" />
-                                                        <path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4" />
-                                                        <rect x="7" y="13" width="10" height="8" rx="2" />
-                                                    </svg>
-                                                    Print
-                                                    </button>
-                                                </div>
-                                            </div>
                                         </div>
                                         <!-- Contributions table Table -->
-                                        <div x-data="contributionsTable()" x-init="init()">
+                                        <div x-init="init()">
                                             <div class="custom-scrollbar overflow-x-auto">
                                                 <table class="w-full table-auto">
                                                     <thead>
@@ -4031,11 +4060,15 @@
     <!-- ----------------------------------------------------------------------------------------------------------------------------------------------------- -->
 
     <!-- END MODALS -->
+
+
     <!-- ===== Custom JS ===== -->
     <script defer src="{{ asset('assets/bundle.js') }}"></script>
     <!-- ===== Data Tables ===== -->
+
     <!-- Members Alpine ------------------------------------------------------------------------ -->
     <script>
+
         function memberTableFull() {
             return {
                 rows: [],
@@ -4044,10 +4077,14 @@
                 sort: { key: "joined", asc: true },
                 page: 1,
                 perPage: 10,
-                isLoading: true,  // ADDED: Loading state
-                hasError: false,  // ADDED: Error state
-
+                isLoading: true,
+                hasError: false,
                 totalMembers: 0,
+
+                // Filter variables
+                searchQuery: "",
+                membershipFilter: "All",  // Separate for Member/Non-Member
+                statusFilter: "All",       // Separate for Active/Suspended/Blacklisted
 
                 init() {
                     this.loadMembers();
@@ -4067,7 +4104,6 @@
                                     member: `${member.firstname || ''} ${member.lastname || ''}`.trim(),
                                     memberEmail: member.email || '',
                                     phone: member.phone1 || '',
-                                    // Last Contribution
                                     lastContribution: member.last_contribution_amount ?
                                         `KES ${parseFloat(member.last_contribution_amount).toFixed(2)}` : 'KES 0.00',
                                     lastContributionDate: member.last_contribution_date ?
@@ -4081,7 +4117,6 @@
                                             hour: '2-digit',
                                             minute: '2-digit'
                                         }) : '',
-                                    // Joined
                                     joined: member.created_on || member.created_at ?
                                         new Date(member.created_on || member.created_at).toLocaleDateString('en-US', {
                                             day: '2-digit',
@@ -4090,11 +4125,8 @@
                                             hour: '2-digit',
                                             minute: '2-digit'
                                         }) : '',
-                                    // Membership
                                     membership: member.membership || 'Non-Member',
-                                    // DL Type - from member_identifications
                                     dlType: member.identification?.driving_license_type || 'N/A',
-                                    // Status
                                     status: member.status || 'Active'
                                 }));
                             }
@@ -4107,7 +4139,6 @@
                         });
                 },
 
-                // ADD THIS - new method for fetching total members count
                 async fetchTotalMembers() {
                     try {
                         const response = await fetch('/members/count');
@@ -4119,43 +4150,47 @@
                     }
                 },
 
-                // Search query variable
-                searchQuery: "",
-
-                // ADDED: Status filter variable
-                statusFilter: "All",
-
-                // Filtered rows based on BOTH search AND status
+                // Filtered rows based on search, membership, AND status
                 get filteredRows() {
-                let filtered = this.rows;
+                    let filtered = this.rows;
 
-                // Apply status filter
-                if (this.statusFilter !== "All") {
-                    filtered = filtered.filter(row => row.status === this.statusFilter);
-                }
-
-                // Apply search filter
-                if (this.searchQuery.trim()) {
-                    const query = this.searchQuery.toLowerCase().trim();
-                    filtered = filtered.filter(row => {
-                    // Search in memberId
-                    if (row.memberId.toLowerCase().includes(query)) {
-                        return true;
+                    // Apply membership filter (Member/Non-Member)
+                    if (this.membershipFilter !== "All") {
+                        filtered = filtered.filter(row => row.membership === this.membershipFilter);
                     }
 
-                    // Search in phone (handle +254, 254, or 07 formats)
-                    const phoneCleaned = row.phone.replace(/[\s+]/g, '').toLowerCase();
-                    const queryCleaned = query.replace(/[\s+]/g, '');
-
-                    if (phoneCleaned.includes(queryCleaned)) {
-                        return true;
+                    // Apply status filter (Active/Suspended/Blacklisted)
+                    if (this.statusFilter !== "All") {
+                        filtered = filtered.filter(row => row.status === this.statusFilter);
                     }
 
-                    return false;
-                    });
-                }
+                    // Apply search filter
+                    if (this.searchQuery.trim()) {
+                        const query = this.searchQuery.toLowerCase().trim();
+                        filtered = filtered.filter(row => {
+                            // Search in member name
+                            if (row.member.toLowerCase().includes(query)) {
+                                return true;
+                            }
+                            // Search in memberId
+                            if (row.memberId && row.memberId.toString().toLowerCase().includes(query)) {
+                                return true;
+                            }
+                            // Search in phone
+                            const phoneCleaned = row.phone.replace(/[\s+]/g, '').toLowerCase();
+                            const queryCleaned = query.replace(/[\s+]/g, '');
+                            if (phoneCleaned.includes(queryCleaned)) {
+                                return true;
+                            }
+                            // Search in email
+                            if (row.memberEmail.toLowerCase().includes(query)) {
+                                return true;
+                            }
+                            return false;
+                        });
+                    }
 
-                return filtered;
+                    return filtered;
                 },
 
                 get totalPages() {
@@ -4164,8 +4199,8 @@
 
                 get paginatedRows() {
                     return this.sortedRows.slice(
-                            (this.page - 1) * this.perPage,
-                            this.page * this.perPage,
+                        (this.page - 1) * this.perPage,
+                        this.page * this.perPage
                     );
                 },
 
@@ -4181,12 +4216,10 @@
                     });
                 },
 
-                // Method to handle search
                 performSearch() {
                     this.page = 1; // Reset to first page when searching
                 },
 
-                // ADDED: Method to handle status filter
                 performFilter() {
                     this.page = 1; // Reset to first page when filtering
                 },
@@ -4198,7 +4231,7 @@
                         this.sort.key = key;
                         this.sort.asc = true;
                     }
-                        this.page = 1;
+                    this.page = 1;
                 },
 
                 toggleSelectAll() {
@@ -4210,34 +4243,128 @@
                 },
 
                 updateSelectAll() {
-                this.selectAll = this.paginatedRows.every((row) =>
-                        this.selected.includes(row.id),
-                );
+                    this.selectAll = this.paginatedRows.every((row) =>
+                        this.selected.includes(row.id)
+                    );
                 },
 
                 get startEntry() {
-                return this.filteredRows.length === 0 ? 0 : (this.page - 1) * this.perPage + 1;
+                    return this.filteredRows.length === 0 ? 0 : (this.page - 1) * this.perPage + 1;
                 },
 
                 get endEntry() {
-                let end = this.page * this.perPage;
-                return end > this.filteredRows.length ? this.filteredRows.length : end;
+                    let end = this.page * this.perPage;
+                    return end > this.filteredRows.length ? this.filteredRows.length : end;
                 },
 
                 goToPage(n) {
-                if (n >= 1 && n <= this.totalPages) this.page = n;
+                    if (n >= 1 && n <= this.totalPages) this.page = n;
                 },
 
                 dropdown() {
-                return {
-                    open: false,
-                    toggle() {
-                    this.open = !this.open;
-                    }
-                };
+                    return {
+                        open: false,
+                        toggle() {
+                            this.open = !this.open;
+                        }
+                    };
                 },
+
+                // NEW: Print function for members report
+                printMembersReport() {
+                    // Create a new window for printing
+                    const printWindow = window.open('', '_blank');
+
+                    // Get current filtered and paginated data
+                    const currentData = this.paginatedRows;
+
+                    // Generate table rows HTML
+                    const tableRows = currentData.map(row => `
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">${row.memberId || 'N/A'}</td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">
+                                <div><strong>${row.member || 'N/A'}</strong></div>
+                                <div style="font-size: 12px; color: #6b7280;">${row.memberEmail || 'N/A'}</div>
+                            </td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">${row.phone || 'N/A'}</td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">${row.membership || 'N/A'}</td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">
+                                <div><strong>${row.lastContribution || 'KES 0.00'}</strong></div>
+                                <div style="font-size: 12px; color: #6b7280;">${row.lastContributionDate || ''} ${row.lastContributionTime || ''}</div>
+                            </td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">${row.dlType || 'N/A'}</td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">
+                                <span style="display: inline-block; padding: 4px 8px; border-radius: 9999px; font-size: 12px; font-weight: 500;
+                                    ${row.status === 'Active' ? 'background-color: #d1fae5; color: #065f46;' :
+                                    row.status === 'Suspended' ? 'background-color: #fed7aa; color: #92400e;' :
+                                    row.status === 'Blacklisted' ? 'background-color: #fee2e2; color: #991b1b;' :
+                                    'background-color: #f3f4f6; color: #1f2937;'}">
+                                    ${row.status || 'N/A'}
+                                </span>
+                            </td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">${row.joined || 'N/A'}</td>
+                        </tr>
+                    `).join('');
+
+                    // Write the print document
+                    printWindow.document.write(`
+                        <html>
+                        <head>
+                            <title>Members Report</title>
+                            <style>
+                                body { font-family: Arial, sans-serif; margin: 20px; }
+                                h1 { color: #111827; font-size: 24px; margin-bottom: 10px; }
+                                .header { margin-bottom: 20px; color: #6b7280; font-size: 14px; }
+                                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                                th { background-color: #f9fafb; padding: 12px; text-align: left; font-weight: 600; color: #374151; border-bottom: 2px solid #e5e7eb; }
+                                td { padding: 12px; border-bottom: 1px solid #e5e7eb; }
+                                .footer { margin-top: 20px; text-align: right; color: #6b7280; font-size: 12px; }
+                                @media print {
+                                    body { margin: 0; }
+                                    button { display: none; }
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <h1>Members Report</h1>
+                            <div class="header">
+                                <div>Generated on: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}</div>
+                                <div>Filters: Membership - ${this.membershipFilter}, Status - ${this.statusFilter}</div>
+                                <div>Showing ${this.startEntry} to ${this.endEntry} of ${this.filteredRows.length} members</div>
+                            </div>
+
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Member</th>
+                                        <th>Phone</th>
+                                        <th>Membership</th>
+                                        <th>Last Contribution</th>
+                                        <th>DL Type</th>
+                                        <th>Status</th>
+                                        <th>Joined</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${tableRows}
+                                </tbody>
+                            </table>
+
+                            <div class="footer">
+                                <p>Report generated from Bodaboda Microfinance System</p>
+                            </div>
+                        </body>
+                        </html>
+                    `);
+
+                    printWindow.document.close();
+                    printWindow.focus();
+                    printWindow.print();
+                }
             };
         }
+
     </script>
 
     <script>
@@ -4651,14 +4778,18 @@
         });
     </script>
 
-    <!-- Stages Alpine.js - YOUR ORIGINAL + Global Store -->
+    <!-- Stages Alpine.js - YOUR ORIGINAL + Global Store + FILTER & PRINT -->
     <script>
         // stages.js - Data binding and pagination functionality
         function stageTable() {
             return {
+                // Original properties
                 stages: [],
                 currentPage: 1,
                 itemsPerPage: 10,
+
+                // NEW: Filter property
+                statusFilter: 'All',
 
                 // Initialize and fetch data
                 async init() {
@@ -4684,29 +4815,122 @@
                     }
                 },
 
-                // Computed properties for pagination
-                get totalPages() {
-                    return Math.ceil(this.stages.length / this.itemsPerPage);
+                // NEW: Filtered stages based on status
+                get filteredStages() {
+                    if (this.statusFilter === 'All') {
+                        return this.stages;
+                    }
+                    return this.stages.filter(stage => stage.status === this.statusFilter);
                 },
 
+                // MODIFIED: Use filteredStages instead of stages for pagination
+                get totalPages() {
+                    return Math.ceil(this.filteredStages.length / this.itemsPerPage);
+                },
+
+                // MODIFIED: Use filteredStages for current items
                 get currentItems() {
                     const start = (this.currentPage - 1) * this.itemsPerPage;
                     const end = start + this.itemsPerPage;
-                    return this.stages.slice(start, end);
+                    return this.filteredStages.slice(start, end);
                 },
 
                 get startIndex() {
-                    if (this.stages.length === 0) return 0;
+                    if (this.filteredStages.length === 0) return 0;
                     return (this.currentPage - 1) * this.itemsPerPage + 1;
                 },
 
                 get endIndex() {
-                    if (this.stages.length === 0) return 0;
+                    if (this.filteredStages.length === 0) return 0;
                     const end = this.currentPage * this.itemsPerPage;
-                    return end > this.stages.length ? this.stages.length : end;
+                    return end > this.filteredStages.length ? this.filteredStages.length : end;
                 },
 
-                // Pagination methods
+                // NEW: Filter method
+                performFilter() {
+                    this.currentPage = 1; // Reset to first page when filtering
+                },
+
+                // NEW: Print function for stages report
+                printStagesReport() {
+                    // Create a new window for printing
+                    const printWindow = window.open('', '_blank');
+
+                    // Get current filtered and paginated data
+                    const currentData = this.currentItems;
+
+                    // Generate table rows HTML
+                    const tableRows = currentData.map(stage => `
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">${stage.stageId || 'N/A'}</td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">${stage.location || 'N/A'}</td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">${stage.established || 'N/A'}</td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">
+                                <span style="display: inline-block; padding: 4px 8px; border-radius: 9999px; font-size: 12px; font-weight: 500;
+                                    ${stage.status === 'Active' ? 'background-color: #d1fae5; color: #065f46;' :
+                                    stage.status === 'In-Active' ? 'background-color: #fed7aa; color: #92400e;' :
+                                    stage.status === 'Under Review' ? 'background-color: #fef3c7; color: #92400e;' :
+                                    'background-color: #f3f4f6; color: #1f2937;'}">
+                                    ${stage.status || 'N/A'}
+                                </span>
+                            </td>
+                        </tr>
+                    `).join('');
+
+                    // Write the print document
+                    printWindow.document.write(`
+                        <html>
+                        <head>
+                            <title>Stages Report</title>
+                            <style>
+                                body { font-family: Arial, sans-serif; margin: 20px; }
+                                h1 { color: #111827; font-size: 24px; margin-bottom: 10px; }
+                                .header { margin-bottom: 20px; color: #6b7280; font-size: 14px; }
+                                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                                th { background-color: #f9fafb; padding: 12px; text-align: left; font-weight: 600; color: #374151; border-bottom: 2px solid #e5e7eb; }
+                                td { padding: 12px; border-bottom: 1px solid #e5e7eb; }
+                                .footer { margin-top: 20px; text-align: right; color: #6b7280; font-size: 12px; }
+                                @media print {
+                                    body { margin: 0; }
+                                    button { display: none; }
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <h1>Stages Report</h1>
+                            <div class="header">
+                                <div>Generated on: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}</div>
+                                <div>Filter: Status - ${this.statusFilter === 'All' ? 'All Stages' : this.statusFilter}</div>
+                                <div>Showing ${this.startIndex} to ${this.endIndex} of ${this.filteredStages.length} stages</div>
+                            </div>
+
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Stage ID</th>
+                                        <th>Location</th>
+                                        <th>Established</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${tableRows}
+                                </tbody>
+                            </table>
+
+                            <div class="footer">
+                                <p>Report generated from Bodaboda Microfinance System</p>
+                            </div>
+                        </body>
+                        </html>
+                    `);
+
+                    printWindow.document.close();
+                    printWindow.focus();
+                    printWindow.print();
+                },
+
+                // Original pagination methods (unchanged)
                 prevPage() {
                     if (this.currentPage > 1) {
                         this.currentPage--;
@@ -4732,10 +4956,10 @@
                 currentStage: {},
 
                 updateStage() {
-                // Add your update logic here
-                console.log('Updating stage:', this.currentStage);
-                this.editStageModal = false;
-                alert('Stage updated successfully!');
+                    // Add your update logic here
+                    console.log('Updating stage:', this.currentStage);
+                    this.editStageModal = false;
+                    alert('Stage updated successfully!');
                 }
             };
         }
@@ -4870,19 +5094,22 @@
                     }
                 }
             }));
-
         });
     </script>
 
     <!-- Loans Alpine -------------------------------------------------------------------------- -->
     <script>
-       // loanTypesTable.js - Data binding and pagination functionality for loan types
+        // loanTypesTable.js - Data binding and pagination functionality for loan types
         function loanTypesTable() {
             return {
                 // Loan types data - loaded from Laravel backend
                 loanTypes: [],
                 page: 1,
                 itemsPerPage: 10,
+
+                // NEW: Filter properties
+                frequencyFilter: 'All',
+                statusFilter: 'All',
 
                 // Initialize function - loads data from Laravel
                 async init() {
@@ -4914,7 +5141,9 @@
                                     month: 'short',
                                     year: '2-digit'
                                 }).replace(',', ''),
-                                Status: item.status || 'Active'
+                                Status: item.status || 'Active',
+                                // Add created date for frequency filtering
+                                createdDate: item.created_on ? new Date(item.created_on) : new Date()
                             }));
                         }
                     } catch (error) {
@@ -4924,15 +5153,59 @@
                     }
                 },
 
-                // Computed properties for pagination
+                // NEW: Filtered loan types based on frequency and status
+                get filteredLoanTypes() {
+                    let filtered = this.loanTypes;
+
+                    // Apply status filter
+                    if (this.statusFilter !== 'All') {
+                        filtered = filtered.filter(loan => loan.Status === this.statusFilter);
+                    }
+
+                    // Apply frequency filter based on created date
+                    if (this.frequencyFilter !== 'All') {
+                        const now = new Date();
+                        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+                        filtered = filtered.filter(loan => {
+                            const createdDate = new Date(loan.createdDate);
+
+                            switch(this.frequencyFilter) {
+                                case 'Daily':
+                                    // Today's loans
+                                    const loanDate = new Date(createdDate.getFullYear(), createdDate.getMonth(), createdDate.getDate());
+                                    return loanDate.getTime() === today.getTime();
+
+                                case 'Weekly':
+                                    // Last 7 days
+                                    const weekAgo = new Date(today);
+                                    weekAgo.setDate(weekAgo.getDate() - 7);
+                                    return createdDate >= weekAgo;
+
+                                case 'Monthly':
+                                    // Last 30 days
+                                    const monthAgo = new Date(today);
+                                    monthAgo.setDate(monthAgo.getDate() - 30);
+                                    return createdDate >= monthAgo;
+
+                                default:
+                                    return true;
+                            }
+                        });
+                    }
+
+                    return filtered;
+                },
+
+                // Computed properties for pagination - MODIFIED to use filteredLoanTypes
                 get totalPages() {
-                    return Math.ceil(this.loanTypes.length / this.itemsPerPage);
+                    return Math.ceil(this.filteredLoanTypes.length / this.itemsPerPage);
                 },
 
                 get paginatedLoans() {
                     const start = (this.page - 1) * this.itemsPerPage;
                     const end = start + this.itemsPerPage;
-                    return this.loanTypes.slice(start, end);
+                    return this.filteredLoanTypes.slice(start, end);
                 },
 
                 get startEntry() {
@@ -4941,10 +5214,103 @@
 
                 get endEntry() {
                     const end = this.page * this.itemsPerPage;
-                    return end > this.loanTypes.length ? this.loanTypes.length : end;
+                    return end > this.filteredLoanTypes.length ? this.filteredLoanTypes.length : end;
                 },
 
-                // Pagination methods
+                // NEW: Filter method
+                performFilter() {
+                    this.page = 1; // Reset to first page when filtering
+                },
+
+                // NEW: Print function for loans report
+                printLoansReport() {
+                    // Create a new window for printing
+                    const printWindow = window.open('', '_blank');
+
+                    // Get current filtered and paginated data
+                    const currentData = this.paginatedLoans;
+
+                    // Generate table rows HTML
+                    const tableRows = currentData.map(loan => `
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">${loan.LoanTypeID || 'N/A'}</td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">
+                                <div><strong>${loan.Type || 'N/A'}</strong></div>
+                                <div style="font-size: 12px; color: #6b7280;">Interest: ${loan.InterestRate || '0%'}</div>
+                            </td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">${loan.Repayment || 'N/A'}</td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">${loan.TotalLoaned || 'Ksh 0'}</td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">${loan.ActiveLoans || 0}</td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">${loan.CreatedOn || 'N/A'}</td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">
+                                <span style="display: inline-block; padding: 4px 8px; border-radius: 9999px; font-size: 12px; font-weight: 500;
+                                    ${loan.Status === 'Active' ? 'background-color: #d1fae5; color: #065f46;' :
+                                    loan.Status === 'In-Active' ? 'background-color: #fed7aa; color: #92400e;' :
+                                    loan.Status === 'Under Review' ? 'background-color: #fef3c7; color: #92400e;' :
+                                    'background-color: #f3f4f6; color: #1f2937;'}">
+                                    ${loan.Status || 'N/A'}
+                                </span>
+                            </td>
+                        </tr>
+                    `).join('');
+
+                    // Write the print document
+                    printWindow.document.write(`
+                        <html>
+                        <head>
+                            <title>Loan Types Report</title>
+                            <style>
+                                body { font-family: Arial, sans-serif; margin: 20px; }
+                                h1 { color: #111827; font-size: 24px; margin-bottom: 10px; }
+                                .header { margin-bottom: 20px; color: #6b7280; font-size: 14px; }
+                                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                                th { background-color: #f9fafb; padding: 12px; text-align: left; font-weight: 600; color: #374151; border-bottom: 2px solid #e5e7eb; }
+                                td { padding: 12px; border-bottom: 1px solid #e5e7eb; }
+                                .footer { margin-top: 20px; text-align: right; color: #6b7280; font-size: 12px; }
+                                @media print {
+                                    body { margin: 0; }
+                                    button { display: none; }
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <h1>Loan Types Report</h1>
+                            <div class="header">
+                                <div>Generated on: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}</div>
+                                <div>Filters: Frequency - ${this.frequencyFilter === 'All' ? 'All Time' : this.frequencyFilter}, Status - ${this.statusFilter === 'All' ? 'All Status' : this.statusFilter}</div>
+                                <div>Showing ${this.startEntry} to ${this.endEntry} of ${this.filteredLoanTypes.length} loan types</div>
+                            </div>
+
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Loan ID</th>
+                                        <th>Loan Type / Interest</th>
+                                        <th>Repayment</th>
+                                        <th>Total Loaned</th>
+                                        <th>Active Loans</th>
+                                        <th>Created On</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${tableRows}
+                                </tbody>
+                            </table>
+
+                            <div class="footer">
+                                <p>Report generated from Bodaboda Microfinance System</p>
+                            </div>
+                        </body>
+                        </html>
+                    `);
+
+                    printWindow.document.close();
+                    printWindow.focus();
+                    printWindow.print();
+                },
+
+                // Pagination methods (unchanged)
                 prevPage() {
                     if (this.page > 1) {
                         this.page--;
@@ -5300,6 +5666,34 @@
 
             // Register the loanType store
             Alpine.store('loanTypeData', loanTypeStore());
+
+            // Add to your existing Alpine.store or create a new one
+            Alpine.store('loanStats', {
+                activeLoans: 0,
+
+                init() {
+                    this.loadActiveLoans();
+                },
+
+                loadActiveLoans() {
+                    fetch('/stats/loans/active')
+                        .then(res => res.json())
+                        .then(data => {
+                            this.activeLoans = data.count || 0;
+                        })
+                        .catch(error => {
+                            console.error('Error loading active loans:', error);
+                            this.activeLoans = 0;
+                        });
+                }
+            });
+
+            // Initialize on page load
+            document.addEventListener('alpine:initialized', () => {
+                if (Alpine.store('loanStats')) {
+                    Alpine.store('loanStats').init();
+                }
+            });
         });
     </script>
 
@@ -5475,6 +5869,11 @@
                 page: 1,
                 itemsPerPage: 10,
 
+                // NEW: Filter properties
+                membershipFilter: 'All',
+                frequencyFilter: 'Daily',
+                paymentFilter: 'All',
+
                 // Initialize function - loads data from Laravel
                 async init() {
                     console.log('Contributions table initialized');
@@ -5501,7 +5900,9 @@
                                 }),
                                 type: item.transactionType || 'N/A',
                                 mode: item.transactionMode || 'N/A',
-                                status: item.transactionStatus || 'N/A'
+                                status: item.transactionStatus || 'N/A',
+                                // Add raw date for frequency filtering
+                                rawDate: item.transactionDate ? new Date(item.transactionDate) : new Date()
                             }));
                         }
                     } catch (error) {
@@ -5510,15 +5911,70 @@
                     }
                 },
 
-                // Computed properties for pagination
+                // NEW: Filtered contributions based on membership, frequency, and payment type
+                get filteredContributions() {
+                    let filtered = this.contributions;
+
+                    // Apply membership filter (Member/Non-Member)
+                    if (this.membershipFilter !== 'All') {
+                        filtered = filtered.filter(c => c.membership === this.membershipFilter);
+                    }
+
+                    // Apply payment type filter
+                    if (this.paymentFilter !== 'All') {
+                        filtered = filtered.filter(c => c.mode === this.paymentFilter);
+                    }
+
+                    // Apply frequency filter based on transaction date
+                    if (this.frequencyFilter !== 'Daily') {
+                        const now = new Date();
+                        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+                        filtered = filtered.filter(c => {
+                            const transDate = new Date(c.rawDate);
+
+                            switch(this.frequencyFilter) {
+                                case 'Daily':
+                                    // Today's transactions
+                                    const txDate = new Date(transDate.getFullYear(), transDate.getMonth(), transDate.getDate());
+                                    return txDate.getTime() === today.getTime();
+
+                                case 'Weekly':
+                                    // Last 7 days
+                                    const weekAgo = new Date(today);
+                                    weekAgo.setDate(weekAgo.getDate() - 7);
+                                    return transDate >= weekAgo;
+
+                                case 'Monthly':
+                                    // Last 30 days
+                                    const monthAgo = new Date(today);
+                                    monthAgo.setDate(monthAgo.getDate() - 30);
+                                    return transDate >= monthAgo;
+
+                                case 'Yearly':
+                                    // Last 365 days
+                                    const yearAgo = new Date(today);
+                                    yearAgo.setDate(yearAgo.getDate() - 365);
+                                    return transDate >= yearAgo;
+
+                                default:
+                                    return true;
+                            }
+                        });
+                    }
+
+                    return filtered;
+                },
+
+                // Computed properties for pagination - MODIFIED to use filteredContributions
                 get totalPages() {
-                    return Math.ceil(this.contributions.length / this.itemsPerPage);
+                    return Math.ceil(this.filteredContributions.length / this.itemsPerPage);
                 },
 
                 get paginatedContributions() {
                     const start = (this.page - 1) * this.itemsPerPage;
                     const end = start + this.itemsPerPage;
-                    return this.contributions.slice(start, end);
+                    return this.filteredContributions.slice(start, end);
                 },
 
                 get startEntry() {
@@ -5527,10 +5983,108 @@
 
                 get endEntry() {
                     const end = this.page * this.itemsPerPage;
-                    return end > this.contributions.length ? this.contributions.length : end;
+                    return end > this.filteredContributions.length ? this.filteredContributions.length : end;
                 },
 
-                // Pagination methods
+                // NEW: Filter method
+                performFilter() {
+                    this.page = 1; // Reset to first page when filtering
+                },
+
+                // NEW: Print function for contributions report
+                printContributionsReport() {
+                    // Create a new window for printing
+                    const printWindow = window.open('', '_blank');
+
+                    // Get current filtered and paginated data
+                    const currentData = this.paginatedContributions;
+
+                    // Generate table rows HTML
+                    const tableRows = currentData.map(contribution => `
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">${contribution.transactionCode || 'N/A'}</td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">
+                                <div><strong>${contribution.memberName || 'N/A'}</strong></div>
+                                <div style="font-size: 12px; color: #6b7280;">${contribution.membership || 'N/A'}</div>
+                            </td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">${contribution.amount || 'KES 0'}</td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">${contribution.date || 'N/A'}</td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">${contribution.type || 'N/A'}</td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">${contribution.mode || 'N/A'}</td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">
+                                <span style="display: inline-block; padding: 4px 8px; border-radius: 9999px; font-size: 12px; font-weight: 500;
+                                    ${contribution.status === 'Confirmed' ? 'background-color: #d1fae5; color: #065f46;' :
+                                    contribution.status === 'Pending' ? 'background-color: #fed7aa; color: #92400e;' :
+                                    contribution.status === 'Cancelled' ? 'background-color: #fee2e2; color: #991b1b;' :
+                                    contribution.status === 'Reversed' ? 'background-color: #e5e7eb; color: #1f2937;' :
+                                    'background-color: #f3f4f6; color: #1f2937;'}">
+                                    ${contribution.status || 'N/A'}
+                                </span>
+                            </td>
+                        </tr>
+                    `).join('');
+
+                    // Write the print document
+                    printWindow.document.write(`
+                        <html>
+                        <head>
+                            <title>Contributions Report</title>
+                            <style>
+                                body { font-family: Arial, sans-serif; margin: 20px; }
+                                h1 { color: #111827; font-size: 24px; margin-bottom: 10px; }
+                                .header { margin-bottom: 20px; color: #6b7280; font-size: 14px; }
+                                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                                th { background-color: #f9fafb; padding: 12px; text-align: left; font-weight: 600; color: #374151; border-bottom: 2px solid #e5e7eb; }
+                                td { padding: 12px; border-bottom: 1px solid #e5e7eb; }
+                                .footer { margin-top: 20px; text-align: right; color: #6b7280; font-size: 12px; }
+                                @media print {
+                                    body { margin: 0; }
+                                    button { display: none; }
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <h1>Contributions Report</h1>
+                            <div class="header">
+                                <div>Generated on: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}</div>
+                                <div>Filters:
+                                    Membership - ${this.membershipFilter === 'All' ? 'All Members' : this.membershipFilter},
+                                    Frequency - ${this.frequencyFilter === 'Daily' ? 'Today' : this.frequencyFilter},
+                                    Payment Type - ${this.paymentFilter === 'All' ? 'All Types' : this.paymentFilter}
+                                </div>
+                                <div>Showing ${this.startEntry} to ${this.endEntry} of ${this.filteredContributions.length} contributions</div>
+                            </div>
+
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Transaction Code</th>
+                                        <th>Member</th>
+                                        <th>Amount</th>
+                                        <th>Date</th>
+                                        <th>Type</th>
+                                        <th>Mode</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${tableRows}
+                                </tbody>
+                            </table>
+
+                            <div class="footer">
+                                <p>Report generated from Bodaboda Microfinance System</p>
+                            </div>
+                        </body>
+                        </html>
+                    `);
+
+                    printWindow.document.close();
+                    printWindow.focus();
+                    printWindow.print();
+                },
+
+                // Pagination methods (unchanged)
                 prevPage() {
                     if (this.page > 1) this.page--;
                 },
@@ -5541,6 +6095,18 @@
 
                 goToPage(page) {
                     if (page >= 1 && page <= this.totalPages) this.page = page;
+                },
+
+                // Original computed properties kept for reference but not used directly
+                // (they are overridden by the filtered versions above)
+                get originalTotalPages() {
+                    return Math.ceil(this.contributions.length / this.itemsPerPage);
+                },
+
+                get originalPaginatedContributions() {
+                    const start = (this.page - 1) * this.itemsPerPage;
+                    const end = start + this.itemsPerPage;
+                    return this.contributions.slice(start, end);
                 }
             };
         }

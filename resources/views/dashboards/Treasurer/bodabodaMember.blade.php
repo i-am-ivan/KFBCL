@@ -695,8 +695,8 @@
                             <p class="text-theme-sm text-gray-500 dark:text-gray-400">Active Loans</p>
 
                             <div class="mt-3 flex items-end justify-between">
-                                <div>
-                                    <h4 class="text-xl font-semibold text-gray-500 dark:text-white/90" x-text="memberData?.loans?.filter(loan => loan.transactionLoanStatus === 'Active').length || 0">
+                                <div x-data="loansTable()">
+                                    <h4 class="text-xl font-semibold text-gray-500 dark:text-white/90" x-text="memberActiveLoans">
                                         0
                                     </h4>
                                 </div>
@@ -2406,69 +2406,76 @@
                                                                             <template x-if="loans.length > 0">
                                                                                 <!-- table body start -->
                                                                                 <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800">
-                                                                                    <template x-for="loan in paginatedLoans" :key="loans.LoanTypeID">
+                                                                                    <template x-for="loan in paginatedLoans" :key="loans.transactionID">
                                                                                         <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-900">
-                                                                                            <!-- LoanTypeID -->
+                                                                                            <!-- Loan # (Transaction ID) -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <div class="flex items-center gap-3">
-                                                                                                        <div>
-                                                                                                            <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loans.LoanTypeID"></p>
-                                                                                                        </div>
+                                                                                                <p class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="loan.transactionId || 'N/A'"></p>
+                                                                                            </td>
+
+                                                                                            <!-- Loan/Interest (Loan Type Name + Interest Rate) -->
+                                                                                            <td class="p-4 whitespace-nowrap">
+                                                                                                <div>
+                                                                                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="loan.loan_type_name || 'N/A'"></span>
+                                                                                                    <p class="text-xs text-gray-500 dark:text-gray-400" x-text="'Interest: ' + (loan.interest_rate || '0') + '%'"></p>
+                                                                                                </div>
+                                                                                            </td>
+
+                                                                                            <!-- Period (Months) -->
+                                                                                            <td class="p-4 whitespace-nowrap">
+                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="loan.transactionLoanPeriod || '0' + ' months'"></p>
+                                                                                            </td>
+
+                                                                                            <!-- Amount -->
+                                                                                            <td class="p-4 whitespace-nowrap">
+                                                                                                <p class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="'KES ' + Number(loan.transactionLoanAmount || 0).toLocaleString()"></p>
+                                                                                                <p class="text-xs text-gray-500 dark:text-gray-400" x-text="'Outstanding: KES ' + Number(loan.outstanding_balance || 0).toLocaleString()"></p>
+                                                                                            </td>
+
+                                                                                            <!-- Start Date -->
+                                                                                            <td class="p-4 whitespace-nowrap">
+                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="loan.transactionLoanStartDate ? new Date(loan.transactionLoanStartDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'"></p>
+                                                                                            </td>
+
+                                                                                            <!-- End Date (Calculate from start date + period) -->
+                                                                                            <td class="p-4 whitespace-nowrap">
+                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="loan.transactionLoanStartDate ? new Date(new Date(loan.transactionLoanStartDate).setDate(new Date(loan.transactionLoanStartDate).getDate() + (loan.transactionLoanPeriod * 30))).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'"></p>
+                                                                                            </td>
+
+                                                                                            <!-- Last Repayment (Amount/Date) -->
+                                                                                            <td class="p-4 whitespace-nowrap">
+                                                                                                <template x-if="loan.last_repayment">
+                                                                                                    <div>
+                                                                                                        <p class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="'KES ' + Number(loan.last_repayment.amount || 0).toLocaleString()"></p>
+                                                                                                        <p class="text-xs text-gray-500 dark:text-gray-400" x-text="loan.last_repayment.date ? new Date(loan.last_repayment.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'"></p>
                                                                                                     </div>
-                                                                                                </div>
+                                                                                                </template>
+                                                                                                <template x-if="!loan.last_repayment">
+                                                                                                    <span class="text-sm text-gray-400">No repayments yet</span>
+                                                                                                </template>
                                                                                             </td>
-                                                                                            <!-- Type -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loans.Type"></p>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                            <!-- Interest Rate -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loans.InterestRate"></p>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                            <!-- Repayment Type -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loans.Repayment"></p>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                            <!-- Total Loaned -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loans.TotalLoaned"></p>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                            <!-- Active Loans -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loans.ActiveLoans"></p>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                            <!-- Created On -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loans.CreatedOn"></p>
-                                                                                                </div>
-                                                                                            </td>
+
                                                                                             <!-- Status -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <p :class="loans.Status === 'Active' ? 'bg-success-50 text-theme-xs text-success-700 dark:bg-success-500/15 dark:text-success-500' : 'bg-error-50 text-theme-xs text-error-600 dark:bg-error-500/15 dark:text-error-500'" class="rounded-full px-2 py-0.5 font-medium" x-text="loanType.Status"></p>
-                                                                                                </div>
+                                                                                                <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full"
+                                                                                                    :class="{
+                                                                                                        'bg-success-100 text-success-600 dark:bg-success-900/30 dark:text-success-400': loan.transactionLoanStatus === 'Active' || loan.transactionLoanStatus === 'Approved',
+                                                                                                        'bg-warning-100 text-warning-600 dark:bg-warning-900/30 dark:text-warning-400': loan.transactionLoanStatus === 'Under Review' || loan.transactionLoanStatus === 'Pending',
+                                                                                                        'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400': loan.transactionLoanStatus === 'Repaid',
+                                                                                                        'bg-error-100 text-error-600 dark:bg-error-900/30 dark:text-error-400': loan.transactionLoanStatus === 'Defaulted' || loan.transactionLoanStatus === 'Stopped' || loan.transactionLoanStatus === 'Cancelled'
+                                                                                                    }"
+                                                                                                    x-text="loan.transactionLoanStatus || loan.transactionStatus || 'N/A'">
+                                                                                                </span>
                                                                                             </td>
+
                                                                                             <!-- Actions -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <button @click="editLoansModal(loans)" class="shadow-theme-xs inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-                                                                                                        <svg class="w-[28px] h-[28px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.1" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"></path>
-                                                                                                        </svg>
-                                                                                                    </button>
-                                                                                                </div>
+                                                                                                <button @click="$dispatch('open-edit-loan-modal', { loan: loan })"
+                                                                                                    class="shadow-theme-xs inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+                                                                                                    <svg class="w-[22px] h-[22px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                                                                        <path stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.1" d="M7 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h1m4-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm7.441 1.559a1.907 1.907 0 0 1 0 2.698l-6.069 6.069L10 19l.674-3.372 6.07-6.07a1.907 1.907 0 0 1 2.697 0Z"></path>
+                                                                                                    </svg>
+                                                                                                </button>
                                                                                             </td>
                                                                                         </tr>
                                                                                     </template>
@@ -7235,15 +7242,26 @@
                 errors: {},
 
                 init() {
-                    // Load all loans data
-                    fetch('/loans/all-data')
+                    // Load member-specific loans data
+                    fetch('/bodaboda-member/{{ $memberId }}/loans/current')
                         .then(res => res.json())
                         .then(data => {
                             if (data.success) {
                                 this.loans = data.loans;
+                            }
+                        });
+
+                    // Load loan types for dropdown (separate from member loans)
+                    fetch('/loans/all-data')
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
                                 Alpine.store('loanData').loanTypes = data.loanTypes;
                             }
                         });
+
+                    // Load member active loans count
+                    this.loadMemberActiveLoans();
 
                     // Listen for edit events
                     window.addEventListener('open-edit-loan-modal', (event) => {
@@ -7260,6 +7278,19 @@
                             document.getElementById('edit_status') && (document.getElementById('edit_status').value = loan.transactionStatus || '');
                         }, 100);
                     });
+                },
+
+                // Add method to load member active loans count
+                loadMemberActiveLoans() {
+                    fetch('/bodaboda-member/{{ $memberId }}/loans/active/count')
+                        .then(res => res.json())
+                        .then(data => {
+                            this.memberActiveLoans = data.active_loans_count || 0;
+                        })
+                        .catch(error => {
+                            console.error('Error loading member active loans:', error);
+                            this.memberActiveLoans = 0;
+                        });
                 },
 
                 // Validation methods

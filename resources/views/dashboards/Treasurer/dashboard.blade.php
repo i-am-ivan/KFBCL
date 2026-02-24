@@ -1112,7 +1112,7 @@
 
                 loadMemberStats() {
                     // All members
-                    fetch('/stats/members/all')
+                    fetch('/members/count')
                         .then(res => res.json())
                         .then(data => this.allMembers = data.count);
 

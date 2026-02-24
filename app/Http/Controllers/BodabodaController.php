@@ -2180,6 +2180,20 @@ class BodabodaController extends Controller {
                 ->orderBy('ml.transactionCreated', 'desc')
                 ->get();
 
+            // Add last repayment information for each loan
+            foreach ($loans as $loan) {
+                $lastRepayment = DB::table('member_loans_transactions')
+                    ->where('transactionLoan', $loan->transactionId)
+                    ->where('transactionStatus', 'Confirmed')
+                    ->orderBy('transactionDate', 'desc')
+                    ->first();
+
+                $loan->last_repayment = $lastRepayment ? [
+                    'amount' => $lastRepayment->transactionAmount,
+                    'date' => $lastRepayment->transactionDate
+                ] : null;
+            }
+
             return response()->json([
                 'success' => true,
                 'loans' => $loans
