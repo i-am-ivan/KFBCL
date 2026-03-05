@@ -20,6 +20,7 @@ class MemberLoanTransaction extends Model
         'transactionMode',
         'transactionAuthor',
         'transactionUpdatedOn',
+        'transactionType',
         'transactionStatus'
     ];
 

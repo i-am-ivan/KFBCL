@@ -31,278 +31,9 @@
         <!-- ===== Page Wrapper Start ===== -->
         <div class="flex h-screen overflow-hidden">
 
-            <!-- ===== Sidebar Start ===== -->
-            <aside :class="sidebarToggle ? 'translate-x-0 xl:w-[90px]' : '-translate-x-full'"
-                    class="sidebar fixed top-0 left-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-auto border-r border-gray-200 bg-white px-5 transition-all duration-300 xl:static xl:translate-x-0 dark:border-gray-800 dark:bg-black"
-                    @click.outside="sidebarToggle = false">
-
-                    <!-- SIDEBAR HEADER -->
-                    <div :class="sidebarToggle ? 'justify-center' : 'justify-between'"
-                        class="sidebar-header flex items-center gap-2 pt-8 pb-7">
-                        <a href="{{ route('treasurer.dashboard') }}" class="flex items-center">
-                            <!-- Small Circular Logo with Border -->
-                            <div class="h-10 w-10 rounded-full bg-gray-100 border-2 border-dark-brown flex items-center justify-center overflow-hidden">
-                                <img src="{{ asset('company_logo.png') }}" alt="KFBCL Logo" class="h-full w-full object-cover">
-                            </div>
-
-                            <!-- Company Name and Tagline (Hidden when sidebar collapsed on desktop) -->
-                            <div class="ml-3" :class="sidebarToggle ? 'hidden xl:block' : 'block'">
-                                <h2 class="text-lg font-bold text-dark-brown">KFBCL</h2>
-                                <p class="text-xs text-gray-500">Growing together</p>
-                            </div>
-                        </a>
-                    </div>
-                    <!-- SIDEBAR HEADER -->
-
-                    <div class="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
-                    <!-- Sidebar Menu -->
-                    <nav x-data="{selected: $persist('Dashboard')}">
-                        <!-- Menu Group -->
-                        <div>
-                            <h3 class="mb-4 text-xs leading-[20px] text-gray-400 uppercase">
-                                <span class="menu-group-title"
-                                    :class="sidebarToggle ? 'xl:hidden' : ''">
-                                MENU
-                                </span>
-                                <svg
-                                        :class="sidebarToggle ? 'xl:block hidden' : 'hidden'"
-                                        class="menu-group-icon mx-auto fill-current"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                >
-                                <path
-                                        fill-rule="evenodd"
-                                        clip-rule="evenodd"
-                                        d="M5.99915 10.2451C6.96564 10.2451 7.74915 11.0286 7.74915 11.9951V12.0051C7.74915 12.9716 6.96564 13.7551 5.99915 13.7551C5.03265 13.7551 4.24915 12.9716 4.24915 12.0051V11.9951C4.24915 11.0286 5.03265 10.2451 5.99915 10.2451ZM17.9991 10.2451C18.9656 10.2451 19.7491 11.0286 19.7491 11.9951V12.0051C19.7491 12.9716 18.9656 13.7551 17.9991 13.7551C17.0326 13.7551 16.2491 12.9716 16.2491 12.0051V11.9951C16.2491 11.0286 17.0326 10.2451 17.9991 10.2451ZM13.7491 11.9951C13.7491 11.0286 12.9656 10.2451 11.9991 10.2451C11.0326 10.2451 10.2491 11.0286 10.2491 11.9951V12.0051C10.2491 12.9716 11.0326 13.7551 11.9991 13.7551C12.9656 13.7551 13.7491 12.9716 13.7491 12.0051V11.9951Z"
-                                        fill="currentColor"
-                                />
-                                </svg>
-                            </h3>
-
-                            <ul class="mb-6 flex flex-col gap-1">
-                                <!-- Menu Item Dashboard -->
-                                <li>
-                                    <a href="{{ route('treasurer.dashboard') }}" @click="selected = (selected === 'Dashboard' ? '':'Dashboard')" class="menu-item group"
-                                        :class=" (selected === 'Dashboard') || (page === 'dashboard') ? 'menu-item-active' : 'menu-item-inactive'">
-                                        <svg :class="(selected === 'Dashboard') || (page === 'dashboard') ? 'menu-item-icon-active'  :'menu-item-icon-inactive'"
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                                d="M5.5 3.25C4.25736 3.25 3.25 4.25736 3.25 5.5V8.99998C3.25 10.2426 4.25736 11.25 5.5 11.25H9C10.2426 11.25 11.25 10.2426 11.25 8.99998V5.5C11.25 4.25736 10.2426 3.25 9 3.25H5.5ZM4.75 5.5C4.75 5.08579 5.08579 4.75 5.5 4.75H9C9.41421 4.75 9.75 5.08579 9.75 5.5V8.99998C9.75 9.41419 9.41421 9.74998 9 9.74998H5.5C5.08579 9.74998 4.75 9.41419 4.75 8.99998V5.5ZM5.5 12.75C4.25736 12.75 3.25 13.7574 3.25 15V18.5C3.25 19.7426 4.25736 20.75 5.5 20.75H9C10.2426 20.75 11.25 19.7427 11.25 18.5V15C11.25 13.7574 10.2426 12.75 9 12.75H5.5ZM4.75 15C4.75 14.5858 5.08579 14.25 5.5 14.25H9C9.41421 14.25 9.75 14.5858 9.75 15V18.5C9.75 18.9142 9.41421 19.25 9 19.25H5.5C5.08579 19.25 4.75 18.9142 4.75 18.5V15ZM12.75 5.5C12.75 4.25736 13.7574 3.25 15 3.25H18.5C19.7426 3.25 20.75 4.25736 20.75 5.5V8.99998C20.75 10.2426 19.7426 11.25 18.5 11.25H15C13.7574 11.25 12.75 10.2426 12.75 8.99998V5.5ZM15 4.75C14.5858 4.75 14.25 5.08579 14.25 5.5V8.99998C14.25 9.41419 14.5858 9.74998 15 9.74998H18.5C18.9142 9.74998 19.25 9.41419 19.25 8.99998V5.5C19.25 5.08579 18.9142 4.75 18.5 4.75H15ZM15 12.75C13.7574 12.75 12.75 13.7574 12.75 15V18.5C12.75 19.7426 13.7574 20.75 15 20.75H18.5C19.7426 20.75 20.75 19.7427 20.75 18.5V15C20.75 13.7574 19.7426 12.75 18.5 12.75H15ZM14.25 15C14.25 14.5858 14.5858 14.25 15 14.25H18.5C18.9142 14.25 19.25 14.5858 19.25 15V18.5C19.25 18.9142 18.9142 19.25 18.5 19.25H15C14.5858 19.25 14.25 18.9142 14.25 18.5V15Z"
-                                                fill="currentColor"/>
-                                        </svg>
-                                        <span class="menu-item-text"
-                                            :class="sidebarToggle ? 'xl:hidden' : ''">Dashboard</span>
-                                    </a>
-                                </li>
-
-                                <!-- Menu Item Appointments -->
-                                <li>
-                                    <a href="{{ route('treasurer.appointments') }}" @click="selected = (selected === 'Appointments' ? '':'Appointments')" class="menu-item group"
-                                        :class="(selected === 'Appointments') || (page === 'appointments') ? 'menu-item-active' : 'menu-item-inactive'">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-event">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M4 5m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" />
-                                        <path d="M16 3l0 4" />
-                                        <path d="M8 3l0 4" />
-                                        <path d="M4 11l16 0" />
-                                        <path d="M8 15h2v2h-2z" />
-                                        </svg>
-                                        <span class="menu-item-text"
-                                            :class="sidebarToggle ? 'xl:hidden' : ''">Appointments</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <!-- Manage Group -->
-                        <div>
-                            <h3 class="mb-4 text-xs leading-[20px] text-gray-400 uppercase">
-                            <span class="menu-group-title"
-                                    :class="sidebarToggle ? 'xl:hidden' : ''">MANAGE</span>
-                                <svg
-                                        :class="sidebarToggle ? 'xl:block hidden' : 'hidden'"
-                                        class="menu-group-icon mx-auto fill-current"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                >
-                                <path
-                                        fill-rule="evenodd"
-                                        clip-rule="evenodd"
-                                        d="M5.99915 10.2451C6.96564 10.2451 7.74915 11.0286 7.74915 11.9951V12.0051C7.74915 12.9716 6.96564 13.7551 5.99915 13.7551C5.03265 13.7551 4.24915 12.9716 4.24915 12.0051V11.9951C4.24915 11.0286 5.03265 10.2451 5.99915 10.2451ZM17.9991 10.2451C18.9656 10.2451 19.7491 11.0286 19.7491 11.9951V12.0051C19.7491 12.9716 18.9656 13.7551 17.9991 13.7551C17.0326 13.7551 16.2491 12.9716 16.2491 12.0051V11.9951C16.2491 11.0286 17.0326 10.2451 17.9991 10.2451ZM13.7491 11.9951C13.7491 11.0286 12.9656 10.2451 11.9991 10.2451C11.0326 10.2451 10.2491 11.0286 10.2491 11.9951V12.0051C10.2491 12.9716 11.0326 13.7551 11.9991 13.7551C12.9656 13.7551 13.7491 12.9716 13.7491 12.0051V11.9951Z"
-                                        fill="currentColor"
-                                />
-                                </svg>
-                            </h3>
-
-                            <ul class="mb-6 flex flex-col gap-1">
-                                <!-- Menu Item Users -->
-                                <li>
-                                    <a href="{{ route('treasurer.users') }}" @click="selected = (selected === 'Users' ? '':'Users')" class="menu-item group"
-                                        :class=" (selected === 'Users') || (page === 'users') ? 'menu-item-active' : 'menu-item-inactive'">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-users">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
-                                        <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-                                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                                        <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
-                                        </svg>
-                                        <span class="menu-item-text"
-                                            :class="sidebarToggle ? 'xl:hidden' : ''">Users</span>
-                                    </a>
-                                </li>
-
-                                <!-- Menu Item Bodaboda Group -->
-                                <li>
-                                    <a href="{{ route('treasurer.bodaboda') }}" @click="selected = (selected === 'Bodaboda Group' ? '':'Bodaboda Group')" class="menu-item group"
-                                        :class=" (selected === 'Bodaboda Group') || (page === 'bodaboda') ? 'menu-item-active' : 'menu-item-inactive'">
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                            width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-                                            stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-motorbike">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M5 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
-                                        <path d="M19 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
-                                        <path d="M7.5 14h5l4 -4h-10.5m1.5 4l4 -4" />
-                                        <path d="M13 6h2l1.5 3l2 4" />
-                                        </svg>
-                                        <span class="menu-item-text"
-                                            :class="sidebarToggle ? 'xl:hidden' : ''">Bodaboda Group</span>
-                                    </a>
-                                </li>
-
-                                <!-- Menu Item Loans -->
-                                <li>
-                                    <a href="{{ route('treasurer.loans') }}" @click="selected = (selected === 'Loans' ? '':'Loans')" class="menu-item group"
-                                        :class="(selected === 'Loans') || (page === 'loans') ? 'menu-item-active' : 'menu-item-inactive'">
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="1.5"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            class="icon icon-tabler icons-tabler-outline icon-tabler-credit-card"
-                                        >
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M3 5m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
-                                        <path d="M3 10l18 0" />
-                                        <path d="M7 15l.01 0" />
-                                        <path d="M11 15l2 0" />
-                                        </svg>
-                                        <span class="menu-item-text"
-                                            :class="sidebarToggle ? 'xl:hidden' : ''">Loans</span>
-                                    </a>
-                                </li>
-
-                                <!-- Menu Item Real-Estate -->
-                                <li>
-                                    <a href="{{ route('treasurer.real.estate') }}" @click="selected = (selected === 'Real Estate' ? '':'Real Estate')" class="menu-item group"
-                                        :class="(selected === 'Real Estate') || (page === 'real estate') ? 'menu-item-active' : 'menu-item-inactive'">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-building">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M3 21l18 0" />
-                                        <path d="M9 8l1 0" />
-                                        <path d="M9 12l1 0" />
-                                        <path d="M9 16l1 0" />
-                                        <path d="M14 8l1 0" />
-                                        <path d="M14 12l1 0" />
-                                        <path d="M14 16l1 0" />
-                                        <path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16" />
-                                        </svg>
-                                        <span class="menu-item-text"
-                                            :class="sidebarToggle ? 'xl:hidden' : ''">Real Estate</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <!-- Settings Group -->
-                        <div>
-                        <h3 class="mb-4 text-xs leading-[20px] text-gray-400 uppercase">
-                        <span class="menu-group-title"
-                        :class="sidebarToggle ? 'xl:hidden' : ''">SETTINGS</span>
-                            <svg
-                                    :class="sidebarToggle ? 'xl:block hidden' : 'hidden'"
-                                    class="menu-group-icon mx-auto fill-current"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                            >
-                            <path
-                                    fill-rule="evenodd"
-                                    clip-rule="evenodd"
-                                    d="M5.99915 10.2451C6.96564 10.2451 7.74915 11.0286 7.74915 11.9951V12.0051C7.74915 12.9716 6.96564 13.7551 5.99915 13.7551C5.03265 13.7551 4.24915 12.9716 4.24915 12.0051V11.9951C4.24915 11.0286 5.03265 10.2451 5.99915 10.2451ZM17.9991 10.2451C18.9656 10.2451 19.7491 11.0286 19.7491 11.9951V12.0051C19.7491 12.9716 18.9656 13.7551 17.9991 13.7551C17.0326 13.7551 16.2491 12.9716 16.2491 12.0051V11.9951C16.2491 11.0286 17.0326 10.2451 17.9991 10.2451ZM13.7491 11.9951C13.7491 11.0286 12.9656 10.2451 11.9991 10.2451C11.0326 10.2451 10.2491 11.0286 10.2491 11.9951V12.0051C10.2491 12.9716 11.0326 13.7551 11.9991 13.7551C12.9656 13.7551 13.7491 12.9716 13.7491 12.0051V11.9951Z"
-                                    fill="currentColor"
-                            />
-                            </svg>
-                        </h3>
-
-                        <ul class="mb-6 flex flex-col gap-1">
-                            <!-- Menu Item Profile -->
-                            <li>
-                                <a href="{{ route('profile') }}" @click="selected = (selected === 'Profile' ? '':'Profile')"
-                                    class="menu-item group"
-                                    :class=" (selected === 'Profile') && (page === 'profile') ? 'menu-item-active' : 'menu-item-inactive'">
-                                    <svg
-                                            :class="(selected === 'Profile') && (page === 'profile') ?  'menu-item-icon-active'  :'menu-item-icon-inactive'"
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                    <path
-                                            fill-rule="evenodd"
-                                            clip-rule="evenodd"
-                                            d="M12 3.5C7.30558 3.5 3.5 7.30558 3.5 12C3.5 14.1526 4.3002 16.1184 5.61936 17.616C6.17279 15.3096 8.24852 13.5955 10.7246 13.5955H13.2746C15.7509 13.5955 17.8268 15.31 18.38 17.6167C19.6996 16.119 20.5 14.153 20.5 12C20.5 7.30558 16.6944 3.5 12 3.5ZM17.0246 18.8566V18.8455C17.0246 16.7744 15.3457 15.0955 13.2746 15.0955H10.7246C8.65354 15.0955 6.97461 16.7744 6.97461 18.8455V18.856C8.38223 19.8895 10.1198 20.5 12 20.5C13.8798 20.5 15.6171 19.8898 17.0246 18.8566ZM2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12ZM11.9991 7.25C10.8847 7.25 9.98126 8.15342 9.98126 9.26784C9.98126 10.3823 10.8847 11.2857 11.9991 11.2857C13.1135 11.2857 14.0169 10.3823 14.0169 9.26784C14.0169 8.15342 13.1135 7.25 11.9991 7.25ZM8.48126 9.26784C8.48126 7.32499 10.0563 5.75 11.9991 5.75C13.9419 5.75 15.5169 7.32499 15.5169 9.26784C15.5169 11.2107 13.9419 12.7857 11.9991 12.7857C10.0563 12.7857 8.48126 11.2107 8.48126 9.26784Z"
-                                            fill="currentColor"
-                                    />
-                                    </svg>
-                                    <span class="menu-item-text"
-                                        :class="sidebarToggle ? 'xl:hidden' : ''">Profile</span>
-                                </a>
-                            </li>
-                        </ul>
-                        </div>
-
-                        <!-- Logout Item -->
-                        <div class="mt-auto">
-                            <ul class="flex flex-col gap-1">
-                                <li>
-                                <form action="{{ route('signout') }}" method="POST" style="display: inline;">
-                                    @csrf
-                                    <button type="submit" @click="selected = (selected === 'Logout' ? '':'Logout')" class="menu-item group menu-item-inactive flex items-center w-full text-left" :class="(selected === 'Logout') ? 'menu-item-active' : 'menu-item-inactive'">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-logout-2">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <path d="M10 8v-2a2 2 0 0 1 2 -2h7a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-7a2 2 0 0 1 -2 -2v-2"></path>
-                                        <path d="M15 12h-12l3 -3"></path>
-                                        <path d="M6 15l-3 -3"></path>
-                                        </svg>
-                                        <span class="menu-item-text ml-3" :class="sidebarToggle ? 'xl:hidden' : ''">Logout</span>
-                                    </button>
-                                </form>
-                                </li>
-                            </ul>
-                        </div>
-                    </nav>
-                    <!-- Sidebar Menu -->
-                    </div>
-
-            </aside>
-            <!-- ===== Sidebar End ===== -->
+        <!-- ===== Sidebar Start ===== -->
+        @include('Layouts.Treasurer.aside')
+        <!-- ===== Sidebar End ===== -->
 
         <!-- ===== Content Area Start ===== -->
         <div class="relative flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
@@ -519,463 +250,463 @@
 
             <!-- ===== Main Content Start ===== -->
             <main>
-            <div class="mx-auto max-w-(--breakpoint-2xl) p-4 pb-20 md:p-6 md:pb-6">
-                <!-- Breadcrumb Start -->
-                <div x-data="{ pageName: `Profile`}">
-                <div class="flex flex-wrap items-center justify-between gap-3 pb-6">
-                    <h2 class="text-xl font-semibold text-gray-800 dark:text-white/90" x-text="pageName">Profile</h2>
-                    <nav>
-                    <ol class="flex items-center gap-1.5">
-                        <li>
-                        <a class="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400" href="index.php">Home
-                            <svg class="stroke-current" width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M6.0765 12.667L10.2432 8.50033L6.0765 4.33366" stroke="" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </a>
-                        </li>
-                        <li class="text-sm text-gray-800 dark:text-white/90" x-text="pageName">Profile</li>
-                    </ol>
-                    </nav>
-                </div>
-                </div>
-                <!-- Breadcrumb End -->
-                <!-- Profile Management -->
-                <div class="rounded-2xl border border-gray-200 bg-white p-5 lg:p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-                <h3 class="mb-5 text-lg font-semibold text-gray-800 lg:mb-7 dark:text-white/90">User: #USR{{ Auth::user()->id }}</h3>
-
-                <div class="mb-6 rounded-2xl border border-gray-200 p-5 lg:p-6 dark:border-gray-800">
-                    <div class="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
-                        <div class="flex w-full flex-col items-center gap-6 xl:flex-row">
-                            <div class="h-[78px] w-[78px] overflow-hidden rounded-full border border-gray-200 bg-gray-100 flex items-center justify-center dark:border-gray-800 dark:bg-gray-800">
-                            <svg class="h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            </svg>
-                            </div>
-                            <div class="order-3 xl:order-2">
-                            <h4 class="mb-2 text-center text-lg font-semibold text-gray-800 xl:text-left dark:text-white/90">
-                                {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}
-                            </h4>
-                            <div class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
-                                <p class="text-sm text-gray-500 dark:text-gray-400"> {{ Auth::user()->role }} </p>
-                                <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
-                                <p class="text-sm text-gray-500 dark:text-gray-400"><span class="bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500 rounded-full px-2 py-0.5 text-xs font-medium">Active</span> since {{ Auth::user()->created_at->format('M d, Y H:i') }}.</p>
-                            </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="rounded-xl border border-gray-200 p-6 dark:border-gray-800" x-data="{ activeTab: 'personal' }">
-                    <div class="flex flex-col gap-6 sm:flex-row sm:gap-8">
-                    <!-- Left Sidebar Menu -->
-                    <div class="overflow-x-auto pb-2 sm:w-[280px] [&amp;::-webkit-scrollbar-thumb]:rounded-full [&amp;::-webkit-scrollbar-thumb]:bg-gray-100 dark:[&amp;::-webkit-scrollbar-thumb]:bg-gray-600 [&amp;::-webkit-scrollbar-track]:bg-white dark:[&amp;::-webkit-scrollbar-track]:bg-transparent [&amp;::-webkit-scrollbar]:h-1.5">
-                        <nav class="flex w-full flex-row sm:flex-col sm:space-y-2">
-                            <button @click="activeTab = 'personal'" :class="activeTab === 'personal' ? 'bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'" class="inline-flex items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-200 ease-in-out sm:p-3 bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">
-                                <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                <div class="mx-auto max-w-(--breakpoint-2xl) p-4 pb-20 md:p-6 md:pb-6">
+                    <!-- Breadcrumb Start -->
+                    <div x-data="{ pageName: `Profile`}">
+                    <div class="flex flex-wrap items-center justify-between gap-3 pb-6">
+                        <h2 class="text-xl font-semibold text-gray-800 dark:text-white/90" x-text="pageName">Profile</h2>
+                        <nav>
+                        <ol class="flex items-center gap-1.5">
+                            <li>
+                            <a class="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400" href="index.php">Home
+                                <svg class="stroke-current" width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6.0765 12.667L10.2432 8.50033L6.0765 4.33366" stroke="" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"></path>
                                 </svg>
-                                Personal Information
-                            </button>
-
-                            <button @click="activeTab = 'addresses'" :class="activeTab === 'addresses' ? 'bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'" class="inline-flex items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-200 ease-in-out sm:p-3 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
-                                <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                                </svg>
-                                Addresses
-                            </button>
-
-                            <button @click="activeTab = 'contact'" :class="activeTab === 'contact' ? 'bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'" class="inline-flex items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-200 ease-in-out sm:p-3 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
-                                <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                                </svg>
-                                Contact Information
-                            </button>
-
-                            <button @click="activeTab = 'next-of-kin'" :class="activeTab === 'next-of-kin' ? 'bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'" class="inline-flex items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-200 ease-in-out sm:p-3 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
-                                <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                                </svg>
-                                Next of Kin
-                            </button>
-
-                            <button @click="activeTab = 'settings'" :class="activeTab === 'settings' ? 'bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'" class="inline-flex items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-200 ease-in-out sm:p-3 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
-                                <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                </svg>
-                                Settings
-                            </button>
+                            </a>
+                            </li>
+                            <li class="text-sm text-gray-800 dark:text-white/90" x-text="pageName">Profile</li>
+                        </ol>
                         </nav>
                     </div>
+                    </div>
+                    <!-- Breadcrumb End -->
+                    <!-- Profile Management -->
+                    <div class="rounded-2xl border border-gray-200 bg-white p-5 lg:p-6 dark:border-gray-800 dark:bg-white/[0.03]">
+                    <h3 class="mb-5 text-lg font-semibold text-gray-800 lg:mb-7 dark:text-white/90">User: #USR{{ Auth::user()->id }}</h3>
 
-                    <!-- Right Content Area -->
-                    <div class="flex-1">
-                        <!-- Personal Information -->
-                        <div x-show="activeTab === 'personal'">
-                        <!-- Header: Title Left + Edit Button Right -->
-                        <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M16.4107 6.35C16.4107 8.74 14.4707 10.69 12.0707 10.69L12.0607 10.68C9.6707 10.68 7.7207 8.73 7.7207 6.34C7.7207 3.95 9.6807 2 12.0707 2C14.4607 2 16.4107 3.96 16.4107 6.35ZM14.9107 6.34C14.9107 4.78 13.6407 3.5 12.0707 3.5C10.5107 3.5 9.2307 4.78 9.2307 6.34C9.2307 7.9 10.5107 9.18 12.0707 9.18C13.6307 9.18 14.9107 7.9 14.9107 6.34Z" fill="#323544"></path>
-                            <path opacity="0.4" d="M12 12.1895C14.67 12.1895 16.76 12.9395 18.21 14.4195V14.4095C20.2567 16.4956 20.2504 19.2563 20.25 19.4344L20.25 19.4395C20.24 19.8495 19.91 20.1795 19.5 20.1795H19.49C19.07 20.1695 18.75 19.8295 18.75 19.4195C18.75 19.3695 18.75 17.0895 17.13 15.4495C15.97 14.2795 14.24 13.6795 12 13.6795C9.76002 13.6795 8.03002 14.2795 6.87002 15.4495C5.25002 17.0995 5.25002 19.3995 5.25002 19.4195C5.25002 19.8295 4.92002 20.1795 4.51002 20.1795C4.15002 20.1995 3.75002 19.8595 3.75002 19.4495L3.75002 19.4448C3.74962 19.2771 3.74302 16.506 5.79002 14.4195C7.24002 12.9395 9.33002 12.1895 12 12.1895Z" fill="#323544"></path>
-                            </svg>
-                            <h3 class="text-2xl font-semibold text-gray-800 dark:text-white/90">
-                            Personal Information
-                            </h3>
-                            <button @click="isProfileInfoModal = true" class="shadow-theme-xs flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 sm:w-auto dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-                            <svg class="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M15.0911 2.78206C14.2125 1.90338 12.7878 1.90338 11.9092 2.78206L4.57524 10.116C4.26682 10.4244 4.0547 10.8158 3.96468 11.2426L3.31231 14.3352C3.25997 14.5833 3.33653 14.841 3.51583 15.0203C3.69512 15.1996 3.95286 15.2761 4.20096 15.2238L7.29355 14.5714C7.72031 14.4814 8.11172 14.2693 8.42013 13.9609L15.7541 6.62695C16.6327 5.74827 16.6327 4.32365 15.7541 3.44497L15.0911 2.78206ZM12.9698 3.84272C13.2627 3.54982 13.7376 3.54982 14.0305 3.84272L14.6934 4.50563C14.9863 4.79852 14.9863 5.2734 14.6934 5.56629L14.044 6.21573L12.3204 4.49215L12.9698 3.84272ZM11.2597 5.55281L5.6359 11.1766C5.53309 11.2794 5.46238 11.4099 5.43238 11.5522L5.01758 13.5185L6.98394 13.1037C7.1262 13.0737 7.25666 13.003 7.35947 12.9002L12.9833 7.27639L11.2597 5.55281Z" fill=""></path>
-                            </svg>
-                            Edit
-                            </button>
-                        </div>
-
-                        <!-- Details Grid Below -->
-                        <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                            <div>
-                            <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Full Name</p>
-                            <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</p>
-                            </div>
-                            <div>
-                            <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Date of Birth</p>
-                            <p class="text-sm font-medium text-gray-800 dark:text-white/90">20 Feb 1985</p>
-                            </div>
-                            <div>
-                            <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Gender</p>
-                            <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ Auth::user()->gender }}</p>
-                            </div>
-                            <div>
-                            <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Role</p>
-                            <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ Auth::user()->role }}</p>
-                            </div>
-                        </div>
-                        </div>
-
-                        <!-- Addresses -->
-                        <div x-show="activeTab === 'addresses'" style="display: none;">
-                        <!-- Header: Title Left + Edit Button Right -->
-                        <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-                            <h3 class="text-2xl font-semibold text-gray-800 dark:text-white/90">
-                            Addresses
-                            </h3>
-                            <button @click="isProfileAddressModal = true" class="shadow-theme-xs flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 sm:w-auto dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-                            <svg class="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M15.0911 2.78206C14.2125 1.90338 12.7878 1.90338 11.9092 2.78206L4.57524 10.116C4.26682 10.4244 4.0547 10.8158 3.96468 11.2426L3.31231 14.3352C3.25997 14.5833 3.33653 14.841 3.51583 15.0203C3.69512 15.1996 3.95286 15.2761 4.20096 15.2238L7.29355 14.5714C7.72031 14.4814 8.11172 14.2693 8.42013 13.9609L15.7541 6.62695C16.6327 5.74827 16.6327 4.32365 15.7541 3.44497L15.0911 2.78206ZM12.9698 3.84272C13.2627 3.54982 13.7376 3.54982 14.0305 3.84272L14.6934 4.50563C14.9863 4.79852 14.9863 5.2734 14.6934 5.56629L14.044 6.21573L12.3204 4.49215L12.9698 3.84272ZM11.2597 5.55281L5.6359 11.1766C5.53309 11.2794 5.46238 11.4099 5.43238 11.5522L5.01758 13.5185L6.98394 13.1037C7.1262 13.0737 7.25666 13.003 7.35947 12.9002L12.9833 7.27639L11.2597 5.55281Z" fill=""></path>
-                            </svg>
-                            Edit
-                            </button>
-                        </div>
-
-                        <!-- Details Grid Below -->
-                        <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                            <div>
-                            <p class="text-sm font-medium text-gray-700 dark:text-white/90">Plot 205, SSS 4, Makongeni</p>
-                            <p class="text-sm font-medium text-gray-500 dark:text-white/90">P.O.Box 981-01000</p>
-                            <p class="text-sm font-medium text-gray-500 dark:text-white/90">Thika, Kiambu County, Kenya</p>
-                            </div>
-                        </div>
-                        </div>
-
-                        <!-- Contact Information -->
-                        <div x-show="activeTab === 'contact'" style="display: none;">
-                        <!-- Header: Title Left + Edit Button Right -->
-                        <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-                            <h3 class="text-2xl font-semibold text-gray-800 dark:text-white/90">
-                            Contact Information
-                            </h3>
-                            <button @click="isProfileContactModal = true" class="shadow-theme-xs flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 sm:w-auto dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-                            <svg class="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M15.0911 2.78206C14.2125 1.90338 12.7878 1.90338 11.9092 2.78206L4.57524 10.116C4.26682 10.4244 4.0547 10.8158 3.96468 11.2426L3.31231 14.3352C3.25997 14.5833 3.33653 14.841 3.51583 15.0203C3.69512 15.1996 3.95286 15.2761 4.20096 15.2238L7.29355 14.5714C7.72031 14.4814 8.11172 14.2693 8.42013 13.9609L15.7541 6.62695C16.6327 5.74827 16.6327 4.32365 15.7541 3.44497L15.0911 2.78206ZM12.9698 3.84272C13.2627 3.54982 13.7376 3.54982 14.0305 3.84272L14.6934 4.50563C14.9863 4.79852 14.9863 5.2734 14.6934 5.56629L14.044 6.21573L12.3204 4.49215L12.9698 3.84272ZM11.2597 5.55281L5.6359 11.1766C5.53309 11.2794 5.46238 11.4099 5.43238 11.5522L5.01758 13.5185L6.98394 13.1037C7.1262 13.0737 7.25666 13.003 7.35947 12.9002L12.9833 7.27639L11.2597 5.55281Z" fill=""></path>
-                            </svg>
-                            Edit
-                            </button>
-                        </div>
-
-                        <!-- Details Grid Below -->
-                        <div class="grid grid-cols-1 gap-6 lg:grid-cols-1">
-                            <div>
-                            <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Email</p>
-                            <p class="text-sm font-medium text-gray-800 dark:text-white/90">randomuser@pimjo.com</p>
-                            </div>
-                            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                            <div>
-                                <span class="mb-1 text-xs text-gray-500 dark:text-gray-400">Primary Phone</span>
-                                <p class="text-sm font-medium text-gray-800 dark:text-white/90">+254 723 000 000</p>
-                            </div>
-                            <div>
-                                <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Secondary Phone</p>
-                                <p class="text-sm font-medium text-gray-800 dark:text-white/90">+254 725 000 000</p>
-                            </div>
-                            </div>
-                        </div>
-                        </div>
-
-                        <!-- Next of Kin Table -->
-                        <div x-show="activeTab === 'next-of-kin'" style="display: none;">
-                        <!-- Header: Title Left + Buttons Right -->
-                        <div class="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-                            <h3 class="text-2xl font-semibold text-gray-800 dark:text-white/90">
-                            Next of Kin
-                            </h3>
-                            <div class="flex flex-col gap-3 sm:flex-row">
-                            <button @click="isProfileNextKinModal = true" class="inline-flex items-center gap-2 px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600">
-                                <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    <div class="mb-6 rounded-2xl border border-gray-200 p-5 lg:p-6 dark:border-gray-800">
+                        <div class="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+                            <div class="flex w-full flex-col items-center gap-6 xl:flex-row">
+                                <div class="h-[78px] w-[78px] overflow-hidden rounded-full border border-gray-200 bg-gray-100 flex items-center justify-center dark:border-gray-800 dark:bg-gray-800">
+                                <svg class="h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                 </svg>
-                                Add Next of Kin
-                            </button>
-                            </div>
-                        </div>
-
-                        <!-- Search + Tab Filter -->
-                        <div class="flex flex-col gap-5 mb-6 sm:flex-row sm:justify-between">
-                            <div class="w-full">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
-                                My next of Kin
-                            </h3>
-                            <p class="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
-                                Manage your next of kin statistics easily
-                            </p>
-                            </div>
-                        </div>
-
-                        <!-- Table with Action Column -->
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                            <thead class="bg-gray-50 dark:bg-gray-800">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Next of Kin</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Address</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Phone</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Relationship</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                            <tr>
-                                <td class="px-6 py-4">
-                                <div>
-                                    <p class="text-sm font-medium text-gray-900 dark:text-white">Tony Wamuthende</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">tony.wamuthende@gmail.com</p>
                                 </div>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">Makongeni, Thika</td>
-                                <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">+254 785 000 200</td>
-                                <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">Brother</td>
-                                <td class="px-6 py-4">
-                                <span class="bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500 rounded-full px-2 py-0.5 text-xs font-medium">Active</span>
-                                </td>
-                                <td class="px-6 py-4">
-                                <div class="flex items-center gap-3">
-                                    <button @click="isProfileEditNextKinModal = true" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+                                <div class="order-3 xl:order-2">
+                                <h4 class="mb-2 text-center text-lg font-semibold text-gray-800 xl:text-left dark:text-white/90">
+                                    {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}
+                                </h4>
+                                <div class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
+                                    <p class="text-sm text-gray-500 dark:text-gray-400"> {{ Auth::user()->role }} </p>
+                                    <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400"><span class="bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500 rounded-full px-2 py-0.5 text-xs font-medium">Active</span> since {{ Auth::user()->created_at->format('M d, Y H:i') }}.</p>
+                                </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rounded-xl border border-gray-200 p-6 dark:border-gray-800" x-data="{ activeTab: 'personal' }">
+                        <div class="flex flex-col gap-6 sm:flex-row sm:gap-8">
+                        <!-- Left Sidebar Menu -->
+                        <div class="overflow-x-auto pb-2 sm:w-[280px] [&amp;::-webkit-scrollbar-thumb]:rounded-full [&amp;::-webkit-scrollbar-thumb]:bg-gray-100 dark:[&amp;::-webkit-scrollbar-thumb]:bg-gray-600 [&amp;::-webkit-scrollbar-track]:bg-white dark:[&amp;::-webkit-scrollbar-track]:bg-transparent [&amp;::-webkit-scrollbar]:h-1.5">
+                            <nav class="flex w-full flex-row sm:flex-col sm:space-y-2">
+                                <button @click="activeTab = 'personal'" :class="activeTab === 'personal' ? 'bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'" class="inline-flex items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-200 ease-in-out sm:p-3 bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">
                                     <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                     </svg>
-                                    </button>
-                                </div>
-                                </td>
-                            </tr>
-                            <!-- Add more rows as needed -->
-                            </tbody>
-                            </table>
-                        </div>
+                                    Personal Information
+                                </button>
 
-                        <!-- Pagination (Bottom Right) -->
-                        <div class="mt-6 flex justify-end">
-                            <nav class="flex items-center gap-2">
-                            <button class="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700">
-                                Previous
-                            </button>
-                            <button class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-gray">1</button>
-                            <button class="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700">Next</button>
+                                <button @click="activeTab = 'addresses'" :class="activeTab === 'addresses' ? 'bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'" class="inline-flex items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-200 ease-in-out sm:p-3 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
+                                    <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                                    </svg>
+                                    Addresses
+                                </button>
+
+                                <button @click="activeTab = 'contact'" :class="activeTab === 'contact' ? 'bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'" class="inline-flex items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-200 ease-in-out sm:p-3 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
+                                    <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                    </svg>
+                                    Contact Information
+                                </button>
+
+                                <button @click="activeTab = 'next-of-kin'" :class="activeTab === 'next-of-kin' ? 'bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'" class="inline-flex items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-200 ease-in-out sm:p-3 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
+                                    <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                                    </svg>
+                                    Next of Kin
+                                </button>
+
+                                <button @click="activeTab = 'settings'" :class="activeTab === 'settings' ? 'bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400' : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'" class="inline-flex items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-200 ease-in-out sm:p-3 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
+                                    <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                    Settings
+                                </button>
                             </nav>
                         </div>
-                        </div>
 
-                        <!-- Settings (Notification toggles & preferences) -->
-                        <div x-show="activeTab === 'settings'" style="display: none;">
-                        <h3 class="mb-4 text-xl font-medium text-gray-800 dark:text-white/90">Settings</h3>
-                        <div class="grid grid-cols-1 gap-5 sm:grid-cols-1 xl:grid-cols-1">
-
-                            <article class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/3">
-                            <div class="relative p-5 pb-9">
-                                <h3 class="mb-3 text-lg font-semibold text-gray-600 dark:text-white/90">
-                                Change Password
+                        <!-- Right Content Area -->
+                        <div class="flex-1">
+                            <!-- Personal Information -->
+                            <div x-show="activeTab === 'personal'">
+                            <!-- Header: Title Left + Edit Button Right -->
+                            <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M16.4107 6.35C16.4107 8.74 14.4707 10.69 12.0707 10.69L12.0607 10.68C9.6707 10.68 7.7207 8.73 7.7207 6.34C7.7207 3.95 9.6807 2 12.0707 2C14.4607 2 16.4107 3.96 16.4107 6.35ZM14.9107 6.34C14.9107 4.78 13.6407 3.5 12.0707 3.5C10.5107 3.5 9.2307 4.78 9.2307 6.34C9.2307 7.9 10.5107 9.18 12.0707 9.18C13.6307 9.18 14.9107 7.9 14.9107 6.34Z" fill="#323544"></path>
+                                <path opacity="0.4" d="M12 12.1895C14.67 12.1895 16.76 12.9395 18.21 14.4195V14.4095C20.2567 16.4956 20.2504 19.2563 20.25 19.4344L20.25 19.4395C20.24 19.8495 19.91 20.1795 19.5 20.1795H19.49C19.07 20.1695 18.75 19.8295 18.75 19.4195C18.75 19.3695 18.75 17.0895 17.13 15.4495C15.97 14.2795 14.24 13.6795 12 13.6795C9.76002 13.6795 8.03002 14.2795 6.87002 15.4495C5.25002 17.0995 5.25002 19.3995 5.25002 19.4195C5.25002 19.8295 4.92002 20.1795 4.51002 20.1795C4.15002 20.1995 3.75002 19.8595 3.75002 19.4495L3.75002 19.4448C3.74962 19.2771 3.74302 16.506 5.79002 14.4195C7.24002 12.9395 9.33002 12.1895 12 12.1895Z" fill="#323544"></path>
+                                </svg>
+                                <h3 class="text-2xl font-semibold text-gray-800 dark:text-white/90">
+                                Personal Information
                                 </h3>
-                                <p class="text-sm  text-gray-500 dark:text-gray-400">
-                                NOTE! To change the password, enter the current password, and ensure they meet the password criteria.
-                                </p>
+                                <button @click="isProfileInfoModal = true" class="shadow-theme-xs flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 sm:w-auto dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+                                <svg class="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M15.0911 2.78206C14.2125 1.90338 12.7878 1.90338 11.9092 2.78206L4.57524 10.116C4.26682 10.4244 4.0547 10.8158 3.96468 11.2426L3.31231 14.3352C3.25997 14.5833 3.33653 14.841 3.51583 15.0203C3.69512 15.1996 3.95286 15.2761 4.20096 15.2238L7.29355 14.5714C7.72031 14.4814 8.11172 14.2693 8.42013 13.9609L15.7541 6.62695C16.6327 5.74827 16.6327 4.32365 15.7541 3.44497L15.0911 2.78206ZM12.9698 3.84272C13.2627 3.54982 13.7376 3.54982 14.0305 3.84272L14.6934 4.50563C14.9863 4.79852 14.9863 5.2734 14.6934 5.56629L14.044 6.21573L12.3204 4.49215L12.9698 3.84272ZM11.2597 5.55281L5.6359 11.1766C5.53309 11.2794 5.46238 11.4099 5.43238 11.5522L5.01758 13.5185L6.98394 13.1037C7.1262 13.0737 7.25666 13.003 7.35947 12.9002L12.9833 7.27639L11.2597 5.55281Z" fill=""></path>
+                                </svg>
+                                Edit
+                                </button>
                             </div>
 
-                            <div class="flex items-center justify-between border-t border-gray-200 p-5 dark:border-gray-800">
-                                <form class="flex flex-col" x-data="passwordForm()" @submit.prevent="handleSubmit">
-                                <div class="px-2 overflow-y-auto custom-scrollbar">
-                                    <div class="relative">
-                                    <div class="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-3">
-                                        <!-- Current Password -->
-                                        <div>
-                                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                            Current Password
-                                        </label>
-                                        <div class="relative" x-data="{ showPassword: false }">
-                                            <input type="password" placeholder="Current Password" x-model="form.currentPassword" @input="clearError('currentPassword')" :class="errors.currentPassword ? 'border-error-500 focus:border-error-500 focus:ring-error-500/10' : 'border-gray-300 dark:border-gray-700'" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 pl-4 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                            <span @click="showPassword = !showPassword" class="absolute top-1/2 right-4 z-30 -translate-y-1/2 cursor-pointer">
-                                                <svg x-show="!showPassword" class="fill-gray-500 dark:fill-gray-400" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M10.0002 13.8619C7.23361 13.8619 4.86803 12.1372 3.92328 9.70241C4.86804 7.26761 7.23361 5.54297 10.0002 5.54297C12.7667 5.54297 15.1323 7.26762 16.0771 9.70243C15.1323 12.1372 12.7667 13.8619 10.0002 13.8619ZM10.0002 4.04297C6.48191 4.04297 3.49489 6.30917 2.4155 9.4593C2.3615 9.61687 2.3615 9.78794 2.41549 9.94552C3.49488 13.0957 6.48191 15.3619 10.0002 15.3619C13.5184 15.3619 16.5055 13.0957 17.5849 9.94555C17.6389 9.78797 17.6389 9.6169 17.5849 9.45932C16.5055 6.30919 13.5184 4.04297 10.0002 4.04297ZM9.99151 7.84413C8.96527 7.84413 8.13333 8.67606 8.13333 9.70231C8.13333 10.7286 8.96527 11.5605 9.99151 11.5605H10.0064C11.0326 11.5605 11.8646 10.7286 11.8646 9.70231C11.8646 8.67606 11.0326 7.84413 10.0064 7.84413H9.99151Z"></path>
-                                                </svg>
-
-                                                <svg x-show="showPassword" class="fill-gray-500 dark:fill-gray-400" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: none;">
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M4.63803 3.57709C4.34513 3.2842 3.87026 3.2842 3.57737 3.57709C3.28447 3.86999 3.28447 4.34486 3.57737 4.63775L4.85323 5.91362C3.74609 6.84199 2.89363 8.06395 2.4155 9.45936C2.3615 9.61694 2.3615 9.78801 2.41549 9.94558C3.49488 13.0957 6.48191 15.3619 10.0002 15.3619C11.255 15.3619 12.4422 15.0737 13.4994 14.5598L15.3625 16.4229C15.6554 16.7158 16.1302 16.7158 16.4231 16.4229C16.716 16.13 16.716 15.6551 16.4231 15.3622L4.63803 3.57709ZM12.3608 13.4212L10.4475 11.5079C10.3061 11.5423 10.1584 11.5606 10.0064 11.5606H9.99151C8.96527 11.5606 8.13333 10.7286 8.13333 9.70237C8.13333 9.5461 8.15262 9.39434 8.18895 9.24933L5.91885 6.97923C5.03505 7.69015 4.34057 8.62704 3.92328 9.70247C4.86803 12.1373 7.23361 13.8619 10.0002 13.8619C10.8326 13.8619 11.6287 13.7058 12.3608 13.4212ZM16.0771 9.70249C15.7843 10.4569 15.3552 11.1432 14.8199 11.7311L15.8813 12.7925C16.6329 11.9813 17.2187 11.0143 17.5849 9.94561C17.6389 9.78803 17.6389 9.61696 17.5849 9.45938C16.5055 6.30925 13.5184 4.04303 10.0002 4.04303C9.13525 4.04303 8.30244 4.17999 7.52218 4.43338L8.75139 5.66259C9.1556 5.58413 9.57311 5.54303 10.0002 5.54303C12.7667 5.54303 15.1323 7.26768 16.0771 9.70249Z"></path>
-                                                </svg>
-                                            </span>
-                                        </div>
-                                        <p x-show="errors.currentPassword" x-text="errors.currentPassword" class="text-theme-xs text-error-500 mt-1.5" style="display: none;"></p>
-                                        </div>
-
-                                        <!-- New Password -->
-                                        <div>
-                                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                            New Password
-                                        </label>
-                                        <div class="relative" x-data="{ showPassword: false }">
-                                            <input type="password" placeholder="New Password" x-model="form.newPassword" @input="validateNewPassword(); clearError('newPassword')" :class="errors.newPassword ? 'border-error-500 focus:border-error-500 focus:ring-error-500/10' : 'border-gray-300 dark:border-gray-700'" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 pl-4 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                            <span @click="showPassword = !showPassword" class="absolute top-1/2 right-4 z-30 -translate-y-1/2 cursor-pointer">
-                                                <svg x-show="!showPassword" class="fill-gray-500 dark:fill-gray-400" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M10.0002 13.8619C7.23361 13.8619 4.86803 12.1372 3.92328 9.70241C4.86804 7.26761 7.23361 5.54297 10.0002 5.54297C12.7667 5.54297 15.1323 7.26762 16.0771 9.70243C15.1323 12.1372 12.7667 13.8619 10.0002 13.8619ZM10.0002 4.04297C6.48191 4.04297 3.49489 6.30917 2.4155 9.4593C2.3615 9.61687 2.3615 9.78794 2.41549 9.94552C3.49488 13.0957 6.48191 15.3619 10.0002 15.3619C13.5184 15.3619 16.5055 13.0957 17.5849 9.94555C17.6389 9.78797 17.6389 9.6169 17.5849 9.45932C16.5055 6.30919 13.5184 4.04297 10.0002 4.04297ZM9.99151 7.84413C8.96527 7.84413 8.13333 8.67606 8.13333 9.70231C8.13333 10.7286 8.96527 11.5605 9.99151 11.5605H10.0064C11.0326 11.5605 11.8646 10.7286 11.8646 9.70231C11.8646 8.67606 11.0326 7.84413 10.0064 7.84413H9.99151Z"></path>
-                                                </svg>
-
-                                                <svg x-show="showPassword" class="fill-gray-500 dark:fill-gray-400" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: none;">
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M4.63803 3.57709C4.34513 3.2842 3.87026 3.2842 3.57737 3.57709C3.28447 3.86999 3.28447 4.34486 3.57737 4.63775L4.85323 5.91362C3.74609 6.84199 2.89363 8.06395 2.4155 9.45936C2.3615 9.61694 2.3615 9.78801 2.41549 9.94558C3.49488 13.0957 6.48191 15.3619 10.0002 15.3619C11.255 15.3619 12.4422 15.0737 13.4994 14.5598L15.3625 16.4229C15.6554 16.7158 16.1302 16.7158 16.4231 16.4229C16.716 16.13 16.716 15.6551 16.4231 15.3622L4.63803 3.57709ZM12.3608 13.4212L10.4475 11.5079C10.3061 11.5423 10.1584 11.5606 10.0064 11.5606H9.99151C8.96527 11.5606 8.13333 10.7286 8.13333 9.70237C8.13333 9.5461 8.15262 9.39434 8.18895 9.24933L5.91885 6.97923C5.03505 7.69015 4.34057 8.62704 3.92328 9.70247C4.86803 12.1373 7.23361 13.8619 10.0002 13.8619C10.8326 13.8619 11.6287 13.7058 12.3608 13.4212ZM16.0771 9.70249C15.7843 10.4569 15.3552 11.1432 14.8199 11.7311L15.8813 12.7925C16.6329 11.9813 17.2187 11.0143 17.5849 9.94561C17.6389 9.78803 17.6389 9.61696 17.5849 9.45938C16.5055 6.30925 13.5184 4.04303 10.0002 4.04303C9.13525 4.04303 8.30244 4.17999 7.52218 4.43338L8.75139 5.66259C9.1556 5.58413 9.57311 5.54303 10.0002 5.54303C12.7667 5.54303 15.1323 7.26768 16.0771 9.70249Z"></path>
-                                                </svg>
-                                            </span>
-                                        </div>
-                                        <p x-show="errors.newPassword" x-text="errors.newPassword" class="text-theme-xs text-error-500 mt-1.5" style="display: none;"></p>
-                                        </div>
-
-                                        <!-- Re-enter New Password -->
-                                        <div>
-                                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                            Re-enter New Password
-                                        </label>
-                                        <div class="relative" x-data="{ showPassword: false }">
-                                            <input type="password" placeholder="Re-enter New Password" x-model="form.confirmPassword" @input="validateConfirmPassword(); clearError('confirmPassword')" :class="errors.confirmPassword ? 'border-error-500 focus:border-error-500 focus:ring-error-500/10' : 'border-gray-300 dark:border-gray-700'" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 pl-4 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                            <span @click="showPassword = !showPassword" class="absolute top-1/2 right-4 z-30 -translate-y-1/2 cursor-pointer">
-                                            <svg x-show="!showPassword" class="fill-gray-500 dark:fill-gray-400" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M10.0002 13.8619C7.23361 13.8619 4.86803 12.1372 3.92328 9.70241C4.86804 7.26761 7.23361 5.54297 10.0002 5.54297C12.7667 5.54297 15.1323 7.26762 16.0771 9.70243C15.1323 12.1372 12.7667 13.8619 10.0002 13.8619ZM10.0002 4.04297C6.48191 4.04297 3.49489 6.30917 2.4155 9.4593C2.3615 9.61687 2.3615 9.78794 2.41549 9.94552C3.49488 13.0957 6.48191 15.3619 10.0002 15.3619C13.5184 15.3619 16.5055 13.0957 17.5849 9.94555C17.6389 9.78797 17.6389 9.6169 17.5849 9.45932C16.5055 6.30919 13.5184 4.04297 10.0002 4.04297ZM9.99151 7.84413C8.96527 7.84413 8.13333 8.67606 8.13333 9.70231C8.13333 10.7286 8.96527 11.5605 9.99151 11.5605H10.0064C11.0326 11.5605 11.8646 10.7286 11.8646 9.70231C11.8646 8.67606 11.0326 7.84413 10.0064 7.84413H9.99151Z"></path>
-                                            </svg>
-
-                                            <svg x-show="showPassword" class="fill-gray-500 dark:fill-gray-400" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: none;">
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M4.63803 3.57709C4.34513 3.2842 3.87026 3.2842 3.57737 3.57709C3.28447 3.86999 3.28447 4.34486 3.57737 4.63775L4.85323 5.91362C3.74609 6.84199 2.89363 8.06395 2.4155 9.45936C2.3615 9.61694 2.3615 9.78801 2.41549 9.94558C3.49488 13.0957 6.48191 15.3619 10.0002 15.3619C11.255 15.3619 12.4422 15.0737 13.4994 14.5598L15.3625 16.4229C15.6554 16.7158 16.1302 16.7158 16.4231 16.4229C16.716 16.13 16.716 15.6551 16.4231 15.3622L4.63803 3.57709ZM12.3608 13.4212L10.4475 11.5079C10.3061 11.5423 10.1584 11.5606 10.0064 11.5606H9.99151C8.96527 11.5606 8.13333 10.7286 8.13333 9.70237C8.13333 9.5461 8.15262 9.39434 8.18895 9.24933L5.91885 6.97923C5.03505 7.69015 4.34057 8.62704 3.92328 9.70247C4.86803 12.1373 7.23361 13.8619 10.0002 13.8619C10.8326 13.8619 11.6287 13.7058 12.3608 13.4212ZM16.0771 9.70249C15.7843 10.4569 15.3552 11.1432 14.8199 11.7311L15.8813 12.7925C16.6329 11.9813 17.2187 11.0143 17.5849 9.94561C17.6389 9.78803 17.6389 9.61696 17.5849 9.45938C16.5055 6.30925 13.5184 4.04303 10.0002 4.04303C9.13525 4.04303 8.30244 4.17999 7.52218 4.43338L8.75139 5.66259C9.1556 5.58413 9.57311 5.54303 10.0002 5.54303C12.7667 5.54303 15.1323 7.26768 16.0771 9.70249Z"></path>
-                                            </svg>
-                                            </span>
-                                        </div>
-                                        <p x-show="errors.confirmPassword" x-text="errors.confirmPassword" class="mt-1 text-sm text-error-500" style="display: none;"></p>
-                                        </div>
-
-
-                                    </div>
-                                    </div>
+                            <!-- Details Grid Below -->
+                            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                                <div>
+                                <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Full Name</p>
+                                <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</p>
                                 </div>
-
-                                <!-- Password Requirements Section -->
-                                <div class="flex relative items-center justify-between border-t border-gray-200 p-5 dark:border-gray-800">
-                                    <div class="flex gap-3">
-                                    <div class="order-3 xl:order-2">
-                                        <h4 class="mb-2 text-center text-medium font-semibold text-gray-600 xl:text-left dark:text-white/90">
-                                        Password Requirements
-                                        </h4>
-                                        <div class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
-                                        <!-- Minimum 8 characters -->
-                                        <p :class="requirements.minLength ? 'text-success-500' : 'flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400'" class="text-sm flex items-center gap-2 text-gray-500 dark:text-gray-400">
-                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M13.4017 4.35986L6.12166 11.6399L2.59833 8.11657" stroke="#abadac" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-                                            </svg>
-                                            Minimum 8 characters
-                                        </p>
-                                        <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
-
-                                        <!-- Special character -->
-                                        <p :class="requirements.specialChar ? 'text-success-500' : 'flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400'" class="text-sm flex items-center gap-2 text-gray-500 dark:text-gray-400">
-                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M13.4017 4.35986L6.12166 11.6399L2.59833 8.11657" stroke="#abadac" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-                                            </svg>
-                                            Special character
-                                        </p>
-                                        <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
-
-                                        <!-- Number (2 recommended) -->
-                                        <p :class="requirements.numbers ? 'text-success-500' : 'flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400'" class="text-sm flex items-center gap-2 text-gray-500 dark:text-gray-400">
-                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M13.4017 4.35986L6.12166 11.6399L2.59833 8.11657" stroke="#abadac" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-                                            </svg>
-                                            Number (2 recommended)
-                                        </p>
-                                        <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
-
-                                        <!-- Conform Password -->
-                                        <p :class="requirements.matchPassword ? 'text-success-500' : 'flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400'" class="text-sm flex items-center gap-2 text-gray-500 dark:text-gray-400">
-                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M13.4017 4.35986L6.12166 11.6399L2.59833 8.11657" stroke="#abadac" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-                                            </svg>
-                                            Match Password
-                                        </p>
-                                        <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
-
-                                        <div>
-                                            <button type="submit" class="shadow-theme-xs inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-medium text-gray-700 ring-1 ring-gray-300 transition hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]">
-                                                Change Password
-                                            </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    </div>
-
+                                <div>
+                                <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Date of Birth</p>
+                                <p class="text-sm font-medium text-gray-800 dark:text-white/90">20 Feb 1985</p>
                                 </div>
-                                </form>
+                                <div>
+                                <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Gender</p>
+                                <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ Auth::user()->gender }}</p>
+                                </div>
+                                <div>
+                                <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Role</p>
+                                <p class="text-sm font-medium text-gray-800 dark:text-white/90">{{ Auth::user()->role }}</p>
+                                </div>
                             </div>
-                            </article>
+                            </div>
 
-                            <article class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/3">
-                            <div class="relative p-5 pb-9">
-                                <h3 class="mb-3 text-lg font-semibold text-gray-800 dark:text-white/90">
-                                Delete Account
+                            <!-- Addresses -->
+                            <div x-show="activeTab === 'addresses'" style="display: none;">
+                            <!-- Header: Title Left + Edit Button Right -->
+                            <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+                                <h3 class="text-2xl font-semibold text-gray-800 dark:text-white/90">
+                                Addresses
                                 </h3>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">
-                                Once you delete your account, there is no going back. Please be certain.
-                                </p>
+                                <button @click="isProfileAddressModal = true" class="shadow-theme-xs flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 sm:w-auto dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+                                <svg class="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M15.0911 2.78206C14.2125 1.90338 12.7878 1.90338 11.9092 2.78206L4.57524 10.116C4.26682 10.4244 4.0547 10.8158 3.96468 11.2426L3.31231 14.3352C3.25997 14.5833 3.33653 14.841 3.51583 15.0203C3.69512 15.1996 3.95286 15.2761 4.20096 15.2238L7.29355 14.5714C7.72031 14.4814 8.11172 14.2693 8.42013 13.9609L15.7541 6.62695C16.6327 5.74827 16.6327 4.32365 15.7541 3.44497L15.0911 2.78206ZM12.9698 3.84272C13.2627 3.54982 13.7376 3.54982 14.0305 3.84272L14.6934 4.50563C14.9863 4.79852 14.9863 5.2734 14.6934 5.56629L14.044 6.21573L12.3204 4.49215L12.9698 3.84272ZM11.2597 5.55281L5.6359 11.1766C5.53309 11.2794 5.46238 11.4099 5.43238 11.5522L5.01758 13.5185L6.98394 13.1037C7.1262 13.0737 7.25666 13.003 7.35947 12.9002L12.9833 7.27639L11.2597 5.55281Z" fill=""></path>
+                                </svg>
+                                Edit
+                                </button>
                             </div>
-                            <div class="flex items-center justify-between border-t border-gray-200 p-5 dark:border-gray-800">
-                                <div class="flex gap-3">
-                                <div class="order-3 xl:order-2">
-                                    <h4 class="mb-2 text-center text-medium font-semibold text-gray-600 xl:text-left dark:text-white/90">
-                                    Account Status
-                                    </h4>
-                                    <div class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">Role: Treasurer</p>
-                                    <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400"><span class="bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500 rounded-full px-2 py-0.5 text-xs font-medium">Active</span> since December 09, 2025 15:24</p>
-                                    </div>
+
+                            <!-- Details Grid Below -->
+                            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                                <div>
+                                <p class="text-sm font-medium text-gray-700 dark:text-white/90">Plot 205, SSS 4, Makongeni</p>
+                                <p class="text-sm font-medium text-gray-500 dark:text-white/90">P.O.Box 981-01000</p>
+                                <p class="text-sm font-medium text-gray-500 dark:text-white/90">Thika, Kiambu County, Kenya</p>
+                                </div>
+                            </div>
+                            </div>
+
+                            <!-- Contact Information -->
+                            <div x-show="activeTab === 'contact'" style="display: none;">
+                            <!-- Header: Title Left + Edit Button Right -->
+                            <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+                                <h3 class="text-2xl font-semibold text-gray-800 dark:text-white/90">
+                                Contact Information
+                                </h3>
+                                <button @click="isProfileContactModal = true" class="shadow-theme-xs flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 sm:w-auto dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+                                <svg class="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M15.0911 2.78206C14.2125 1.90338 12.7878 1.90338 11.9092 2.78206L4.57524 10.116C4.26682 10.4244 4.0547 10.8158 3.96468 11.2426L3.31231 14.3352C3.25997 14.5833 3.33653 14.841 3.51583 15.0203C3.69512 15.1996 3.95286 15.2761 4.20096 15.2238L7.29355 14.5714C7.72031 14.4814 8.11172 14.2693 8.42013 13.9609L15.7541 6.62695C16.6327 5.74827 16.6327 4.32365 15.7541 3.44497L15.0911 2.78206ZM12.9698 3.84272C13.2627 3.54982 13.7376 3.54982 14.0305 3.84272L14.6934 4.50563C14.9863 4.79852 14.9863 5.2734 14.6934 5.56629L14.044 6.21573L12.3204 4.49215L12.9698 3.84272ZM11.2597 5.55281L5.6359 11.1766C5.53309 11.2794 5.46238 11.4099 5.43238 11.5522L5.01758 13.5185L6.98394 13.1037C7.1262 13.0737 7.25666 13.003 7.35947 12.9002L12.9833 7.27639L11.2597 5.55281Z" fill=""></path>
+                                </svg>
+                                Edit
+                                </button>
+                            </div>
+
+                            <!-- Details Grid Below -->
+                            <div class="grid grid-cols-1 gap-6 lg:grid-cols-1">
+                                <div>
+                                <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Email</p>
+                                <p class="text-sm font-medium text-gray-800 dark:text-white/90">randomuser@pimjo.com</p>
+                                </div>
+                                <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                                <div>
+                                    <span class="mb-1 text-xs text-gray-500 dark:text-gray-400">Primary Phone</span>
+                                    <p class="text-sm font-medium text-gray-800 dark:text-white/90">+254 723 000 000</p>
+                                </div>
+                                <div>
+                                    <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Secondary Phone</p>
+                                    <p class="text-sm font-medium text-gray-800 dark:text-white/90">+254 725 000 000</p>
                                 </div>
                                 </div>
-                                <div x-data="{ switcherToggle: false }">
-                                <button @click="isDeleteModalOpen = true" class="shadow-theme-xs inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-medium text-error-700 ring-1 ring-error-300 transition hover:bg-gray-50 dark:bg-error-700 dark:text-error-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]">
-                                    Delete Account
+                            </div>
+                            </div>
+
+                            <!-- Next of Kin Table -->
+                            <div x-show="activeTab === 'next-of-kin'" style="display: none;">
+                            <!-- Header: Title Left + Buttons Right -->
+                            <div class="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+                                <h3 class="text-2xl font-semibold text-gray-800 dark:text-white/90">
+                                Next of Kin
+                                </h3>
+                                <div class="flex flex-col gap-3 sm:flex-row">
+                                <button @click="isProfileNextKinModal = true" class="inline-flex items-center gap-2 px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600">
+                                    <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                    Add Next of Kin
                                 </button>
                                 </div>
                             </div>
-                            </article>
 
+                            <!-- Search + Tab Filter -->
+                            <div class="flex flex-col gap-5 mb-6 sm:flex-row sm:justify-between">
+                                <div class="w-full">
+                                <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
+                                    My next of Kin
+                                </h3>
+                                <p class="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
+                                    Manage your next of kin statistics easily
+                                </p>
+                                </div>
+                            </div>
+
+                            <!-- Table with Action Column -->
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead class="bg-gray-50 dark:bg-gray-800">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Next of Kin</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Address</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Phone</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Relationship</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                <tr>
+                                    <td class="px-6 py-4">
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-900 dark:text-white">Tony Wamuthende</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">tony.wamuthende@gmail.com</p>
+                                    </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">Makongeni, Thika</td>
+                                    <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">+254 785 000 200</td>
+                                    <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">Brother</td>
+                                    <td class="px-6 py-4">
+                                    <span class="bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500 rounded-full px-2 py-0.5 text-xs font-medium">Active</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <button @click="isProfileEditNextKinModal = true" class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+                                        <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                        </svg>
+                                        </button>
+                                    </div>
+                                    </td>
+                                </tr>
+                                <!-- Add more rows as needed -->
+                                </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Pagination (Bottom Right) -->
+                            <div class="mt-6 flex justify-end">
+                                <nav class="flex items-center gap-2">
+                                <button class="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700">
+                                    Previous
+                                </button>
+                                <button class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-gray">1</button>
+                                <button class="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700">Next</button>
+                                </nav>
+                            </div>
+                            </div>
+
+                            <!-- Settings (Notification toggles & preferences) -->
+                            <div x-show="activeTab === 'settings'" style="display: none;">
+                            <h3 class="mb-4 text-xl font-medium text-gray-800 dark:text-white/90">Settings</h3>
+                            <div class="grid grid-cols-1 gap-5 sm:grid-cols-1 xl:grid-cols-1">
+
+                                <article class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/3">
+                                <div class="relative p-5 pb-9">
+                                    <h3 class="mb-3 text-lg font-semibold text-gray-600 dark:text-white/90">
+                                    Change Password
+                                    </h3>
+                                    <p class="text-sm  text-gray-500 dark:text-gray-400">
+                                    NOTE! To change the password, enter the current password, and ensure they meet the password criteria.
+                                    </p>
+                                </div>
+
+                                <div class="flex items-center justify-between border-t border-gray-200 p-5 dark:border-gray-800">
+                                    <form class="flex flex-col" x-data="passwordForm()" @submit.prevent="handleSubmit">
+                                    <div class="px-2 overflow-y-auto custom-scrollbar">
+                                        <div class="relative">
+                                        <div class="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-3">
+                                            <!-- Current Password -->
+                                            <div>
+                                            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                                                Current Password
+                                            </label>
+                                            <div class="relative" x-data="{ showPassword: false }">
+                                                <input type="password" placeholder="Current Password" x-model="form.currentPassword" @input="clearError('currentPassword')" :class="errors.currentPassword ? 'border-error-500 focus:border-error-500 focus:ring-error-500/10' : 'border-gray-300 dark:border-gray-700'" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 pl-4 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                <span @click="showPassword = !showPassword" class="absolute top-1/2 right-4 z-30 -translate-y-1/2 cursor-pointer">
+                                                    <svg x-show="!showPassword" class="fill-gray-500 dark:fill-gray-400" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M10.0002 13.8619C7.23361 13.8619 4.86803 12.1372 3.92328 9.70241C4.86804 7.26761 7.23361 5.54297 10.0002 5.54297C12.7667 5.54297 15.1323 7.26762 16.0771 9.70243C15.1323 12.1372 12.7667 13.8619 10.0002 13.8619ZM10.0002 4.04297C6.48191 4.04297 3.49489 6.30917 2.4155 9.4593C2.3615 9.61687 2.3615 9.78794 2.41549 9.94552C3.49488 13.0957 6.48191 15.3619 10.0002 15.3619C13.5184 15.3619 16.5055 13.0957 17.5849 9.94555C17.6389 9.78797 17.6389 9.6169 17.5849 9.45932C16.5055 6.30919 13.5184 4.04297 10.0002 4.04297ZM9.99151 7.84413C8.96527 7.84413 8.13333 8.67606 8.13333 9.70231C8.13333 10.7286 8.96527 11.5605 9.99151 11.5605H10.0064C11.0326 11.5605 11.8646 10.7286 11.8646 9.70231C11.8646 8.67606 11.0326 7.84413 10.0064 7.84413H9.99151Z"></path>
+                                                    </svg>
+
+                                                    <svg x-show="showPassword" class="fill-gray-500 dark:fill-gray-400" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M4.63803 3.57709C4.34513 3.2842 3.87026 3.2842 3.57737 3.57709C3.28447 3.86999 3.28447 4.34486 3.57737 4.63775L4.85323 5.91362C3.74609 6.84199 2.89363 8.06395 2.4155 9.45936C2.3615 9.61694 2.3615 9.78801 2.41549 9.94558C3.49488 13.0957 6.48191 15.3619 10.0002 15.3619C11.255 15.3619 12.4422 15.0737 13.4994 14.5598L15.3625 16.4229C15.6554 16.7158 16.1302 16.7158 16.4231 16.4229C16.716 16.13 16.716 15.6551 16.4231 15.3622L4.63803 3.57709ZM12.3608 13.4212L10.4475 11.5079C10.3061 11.5423 10.1584 11.5606 10.0064 11.5606H9.99151C8.96527 11.5606 8.13333 10.7286 8.13333 9.70237C8.13333 9.5461 8.15262 9.39434 8.18895 9.24933L5.91885 6.97923C5.03505 7.69015 4.34057 8.62704 3.92328 9.70247C4.86803 12.1373 7.23361 13.8619 10.0002 13.8619C10.8326 13.8619 11.6287 13.7058 12.3608 13.4212ZM16.0771 9.70249C15.7843 10.4569 15.3552 11.1432 14.8199 11.7311L15.8813 12.7925C16.6329 11.9813 17.2187 11.0143 17.5849 9.94561C17.6389 9.78803 17.6389 9.61696 17.5849 9.45938C16.5055 6.30925 13.5184 4.04303 10.0002 4.04303C9.13525 4.04303 8.30244 4.17999 7.52218 4.43338L8.75139 5.66259C9.1556 5.58413 9.57311 5.54303 10.0002 5.54303C12.7667 5.54303 15.1323 7.26768 16.0771 9.70249Z"></path>
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                            <p x-show="errors.currentPassword" x-text="errors.currentPassword" class="text-theme-xs text-error-500 mt-1.5" style="display: none;"></p>
+                                            </div>
+
+                                            <!-- New Password -->
+                                            <div>
+                                            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                                                New Password
+                                            </label>
+                                            <div class="relative" x-data="{ showPassword: false }">
+                                                <input type="password" placeholder="New Password" x-model="form.newPassword" @input="validateNewPassword(); clearError('newPassword')" :class="errors.newPassword ? 'border-error-500 focus:border-error-500 focus:ring-error-500/10' : 'border-gray-300 dark:border-gray-700'" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 pl-4 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                <span @click="showPassword = !showPassword" class="absolute top-1/2 right-4 z-30 -translate-y-1/2 cursor-pointer">
+                                                    <svg x-show="!showPassword" class="fill-gray-500 dark:fill-gray-400" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M10.0002 13.8619C7.23361 13.8619 4.86803 12.1372 3.92328 9.70241C4.86804 7.26761 7.23361 5.54297 10.0002 5.54297C12.7667 5.54297 15.1323 7.26762 16.0771 9.70243C15.1323 12.1372 12.7667 13.8619 10.0002 13.8619ZM10.0002 4.04297C6.48191 4.04297 3.49489 6.30917 2.4155 9.4593C2.3615 9.61687 2.3615 9.78794 2.41549 9.94552C3.49488 13.0957 6.48191 15.3619 10.0002 15.3619C13.5184 15.3619 16.5055 13.0957 17.5849 9.94555C17.6389 9.78797 17.6389 9.6169 17.5849 9.45932C16.5055 6.30919 13.5184 4.04297 10.0002 4.04297ZM9.99151 7.84413C8.96527 7.84413 8.13333 8.67606 8.13333 9.70231C8.13333 10.7286 8.96527 11.5605 9.99151 11.5605H10.0064C11.0326 11.5605 11.8646 10.7286 11.8646 9.70231C11.8646 8.67606 11.0326 7.84413 10.0064 7.84413H9.99151Z"></path>
+                                                    </svg>
+
+                                                    <svg x-show="showPassword" class="fill-gray-500 dark:fill-gray-400" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M4.63803 3.57709C4.34513 3.2842 3.87026 3.2842 3.57737 3.57709C3.28447 3.86999 3.28447 4.34486 3.57737 4.63775L4.85323 5.91362C3.74609 6.84199 2.89363 8.06395 2.4155 9.45936C2.3615 9.61694 2.3615 9.78801 2.41549 9.94558C3.49488 13.0957 6.48191 15.3619 10.0002 15.3619C11.255 15.3619 12.4422 15.0737 13.4994 14.5598L15.3625 16.4229C15.6554 16.7158 16.1302 16.7158 16.4231 16.4229C16.716 16.13 16.716 15.6551 16.4231 15.3622L4.63803 3.57709ZM12.3608 13.4212L10.4475 11.5079C10.3061 11.5423 10.1584 11.5606 10.0064 11.5606H9.99151C8.96527 11.5606 8.13333 10.7286 8.13333 9.70237C8.13333 9.5461 8.15262 9.39434 8.18895 9.24933L5.91885 6.97923C5.03505 7.69015 4.34057 8.62704 3.92328 9.70247C4.86803 12.1373 7.23361 13.8619 10.0002 13.8619C10.8326 13.8619 11.6287 13.7058 12.3608 13.4212ZM16.0771 9.70249C15.7843 10.4569 15.3552 11.1432 14.8199 11.7311L15.8813 12.7925C16.6329 11.9813 17.2187 11.0143 17.5849 9.94561C17.6389 9.78803 17.6389 9.61696 17.5849 9.45938C16.5055 6.30925 13.5184 4.04303 10.0002 4.04303C9.13525 4.04303 8.30244 4.17999 7.52218 4.43338L8.75139 5.66259C9.1556 5.58413 9.57311 5.54303 10.0002 5.54303C12.7667 5.54303 15.1323 7.26768 16.0771 9.70249Z"></path>
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                            <p x-show="errors.newPassword" x-text="errors.newPassword" class="text-theme-xs text-error-500 mt-1.5" style="display: none;"></p>
+                                            </div>
+
+                                            <!-- Re-enter New Password -->
+                                            <div>
+                                            <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                                                Re-enter New Password
+                                            </label>
+                                            <div class="relative" x-data="{ showPassword: false }">
+                                                <input type="password" placeholder="Re-enter New Password" x-model="form.confirmPassword" @input="validateConfirmPassword(); clearError('confirmPassword')" :class="errors.confirmPassword ? 'border-error-500 focus:border-error-500 focus:ring-error-500/10' : 'border-gray-300 dark:border-gray-700'" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 pl-4 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                <span @click="showPassword = !showPassword" class="absolute top-1/2 right-4 z-30 -translate-y-1/2 cursor-pointer">
+                                                <svg x-show="!showPassword" class="fill-gray-500 dark:fill-gray-400" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M10.0002 13.8619C7.23361 13.8619 4.86803 12.1372 3.92328 9.70241C4.86804 7.26761 7.23361 5.54297 10.0002 5.54297C12.7667 5.54297 15.1323 7.26762 16.0771 9.70243C15.1323 12.1372 12.7667 13.8619 10.0002 13.8619ZM10.0002 4.04297C6.48191 4.04297 3.49489 6.30917 2.4155 9.4593C2.3615 9.61687 2.3615 9.78794 2.41549 9.94552C3.49488 13.0957 6.48191 15.3619 10.0002 15.3619C13.5184 15.3619 16.5055 13.0957 17.5849 9.94555C17.6389 9.78797 17.6389 9.6169 17.5849 9.45932C16.5055 6.30919 13.5184 4.04297 10.0002 4.04297ZM9.99151 7.84413C8.96527 7.84413 8.13333 8.67606 8.13333 9.70231C8.13333 10.7286 8.96527 11.5605 9.99151 11.5605H10.0064C11.0326 11.5605 11.8646 10.7286 11.8646 9.70231C11.8646 8.67606 11.0326 7.84413 10.0064 7.84413H9.99151Z"></path>
+                                                </svg>
+
+                                                <svg x-show="showPassword" class="fill-gray-500 dark:fill-gray-400" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M4.63803 3.57709C4.34513 3.2842 3.87026 3.2842 3.57737 3.57709C3.28447 3.86999 3.28447 4.34486 3.57737 4.63775L4.85323 5.91362C3.74609 6.84199 2.89363 8.06395 2.4155 9.45936C2.3615 9.61694 2.3615 9.78801 2.41549 9.94558C3.49488 13.0957 6.48191 15.3619 10.0002 15.3619C11.255 15.3619 12.4422 15.0737 13.4994 14.5598L15.3625 16.4229C15.6554 16.7158 16.1302 16.7158 16.4231 16.4229C16.716 16.13 16.716 15.6551 16.4231 15.3622L4.63803 3.57709ZM12.3608 13.4212L10.4475 11.5079C10.3061 11.5423 10.1584 11.5606 10.0064 11.5606H9.99151C8.96527 11.5606 8.13333 10.7286 8.13333 9.70237C8.13333 9.5461 8.15262 9.39434 8.18895 9.24933L5.91885 6.97923C5.03505 7.69015 4.34057 8.62704 3.92328 9.70247C4.86803 12.1373 7.23361 13.8619 10.0002 13.8619C10.8326 13.8619 11.6287 13.7058 12.3608 13.4212ZM16.0771 9.70249C15.7843 10.4569 15.3552 11.1432 14.8199 11.7311L15.8813 12.7925C16.6329 11.9813 17.2187 11.0143 17.5849 9.94561C17.6389 9.78803 17.6389 9.61696 17.5849 9.45938C16.5055 6.30925 13.5184 4.04303 10.0002 4.04303C9.13525 4.04303 8.30244 4.17999 7.52218 4.43338L8.75139 5.66259C9.1556 5.58413 9.57311 5.54303 10.0002 5.54303C12.7667 5.54303 15.1323 7.26768 16.0771 9.70249Z"></path>
+                                                </svg>
+                                                </span>
+                                            </div>
+                                            <p x-show="errors.confirmPassword" x-text="errors.confirmPassword" class="mt-1 text-sm text-error-500" style="display: none;"></p>
+                                            </div>
+
+
+                                        </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Password Requirements Section -->
+                                    <div class="flex relative items-center justify-between border-t border-gray-200 p-5 dark:border-gray-800">
+                                        <div class="flex gap-3">
+                                        <div class="order-3 xl:order-2">
+                                            <h4 class="mb-2 text-center text-medium font-semibold text-gray-600 xl:text-left dark:text-white/90">
+                                            Password Requirements
+                                            </h4>
+                                            <div class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
+                                            <!-- Minimum 8 characters -->
+                                            <p :class="requirements.minLength ? 'text-success-500' : 'flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400'" class="text-sm flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M13.4017 4.35986L6.12166 11.6399L2.59833 8.11657" stroke="#abadac" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                </svg>
+                                                Minimum 8 characters
+                                            </p>
+                                            <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
+
+                                            <!-- Special character -->
+                                            <p :class="requirements.specialChar ? 'text-success-500' : 'flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400'" class="text-sm flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M13.4017 4.35986L6.12166 11.6399L2.59833 8.11657" stroke="#abadac" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                </svg>
+                                                Special character
+                                            </p>
+                                            <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
+
+                                            <!-- Number (2 recommended) -->
+                                            <p :class="requirements.numbers ? 'text-success-500' : 'flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400'" class="text-sm flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M13.4017 4.35986L6.12166 11.6399L2.59833 8.11657" stroke="#abadac" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                </svg>
+                                                Number (2 recommended)
+                                            </p>
+                                            <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
+
+                                            <!-- Conform Password -->
+                                            <p :class="requirements.matchPassword ? 'text-success-500' : 'flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400'" class="text-sm flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M13.4017 4.35986L6.12166 11.6399L2.59833 8.11657" stroke="#abadac" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                </svg>
+                                                Match Password
+                                            </p>
+                                            <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
+
+                                            <div>
+                                                <button type="submit" class="shadow-theme-xs inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-medium text-gray-700 ring-1 ring-gray-300 transition hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]">
+                                                    Change Password
+                                                </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </div>
+
+                                    </div>
+                                    </form>
+                                </div>
+                                </article>
+
+                                <article class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/3">
+                                <div class="relative p-5 pb-9">
+                                    <h3 class="mb-3 text-lg font-semibold text-gray-800 dark:text-white/90">
+                                    Delete Account
+                                    </h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    Once you delete your account, there is no going back. Please be certain.
+                                    </p>
+                                </div>
+                                <div class="flex items-center justify-between border-t border-gray-200 p-5 dark:border-gray-800">
+                                    <div class="flex gap-3">
+                                    <div class="order-3 xl:order-2">
+                                        <h4 class="mb-2 text-center text-medium font-semibold text-gray-600 xl:text-left dark:text-white/90">
+                                        Account Status
+                                        </h4>
+                                        <div class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">Role: Treasurer</p>
+                                        <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400"><span class="bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500 rounded-full px-2 py-0.5 text-xs font-medium">Active</span> since December 09, 2025 15:24</p>
+                                        </div>
+                                    </div>
+                                    </div>
+                                    <div x-data="{ switcherToggle: false }">
+                                    <button @click="isDeleteModalOpen = true" class="shadow-theme-xs inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-medium text-error-700 ring-1 ring-error-300 transition hover:bg-gray-50 dark:bg-error-700 dark:text-error-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]">
+                                        Delete Account
+                                    </button>
+                                    </div>
+                                </div>
+                                </article>
+
+                            </div>
+                            </div>
                         </div>
                         </div>
-                    </div>
+
                     </div>
 
+                    </div>
+                    <!-- Profile Management end -->
                 </div>
-
-                </div>
-                <!-- Profile Management end -->
-            </div>
             </main>
             <!-- ===== Main Content End ===== -->
         </div>

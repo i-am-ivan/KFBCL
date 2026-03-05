@@ -234,32 +234,27 @@ class SigninController extends Controller
 
     }
 
-
-
     private function getRedirectPath($role)
-
     {
+        // Clean the role name
+        $cleanRole = strtolower(preg_replace('/\s+/', '', $role));
 
-        // Match your dashboard directory structure and named routes
+        // Define role to route mapping
+        $roleRoutes = [
+            'treasurer' => 'treasurer.dashboard',
+            'supervisor' => 'supervisor.dashboard',
+            'chairman' => 'chairman.dashboard',
+            'secretarygeneral' => 'secretary.dashboard', // "Secretary General" uses secretary.dashboard
+            'it' => 'it.dashboard',
+            'receptionist' => 'receptionist.dashboard',
+            'superadmin' => 'superadmin.dashboard',
+        ];
 
-        return match(strtolower($role)) {
+        // Get the route name or use default
+        $routeName = $roleRoutes[$cleanRole] ?? 'receptionist.dashboard';
 
-            'treasurer' => route('treasurer.dashboard'),
-
-            'supervisor' => route('supervisor.dashboard'),
-
-            'chairman' => route('chairman.dashboard'),
-
-            'secretarygeneral' => route('secretary.dashboard'), // This matches "Secretary General" → secretarygeneral → folder: secretaryGeneral
-
-            'it' => route('it.dashboard'),
-
-            'receptionist' => route('receptionist.dashboard'),
-
-            default => route('receptionist.dashboard'),  // fallback
-
-        };
-
+        return route($routeName);
     }
+
 
 }

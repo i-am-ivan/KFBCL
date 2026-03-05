@@ -284,12 +284,26 @@ Route::get('/contributions/balance/member/{memberId}', [BodabodaController::clas
 
 Route::get('/stats/contributions/monthly', [BodabodaController::class, 'getMonthlyContributions']);
 
+// Savings ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// Member Savings Routes
+Route::get('/bodaboda-member/{memberId}/savings', [BodabodaController::class, 'getMemberSavings']);
+
+Route::get('/bodaboda-member/{memberId}/savings-balance', [BodabodaController::class, 'getMemberSavingsBalance']);
+
+Route::post('/bodaboda-member/{memberId}/savings/add', [BodabodaController::class, 'makeMemberSavings']);
+
+Route::post('/bodaboda-member/{memberId}/savings/withdraw', [BodabodaController::class, 'withdrawMemberSavings']);
+
+Route::put('/bodaboda-member/{memberId}/savings/{transactionId}/edit', [BodabodaController::class, 'editMemberSavings']);
+
+Route::get('/savings/all-balance', [BodabodaController::class, 'getAllMembersSavingsBalance']);
+
 // Bonuses ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/bonus-types/summary', [BodabodaController::class, 'getAllBonusTypesSummary']);
 
 Route::post('/bonuses/create', [BodabodaController::class, 'createNewBonusType']);
 
-// Fines
+// Fines --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/fine-types/summary', [BodabodaController::class, 'getAllFineTypesSummary']);
 
 Route::post('/fines/create', [BodabodaController::class, 'createNewFineType']);
@@ -314,378 +328,474 @@ Route::get('/resetPassword', function () {
 
 
 
+// Dashboard routes (protected by auth middleware) ------------------------------------------------------------------------------------------------------------------------------
 // Dashboard routes (protected by auth middleware)
-
 Route::middleware('auth')->group(function () {
 
     Route::post('/signout', [SigninController::class, 'signout'])->name('signout');
 
+    // ============================================
+    // TREASURER ROUTES
+    // ============================================
+    Route::prefix('treasurer')->name('treasurer.')->group(function () {
+        // Dashboard
+        Route::get('/dashboard', function () {
+            return view('dashboards.Treasurer.dashboard');
+        })->name('dashboard');
 
+        // Appointments
+        Route::get('/appointments', function () {
+            return view('dashboards.Treasurer.appointments');
+        })->name('appointments');
 
-    // Dashboard routes based on your directory structure
+        // Users
+        Route::get('/users', function () {
+            return view('dashboards.Treasurer.users');
+        })->name('users');
 
-    Route::get('/treasurer/dashboard', function () {
+        // ============================================
+        // BODABODA GROUP ROUTES
+        // ============================================
 
-        return view('dashboards.Treasurer.dashboard');
+        // Bodaboda Overview (bodaboda.blade.php)
+        Route::get('/bodaboda/overview', function () {
+            return view('dashboards.Treasurer.bodaboda');
+        })->name('bodaboda.overview');
 
-    })->name('treasurer.dashboard');
+        // Members
+        Route::get('/members', function () {
+            return view('dashboards.Treasurer.members');
+        })->name('members');
 
+        // Vehicles
+        Route::get('/vehicles', function () {
+            return view('dashboards.Treasurer.vehicles');
+        })->name('vehicles');
 
+        // Stages
+        Route::get('/stages', function () {
+            return view('dashboards.Treasurer.stages');
+        })->name('stages');
 
-    Route::get('/supervisor/dashboard', function () {
+        // Bodaboda Loans (bodabodaloans.blade.php)
+        Route::get('/bodaboda/loans', function () {
+            return view('dashboards.Treasurer.bodabodaloans');
+        })->name('bodaboda.loans');
 
-        return view('dashboards.Supervisor.dashboard');
+        // Bodaboda Bonuses & Fines (bodabodabf.blade.php)
+        Route::get('/bodaboda/bf', function () {
+            return view('dashboards.Treasurer.bodabodabf');
+        })->name('bodaboda.bf');
 
-    })->name('supervisor.dashboard');
+        // Bodaboda Contributions & Savings (contributions.blade.php)
+        Route::get('/bodaboda/cs', function () {
+            return view('dashboards.Treasurer.contributions');
+        })->name('bodaboda.cs');
 
+        // Bodaboda Member Detail (with parameter)
+        Route::get('/bodaboda-member/{memberId}', function ($memberId) {
+            return view('dashboards.Treasurer.bodabodaMember', ['memberId' => $memberId]);
+        })->name('bodaboda.member');
 
+        // ============================================
+        // MICROFINANCE GROUP
+        // ============================================
+        Route::get('/microfinance/overview', function () {
+            return view('dashboards.Treasurer.bodaboda'); // Using bodaboda as overview
+        })->name('microfinance.overview');
 
-    Route::get('/chairman/dashboard', function () {
+        Route::get('/loan-types', function () {
+            return view('dashboards.Treasurer.loantype');
+        })->name('loan.types');
 
-        return view('dashboards.Chairman.dashboard');
+        Route::get('/microfinance/clients', function () {
+            return view('dashboards.Treasurer.loansClient');
+        })->name('microfinance.clients');
 
-    })->name('chairman.dashboard');
+        Route::get('/microfinance/fines', function () {
+            return view('dashboards.Treasurer.loansfines');
+        })->name('microfinance.fines');
 
+        // ============================================
+        // REAL ESTATE GROUP
+        // ============================================
+        Route::get('/realestate/overview', function () {
+            return view('dashboards.Treasurer.realEstate');
+        })->name('realestate.overview');
 
+        Route::get('/realestate/listings', function () {
+            return view('dashboards.Treasurer.landclients');
+        })->name('realestate.listings');
 
-    Route::get('/it/dashboard', function () {
+        Route::get('/realestate/clients', function () {
+            return view('dashboards.Treasurer.landclients'); // Using landclients for clients
+        })->name('realestate.clients');
 
-        return view('dashboards.IT.dashboard');
+        // Land Owner (if separate)
+        Route::get('/land-owner', function () {
+            return view('dashboards.Treasurer.landOwner');
+        })->name('land.owner');
+    });
 
-    })->name('it.dashboard');
-
-
-
-    Route::get('/secretary/dashboard', function () {
-
-        return view('dashboards.secretaryGeneral.dashboard');
-
-    })->name('secretary.dashboard');
-
-
-
-    Route::get('/receptionist/dashboard', function () {
-
-        return view('dashboards.Receptionist.dashboard');
-
-    })->name('receptionist.dashboard');
-
-
-
-   // Default dashboard route (shows dashboard for chairman, secretary, IT, receptionist)
-
-    Route::get('/dashboard', function () {
-
-        $user = Auth::user();
-
-        $cleanRole = strtolower(preg_replace('/\s+/', '', $user->role));
-
-
-
-        // Return appropriate view based on role
-
-        return match($cleanRole) {
-
-            'treasurer' => view('dashboards.Treasurer.dashboard'),      // Redirect to treasurer's special dashboard
-
-            'supervisor' => view('dashboards.Supervisor.dashboard'),    // Redirect to supervisor's special dashboard
-
-            'chairman' => view('dashboards.Chairman.dashboard'),          // Show chairman dashboard
-
-            'it' => view('dashboards.IT.dashboard'),                      // Show IT dashboard
-
-            'secretarygeneral' => view('dashboards.secretaryGeneral.dashboard'), // Show secretary dashboard
-
-            'receptionist' => view('dashboards.receptionist.dashboard'),  // Show receptionist dashboard
-
-            default => view('dashboards.receptionist.dashboard'),         // Fallback to receptionist
-
-        };
-
-    })->name('dashboard');
-
-
-
-    // Resource routes for each role
-
-    Route::prefix('treasurer')->group(function () {
+    // ============================================
+    // SUPERVISOR ROUTES
+    // ============================================
+    Route::prefix('supervisor')->name('supervisor.')->group(function () {
+        Route::get('/dashboard', function () {
+            return view('dashboards.Supervisor.dashboard');
+        })->name('dashboard');
 
         Route::get('/appointments', function () {
-
-            return view('dashboards.Treasurer.appointments');
-
-        })->name('treasurer.appointments');
-
-
+            return view('dashboards.Supervisor.appointments');
+        })->name('appointments');
 
         Route::get('/bodaboda', function () {
+            return view('dashboards.Supervisor.bodaboda');
+        })->name('bodaboda');
 
-            return view('dashboards.Treasurer.bodaboda');
+        Route::get('/members', function () {
+            return view('dashboards.Supervisor.members');
+        })->name('members');
 
-        })->name('treasurer.bodaboda');
+        Route::get('/contributions', function () {
+            return view('dashboards.Supervisor.contributions');
+        })->name('contributions');
 
+        Route::get('/stages', function () {
+            return view('dashboards.Supervisor.stages');
+        })->name('stages');
 
+        Route::get('/vehicles', function () {
+            return view('dashboards.Supervisor.vehicles');
+        })->name('vehicles');
 
         Route::get('/bodaboda-member/{memberId}', function ($memberId) {
+            return view('dashboards.Supervisor.bodabodaMember', ['memberId' => $memberId]);
+        })->name('bodaboda.member');
+    });
 
-            return view('dashboards.Treasurer.bodabodaMember', ['memberId' => $memberId]);
+    // ============================================
+    // CHAIRMAN ROUTES
+    // ============================================
+    Route::prefix('chairman')->name('chairman.')->group(function () {
+        Route::get('/dashboard', function () {
+            return view('dashboards.Chairman.dashboard');
+        })->name('dashboard');
 
-        })->name('treasurer.bodaboda.member');
+        Route::get('/appointments', function () {
+            return view('dashboards.Chairman.appointments');
+        })->name('appointments');
 
-
+        Route::get('/bodaboda', function () {
+            return view('dashboards.Chairman.bodaboda');
+        })->name('bodaboda');
 
         Route::get('/loans', function () {
+            return view('dashboards.Chairman.loans');
+        })->name('loans');
 
-            return view('dashboards.Treasurer.loans');
+        Route::get('/real-estate', function () {
+            return view('dashboards.Chairman.realEstate');
+        })->name('real.estate');
 
-        })->name('treasurer.loans');
+        Route::get('/users', function () {
+            return view('dashboards.Chairman.users');
+        })->name('users');
+    });
 
+    // ============================================
+    // IT ROUTES
+    // ============================================
+    Route::prefix('it')->name('it.')->group(function () {
+        Route::get('/dashboard', function () {
+            return view('dashboards.IT.dashboard');
+        })->name('dashboard');
 
+        Route::get('/appointments', function () {
+            return view('dashboards.IT.appointments');
+        })->name('appointments');
+
+        Route::get('/bodaboda', function () {
+            return view('dashboards.IT.bodaboda');
+        })->name('bodaboda');
+
+        Route::get('/members', function () {
+            return view('dashboards.IT.members');
+        })->name('members');
+
+        Route::get('/vehicles', function () {
+            return view('dashboards.IT.vehicles');
+        })->name('vehicles');
+
+        Route::get('/stages', function () {
+            return view('dashboards.IT.stages');
+        })->name('stages');
+
+        Route::get('/contributions', function () {
+            return view('dashboards.IT.contributions');
+        })->name('contributions');
+
+        Route::get('/savings', function () {
+            return view('dashboards.IT.savings');
+        })->name('savings');
+
+        Route::get('/bonuses', function () {
+            return view('dashboards.IT.bonuses');
+        })->name('bonuses');
+
+        Route::get('/loans', function () {
+            return view('dashboards.IT.loans');
+        })->name('loans');
 
         Route::get('/loans-client', function () {
+            return view('dashboards.IT.loansClient');
+        })->name('loans.client');
 
-            return view('dashboards.Treasurer.loansClient');
+        Route::get('/fines', function () {
+            return view('dashboards.IT.loansfines');
+        })->name('fines');
 
-        })->name('treasurer.loans.client');
-
-
-
-        Route::get('/real-estate', function () {
-
-            return view('dashboards.Treasurer.realEstate');
-
-        })->name('treasurer.real.estate');
-
-
-
-        Route::get('/land-owner', function () {
-
-            return view('dashboards.Treasurer.landOwner');
-
-        })->name('treasurer.land.owner');
-
-
-
-        Route::get('/users', function () {
-
-            return view('dashboards.Treasurer.users');
-
-        })->name('treasurer.users');
-
-    });
-
-
-
-    Route::prefix('supervisor')->group(function () {
-
-        Route::get('/appointments', function () {
-
-            return view('dashboards.supervisor.appointments');
-
-        })->name('supervisor.appointments');
-
-
-
-        Route::get('/bodaboda', function () {
-
-            return view('dashboards.supervisor.bodaboda');
-
-        })->name('supervisor.bodaboda');
-
-    });
-
-
-
-    // Chairman routes
-
-    Route::prefix('chairman')->group(function () {
-
-        Route::get('/appointments', function () {
-
-            return view('dashboards.chairman.appointments');
-
-        })->name('chairman.appointments');
-
-
-
-        Route::get('/bodaboda', function () {
-
-            return view('dashboards.chairman.bodaboda');
-
-        })->name('chairman.bodaboda');
-
-
-
-        Route::get('/loans', function () {
-
-            return view('dashboards.chairman.loans');
-
-        })->name('chairman.loans');
-
-
+        Route::get('/loan-types', function () {
+            return view('dashboards.IT.loantype');
+        })->name('loan.types');
 
         Route::get('/real-estate', function () {
-
-            return view('dashboards.chairman.realEstate');
-
-        })->name('chairman.real.estate');
-
-
-
-        Route::get('/users', function () {
-
-            return view('dashboards.chairman.users');
-
-        })->name('chairman.users');
-
-    });
-
-
-
-    // IT routes
-
-    Route::prefix('it')->group(function () {
-
-        Route::get('/appointments', function () {
-
-            return view('dashboards.IT.appointments');
-
-        })->name('it.appointments');
-
-
-
-        Route::get('/bodaboda', function () {
-
-            return view('dashboards.IT.bodaboda');
-
-        })->name('it.bodaboda');
-
-
-
-        Route::get('/loans', function () {
-
-            return view('dashboards.IT.loans');
-
-        })->name('it.loans');
-
-
-
-        Route::get('/real-estate', function () {
-
             return view('dashboards.IT.realEstate');
+        })->name('real.estate');
 
-        })->name('it.real.estate');
-
-
+        Route::get('/land-clients', function () {
+            return view('dashboards.IT.landclients');
+        })->name('land.clients');
 
         Route::get('/users', function () {
-
             return view('dashboards.IT.users');
+        })->name('users');
 
-        })->name('it.users');
+        Route::get('/profile', function () {
+            return view('dashboards.IT.profile');
+        })->name('profile');
 
+        Route::get('/bodaboda-member/{memberId}', function ($memberId) {
+            return view('dashboards.IT.bodabodaMember', ['memberId' => $memberId]);
+        })->name('bodaboda.member');
     });
 
-
-
-    // Secretary routes
-
-    Route::prefix('secretary')->group(function () {
+    // ============================================
+    // SECRETARY ROUTES (using SecretaryGeneral folder)
+    // ============================================
+    Route::prefix('secretary')->name('secretary.')->group(function () {
+        Route::get('/dashboard', function () {
+            return view('dashboards.SecretaryGeneral.dashboard');
+        })->name('dashboard');
 
         Route::get('/appointments', function () {
-
-            return view('dashboards.secretaryGeneral.appointments');
-
-        })->name('secretary.appointments');
-
-
+            return view('dashboards.SecretaryGeneral.appointments');
+        })->name('appointments');
 
         Route::get('/bodaboda', function () {
-
-            return view('dashboards.secretaryGeneral.bodaboda');
-
-        })->name('secretary.bodaboda');
-
-
+            return view('dashboards.SecretaryGeneral.bodaboda');
+        })->name('bodaboda');
 
         Route::get('/loans', function () {
-
-            return view('dashboards.secretaryGeneral.loans');
-
-        })->name('secretary.loans');
-
-
+            return view('dashboards.SecretaryGeneral.loans');
+        })->name('loans');
 
         Route::get('/real-estate', function () {
-
-            return view('dashboards.secretaryGeneral.realEstate');
-
-        })->name('secretary.real.estate');
-
-
+            return view('dashboards.SecretaryGeneral.realEstate');
+        })->name('real.estate');
 
         Route::get('/users', function () {
+            return view('dashboards.SecretaryGeneral.users');
+        })->name('users');
 
-            return view('dashboards.secretaryGeneral.users');
+        Route::get('/members', function () {
+            return view('dashboards.SecretaryGeneral.members');
+        })->name('members');
 
-        })->name('secretary.users');
+        Route::get('/vehicles', function () {
+            return view('dashboards.SecretaryGeneral.vehicles');
+        })->name('vehicles');
 
+        Route::get('/land-clients', function () {
+            return view('dashboards.SecretaryGeneral.landclients');
+        })->name('land.clients');
+
+        Route::get('/loans-client', function () {
+            return view('dashboards.SecretaryGeneral.loansClient');
+        })->name('loans.client');
+
+        Route::get('/profile', function () {
+            return view('dashboards.SecretaryGeneral.profile');
+        })->name('profile');
+
+        Route::get('/bodaboda-member/{memberId}', function ($memberId) {
+            return view('dashboards.SecretaryGeneral.bodabodaMember', ['memberId' => $memberId]);
+        })->name('bodaboda.member');
     });
 
-
-
-    // Receptionist routes
-
-    Route::prefix('receptionist')->group(function () {
+    // ============================================
+    // RECEPTIONIST ROUTES
+    // ============================================
+    Route::prefix('receptionist')->name('receptionist.')->group(function () {
+        Route::get('/dashboard', function () {
+            return view('dashboards.Receptionist.dashboard');
+        })->name('dashboard');
 
         Route::get('/appointments', function () {
-
-            return view('dashboards.receptionist.appointments');
-
-        })->name('receptionist.appointments');
-
-
+            return view('dashboards.Receptionist.appointments');
+        })->name('appointments');
 
         Route::get('/bodaboda', function () {
+            return view('dashboards.Receptionist.bodaboda');
+        })->name('bodaboda');
 
-            return view('dashboards.receptionist.bodaboda');
+        Route::get('/members', function () {
+            return view('dashboards.Receptionist.members');
+        })->name('members');
 
-        })->name('receptionist.bodaboda');
-
-
+        Route::get('/vehicles', function () {
+            return view('dashboards.Receptionist.vehicles');
+        })->name('vehicles');
 
         Route::get('/loans', function () {
-
-            return view('dashboards.receptionist.loans');
-
-        })->name('receptionist.loans');
-
-
+            return view('dashboards.Receptionist.loans');
+        })->name('loans');
 
         Route::get('/real-estate', function () {
+            return view('dashboards.Receptionist.realEstate');
+        })->name('real.estate');
 
-            return view('dashboards.receptionist.realEstate');
+        Route::get('/land-clients', function () {
+            return view('dashboards.Receptionist.landclients');
+        })->name('land.clients');
 
-        })->name('receptionist.real.estate');
-
-
+        Route::get('/loans-client', function () {
+            return view('dashboards.Receptionist.loansClient');
+        })->name('loans.client');
 
         Route::get('/users', function () {
+            return view('dashboards.Receptionist.users');
+        })->name('users');
 
-            return view('dashboards.receptionist.users');
+        Route::get('/profile', function () {
+            return view('dashboards.Receptionist.profile');
+        })->name('profile');
 
-        })->name('receptionist.users');
-
+        Route::get('/bodaboda-member/{memberId}', function ($memberId) {
+            return view('dashboards.Receptionist.bodabodaMember', ['memberId' => $memberId]);
+        })->name('bodaboda.member');
     });
 
+    // ============================================
+    // SUPERADMIN ROUTES
+    // ============================================
+    Route::prefix('superadmin')->name('superadmin.')->group(function () {
+        Route::get('/dashboard', function () {
+            return view('dashboards.SuperAdmin.dashboard');
+        })->name('dashboard');
 
+        // Add all SuperAdmin routes based on your files
+        Route::get('/appointments', function () {
+            return view('dashboards.SuperAdmin.appointments');
+        })->name('appointments');
 
-    // Shared routes (accessible to all roles)
+        Route::get('/bodaboda', function () {
+            return view('dashboards.SuperAdmin.bodaboda');
+        })->name('bodaboda');
 
+        Route::get('/members', function () {
+            return view('dashboards.SuperAdmin.members');
+        })->name('members');
+
+        Route::get('/vehicles', function () {
+            return view('dashboards.SuperAdmin.vehicles');
+        })->name('vehicles');
+
+        Route::get('/stages', function () {
+            return view('dashboards.SuperAdmin.stages');
+        })->name('stages');
+
+        Route::get('/contributions', function () {
+            return view('dashboards.SuperAdmin.contributions');
+        })->name('contributions');
+
+        Route::get('/savings', function () {
+            return view('dashboards.SuperAdmin.savings');
+        })->name('savings');
+
+        Route::get('/bonuses', function () {
+            return view('dashboards.SuperAdmin.bonuses');
+        })->name('bonuses');
+
+        Route::get('/loans', function () {
+            return view('dashboards.SuperAdmin.loans');
+        })->name('loans');
+
+        Route::get('/fines', function () {
+            return view('dashboards.SuperAdmin.loansfines');
+        })->name('fines');
+
+        Route::get('/loan-types', function () {
+            return view('dashboards.SuperAdmin.loantype');
+        })->name('loan.types');
+
+        Route::get('/loans-client', function () {
+            return view('dashboards.SuperAdmin.loansClient');
+        })->name('loans.client');
+
+        Route::get('/real-estate', function () {
+            return view('dashboards.SuperAdmin.realEstate');
+        })->name('real.estate');
+
+        Route::get('/land-clients', function () {
+            return view('dashboards.SuperAdmin.landclients');
+        })->name('land.clients');
+
+        Route::get('/users', function () {
+            return view('dashboards.SuperAdmin.users');
+        })->name('users');
+
+        Route::get('/profile', function () {
+            return view('dashboards.SuperAdmin.profile');
+        })->name('profile');
+
+        Route::get('/bodaboda-member/{memberId}', function ($memberId) {
+            return view('dashboards.SuperAdmin.bodabodaMember', ['memberId' => $memberId]);
+        })->name('bodaboda.member');
+    });
+
+    // ============================================
+    // DEFAULT DASHBOARD ROUTE (Role-based redirect)
+    // ============================================
+    Route::get('/dashboard', function () {
+        $user = Auth::user();
+
+        // Clean the role name (remove spaces)
+        $cleanRole = strtolower(preg_replace('/\s+/', '', $user->role));
+
+        // Map roles to their view paths
+        $roleViews = [
+            'treasurer' => 'dashboards.Treasurer.dashboard',
+            'supervisor' => 'dashboards.Supervisor.dashboard',
+            'chairman' => 'dashboards.Chairman.dashboard',
+            'it' => 'dashboards.IT.dashboard',
+            'secretarygeneral' => 'dashboards.SecretaryGeneral.dashboard',
+            'receptionist' => 'dashboards.Receptionist.dashboard',
+            'superadmin' => 'dashboards.SuperAdmin.dashboard',
+        ];
+
+        $viewPath = $roleViews[$cleanRole] ?? 'dashboards.Receptionist.dashboard';
+
+        return view($viewPath);
+    })->name('dashboard');
+
+    // ============================================
+    // SHARED ROUTES (Accessible to all roles)
+    // ============================================
     Route::get('/profile', function () {
-
-        return view('dashboards.shared.profile');
-
+        return view('dashboards.Shared.profile');
     })->name('profile');
 
 });
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

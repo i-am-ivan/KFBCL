@@ -10,6 +10,7 @@ use App\Models\MemberVehicle;
 use App\Models\Stage;
 use App\Models\MemberContribution;
 use App\Models\MemberLoanType;
+use App\Models\MemberSaving;
 use App\Models\MemberLoan;
 use App\Models\MemberLoanTransaction;
 use App\Models\MemberBonusType;
@@ -1905,7 +1906,7 @@ class BodabodaController extends Controller {
         try {
             $loanTypes = DB::table('member_loan_types')
                 ->where('status', 'Active')
-                ->select('loanId', 'loan_type_name', 'interest_rate', 'max_amount', 'repayment_period_months')
+                ->select('loanId', 'loan_type_name', 'interest_rate', 'max_amount', 'min_amount', 'repayment_period_months','fine_percentage')
                 ->get();
 
             // Get all loans with related data
@@ -2087,7 +2088,7 @@ class BodabodaController extends Controller {
                 DB::table('member_loans')
                     ->where('transactionId', $validated['loan_id'])
                     ->update([
-                        'transactionLoanStatus' => 'Repaid',
+                        //'transactionLoanStatus' => 'Repaid',
                         'transactionUpdatedOn' => now()
                     ]);
             }
@@ -2216,6 +2217,237 @@ class BodabodaController extends Controller {
             ->get();
 
         return response()->json($savings);
+    }
+
+    // Get member savings (only confirmed transactions)
+    public function getMemberSavings($memberId)
+    {
+        $savings = MemberSaving::where('memberId', $memberId)
+            ->where('transactionStatus', 'Confirmed')
+            ->orderBy('transactionDate', 'desc')
+            ->get();
+
+        return response()->json($savings);
+    }
+
+    // Get member savings balance (Confirmed Paid-In - Confirmed Paid-Out)
+    public function getMemberSavingsBalance($memberId)
+    {
+        $paidIn = MemberSaving::where('memberId', $memberId)
+            ->where('transactionStatus', 'Confirmed')
+            ->where('transactionType', 'Paid-In')
+            ->sum('transactionAmount');
+
+        $paidOut = MemberSaving::where('memberId', $memberId)
+            ->where('transactionStatus', 'Confirmed')
+            ->where('transactionType', 'Paid-Out')
+            ->sum('transactionAmount');
+
+        $balance = $paidIn - $paidOut;
+
+        return response()->json([
+            'balance' => $balance,
+            'paid_in' => $paidIn,
+            'paid_out' => $paidOut
+        ]);
+    }
+
+    // Add savings (Paid-In)
+    public function makeMemberSavings(Request $request, $memberId)
+    {
+        try {
+            DB::beginTransaction();
+
+            $validated = $request->validate([
+                'savings_Amount' => 'required|numeric|min:0.01',
+                'payment_mode' => 'required|in:Cash,MPesa,Bank',
+                'transaction_code' => 'nullable|string|max:255',
+                'Status' => 'required|in:Confirmed,Pending,Cancelled'
+            ]);
+
+            $saving = MemberSaving::create([
+                'memberId' => $memberId,
+                'transactionCode' => $validated['transaction_code'] ?? 'SAV-' . uniqid(),
+                'transactionAmount' => $validated['savings_Amount'],
+                'transactionDate' => now(),
+                'transactionMode' => $validated['payment_mode'],
+                'transactionType' => 'Paid-In',
+                'transactionAuthor' => Auth::id(),
+                'transactionUpdatedOn' => now(),
+                'transactionStatus' => $validated['Status']
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Savings added successfully',
+                'saving' => $saving
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Error adding savings: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Withdraw savings (Paid-Out) with balance check
+    public function withdrawMemberSavings(Request $request, $memberId)
+    {
+        try {
+            DB::beginTransaction();
+
+            $validated = $request->validate([
+                'savings_Amount' => 'required|numeric|min:0.01',
+                'payment_mode' => 'required|in:Cash,MPesa,Bank',
+                'transaction_code' => 'nullable|string|max:255',
+                'Status' => 'required|in:Confirmed,Pending,Cancelled'
+            ]);
+
+            // Check available balance for Confirmed transactions only
+            $paidIn = MemberSaving::where('memberId', $memberId)
+                ->where('transactionStatus', 'Confirmed')
+                ->where('transactionType', 'Paid-In')
+                ->sum('transactionAmount');
+
+            $paidOut = MemberSaving::where('memberId', $memberId)
+                ->where('transactionStatus', 'Confirmed')
+                ->where('transactionType', 'Paid-Out')
+                ->sum('transactionAmount');
+
+            $availableBalance = $paidIn - $paidOut;
+
+            if ($availableBalance < $validated['savings_Amount']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'INSUFFICIENT Funds. Available balance: ' . number_format($availableBalance, 2)
+                ], 400);
+            }
+
+            $withdrawal = MemberSaving::create([
+                'memberId' => $memberId,
+                'transactionCode' => $validated['transaction_code'] ?? 'WTD-' . uniqid(),
+                'transactionAmount' => $validated['savings_Amount'],
+                'transactionDate' => now(),
+                'transactionMode' => $validated['payment_mode'],
+                'transactionType' => 'Paid-Out',
+                'transactionAuthor' => Auth::id(),
+                'transactionUpdatedOn' => now(),
+                'transactionStatus' => $validated['Status']
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Withdrawal successful',
+                'withdrawal' => $withdrawal
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Error processing withdrawal: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Edit savings transaction
+    public function editMemberSavings(Request $request, $memberId, $transactionId)
+    {
+        try {
+            DB::beginTransaction();
+
+            $validated = $request->validate([
+                'savings_Amount' => 'required|numeric|min:0.01',
+                'payment_mode' => 'required|in:Cash,MPesa,Bank',
+                'transaction_code' => 'nullable|string|max:255',
+                'Status' => 'required|in:Confirmed,Pending,Cancelled,Reversed'
+            ]);
+
+            $saving = MemberSaving::where('transactionId', $transactionId)
+                ->where('memberId', $memberId)
+                ->firstOrFail();
+
+            // If this is a withdrawal being edited, check balance
+            if ($saving->transactionType === 'Paid-Out' && $validated['savings_Amount'] != $saving->transactionAmount) {
+                $paidIn = MemberSaving::where('memberId', $memberId)
+                    ->where('transactionStatus', 'Confirmed')
+                    ->where('transactionType', 'Paid-In')
+                    ->sum('transactionAmount');
+
+                $paidOut = MemberSaving::where('memberId', $memberId)
+                    ->where('transactionStatus', 'Confirmed')
+                    ->where('transactionType', 'Paid-Out')
+                    ->where('transactionId', '!=', $transactionId) // Exclude current transaction
+                    ->sum('transactionAmount');
+
+                $availableBalance = $paidIn - $paidOut;
+
+                if ($availableBalance < $validated['savings_Amount']) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'INSUFFICIENT Funds for this withdrawal amount. Available balance: ' . number_format($availableBalance, 2)
+                    ], 400);
+                }
+            }
+
+            $saving->update([
+                'transactionCode' => $validated['transaction_code'] ?? $saving->transactionCode,
+                'transactionAmount' => $validated['savings_Amount'],
+                'transactionMode' => $validated['payment_mode'],
+                'transactionStatus' => $validated['Status'],
+                'transactionUpdatedOn' => now()
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Savings transaction updated successfully',
+                'saving' => $saving
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating savings: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Get all members total savings balance (Total Paid-In - Total Paid-Out)
+    public function getAllMembersSavingsBalance()
+    {
+        try {
+            $totalPaidIn = MemberSaving::where('transactionStatus', 'Confirmed')
+                ->where('transactionType', 'Paid-In')
+                ->sum('transactionAmount');
+
+            $totalPaidOut = MemberSaving::where('transactionStatus', 'Confirmed')
+                ->where('transactionType', 'Paid-Out')
+                ->sum('transactionAmount');
+
+            $totalBalance = $totalPaidIn - $totalPaidOut;
+
+            return response()->json([
+                'success' => true,
+                'total_balance' => $totalBalance,
+                'total_paid_in' => $totalPaidIn,
+                'total_paid_out' => $totalPaidOut
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching total savings balance: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
 }

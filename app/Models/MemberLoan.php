@@ -15,19 +15,23 @@ class MemberLoan extends Model
         'memberId',
         'transactionLoan',
         'transactionLoanAmount',
+        'transactionTotalLoan',
         'transactionLoanPeriod',
         'transactionLoanStartDate',
         'transactionLoanRepaymentMode',
         'transactionAuthor',
         'transactionCreated',
         'transactionUpdatedOn',
-        'transactionStatus'
+        'transactionStatus',
+        'transactionLoanEndDate'
     ];
 
     protected $casts = [
         'transactionLoanStartDate' => 'datetime',
+        'transactionLoanEndDate' => 'datetime',
         'transactionCreated' => 'datetime',
         'transactionUpdatedOn' => 'datetime',
-        'transactionLoanAmount' => 'decimal:2'
+        'transactionLoanAmount' => 'decimal:2',
+        'transactionTotalLoan' => 'decimal:2'
     ];
 }

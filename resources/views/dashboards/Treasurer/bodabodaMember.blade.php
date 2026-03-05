@@ -20,7 +20,7 @@
 
     </head>
 
-<body x-data="{ page: 'profile', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'loanTypeModal' : false, 'personalInformationModal': false , 'sidebarToggle': false, 'scrollTop': false, 'identificationDocumentsModal': false, 'nextKinModal': false, 'vehiclesModal': false, 'contributionsModal': false, 'savingsModal': false, 'loansModal': false, 'finesPenaltiesModal': false, 'deleteMemberAccount': false, 'editNextKinModal': false, 'editMemberVehiclesModal': false, 'assignMemberVehicle': false, 'reassignMemberVehicle': false, 'withdrawContribution':false, 'withdrawSavings': false, 'payLoan': false, 'withdrawContributionModal': false, 'editContributionModal': false, 'awardBonusModal': false, 'repayLoanModal': false}"
+<body x-data="{ page: 'profile', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'loanTypeModal' : false, 'personalInformationModal': false , 'sidebarToggle': false, 'scrollTop': false, 'identificationDocumentsModal': false, 'nextKinModal': false, 'vehiclesModal': false, 'contributionsModal': false, 'savingsModal': false, 'loansModal': false, 'finesPenaltiesModal': false, 'deleteMemberAccount': false, 'editNextKinModal': false, 'editMemberVehiclesModal': false, 'assignMemberVehicle': false, 'reassignMemberVehicle': false, 'withdrawContribution':false, 'withdrawSavingsModal': false, 'payLoan': false, 'withdrawContributionModal': false, 'editContributionModal': false, 'awardBonusModal': false, 'repayLoanModal': false, 'editLoanModal': false}"
       x-init="
          darkMode = JSON.parse(localStorage.getItem('darkMode'));
          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
@@ -36,278 +36,9 @@
   <!-- ===== Page Wrapper Start ===== -->
   <div class="flex h-screen overflow-hidden">
 
-    <!-- ===== Sidebar Start ===== -->
-    <aside :class="sidebarToggle ? 'translate-x-0 xl:w-[90px]' : '-translate-x-full'"
-                    class="sidebar fixed top-0 left-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-auto border-r border-gray-200 bg-white px-5 transition-all duration-300 xl:static xl:translate-x-0 dark:border-gray-800 dark:bg-black"
-                    @click.outside="sidebarToggle = false">
-
-                    <!-- SIDEBAR HEADER -->
-                    <div :class="sidebarToggle ? 'justify-center' : 'justify-between'"
-                        class="sidebar-header flex items-center gap-2 pt-8 pb-7">
-                        <a href="{{ route('treasurer.dashboard') }}" class="flex items-center">
-                            <!-- Small Circular Logo with Border -->
-                            <div class="h-10 w-10 rounded-full bg-gray-100 border-2 border-dark-brown flex items-center justify-center overflow-hidden">
-                                <img src="{{ asset('company_logo.png') }}" alt="KFBCL Logo" class="h-full w-full object-cover">
-                            </div>
-
-                            <!-- Company Name and Tagline (Hidden when sidebar collapsed on desktop) -->
-                            <div class="ml-3" :class="sidebarToggle ? 'hidden xl:block' : 'block'">
-                                <h2 class="text-lg font-bold text-dark-brown">KFBCL</h2>
-                                <p class="text-xs text-gray-500">Growing together</p>
-                            </div>
-                        </a>
-                    </div>
-                    <!-- SIDEBAR HEADER -->
-
-                    <div class="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
-                    <!-- Sidebar Menu -->
-                    <nav x-data="{selected: $persist('Dashboard')}">
-                        <!-- Menu Group -->
-                        <div>
-                            <h3 class="mb-4 text-xs leading-[20px] text-gray-400 uppercase">
-                                <span class="menu-group-title"
-                                    :class="sidebarToggle ? 'xl:hidden' : ''">
-                                MENU
-                                </span>
-                                <svg
-                                        :class="sidebarToggle ? 'xl:block hidden' : 'hidden'"
-                                        class="menu-group-icon mx-auto fill-current"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                >
-                                <path
-                                        fill-rule="evenodd"
-                                        clip-rule="evenodd"
-                                        d="M5.99915 10.2451C6.96564 10.2451 7.74915 11.0286 7.74915 11.9951V12.0051C7.74915 12.9716 6.96564 13.7551 5.99915 13.7551C5.03265 13.7551 4.24915 12.9716 4.24915 12.0051V11.9951C4.24915 11.0286 5.03265 10.2451 5.99915 10.2451ZM17.9991 10.2451C18.9656 10.2451 19.7491 11.0286 19.7491 11.9951V12.0051C19.7491 12.9716 18.9656 13.7551 17.9991 13.7551C17.0326 13.7551 16.2491 12.9716 16.2491 12.0051V11.9951C16.2491 11.0286 17.0326 10.2451 17.9991 10.2451ZM13.7491 11.9951C13.7491 11.0286 12.9656 10.2451 11.9991 10.2451C11.0326 10.2451 10.2491 11.0286 10.2491 11.9951V12.0051C10.2491 12.9716 11.0326 13.7551 11.9991 13.7551C12.9656 13.7551 13.7491 12.9716 13.7491 12.0051V11.9951Z"
-                                        fill="currentColor"
-                                />
-                                </svg>
-                            </h3>
-
-                            <ul class="mb-6 flex flex-col gap-1">
-                                <!-- Menu Item Dashboard -->
-                                <li>
-                                    <a href="{{ route('treasurer.dashboard') }}" @click="selected = (selected === 'Dashboard' ? '':'Dashboard')" class="menu-item group"
-                                        :class=" (selected === 'Dashboard') || (page === 'dashboard') ? 'menu-item-active' : 'menu-item-inactive'">
-                                        <svg :class="(selected === 'Dashboard') || (page === 'dashboard') ? 'menu-item-icon-active'  :'menu-item-icon-inactive'"
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                                d="M5.5 3.25C4.25736 3.25 3.25 4.25736 3.25 5.5V8.99998C3.25 10.2426 4.25736 11.25 5.5 11.25H9C10.2426 11.25 11.25 10.2426 11.25 8.99998V5.5C11.25 4.25736 10.2426 3.25 9 3.25H5.5ZM4.75 5.5C4.75 5.08579 5.08579 4.75 5.5 4.75H9C9.41421 4.75 9.75 5.08579 9.75 5.5V8.99998C9.75 9.41419 9.41421 9.74998 9 9.74998H5.5C5.08579 9.74998 4.75 9.41419 4.75 8.99998V5.5ZM5.5 12.75C4.25736 12.75 3.25 13.7574 3.25 15V18.5C3.25 19.7426 4.25736 20.75 5.5 20.75H9C10.2426 20.75 11.25 19.7427 11.25 18.5V15C11.25 13.7574 10.2426 12.75 9 12.75H5.5ZM4.75 15C4.75 14.5858 5.08579 14.25 5.5 14.25H9C9.41421 14.25 9.75 14.5858 9.75 15V18.5C9.75 18.9142 9.41421 19.25 9 19.25H5.5C5.08579 19.25 4.75 18.9142 4.75 18.5V15ZM12.75 5.5C12.75 4.25736 13.7574 3.25 15 3.25H18.5C19.7426 3.25 20.75 4.25736 20.75 5.5V8.99998C20.75 10.2426 19.7426 11.25 18.5 11.25H15C13.7574 11.25 12.75 10.2426 12.75 8.99998V5.5ZM15 4.75C14.5858 4.75 14.25 5.08579 14.25 5.5V8.99998C14.25 9.41419 14.5858 9.74998 15 9.74998H18.5C18.9142 9.74998 19.25 9.41419 19.25 8.99998V5.5C19.25 5.08579 18.9142 4.75 18.5 4.75H15ZM15 12.75C13.7574 12.75 12.75 13.7574 12.75 15V18.5C12.75 19.7426 13.7574 20.75 15 20.75H18.5C19.7426 20.75 20.75 19.7427 20.75 18.5V15C20.75 13.7574 19.7426 12.75 18.5 12.75H15ZM14.25 15C14.25 14.5858 14.5858 14.25 15 14.25H18.5C18.9142 14.25 19.25 14.5858 19.25 15V18.5C19.25 18.9142 18.9142 19.25 18.5 19.25H15C14.5858 19.25 14.25 18.9142 14.25 18.5V15Z"
-                                                fill="currentColor"/>
-                                        </svg>
-                                        <span class="menu-item-text"
-                                            :class="sidebarToggle ? 'xl:hidden' : ''">Dashboard</span>
-                                    </a>
-                                </li>
-
-                                <!-- Menu Item Appointments -->
-                                <li>
-                                    <a href="{{ route('treasurer.appointments') }}" @click="selected = (selected === 'Appointments' ? '':'Appointments')" class="menu-item group"
-                                        :class="(selected === 'Appointments') || (page === 'appointments') ? 'menu-item-active' : 'menu-item-inactive'">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-event">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M4 5m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" />
-                                        <path d="M16 3l0 4" />
-                                        <path d="M8 3l0 4" />
-                                        <path d="M4 11l16 0" />
-                                        <path d="M8 15h2v2h-2z" />
-                                        </svg>
-                                        <span class="menu-item-text"
-                                            :class="sidebarToggle ? 'xl:hidden' : ''">Appointments</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <!-- Manage Group -->
-                        <div>
-                            <h3 class="mb-4 text-xs leading-[20px] text-gray-400 uppercase">
-                            <span class="menu-group-title"
-                                    :class="sidebarToggle ? 'xl:hidden' : ''">MANAGE</span>
-                                <svg
-                                        :class="sidebarToggle ? 'xl:block hidden' : 'hidden'"
-                                        class="menu-group-icon mx-auto fill-current"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                >
-                                <path
-                                        fill-rule="evenodd"
-                                        clip-rule="evenodd"
-                                        d="M5.99915 10.2451C6.96564 10.2451 7.74915 11.0286 7.74915 11.9951V12.0051C7.74915 12.9716 6.96564 13.7551 5.99915 13.7551C5.03265 13.7551 4.24915 12.9716 4.24915 12.0051V11.9951C4.24915 11.0286 5.03265 10.2451 5.99915 10.2451ZM17.9991 10.2451C18.9656 10.2451 19.7491 11.0286 19.7491 11.9951V12.0051C19.7491 12.9716 18.9656 13.7551 17.9991 13.7551C17.0326 13.7551 16.2491 12.9716 16.2491 12.0051V11.9951C16.2491 11.0286 17.0326 10.2451 17.9991 10.2451ZM13.7491 11.9951C13.7491 11.0286 12.9656 10.2451 11.9991 10.2451C11.0326 10.2451 10.2491 11.0286 10.2491 11.9951V12.0051C10.2491 12.9716 11.0326 13.7551 11.9991 13.7551C12.9656 13.7551 13.7491 12.9716 13.7491 12.0051V11.9951Z"
-                                        fill="currentColor"
-                                />
-                                </svg>
-                            </h3>
-
-                            <ul class="mb-6 flex flex-col gap-1">
-                                <!-- Menu Item Users -->
-                                <li>
-                                    <a href="{{ route('treasurer.users') }}" @click="selected = (selected === 'Users' ? '':'Users')" class="menu-item group"
-                                        :class=" (selected === 'Users') || (page === 'users') ? 'menu-item-active' : 'menu-item-inactive'">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-users">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
-                                        <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-                                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                                        <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
-                                        </svg>
-                                        <span class="menu-item-text"
-                                            :class="sidebarToggle ? 'xl:hidden' : ''">Users</span>
-                                    </a>
-                                </li>
-
-                                <!-- Menu Item Bodaboda Group -->
-                                <li>
-                                    <a href="{{ route('treasurer.bodaboda') }}" @click="selected = (selected === 'Bodaboda Group' ? '':'Bodaboda Group')" class="menu-item group"
-                                        :class=" (selected === 'Bodaboda Group') || (page === 'bodaboda') ? 'menu-item-active' : 'menu-item-inactive'">
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                            width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-                                            stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-motorbike">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M5 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
-                                        <path d="M19 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
-                                        <path d="M7.5 14h5l4 -4h-10.5m1.5 4l4 -4" />
-                                        <path d="M13 6h2l1.5 3l2 4" />
-                                        </svg>
-                                        <span class="menu-item-text"
-                                            :class="sidebarToggle ? 'xl:hidden' : ''">Bodaboda Group</span>
-                                    </a>
-                                </li>
-
-                                <!-- Menu Item Loans -->
-                                <li>
-                                    <a href="{{ route('treasurer.loans') }}" @click="selected = (selected === 'Loans' ? '':'Loans')" class="menu-item group"
-                                        :class="(selected === 'Loans') || (page === 'loans') ? 'menu-item-active' : 'menu-item-inactive'">
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="1.5"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            class="icon icon-tabler icons-tabler-outline icon-tabler-credit-card"
-                                        >
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M3 5m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
-                                        <path d="M3 10l18 0" />
-                                        <path d="M7 15l.01 0" />
-                                        <path d="M11 15l2 0" />
-                                        </svg>
-                                        <span class="menu-item-text"
-                                            :class="sidebarToggle ? 'xl:hidden' : ''">Loans</span>
-                                    </a>
-                                </li>
-
-                                <!-- Menu Item Real-Estate -->
-                                <li>
-                                    <a href="{{ route('treasurer.real.estate') }}" @click="selected = (selected === 'Real Estate' ? '':'Real Estate')" class="menu-item group"
-                                        :class="(selected === 'Real Estate') || (page === 'real estate') ? 'menu-item-active' : 'menu-item-inactive'">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-building">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M3 21l18 0" />
-                                        <path d="M9 8l1 0" />
-                                        <path d="M9 12l1 0" />
-                                        <path d="M9 16l1 0" />
-                                        <path d="M14 8l1 0" />
-                                        <path d="M14 12l1 0" />
-                                        <path d="M14 16l1 0" />
-                                        <path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16" />
-                                        </svg>
-                                        <span class="menu-item-text"
-                                            :class="sidebarToggle ? 'xl:hidden' : ''">Real Estate</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <!-- Settings Group -->
-                        <div>
-                        <h3 class="mb-4 text-xs leading-[20px] text-gray-400 uppercase">
-                        <span class="menu-group-title"
-                        :class="sidebarToggle ? 'xl:hidden' : ''">SETTINGS</span>
-                            <svg
-                                    :class="sidebarToggle ? 'xl:block hidden' : 'hidden'"
-                                    class="menu-group-icon mx-auto fill-current"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                            >
-                            <path
-                                    fill-rule="evenodd"
-                                    clip-rule="evenodd"
-                                    d="M5.99915 10.2451C6.96564 10.2451 7.74915 11.0286 7.74915 11.9951V12.0051C7.74915 12.9716 6.96564 13.7551 5.99915 13.7551C5.03265 13.7551 4.24915 12.9716 4.24915 12.0051V11.9951C4.24915 11.0286 5.03265 10.2451 5.99915 10.2451ZM17.9991 10.2451C18.9656 10.2451 19.7491 11.0286 19.7491 11.9951V12.0051C19.7491 12.9716 18.9656 13.7551 17.9991 13.7551C17.0326 13.7551 16.2491 12.9716 16.2491 12.0051V11.9951C16.2491 11.0286 17.0326 10.2451 17.9991 10.2451ZM13.7491 11.9951C13.7491 11.0286 12.9656 10.2451 11.9991 10.2451C11.0326 10.2451 10.2491 11.0286 10.2491 11.9951V12.0051C10.2491 12.9716 11.0326 13.7551 11.9991 13.7551C12.9656 13.7551 13.7491 12.9716 13.7491 12.0051V11.9951Z"
-                                    fill="currentColor"
-                            />
-                            </svg>
-                        </h3>
-
-                        <ul class="mb-6 flex flex-col gap-1">
-                            <!-- Menu Item Profile -->
-                            <li>
-                                <a href="{{ route('profile') }}" @click="selected = (selected === 'Profile' ? '':'Profile')"
-                                    class="menu-item group"
-                                    :class=" (selected === 'Profile') && (page === 'profile') ? 'menu-item-active' : 'menu-item-inactive'">
-                                    <svg
-                                            :class="(selected === 'Profile') && (page === 'profile') ?  'menu-item-icon-active'  :'menu-item-icon-inactive'"
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                    <path
-                                            fill-rule="evenodd"
-                                            clip-rule="evenodd"
-                                            d="M12 3.5C7.30558 3.5 3.5 7.30558 3.5 12C3.5 14.1526 4.3002 16.1184 5.61936 17.616C6.17279 15.3096 8.24852 13.5955 10.7246 13.5955H13.2746C15.7509 13.5955 17.8268 15.31 18.38 17.6167C19.6996 16.119 20.5 14.153 20.5 12C20.5 7.30558 16.6944 3.5 12 3.5ZM17.0246 18.8566V18.8455C17.0246 16.7744 15.3457 15.0955 13.2746 15.0955H10.7246C8.65354 15.0955 6.97461 16.7744 6.97461 18.8455V18.856C8.38223 19.8895 10.1198 20.5 12 20.5C13.8798 20.5 15.6171 19.8898 17.0246 18.8566ZM2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12ZM11.9991 7.25C10.8847 7.25 9.98126 8.15342 9.98126 9.26784C9.98126 10.3823 10.8847 11.2857 11.9991 11.2857C13.1135 11.2857 14.0169 10.3823 14.0169 9.26784C14.0169 8.15342 13.1135 7.25 11.9991 7.25ZM8.48126 9.26784C8.48126 7.32499 10.0563 5.75 11.9991 5.75C13.9419 5.75 15.5169 7.32499 15.5169 9.26784C15.5169 11.2107 13.9419 12.7857 11.9991 12.7857C10.0563 12.7857 8.48126 11.2107 8.48126 9.26784Z"
-                                            fill="currentColor"
-                                    />
-                                    </svg>
-                                    <span class="menu-item-text"
-                                        :class="sidebarToggle ? 'xl:hidden' : ''">Profile</span>
-                                </a>
-                            </li>
-                        </ul>
-                        </div>
-
-                        <!-- Logout Item -->
-                        <div class="mt-auto">
-                            <ul class="flex flex-col gap-1">
-                                <li>
-                                <form action="{{ route('signout') }}" method="POST" style="display: inline;">
-                                    @csrf
-                                    <button type="submit" @click="selected = (selected === 'Logout' ? '':'Logout')" class="menu-item group menu-item-inactive flex items-center w-full text-left" :class="(selected === 'Logout') ? 'menu-item-active' : 'menu-item-inactive'">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-logout-2">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <path d="M10 8v-2a2 2 0 0 1 2 -2h7a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-7a2 2 0 0 1 -2 -2v-2"></path>
-                                        <path d="M15 12h-12l3 -3"></path>
-                                        <path d="M6 15l-3 -3"></path>
-                                        </svg>
-                                        <span class="menu-item-text ml-3" :class="sidebarToggle ? 'xl:hidden' : ''">Logout</span>
-                                    </button>
-                                </form>
-                                </li>
-                            </ul>
-                        </div>
-                    </nav>
-                    <!-- Sidebar Menu -->
-                    </div>
-
-    </aside>
-    <!-- ===== Sidebar End ===== -->
+        <!-- ===== Sidebar Start ===== -->
+        @include('Layouts.Treasurer.aside')
+        <!-- ===== Sidebar End ===== -->
 
     <!-- ===== Content Area Start ===== -->
     <div class="relative flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
@@ -318,210 +49,7 @@
         <!-- Small Device Overlay End -->
 
         <!-- ===== Header Start ===== -->
-        <header x-data="{menuToggle: false}"
-                        class="sticky top-0 z-99999 flex w-full border-gray-200 bg-white xl:border-b dark:border-gray-800 dark:bg-gray-900">
-                    <div class="flex grow flex-col items-center justify-between xl:flex-row xl:px-6">
-                    <div class="flex w-full items-center justify-between gap-2 border-b border-gray-200 px-3 py-3 sm:gap-4 lg:py-4 xl:justify-normal xl:border-b-0 xl:px-0 dark:border-gray-800">
-                        <!-- Hamburger Toggle BTN -->
-                        <button :class="sidebarToggle ? 'xl:bg-transparent dark:xl:bg-transparent bg-gray-100 dark:bg-gray-800' : ''"
-                                class="z-99999 flex h-10 w-10 items-center justify-center rounded-lg border-gray-200 text-gray-500 xl:h-11 xl:w-11 xl:border dark:border-gray-800 dark:text-gray-400"
-                                @click.stop="sidebarToggle = !sidebarToggle">
-                        <svg
-                                class="hidden fill-current xl:block"
-                                width="16"
-                                height="12"
-                                viewBox="0 0 16 12"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                    fill-rule="evenodd"
-                                    clip-rule="evenodd"
-                                    d="M0.583252 1C0.583252 0.585788 0.919038 0.25 1.33325 0.25H14.6666C15.0808 0.25 15.4166 0.585786 15.4166 1C15.4166 1.41421 15.0808 1.75 14.6666 1.75L1.33325 1.75C0.919038 1.75 0.583252 1.41422 0.583252 1ZM0.583252 11C0.583252 10.5858 0.919038 10.25 1.33325 10.25L14.6666 10.25C15.0808 10.25 15.4166 10.5858 15.4166 11C15.4166 11.4142 15.0808 11.75 14.6666 11.75L1.33325 11.75C0.919038 11.75 0.583252 11.4142 0.583252 11ZM1.33325 5.25C0.919038 5.25 0.583252 5.58579 0.583252 6C0.583252 6.41421 0.919038 6.75 1.33325 6.75L7.99992 6.75C8.41413 6.75 8.74992 6.41421 8.74992 6C8.74992 5.58579 8.41413 5.25 7.99992 5.25L1.33325 5.25Z"
-                                    fill=""
-                            />
-                        </svg>
-
-                        <svg
-                                :class="sidebarToggle ? 'hidden' : 'block xl:hidden'"
-                                class="fill-current xl:hidden"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                    fill-rule="evenodd"
-                                    clip-rule="evenodd"
-                                    d="M3.25 6C3.25 5.58579 3.58579 5.25 4 5.25L20 5.25C20.4142 5.25 20.75 5.58579 20.75 6C20.75 6.41421 20.4142 6.75 20 6.75L4 6.75C3.58579 6.75 3.25 6.41422 3.25 6ZM3.25 18C3.25 17.5858 3.58579 17.25 4 17.25L20 17.25C20.4142 17.25 20.75 17.5858 20.75 18C20.75 18.4142 20.4142 18.75 20 18.75L4 18.75C3.58579 18.75 3.25 18.4142 3.25 18ZM4 11.25C3.58579 11.25 3.25 11.5858 3.25 12C3.25 12.4142 3.58579 12.75 4 12.75L12 12.75C12.4142 12.75 12.75 12.4142 12.75 12C12.75 11.5858 12.4142 11.25 12 11.25L4 11.25Z"
-                                    fill=""
-                            />
-                        </svg>
-
-                        <!-- cross icon -->
-                        <svg
-                                :class="sidebarToggle ? 'block xl:hidden' : 'hidden'"
-                                class="fill-current"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                    fill-rule="evenodd"
-                                    clip-rule="evenodd"
-                                    d="M6.21967 7.28131C5.92678 6.98841 5.92678 6.51354 6.21967 6.22065C6.51256 5.92775 6.98744 5.92775 7.28033 6.22065L11.999 10.9393L16.7176 6.22078C17.0105 5.92789 17.4854 5.92788 17.7782 6.22078C18.0711 6.51367 18.0711 6.98855 17.7782 7.28144L13.0597 12L17.7782 16.7186C18.0711 17.0115 18.0711 17.4863 17.7782 17.7792C17.4854 18.0721 17.0105 18.0721 16.7176 17.7792L11.999 13.0607L7.28033 17.7794C6.98744 18.0722 6.51256 18.0722 6.21967 17.7794C5.92678 17.4865 5.92678 17.0116 6.21967 16.7187L10.9384 12L6.21967 7.28131Z"
-                                    fill=""
-                            />
-                        </svg>
-                        </button>
-                        <!-- Hamburger Toggle BTN -->
-
-                        <a href="{{ route('treasurer.dashboard') }}" class="xl:hidden">
-                        <img class="dark:hidden" src="{{ asset('company_logo.png') }}" alt="Logo" />
-                        <img
-                                class="hidden dark:block"
-                                src="{{ asset('company_logo.png') }}"
-                                alt="Logo"
-                        />
-                        </a>
-
-                        <!-- Application nav menu button -->
-                        <button class="z-99999 flex h-10 w-10 items-center justify-center rounded-lg text-gray-700 hover:bg-gray-100 xl:hidden dark:text-gray-400 dark:hover:bg-gray-800"
-                                :class="menuToggle ? 'bg-gray-100 dark:bg-gray-800' : ''"
-                                @click.stop="menuToggle = !menuToggle">
-                        <svg
-                                class="fill-current"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                    fill-rule="evenodd"
-                                    clip-rule="evenodd"
-                                    d="M5.99902 10.4951C6.82745 10.4951 7.49902 11.1667 7.49902 11.9951V12.0051C7.49902 12.8335 6.82745 13.5051 5.99902 13.5051C5.1706 13.5051 4.49902 12.8335 4.49902 12.0051V11.9951C4.49902 11.1667 5.1706 10.4951 5.99902 10.4951ZM17.999 10.4951C18.8275 10.4951 19.499 11.1667 19.499 11.9951V12.0051C19.499 12.8335 18.8275 13.5051 17.999 13.5051C17.1706 13.5051 16.499 12.8335 16.499 12.0051V11.9951C16.499 11.1667 17.1706 10.4951 17.999 10.4951ZM13.499 11.9951C13.499 11.1667 12.8275 10.4951 11.999 10.4951C11.1706 10.4951 10.499 11.1667 10.499 11.9951V12.0051C10.499 12.8335 11.1706 13.5051 11.999 13.5051C12.8275 13.5051 13.499 12.8335 13.499 12.0051V11.9951Z"
-                                    fill=""
-                            />
-                        </svg>
-                        </button>
-                        <!-- Application nav menu button -->
-
-                    </div>
-
-                    <div :class="menuToggle ? 'flex' : 'hidden'"
-                        class="shadow-theme-md w-full items-center justify-between gap-4 px-5 py-4 xl:flex xl:justify-end xl:px-0 xl:shadow-none">
-                        <div class="2xsm:gap-3 flex items-center gap-2">
-                        </div>
-
-                        <!-- User Area -->
-                        <div
-                                class="relative"
-                                x-data="{ dropdownOpen: false }"
-                                @click.outside="dropdownOpen = false"
-                        >
-                        <a
-                                class="flex items-center text-gray-700 dark:text-gray-400"
-                                href="#"
-                                @click.prevent="dropdownOpen = ! dropdownOpen"
-                        >
-
-
-                            <span class="text-theme-sm mr-1 block font-medium"> {{ Auth::user()->first_name }} {{ Auth::user()->last_name }} </span>
-
-                            <svg
-                                    :class="dropdownOpen && 'rotate-180'"
-                                    class="stroke-gray-500 dark:stroke-gray-400"
-                                    width="18"
-                                    height="20"
-                                    viewBox="0 0 18 20"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                            >
-                            <path
-                                    d="M4.3125 8.65625L9 13.3437L13.6875 8.65625"
-                                    stroke=""
-                                    stroke-width="1.5"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                            />
-                            </svg>
-                        </a>
-
-                        <!-- Dropdown Start -->
-                        <div x-show="dropdownOpen"
-                            class="shadow-theme-lg dark:bg-gray-dark absolute right-0 mt-[17px] flex w-[260px] flex-col rounded-2xl border border-gray-200 bg-white p-3 dark:border-gray-800">
-                            <div>
-                            <span
-                                    class="text-theme-sm block font-medium text-gray-700 dark:text-gray-400"
-                            >
-                                {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}
-                            </span>
-                            <span
-                                    class="text-theme-xs mt-0.5 block text-gray-500 dark:text-gray-400"
-                            >
-                                <p>{{ Auth::user()->email }} </p>
-                            </span>
-                            </div>
-
-                            <ul
-                                    class="flex flex-col gap-1 border-b border-gray-200 pt-4 pb-3 dark:border-gray-800"
-                            >
-                            <li>
-                                <a
-                                        href="profile.php"
-                                        class="group text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-                                >
-                                <svg
-                                        class="fill-gray-500 group-hover:fill-gray-700 dark:fill-gray-400 dark:group-hover:fill-gray-300"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                            fill-rule="evenodd"
-                                            clip-rule="evenodd"
-                                            d="M12 3.5C7.30558 3.5 3.5 7.30558 3.5 12C3.5 14.1526 4.3002 16.1184 5.61936 17.616C6.17279 15.3096 8.24852 13.5955 10.7246 13.5955H13.2746C15.7509 13.5955 17.8268 15.31 18.38 17.6167C19.6996 16.119 20.5 14.153 20.5 12C20.5 7.30558 16.6944 3.5 12 3.5ZM17.0246 18.8566V18.8455C17.0246 16.7744 15.3457 15.0955 13.2746 15.0955H10.7246C8.65354 15.0955 6.97461 16.7744 6.97461 18.8455V18.856C8.38223 19.8895 10.1198 20.5 12 20.5C13.8798 20.5 15.6171 19.8898 17.0246 18.8566ZM2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12ZM11.9991 7.25C10.8847 7.25 9.98126 8.15342 9.98126 9.26784C9.98126 10.3823 10.8847 11.2857 11.9991 11.2857C13.1135 11.2857 14.0169 10.3823 14.0169 9.26784C14.0169 8.15342 13.1135 7.25 11.9991 7.25ZM8.48126 9.26784C8.48126 7.32499 10.0563 5.75 11.9991 5.75C13.9419 5.75 15.5169 7.32499 15.5169 9.26784C15.5169 11.2107 13.9419 12.7857 11.9991 12.7857C10.0563 12.7857 8.48126 11.2107 8.48126 9.26784Z"
-                                            fill=""
-                                    />
-                                </svg>
-                                Profile
-                                </a>
-                            </li>
-                            </ul>
-                            <a href="{{ route('signout') }}"
-                                    class="group text-theme-sm mt-3 flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-                            >
-                            <svg
-                                    class="fill-gray-500 group-hover:fill-gray-700 dark:group-hover:fill-gray-300"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <path
-                                        fill-rule="evenodd"
-                                        clip-rule="evenodd"
-                                        d="M15.1007 19.247C14.6865 19.247 14.3507 18.9112 14.3507 18.497L14.3507 14.245H12.8507V18.497C12.8507 19.7396 13.8581 20.747 15.1007 20.747H18.5007C19.7434 20.747 20.7507 19.7396 20.7507 18.497L20.7507 5.49609C20.7507 4.25345 19.7433 3.24609 18.5007 3.24609H15.1007C13.8581 3.24609 12.8507 4.25345 12.8507 5.49609V9.74501L14.3507 9.74501V5.49609C14.3507 5.08188 14.6865 4.74609 15.1007 4.74609L18.5007 4.74609C18.9149 4.74609 19.2507 5.08188 19.2507 5.49609L19.2507 18.497C19.2507 18.9112 18.9149 19.247 18.5007 19.247H15.1007ZM3.25073 11.9984C3.25073 12.2144 3.34204 12.4091 3.48817 12.546L8.09483 17.1556C8.38763 17.4485 8.86251 17.4487 9.15549 17.1559C9.44848 16.8631 9.44863 16.3882 9.15583 16.0952L5.81116 12.7484L16.0007 12.7484C16.4149 12.7484 16.7507 12.4127 16.7507 11.9984C16.7507 11.5842 16.4149 11.2484 16.0007 11.2484L5.81528 11.2484L9.15585 7.90554C9.44864 7.61255 9.44847 7.13767 9.15547 6.84488C8.86248 6.55209 8.3876 6.55226 8.09481 6.84525L3.52309 11.4202C3.35673 11.5577 3.25073 11.7657 3.25073 11.9984Z"
-                                        fill=""
-                                />
-                            </svg>
-
-                            Logout
-                            </a>
-                        </div>
-                        <!-- Dropdown End -->
-                        </div>
-                        <!-- User Area -->
-                    </div>
-                    </div>
-        </header>
+        @include('Layouts.General.header')
         <!-- ===== Header End ===== -->
 
         <!-- ===== Main Content Start ===== -->
@@ -534,7 +62,7 @@
                 <nav>
                   <ol class="flex items-center gap-1.5">
                     <li>
-                      <a class="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400" href="{{ route('treasurer.bodaboda') }}">Bodaboda List
+                      <a class="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400" href="{{ route('treasurer.bodaboda.overview') }}">Bodaboda List
                         <svg
                           class="stroke-current"
                           width="17"
@@ -669,12 +197,12 @@
                             <!-- Metric Item End -->
 
                         <!-- Metric Item Start -->
-                        <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+                        <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]" x-data="savingsTable">
                             <p class="text-theme-sm text-gray-500 dark:text-gray-400">Savings Wallet</p>
 
                             <div class="mt-3 flex items-end justify-between">
                                 <div>
-                                <h4 class="text-xl font-semibold text-gray-500 dark:text-white/90">KES 0.00</h4>
+                                <h4 class="text-xl font-semibold text-gray-500 dark:text-white/90" x-text="'KSh ' + savingsBalance.toFixed(2)">KES 0.00</h4>
                                 </div>
 
                                 <div class="flex items-center gap-1">
@@ -841,33 +369,33 @@
                         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                           <div>
                             <span class="mb-1 text-xs text-gray-500 dark:text-gray-400">First Name</span>
-                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.firstname || 'N/A'">+254 723 000 000</p>
+                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.firstname || 'Loading...'">+254 723 000 000</p>
                           </div>
                           <div>
                             <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Last Name</p>
-                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.lastname || 'N/A'">+254 725 000 000</p>
+                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.lastname || 'Loading...'">+254 725 000 000</p>
                           </div>
                         </div>
                         <div>
                           <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Email</p>
-                          <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.email || 'N/A'">randomuser@pimjo.com</p>
+                          <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.email || 'Loading...'">randomuser@pimjo.com</p>
                         </div>
                         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                           <div>
                             <span class="mb-1 text-xs text-gray-500 dark:text-gray-400">Primary Phone</span>
-                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.phone1 || 'N/A'">+254 723 000 000</p>
+                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.phone1 || 'Loading...'">+254 723 000 000</p>
                           </div>
                           <div>
                             <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Secondary Phone</p>
-                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.phone2 || 'N/A'">+254 725 000 000</p>
+                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.phone2 || 'Loading...'">+254 725 000 000</p>
                           </div>
                           <div>
                             <span class="mb-1 text-xs text-gray-500 dark:text-gray-400">Gender</span>
-                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.gender || 'N/A'">+254 723 000 000</p>
+                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.gender || 'Loading...'">+254 723 000 000</p>
                           </div>
                           <div>
                             <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Date of Birth</p>
-                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.dob || 'N/A'">+254 725 000 000</p>
+                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.dob || 'Loading...'">+254 725 000 000</p>
                           </div>
                           <div>
                             <span class="mb-1 text-xs text-gray-500 dark:text-gray-400">Membership</span>
@@ -875,7 +403,7 @@
                           </div>
                           <div>
                             <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Membership Status</p>
-                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.status || 'N/A'">+254 725 000 000</p>
+                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.status || 'Loading...'">+254 725 000 000</p>
                           </div>
                         </div>
                       </div>
@@ -1007,7 +535,7 @@
                                                                 </div>
 
                                                                 <div>
-                                                                    <button @click="withdrawContribution = true"
+                                                                    <button @click="withdrawSavingsModal = true"
                                                                         class="hover:text-dark-900 shadow-theme-xs relative flex inline-flex h-11 items-center justify-center  gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-700 hover:bg-gray-600 sm:w-auto">
                                                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
                                                                             <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -2250,14 +1778,14 @@
                     <!-- Loans Table -->
                     <div x-show="activeTab === 'loans'">
 
-                       <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+                        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
                                                         <div class="flex flex-col justify-between gap-5 border-b border-gray-200 px-5 py-4 sm:flex-row lg:items-center dark:border-gray-800">
                                                             <div>
                                                                     <h3 class="text-lg font-semibold text-gray-600 dark:text-white/90">
-                                                                        Loan Types
+                                                                        Loan
                                                                     </h3>
                                                                     <p class="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
-                                                                        Manage your system loan types
+                                                                        Manage member loans
                                                                     </p>
                                                             </div>
 
@@ -2306,9 +1834,9 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                            <!-- Loan Types Table -->
+                                                            <!-- Loan Table -->
                                                         <div>
-                                                            <!-- Loan Types Table -->
+                                                            <!-- Loan Table -->
                                                             <div x-data="loansTable()" x-init="init()">
                                                                 <div class="custom-scrollbar overflow-x-auto">
                                                                         <table class="w-full">
@@ -2339,7 +1867,21 @@
                                                                                     <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                                         <div class="flex items-center">
                                                                                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Amount
+                                                                                                Borrowed
+                                                                                            </p>
+                                                                                        </div>
+                                                                                    </th>
+                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                                        <div class="flex items-center">
+                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                                                                                Total
+                                                                                            </p>
+                                                                                        </div>
+                                                                                    </th>
+                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                                        <div class="flex items-center">
+                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                                                                                Last Repayment (Amount/Date)
                                                                                             </p>
                                                                                         </div>
                                                                                     </th>
@@ -2354,13 +1896,6 @@
                                                                                         <div class="flex items-center">
                                                                                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
                                                                                                 End Date
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Last Repayment (Amount/Date)
                                                                                             </p>
                                                                                         </div>
                                                                                     </th>
@@ -2426,20 +1961,16 @@
                                                                                                 <p class="text-sm text-gray-700 dark:text-gray-400" x-text="loan.transactionLoanPeriod || '0' + ' months'"></p>
                                                                                             </td>
 
-                                                                                            <!-- Amount -->
+                                                                                            <!-- Borrowed -->
                                                                                             <td class="p-4 whitespace-nowrap">
                                                                                                 <p class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="'KES ' + Number(loan.transactionLoanAmount || 0).toLocaleString()"></p>
-                                                                                                <p class="text-xs text-gray-500 dark:text-gray-400" x-text="'Outstanding: KES ' + Number(loan.outstanding_balance || 0).toLocaleString()"></p>
+                                                                                                <p class="text-xs text-gray-500 dark:text-gray-400" x-text="'Repaid: KES ' + Number(loan.outstanding_balance || 0).toLocaleString()"></p>
                                                                                             </td>
 
-                                                                                            <!-- Start Date -->
+                                                                                            <!-- Total Loan -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="loan.transactionLoanStartDate ? new Date(loan.transactionLoanStartDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'"></p>
-                                                                                            </td>
-
-                                                                                            <!-- End Date (Calculate from start date + period) -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="loan.transactionLoanStartDate ? new Date(new Date(loan.transactionLoanStartDate).setDate(new Date(loan.transactionLoanStartDate).getDate() + (loan.transactionLoanPeriod * 30))).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'"></p>
+                                                                                                <p class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="'KES ' + Number(loan.transactionLoanAmount || 0).toLocaleString()"></p>
+                                                                                                <p class="text-xs text-gray-500 dark:text-gray-400" x-text="'Interest: KES ' + Number(loan.outstanding_balance || 0).toLocaleString()"></p>
                                                                                             </td>
 
                                                                                             <!-- Last Repayment (Amount/Date) -->
@@ -2453,6 +1984,16 @@
                                                                                                 <template x-if="!loan.last_repayment">
                                                                                                     <span class="text-sm text-gray-400">No repayments yet</span>
                                                                                                 </template>
+                                                                                            </td>
+
+                                                                                            <!-- Start Date -->
+                                                                                            <td class="p-4 whitespace-nowrap">
+                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="loan.transactionLoanStartDate ? new Date(loan.transactionLoanStartDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'"></p>
+                                                                                            </td>
+
+                                                                                            <!-- End Date (Calculate from start date + period) -->
+                                                                                            <td class="p-4 whitespace-nowrap">
+                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="loan.transactionLoanStartDate ? new Date(new Date(loan.transactionLoanStartDate).setDate(new Date(loan.transactionLoanStartDate).getDate() + (loan.transactionLoanPeriod * 30))).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'"></p>
                                                                                             </td>
 
                                                                                             <!-- Status -->
@@ -2477,6 +2018,7 @@
                                                                                                     </svg>
                                                                                                 </button>
                                                                                             </td>
+
                                                                                         </tr>
                                                                                     </template>
                                                                                 </tbody>
@@ -2547,8 +2089,10 @@
                                                                 </div>
 
                                                             </div>
+
                                                         </div>
-                                                    </div>
+                        </div>
+
                     </div>
 
                     <!-- Fines Table -->
@@ -2811,6 +2355,7 @@
           </div>
         </main>
         <!-- ===== Main Content End ===== -->
+
     </div>
         <!-- ===== Content Area End ===== -->
   </div>
@@ -4863,21 +4408,18 @@
         </button>
         <div class="px-2 pr-14">
             <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Savings</h4>
-            <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the amount you wish to withdraw.</p>
+            <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the amount you wish to save.</p>
         </div>
 
-        <form class="flex flex-col" x-data="kinTable" @submit.prevent="addKin">
-
+            <form class="flex flex-col" id="addSavingsForm" x-data="savingsTable" @submit.prevent="addSavings">
                 @csrf
-
                 <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
-
-                    <!-- First Name -->
+                    <!-- Amount -->
                     <div class="w-full px-2.5 xl:w-1/2">
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                             Amount
                         </label>
-                        <input type="number"
+                        <input type="number" step="0.01"
                             id="savings_Amount"
                             name="savings_Amount"
                             @input="clearError('savings_Amount')"
@@ -4887,7 +4429,7 @@
                         <span x-show="errors.savings_Amount" x-text="errors.savings_Amount" class="text-xs text-error-500 mt-1"></span>
                     </div>
 
-                    <!-- Last Name -->
+                    <!-- Payment Mode -->
                     <div class="w-full px-2.5 xl:w-1/2">
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                             Payment Mode
@@ -4913,7 +4455,7 @@
                         <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
                     </div>
 
-                    <!-- Email -->
+                    <!-- Transaction Code -->
                     <div class="w-full px-2.5 xl:w-1/2">
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                             Transaction Code
@@ -4962,12 +4504,141 @@
                     </button>
                     <button type="submit"
                             class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
-                            :disabled="$store.kinData.isAdding">
-                        <span x-show="!$store.kinData.isAdding">Save</span>
-                        <span x-show="$store.kinData.isAdding">Transacting ...</span>
+                            :disabled="$store.savingData?.isAdding">
+                        <span x-show="!$store.savingData?.isAdding">Save</span>
+                        <span x-show="$store.savingData?.isAdding">Transacting ...</span>
                     </button>
                 </div>
+            </form>
 
+        </div>
+    </div>
+
+    <!-- withdrawSavingsModal -->
+    <div x-show="withdrawSavingsModal" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999">
+        <div class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
+        <div @click.outside="withdrawSavingsModal = false" class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+        <!-- close btn -->
+        <button @click="withdrawSavingsModal = false" class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300">
+            <svg
+                    class="fill-current"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+            >
+            <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M6.04289 16.5418C5.65237 16.9323 5.65237 17.5655 6.04289 17.956C6.43342 18.3465 7.06658 18.3465 7.45711 17.956L11.9987 13.4144L16.5408 17.9565C16.9313 18.347 17.5645 18.347 17.955 17.9565C18.3455 17.566 18.3455 16.9328 17.955 16.5423L13.4129 12.0002L17.955 7.45808C18.3455 7.06756 18.3455 6.43439 17.955 6.04387C17.5645 5.65335 16.9313 5.65335 16.5408 6.04387L11.9987 10.586L7.45711 6.04439C7.06658 5.65386 6.43342 5.65386 6.04289 6.04439C5.65237 6.43491 5.65237 7.06808 6.04289 7.4586L10.5845 12.0002L6.04289 16.5418Z"
+                    fill=""
+            />
+            </svg>
+        </button>
+        <div class="px-2 pr-14">
+            <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Withdraw</h4>
+            <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the amount you wish to withdraw.</p>
+        </div>
+
+            <form class="flex flex-col" id="withdrawSavingsForm" x-data="savingsTable" @submit.prevent="withdrawSavings">
+                @csrf
+                <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
+                    <!-- Amount -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Amount
+                        </label>
+                        <input type="number" step="0.01"
+                            id="savings_Amount"
+                            name="savings_Amount"
+                            @input="clearError('savings_Amount')"
+                            @blur="validateField('savings_Amount', $event.target.value)"
+                            :class="errors.savings_Amount ? 'border-red-500' : ''"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.savings_Amount" x-text="errors.savings_Amount" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Payment Mode -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Payment Mode
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="payment_mode"
+                                    name="payment_mode"
+                                    @change="clearError('payment_mode')"
+                                    @blur="validateField('payment_mode', $event.target.value)"
+                                    :class="errors.payment_mode ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Payment Mode</option>
+                                <option value="Cash">Cash</option>
+                                <option value="MPesa">MPesa</option>
+                                <option value="Bank">Bank</option>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Transaction Code -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Transaction Code
+                        </label>
+                        <input type="text"
+                            id="transaction_code"
+                            name="transaction_code"
+                            @input="clearError('transaction_code')"
+                            @blur="validateField('transaction_code', $event.target.value)"
+                            :class="errors.transaction_code ? 'border-red-500' : ''"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Status
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="Status"
+                                    name="Status"
+                                    @change="clearError('Status')"
+                                    @blur="validateField('Status', $event.target.value)"
+                                    :class="errors.Status ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Status</option>
+                                <option value="Confirmed">Confirmed</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.Status" x-text="errors.Status" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+                    <button @click="withdrawSavingsModal = false" type="button"
+                            class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                            :disabled="$store.savingData?.isAdding">
+                        <span x-show="!$store.savingData?.isAdding">Withdraw</span>
+                        <span x-show="$store.savingData?.isAdding">Withdrawing ...</span>
+                    </button>
+                </div>
             </form>
 
         </div>
@@ -4998,7 +4669,7 @@
 
         <div class="px-2 pr-14">
             <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Assign Loan</h4>
-            <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the amount you wish to withdraw.</p>
+            <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the amount you wish to assign to member.</p>
         </div>
 
         <form class="flex flex-col" method="POST" x-data="loansTable" @submit.prevent="assignLoan">
@@ -5032,18 +4703,6 @@
                     <span x-show="errors.loan_type" x-text="errors.loan_type" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
-                <!-- Interest Rate (Read-only) -->
-                <div class="w-full px-2.5 xl:w-1/2">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Interest Rate
-                    </label>
-                    <input readonly type="text"
-                        id="interest_rate"
-                        name="interest_rate"
-                        :value="$store.loanData.currentLoanType ? $store.loanData.currentLoanType.interest_rate + '%' : ''"
-                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
-                </div>
-
                 <!-- Max Borrowable (Read-only) -->
                 <div class="w-full px-2.5 xl:w-1/2">
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
@@ -5054,6 +4713,38 @@
                         name="max_borrowable"
                         :value="$store.loanData.currentLoanType ? 'KES ' + Number($store.loanData.currentLoanType.max_amount).toLocaleString() : ''"
                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                </div>
+
+                <!-- Min Borrowable (Read-only) -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Min Borrowable
+                    </label>
+                    <input readonly type="text"
+                        id="max_borrowable"
+                        name="max_borrowable"
+                        :value="$store.loanData.currentLoanType ? 'KES ' + Number($store.loanData.currentLoanType.min_amount).toLocaleString() : ''"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                </div>
+
+                <!-- Amount -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Loan Amount
+                    </label>
+                    <div class="relative">
+                        <input type="number"
+                            id="assign_amount"
+                            name="amount"
+                            step="0.01"
+                            min="1"
+                            placeholder="Amount to Borrow"
+                            @input="clearError('amount')"
+                            @blur="validateField('amount', $event.target.value)"
+                            :class="errors.amount ? 'border-red-500' : ''"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    </div>
+                    <span x-show="errors.amount" x-text="errors.amount" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
                 <!-- Period (Months) -->
@@ -5075,6 +4766,8 @@
                             <option value="12">12 Months</option>
                             <option value="24">24 Months</option>
                             <option value="36">36 Months</option>
+                            <option value="48">48 Months</option>
+                            <option value="60">60 Months</option>
                         </select>
                         <span class="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-700 dark:text-gray-400">
                             <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -5083,69 +4776,6 @@
                         </span>
                     </div>
                     <span x-show="errors.loan_period" x-text="errors.loan_period" class="text-xs text-error-500 mt-1"></span>
-                </div>
-
-                <!-- Payment Mode -->
-                <div class="w-full px-2.5 xl:w-1/2">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Payment Mode
-                    </label>
-                    <div class="relative z-20 bg-transparent">
-                        <select id="assign_payment_mode"
-                                name="payment_mode"
-                                @change="handlePaymentModeChange($event.target.value, 'assign_'); clearError('payment_mode')"
-                                @blur="validateField('payment_mode', $event.target.value)"
-                                :class="errors.payment_mode ? 'border-red-500' : ''"
-                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                            <option value="">Select Payment Mode</option>
-                            <option value="Cash">Cash</option>
-                            <option value="MPesa">MPesa</option>
-                            <option value="Bank">Bank</option>
-                        </select>
-                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </span>
-                    </div>
-                    <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
-                </div>
-
-                <!-- Amount -->
-                <div class="w-full px-2.5 xl:w-1/2">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Amount
-                    </label>
-                    <div class="relative">
-                        <input type="number"
-                            id="assign_amount"
-                            name="amount"
-                            step="0.01"
-                            min="1"
-                            @input="clearError('amount')"
-                            @blur="validateField('amount', $event.target.value)"
-                            :class="errors.amount ? 'border-red-500' : ''"
-                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                    </div>
-                    <span x-show="errors.amount" x-text="errors.amount" class="text-xs text-error-500 mt-1"></span>
-                </div>
-
-                <!-- Transaction Code -->
-                <div class="w-full px-2.5 xl:w-1/2">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Transaction Code
-                    </label>
-                    <div class="relative">
-                        <input type="text"
-                            id="assign_transaction_code"
-                            name="transaction_code"
-                            readonly
-                            @input="clearError('transaction_code')"
-                            @blur="validateField('transaction_code', $event.target.value)"
-                            :class="errors.transaction_code ? 'border-red-500' : ''"
-                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                    </div>
-                    <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
                 <!-- Start Date (Read-only) -->
@@ -5174,8 +4804,69 @@
                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
                 </div>
 
+                <!-- Payment Mode -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Payment Mode
+                    </label>
+                    <div class="relative z-20 bg-transparent">
+                        <select id="assign_payment_mode"
+                                name="payment_mode"
+                                @change="handlePaymentModeChange($event.target.value, 'assign_'); clearError('payment_mode')"
+                                @blur="validateField('payment_mode', $event.target.value)"
+                                :class="errors.payment_mode ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value="">Select Payment Mode</option>
+                            <option value="Cash">Cash</option>
+                            <option value="MPesa">MPesa</option>
+                            <option value="Bank">Bank</option>
+                        </select>
+                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <!-- Transaction Code -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Transaction Code
+                    </label>
+                    <div class="relative">
+                        <input type="text"
+                            id="assign_transaction_code"
+                            name="transaction_code"
+                            readonly
+                            @input="clearError('transaction_code')"
+                            @blur="validateField('transaction_code', $event.target.value)"
+                            :class="errors.transaction_code ? 'border-red-500' : ''"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    </div>
+                    <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <!-- Total Amount -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Total Repayment
+                    </label>
+                    <div class="relative">
+                        <input type="number"
+                            id="assign_amount"
+                            name="total_loan"
+                            step="0.01"
+                            min="1"
+                            readonly
+                            placeholder="Total Payable"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    </div>
+                </div>
+
                 <!-- Loan Status -->
-                <div class="w-full px-2.5">
+                <div class="w-full px-2.5  xl:w-1/2">
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                         Loan Status
                     </label>
@@ -5214,6 +4905,278 @@
                 </button>
             </div>
         </form>
+
+        </div>
+    </div>
+
+    <!-- editLoansModal -->
+    <div x-show="$store.loanData.editLoanModal" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999">
+        <div class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
+        <div @click.outside="$store.loanData.editLoanModal = false" class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+            <!-- close btn -->
+            <button @click="$store.loanData.editLoanModal = false" class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300">
+                <svg
+                        class="fill-current"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                >
+                <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M6.04289 16.5418C5.65237 16.9323 5.65237 17.5655 6.04289 17.956C6.43342 18.3465 7.06658 18.3465 7.45711 17.956L11.9987 13.4144L16.5408 17.9565C16.9313 18.347 17.5645 18.347 17.955 17.9565C18.3455 17.566 18.3455 16.9328 17.955 16.5423L13.4129 12.0002L17.955 7.45808C18.3455 7.06756 18.3455 6.43439 17.955 6.04387C17.5645 5.65335 16.9313 5.65335 16.5408 6.04387L11.9987 10.586L7.45711 6.04439C7.06658 5.65386 6.43342 5.65386 6.04289 6.04439C5.65237 6.43491 5.65237 7.06808 6.04289 7.4586L10.5845 12.0002L6.04289 16.5418Z"
+                        fill=""
+                />
+                </svg>
+            </button>
+
+            <div class="px-2 pr-14">
+                <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Assign Loan</h4>
+                <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the amount you wish to withdraw.</p>
+            </div>
+
+            <form class="flex flex-col" method="POST" x-data="loansTable" @submit.prevent="editLoan">
+                @csrf
+                <!-- Hidden field for loan ID when editing -->
+                <input type="hidden" id="edit_loan_id" name="loan_id" x-model="$store.loanData.currentLoan.transactionId">
+
+                <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
+                    <!-- Loan Type Dropdown -->
+                    <div class="w-full px-2.5">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Loan Type
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="edit_loan_type_id"
+                                    name="loan_type_id"
+                                    x-model="$store.loanData.currentLoan.loanTypeId"
+                                    @change="Alpine.store('loanData').updateLoanDetails($event.target.value); clearError('loan_type')"
+                                    @blur="validateField('loan_type', $event.target.value)"
+                                    :class="errors.loan_type ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Select Loan Type</option>
+                                <template x-for="loanType in $store.loanData.loanTypes" :key="loanType.loanId">
+                                    <option :value="loanType.loanId"
+                                            x-text="loanType.loan_type_name + ' @ ' + loanType.interest_rate + '%'"
+                                            :selected="loanType.loanId == $store.loanData.currentLoan?.loanTypeId"></option>
+                                </template>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.loan_type" x-text="errors.loan_type" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Interest Rate (Read-only) -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Interest Rate
+                        </label>
+                        <input readonly type="text"
+                            id="edit_interest_rate"
+                            name="interest_rate"
+                            x-bind:value="$store.loanData.currentLoanType ? $store.loanData.currentLoanType.interest_rate + '%' : ($store.loanData.currentLoan?.interestRate ? $store.loanData.currentLoan.interestRate + '%' : ($store.loanData.currentLoan?.loanTypeName ? $store.loanData.currentLoan.loanTypeName.split('@')[1]?.trim() || '' : ''))"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                    </div>
+
+                    <!-- Max Borrowable (Read-only) -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Max Borrowable
+                        </label>
+                        <input readonly type="text"
+                            id="edit_max_borrowable"
+                            name="max_borrowable"
+                            x-bind:value="$store.loanData.currentLoanType ? 'KES ' + Number($store.loanData.currentLoanType.max_amount).toLocaleString() : ''"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                    </div>
+
+                    <!-- Period (Months) -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Period (Months)
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="edit_loan_period"
+                                    name="loan_period"
+                                    x-model="$store.loanData.currentLoan.loanPeriod"
+                                    @change="$store.loanData.calculateDates($event.target.value); clearError('loan_period')"
+                                    @blur="validateField('loan_period', $event.target.value)"
+                                    :class="errors.loan_period ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Select Period</option>
+                                <option value="1" :selected="$store.loanData.currentLoan?.loanPeriod == 1">1 Month (30 Days)</option>
+                                <option value="3" :selected="$store.loanData.currentLoan?.loanPeriod == 3">3 Months</option>
+                                <option value="6" :selected="$store.loanData.currentLoan?.loanPeriod == 6">6 Months</option>
+                                <option value="12" :selected="$store.loanData.currentLoan?.loanPeriod == 12">12 Months</option>
+                                <option value="24" :selected="$store.loanData.currentLoan?.loanPeriod == 24">24 Months</option>
+                                <option value="36" :selected="$store.loanData.currentLoan?.loanPeriod == 36">36 Months</option>
+                            </select>
+                            <span class="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-700 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.loan_period" x-text="errors.loan_period" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Payment Mode -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Payment Mode
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="edit_payment_mode"
+                                    name="payment_mode"
+                                    x-model="$store.loanData.currentLoan.transactionMode"
+                                    @change="handlePaymentModeChange($event.target.value, 'edit_'); clearError('payment_mode')"
+                                    @blur="validateField('payment_mode', $event.target.value)"
+                                    :class="errors.payment_mode ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Select Payment Mode</option>
+                                <option value="Cash" :selected="$store.loanData.currentLoan?.transactionMode == 'Cash'">Cash</option>
+                                <option value="MPesa" :selected="$store.loanData.currentLoan?.transactionMode == 'MPesa'">MPesa</option>
+                                <option value="Bank" :selected="$store.loanData.currentLoan?.transactionMode == 'Bank'">Bank</option>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Amount -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Amount
+                        </label>
+                        <div class="relative">
+                            <input type="number"
+                                id="edit_amount"
+                                name="amount"
+                                step="0.01"
+                                min="1"
+                                x-model="$store.loanData.currentLoan.transactionLoanAmount"
+                                @input="clearError('amount')"
+                                @blur="validateField('amount', $event.target.value)"
+                                :class="errors.amount ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        </div>
+                        <span x-show="errors.amount" x-text="errors.amount" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Transaction Code -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Transaction Code
+                        </label>
+                        <div class="relative">
+                            <input type="text"
+                                id="edit_transaction_code"
+                                name="transaction_code"
+                                x-model="$store.loanData.currentLoan.transactionCode"
+                                x-bind:readonly="$store.loanData.currentLoan?.transactionMode === 'Cash'"
+                                @input="clearError('transaction_code')"
+                                @blur="validateField('transaction_code', $event.target.value)"
+                                :class="errors.transaction_code ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        </div>
+                        <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Start Date (Read-only) -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Start Date
+                        </label>
+                        <input type="text"
+                            id="edit_start_date"
+                            name="start_date"
+                            readonly
+                            x-bind:value="formatDate($store.loanData.currentLoan?.startDate)"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                    </div>
+
+                    <!-- End Date (Read-only) -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            End Date
+                        </label>
+                        <input type="text"
+                            id="edit_end_date"
+                            name="end_date"
+                            readonly
+                            x-bind:value="formatDate($store.loanData.currentLoan?.endDate) || calculateEndDate($store.loanData.currentLoan?.startDate, $store.loanData.currentLoan?.loanPeriod)"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                    </div>
+
+                    <!-- Assigned Date (Read-only for edit) -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Assigned On
+                        </label>
+                        <input type="text"
+                            id="edit_assigned_date"
+                            name="assigned_date"
+                            readonly
+                            x-bind:value="formatDateTime($store.loanData.currentLoan?.transactionCreated)"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                    </div>
+
+                    <!-- Loan Status -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Loan Status
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="edit_loan_status"
+                                    name="status"
+                                    x-model="$store.loanData.currentLoan.transactionStatus"
+                                    @change="clearError('loan_status')"
+                                    @blur="validateField('loan_status', $event.target.value)"
+                                    :class="errors.loan_status ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Select Status</option>
+                                <option value="Active" :selected="$store.loanData.currentLoan?.transactionStatus == 'Active'">Active</option>
+                                <option value="Approved" :selected="$store.loanData.currentLoan?.transactionStatus == 'Approved'">Approved</option>
+                                <option value="Under Review" :selected="$store.loanData.currentLoan?.transactionStatus == 'Under Review'">Under Review</option>
+                                <option value="Pending" :selected="$store.loanData.currentLoan?.transactionStatus == 'Pending'">Pending</option>
+                                <option value="Repaid" :selected="$store.loanData.currentLoan?.transactionStatus == 'Repaid'">Repaid</option>
+                                <option value="Defaulted" :selected="$store.loanData.currentLoan?.transactionStatus == 'Defaulted'">Defaulted</option>
+                                <option value="Cancelled" :selected="$store.loanData.currentLoan?.transactionStatus == 'Cancelled'">Cancelled</option>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.loan_status" x-text="errors.loan_status" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+                    <button @click="$store.loanData.editLoanModal = false" type="button"
+                            class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                            :disabled="$store.loanData.isUpdating">
+                        <span x-show="!$store.loanData.isUpdating">Update Loan</span>
+                        <span x-show="$store.loanData.isUpdating">Updating ...</span>
+                    </button>
+                </div>
+
+            </form>
 
         </div>
     </div>
@@ -6692,7 +6655,6 @@
 
     <!-- Member Contributions -->
     <script>
-
         document.addEventListener('alpine:init', () => {
             // Store for contribution data and modal states
             Alpine.store('contributionData', {
@@ -6701,8 +6663,9 @@
                 isContributing: false,
                 isWithdrawing: false,
                 isUpdating: false,
-                memberBalance: 0, // Added for member balance
-                memberBalanceFormatted: 'KES 0.00' // Added formatted balance
+                memberBalance: 0,
+                memberBalanceFormatted: 'KES 0.00',
+                lastTransaction: null // Add this to store the last transaction for printing
             });
 
             Alpine.data('contributionsTable', () => ({
@@ -6724,7 +6687,7 @@
                         .then(res => res.json())
                         .then(data => {
                             this.allContributions = data;
-                            this.applyFilters(); // Apply filters after data loads
+                            this.applyFilters();
                         });
 
                     // Load member contribution balance
@@ -6782,27 +6745,19 @@
 
                             switch(this.frequencyFilter) {
                                 case 'Daily':
-                                    // Daily shows today's transactions
                                     return transDate >= today;
-
                                 case 'Weekly':
-                                    // Weekly shows last 7 days
                                     const weekAgo = new Date(today);
                                     weekAgo.setDate(weekAgo.getDate() - 7);
                                     return transDate >= weekAgo;
-
                                 case 'Monthly':
-                                    // Monthly shows last 30 days
                                     const monthAgo = new Date(today);
                                     monthAgo.setDate(monthAgo.getDate() - 30);
                                     return transDate >= monthAgo;
-
                                 case 'Yearly':
-                                    // Yearly shows last 365 days
                                     const yearAgo = new Date(today);
                                     yearAgo.setDate(yearAgo.getDate() - 365);
                                     return transDate >= yearAgo;
-
                                 default:
                                     return true;
                             }
@@ -6810,7 +6765,7 @@
                     }
 
                     this.contributions = filtered;
-                    this.page = 1; // Reset to first page after filtering
+                    this.page = 1;
                 },
 
                 performFilter() {
@@ -6935,6 +6890,7 @@
                     }
                 },
 
+                // UPDATED contribute() method with receipt printing
                 contribute() {
                     if (!this.validateContributeForm()) {
                         alert('Please fix the errors in the form before submitting.');
@@ -6965,10 +6921,27 @@
                             Alpine.store('contributionData').isContributing = false;
 
                             if (data.success) {
-                                alert(data.message);
-                                window.location.reload();
+                                // Store the transaction data for receipt
+                                Alpine.store('contributionData').lastTransaction = data.transaction;
+
+                                // Show success message with print prompt
+                                const printReceipt = confirm(
+                                    '✅ Contribution saved successfully!\n\nTransaction Code: ' +
+                                    (data.transaction?.transaction_code || 'N/A') +
+                                    '\nAmount: KES ' + parseFloat(formData.amount).toFixed(2) +
+                                    '\n\nWould you like to print the receipt?'
+                                );
+
+                                if (printReceipt) {
+                                    // User wants to print - use hidden iframe approach
+                                    this.printReceipt(data.transaction || formData);
+                                } else {
+                                    // User doesn't want to print, just reload
+                                    window.location.reload();
+                                }
                             } else {
                                 alert('Error: ' + data.message);
+                                window.location.reload();
                             }
                         }, 750);
                     })
@@ -6979,6 +6952,235 @@
                             console.error('Error:', error);
                         }, 750);
                     });
+                },
+
+                // NEW: Print receipt method
+                printReceipt(transaction) {
+                    // Create receipt HTML
+                    const receiptHTML = this.generateReceiptHTML(transaction);
+
+                    // Create filename: HH_mm_ss_dd_mm_Contribution_Receipt.pdf
+                    const now = new Date();
+                    const hours = String(now.getHours()).padStart(2, '0');
+                    const minutes = String(now.getMinutes()).padStart(2, '0');
+                    const seconds = String(now.getSeconds()).padStart(2, '0');
+                    const day = String(now.getDate()).padStart(2, '0');
+                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                    const filename = `${hours}_${minutes}_${seconds}_${day}_${month}_Contribution_Receipt.pdf`;
+
+                    // Create hidden iframe
+                    const iframe = document.createElement('iframe');
+                    iframe.style.position = 'absolute';
+                    iframe.style.width = '0';
+                    iframe.style.height = '0';
+                    iframe.style.border = 'none';
+                    iframe.style.opacity = '0';
+                    iframe.style.pointerEvents = 'none';
+
+                    document.body.appendChild(iframe);
+
+                    // Write receipt to iframe with compact styling
+                    const iframeDoc = iframe.contentWindow.document;
+                    iframeDoc.open();
+                    iframeDoc.write(`
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <title>Contribution Receipt</title>
+                            <style>
+                                @media print {
+                                    @page {
+                                        size: 80mm auto; /* 80mm ≈ 3.15 inches */
+                                        margin: 2mm;
+                                    }
+                                    body {
+                                        font-family: 'Courier New', monospace;
+                                        font-size: 10pt;
+                                        line-height: 1.2;
+                                        max-width: 72mm;
+                                        margin: 0 auto;
+                                        padding: 0;
+                                    }
+                                    .receipt {
+                                        white-space: pre-wrap;
+                                        padding: 2mm;
+                                    }
+                                    .receipt-header {
+                                        text-align: center;
+                                        margin-bottom: 1mm;
+                                    }
+                                    .receipt-header img {
+                                        max-width: 15mm;
+                                        margin: 0 auto;
+                                    }
+                                    .receipt-header h2 {
+                                        margin: 1mm 0;
+                                        font-size: 12pt;
+                                        font-weight: bold;
+                                    }
+                                    .receipt-header small {
+                                        font-size: 8pt;
+                                        display: block;
+                                    }
+                                    .receipt-line {
+                                        border-top: 1px dashed #000;
+                                        margin: 1mm 0;
+                                    }
+                                    .receipt-row {
+                                        margin: 1.5mm 0;
+                                        font-size: 9pt;
+                                    }
+                                    .receipt-footer {
+                                        text-align: center;
+                                        margin: 0.5mm 0;
+                                        font-size: 8pt;
+                                    }
+                                    .text-bold {
+                                        font-weight: bold;
+                                    }
+                                    .amount {
+                                        font-size: 11pt;
+                                        font-weight: bold;
+                                    }
+                                    table {
+                                        width: 100%;
+                                        border-collapse: collapse;
+                                    }
+                                    td {
+                                        padding: 0.5mm 0;
+                                        font-size: 9pt;
+                                    }
+                                    .label {
+                                        width: 40%;
+                                    }
+                                    .value {
+                                        width: 60%;
+                                        font-weight: bold;
+                                    }
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="receipt">
+                                ${receiptHTML}
+                            </div>
+                            <script>
+                                window.onload = function() {
+                                    // Set PDF filename in print dialog if browser supports it
+                                    const style = document.createElement('style');
+                                    style.innerHTML = \`
+                                        @page {
+                                            size: 80mm auto;
+                                            margin: 2mm;
+                                            @bottom-center {
+                                                content: "Page " counter(page);
+                                                font-size: 7pt;
+                                            }
+                                        }
+                                    \`;
+                                    document.head.appendChild(style);
+
+                                    setTimeout(() => {
+                                        window.print();
+                                    }, 100);
+
+                                    window.onafterprint = function() {
+                                        window.parent.location.reload();
+                                    };
+
+                                    setTimeout(() => {
+                                        window.parent.location.reload();
+                                    }, 5000);
+                                }
+                            <\/script>
+                        </body>
+                        </html>
+                    `);
+                    iframeDoc.close();
+                },
+
+                // NEW: Generate compact receipt HTML
+                generateReceiptHTML(transaction) {
+                    // Format date: Mar 03, 2026 18:40
+                    const date = new Date();
+                    const formattedDate = date.toLocaleString('en-US', {
+                        month: 'short',
+                        day: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    }).replace(',', '');
+
+                    const memberId = '{{ $memberId }}';
+                    const amount = parseFloat(transaction.amount || 0).toFixed(2);
+                    const paymentMode = transaction.payment_mode || 'N/A';
+                    const transactionCode = transaction.transaction_code || 'N/A';
+                    const status = transaction.status || 'Completed';
+
+                    // Get auth ID from meta tag or use placeholder
+                    const authId = '{{ Auth::id() }}';
+
+                    return `
+                        <div class="receipt-header">
+                            <img src="{{ asset('company_logo.png') }}" alt="Logo" style="max-width: 15mm;" />
+                            <h2>KFBCL</h2>
+                            <small>Growing together</small>
+                        </div>
+
+                        <div class="receipt-line"></div>
+
+                        <table>
+                            <tr>
+                                <td class="label">Type:</td>
+                                <td class="value">Contribution</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Member:</td>
+                                <td class="value">${memberId}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">By:</td>
+                                <td class="value">${authId}</td>
+                            </tr>
+                        </table>
+
+                        <div class="receipt-line"></div>
+
+                        <table>
+                            <tr>
+                                <td class="label">Amount:</td>
+                                <td class="value amount">KES ${amount}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Mode:</td>
+                                <td class="value">${paymentMode}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Code:</td>
+                                <td class="value">${transactionCode}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Status:</td>
+                                <td class="value">${status}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Date:</td>
+                                <td class="value">${formattedDate}</td>
+                            </tr>
+                        </table>
+
+                        <div class="receipt-line"></div>
+
+                        <div class="receipt-footer">
+                            Thank you<br>
+                            &copy; KFBCL<br>
+                            Growing together
+                        </div>
+
+                        <div class="receipt-line"></div>
+
+                    `;
                 },
 
                 withdraw() {
@@ -7107,25 +7309,498 @@
                 }
             }));
         });
-
     </script>
 
     <!-- Member Savings -->
     <script>
         document.addEventListener('alpine:init', () => {
+            // Initialize the store first
+            Alpine.store('savingData', {
+                editSavingModal: false,
+                currentSaving: null,
+                isAdding: false,
+                isUpdating: false,
+                lastTransaction: null // Add this to store the last transaction for printing
+            });
+
             Alpine.data('savingsTable', () => ({
                 savings: [],
                 page: 1,
                 itemsPerPage: 10,
+                savingsBalance: 0,
+                errors: {},
+                savingsModal: false,
+                withdrawSavingsModal: false,
 
                 init() {
+                    console.log('Savings Table Initialized'); // Debug
+                    this.loadSavings();
+                    this.loadBalance();
+                },
+
+                loadSavings() {
                     fetch('/bodaboda-member/{{ $memberId }}/savings')
                         .then(res => res.json())
                         .then(data => {
                             this.savings = data;
-                        });
+                        })
+                        .catch(error => console.error('Error loading savings:', error));
                 },
 
+                loadBalance() {
+                    fetch('/bodaboda-member/{{ $memberId }}/savings-balance')
+                        .then(res => res.json())
+                        .then(data => {
+                            this.savingsBalance = data.balance;
+                        })
+                        .catch(error => console.error('Error loading balance:', error));
+                },
+
+                validateField(field, value) {
+                    if (!value || value === '') {
+                        this.errors[field] = 'This field is required';
+                    } else if (field === 'savings_Amount' && (value <= 0 || isNaN(value))) {
+                        this.errors[field] = 'Amount must be greater than 0';
+                    } else {
+                        delete this.errors[field];
+                    }
+                },
+
+                clearError(field) {
+                    if (this.errors[field]) {
+                        delete this.errors[field];
+                    }
+                },
+
+                validateForm(data) {
+                    this.errors = {};
+
+                    if (!data.savings_Amount || data.savings_Amount <= 0) {
+                        this.errors.savings_Amount = 'Amount must be greater than 0';
+                    }
+                    if (!data.payment_mode) {
+                        this.errors.payment_mode = 'Please select payment mode';
+                    }
+                    if (!data.Status) {
+                        this.errors.Status = 'Please select status';
+                    }
+
+                    // Validate transaction code for non-cash payments
+                    if (data.payment_mode !== 'Cash' && (!data.transaction_code || data.transaction_code === '')) {
+                        this.errors.transaction_code = 'Transaction code is required for non-cash payments';
+                    }
+
+                    return Object.keys(this.errors).length === 0;
+                },
+
+                // UPDATED addSavings() method with receipt printing
+                addSavings() {
+                    console.log('Add Savings clicked'); // Debug
+                    const form = document.getElementById('addSavingsForm');
+                    const formData = new FormData(form);
+                    const data = Object.fromEntries(formData.entries());
+
+                    if (!this.validateForm(data)) {
+                        return;
+                    }
+
+                    // Set loading state
+                    Alpine.store('savingData').isAdding = true;
+
+                    fetch('/bodaboda-member/{{ $memberId }}/savings/add', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                            'Accept': 'application/json'
+                        },
+                        body: formData
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Store transaction data for receipt
+                            Alpine.store('savingData').lastTransaction = data.transaction;
+
+                            this.savingsModal = false;
+                            this.loadSavings();
+                            this.loadBalance();
+                            form.reset();
+                            this.errors = {};
+
+                            // Show success message with print prompt
+                            const printReceipt = confirm(
+                                '✅ Savings added successfully!\n\nTransaction Code: ' +
+                                (data.transaction?.transaction_code || 'N/A') +
+                                '\nAmount: KES ' + parseFloat(data.savings_Amount || 0).toFixed(2) +
+                                '\n\nWould you like to print the receipt?'
+                            );
+
+                            if (printReceipt) {
+                                // User wants to print - use hidden iframe approach
+                                this.printReceipt(data.transaction || {
+                                    amount: data.savings_Amount,
+                                    payment_mode: data.payment_mode,
+                                    transaction_code: data.transaction_code,
+                                    status: data.Status
+                                });
+                            } else {
+                                // User doesn't want to print, just reload
+                                window.location.reload();
+                            }
+                        } else {
+                            alert(data.message);
+                            Alpine.store('savingData').isAdding = false;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error adding savings: ' + error.message);
+                        Alpine.store('savingData').isAdding = false;
+                    });
+                },
+
+                // UPDATED withdrawSavings() method with receipt printing
+                withdrawSavings() {
+                    console.log('Withdraw Savings clicked'); // Debug
+                    const form = document.getElementById('withdrawSavingsForm');
+                    const formData = new FormData(form);
+                    const data = Object.fromEntries(formData.entries());
+
+                    if (!this.validateForm(data)) {
+                        return;
+                    }
+
+                    Alpine.store('savingData').isAdding = true;
+
+                    fetch('/bodaboda-member/{{ $memberId }}/savings/withdraw', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                            'Accept': 'application/json'
+                        },
+                        body: formData
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Store transaction data for receipt
+                            Alpine.store('savingData').lastTransaction = data.transaction;
+
+                            this.withdrawSavingsModal = false;
+                            this.loadSavings();
+                            this.loadBalance();
+                            form.reset();
+                            this.errors = {};
+
+                            // Show success message with print prompt
+                            const printReceipt = confirm(
+                                '✅ Withdrawal successful!\n\nTransaction Code: ' +
+                                (data.transaction?.transaction_code || 'N/A') +
+                                '\nAmount: KES ' + parseFloat(data.savings_Amount || 0).toFixed(2) +
+                                '\n\nWould you like to print the receipt?'
+                            );
+
+                            if (printReceipt) {
+                                // User wants to print - use hidden iframe approach
+                                this.printReceipt(data.transaction || {
+                                    amount: data.savings_Amount,
+                                    payment_mode: data.payment_mode,
+                                    transaction_code: data.transaction_code,
+                                    status: data.Status,
+                                    transaction_type: 'Withdrawal'
+                                });
+                            } else {
+                                // User doesn't want to print, just reload
+                                window.location.reload();
+                            }
+                        } else {
+                            alert(data.message);
+                            Alpine.store('savingData').isAdding = false;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error processing withdrawal: ' + error.message);
+                        Alpine.store('savingData').isAdding = false;
+                    });
+                },
+
+                // NEW: Print receipt method (adapted from contributions)
+                printReceipt(transaction) {
+                    // Determine transaction type for filename
+                    const transactionType = transaction.transaction_type === 'Withdrawal' ? 'Withdrawal' : 'Savings';
+
+                    // Create receipt HTML
+                    const receiptHTML = this.generateReceiptHTML(transaction, transactionType);
+
+                    // Create filename: HH_mm_ss_dd_mm_Savings_Receipt.pdf
+                    const now = new Date();
+                    const hours = String(now.getHours()).padStart(2, '0');
+                    const minutes = String(now.getMinutes()).padStart(2, '0');
+                    const seconds = String(now.getSeconds()).padStart(2, '0');
+                    const day = String(now.getDate()).padStart(2, '0');
+                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                    const filename = `${hours}_${minutes}_${seconds}_${day}_${month}_${transactionType}_Receipt.pdf`;
+
+                    // Create hidden iframe
+                    const iframe = document.createElement('iframe');
+                    iframe.style.position = 'absolute';
+                    iframe.style.width = '0';
+                    iframe.style.height = '0';
+                    iframe.style.border = 'none';
+                    iframe.style.opacity = '0';
+                    iframe.style.pointerEvents = 'none';
+
+                    document.body.appendChild(iframe);
+
+                    // Write receipt to iframe with compact styling
+                    const iframeDoc = iframe.contentWindow.document;
+                    iframeDoc.open();
+                    iframeDoc.write(`
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <title>${transactionType} Receipt</title>
+                            <style>
+                                @media print {
+                                    @page {
+                                        size: 80mm auto; /* 80mm ≈ 3.15 inches */
+                                        margin: 2mm;
+                                    }
+                                    body {
+                                        font-family: 'Courier New', monospace;
+                                        font-size: 10pt;
+                                        line-height: 1.2;
+                                        max-width: 72mm;
+                                        margin: 0 auto;
+                                        padding: 0;
+                                    }
+                                    .receipt {
+                                        white-space: pre-wrap;
+                                        padding: 2mm;
+                                    }
+                                    .receipt-header {
+                                        text-align: center;
+                                        margin-bottom: 1mm;
+                                    }
+                                    .receipt-header img {
+                                        max-width: 15mm;
+                                        margin: 0 auto;
+                                    }
+                                    .receipt-header h2 {
+                                        margin: 1mm 0;
+                                        font-size: 12pt;
+                                        font-weight: bold;
+                                    }
+                                    .receipt-header small {
+                                        font-size: 8pt;
+                                        display: block;
+                                    }
+                                    .receipt-line {
+                                        border-top: 1px dashed #000;
+                                        margin: 1mm 0;
+                                    }
+                                    .receipt-row {
+                                        margin: 1.5mm 0;
+                                        font-size: 9pt;
+                                    }
+                                    .receipt-footer {
+                                        text-align: center;
+                                        margin: 0.5mm 0;
+                                        font-size: 8pt;
+                                    }
+                                    .text-bold {
+                                        font-weight: bold;
+                                    }
+                                    .amount {
+                                        font-size: 11pt;
+                                        font-weight: bold;
+                                    }
+                                    table {
+                                        width: 100%;
+                                        border-collapse: collapse;
+                                    }
+                                    td {
+                                        padding: 0.5mm 0;
+                                        font-size: 9pt;
+                                    }
+                                    .label {
+                                        width: 40%;
+                                    }
+                                    .value {
+                                        width: 60%;
+                                        font-weight: bold;
+                                    }
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="receipt">
+                                ${receiptHTML}
+                            </div>
+                            <script>
+                                window.onload = function() {
+                                    // Set PDF filename in print dialog if browser supports it
+                                    const style = document.createElement('style');
+                                    style.innerHTML = \`
+                                        @page {
+                                            size: 80mm auto;
+                                            margin: 2mm;
+                                            @bottom-center {
+                                                content: "Page " counter(page);
+                                                font-size: 7pt;
+                                            }
+                                        }
+                                    \`;
+                                    document.head.appendChild(style);
+
+                                    setTimeout(() => {
+                                        window.print();
+                                    }, 100);
+
+                                    window.onafterprint = function() {
+                                        window.parent.location.reload();
+                                    };
+
+                                    setTimeout(() => {
+                                        window.parent.location.reload();
+                                    }, 5000);
+                                }
+                            <\/script>
+                        </body>
+                        </html>
+                    `);
+                    iframeDoc.close();
+                },
+
+                // NEW: Generate compact receipt HTML for savings
+                generateReceiptHTML(transaction, transactionType = 'Savings') {
+                    // Format date: Mar 03, 2026 18:40
+                    const date = new Date();
+                    const formattedDate = date.toLocaleString('en-US', {
+                        month: 'short',
+                        day: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    }).replace(',', '');
+
+                    const memberId = '{{ $memberId }}';
+                    const amount = parseFloat(transaction.amount || transaction.savings_Amount || 0).toFixed(2);
+                    const paymentMode = transaction.payment_mode || 'N/A';
+                    const transactionCode = transaction.transaction_code || 'N/A';
+                    const status = transaction.status || 'Completed';
+
+                    // Get auth ID from meta tag or use placeholder
+                    const authId = '{{ Auth::id() }}';
+
+                    return `
+                        <div class="receipt-header">
+                            <img src="{{ asset('company_logo.png') }}" alt="Logo" style="max-width: 15mm;" />
+                            <h2>KFBCL</h2>
+                            <small>Growing together</small>
+                        </div>
+
+                        <div class="receipt-line"></div>
+
+                        <table>
+                            <tr>
+                                <td class="label">Type:</td>
+                                <td class="value">${transactionType}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Member:</td>
+                                <td class="value">${memberId}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">By:</td>
+                                <td class="value">${authId}</td>
+                            </tr>
+                        </table>
+
+                        <div class="receipt-line"></div>
+
+                        <table>
+                            <tr>
+                                <td class="label">Amount:</td>
+                                <td class="value amount">KES ${amount}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Mode:</td>
+                                <td class="value">${paymentMode}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Code:</td>
+                                <td class="value">${transactionCode}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Status:</td>
+                                <td class="value">${status}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Date:</td>
+                                <td class="value">${formattedDate}</td>
+                            </tr>
+                        </table>
+
+                        <div class="receipt-line"></div>
+
+                        <div class="receipt-footer">
+                            Thank you<br>
+                            &copy; KFBCL<br>
+                            Growing together
+                        </div>
+
+                        <div class="receipt-line"></div>
+                    `;
+                },
+
+                updateSavings() {
+                    console.log('Update Savings clicked'); // Debug
+                    const form = document.getElementById('editSavingsForm');
+                    const formData = new FormData(form);
+                    const data = Object.fromEntries(formData.entries());
+                    const transactionId = document.getElementById('edit_transaction_id').value;
+
+                    if (!this.validateForm(data)) {
+                        return;
+                    }
+
+                    Alpine.store('savingData').isUpdating = true;
+
+                    fetch(`/bodaboda-member/{{ $memberId }}/savings/${transactionId}/edit`, {
+                        method: 'PUT',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            Alpine.store('savingData').editSavingModal = false;
+                            this.loadSavings();
+                            this.loadBalance();
+                            form.reset();
+                            this.errors = {};
+                            alert('Savings transaction updated successfully!');
+                            location.reload();
+                        } else {
+                            alert(data.message);
+                            Alpine.store('savingData').isUpdating = false;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error updating savings: ' + error.message);
+                        Alpine.store('savingData').isUpdating = false;
+                    });
+                },
+
+                // Pagination methods
                 get totalPages() {
                     return Math.ceil(this.savings.length / this.itemsPerPage);
                 },
@@ -7158,16 +7833,18 @@
                 },
 
                 editSavingModal(saving) {
-                    if (Alpine.store('savingData')) {
-                        Alpine.store('savingData').currentSaving = saving;
-                        Alpine.store('savingData').editSavingModal = true;
-                    }
-                }
-            }));
+                    Alpine.store('savingData').currentSaving = saving;
+                    Alpine.store('savingData').editSavingModal = true;
 
-            Alpine.store('savingData', () => ({
-                editSavingModal: false,
-                currentSaving: null
+                    // Populate the edit form
+                    setTimeout(() => {
+                        document.getElementById('edit_savings_Amount').value = saving.transactionAmount;
+                        document.getElementById('edit_payment_mode').value = saving.transactionMode;
+                        document.getElementById('edit_transaction_code').value = saving.transactionCode;
+                        document.getElementById('edit_Status').value = saving.transactionStatus;
+                        document.getElementById('edit_transaction_id').value = saving.transactionId;
+                    }, 100);
+                }
             }));
         });
     </script>
@@ -7178,6 +7855,7 @@
             // Store for loan data and modal states
             Alpine.store('loanData', {
                 currentLoan: null,
+                currentLoanType: null,
                 currentTransaction: null,
                 editLoanModal: false,
                 repayLoanModal: false,
@@ -7210,16 +7888,23 @@
                     const selected = this.loanTypes.find(lt => lt.loanId == loanTypeId);
                     if (selected) {
                         this.currentLoanType = selected;
+
+                        // Also update the current loan's loanTypeId if it exists
+                        if (this.currentLoan) {
+                            this.currentLoan.loanTypeId = loanTypeId;
+                        }
                     }
                 },
 
                 calculateDates(periodMonths) {
+                    if (!periodMonths) return;
+
                     const today = new Date();
                     const start = new Date(today);
                     start.setDate(start.getDate() + 30);
 
                     const end = new Date(start);
-                    end.setDate(end.getDate() + (periodMonths * 30));
+                    end.setDate(end.getDate() + (parseInt(periodMonths) * 30));
 
                     this.startDate = start.toLocaleDateString('en-GB', {
                         day: '2-digit',
@@ -7240,6 +7925,63 @@
                 page: 1,
                 itemsPerPage: 10,
                 errors: {},
+                memberActiveLoans: 0,
+
+                // Date formatting functions
+                formatDate(dateString) {
+                    if (!dateString) return '';
+                    const date = new Date(dateString);
+                    return date.toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: '2-digit',
+                        year: 'numeric'
+                    });
+                },
+
+                formatDateTime(dateTimeString) {
+                    if (!dateTimeString) return '';
+                    const date = new Date(dateTimeString);
+                    return date.toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                    }).replace(',', '');
+                },
+
+                calculateEndDate(startDate, periodMonths) {
+                    if (!startDate || !periodMonths) return '';
+                    const date = new Date(startDate);
+                    date.setDate(date.getDate() + (parseInt(periodMonths) * 30));
+                    return date.toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: '2-digit',
+                        year: 'numeric'
+                    });
+                },
+
+                // Normalize loan data to handle different property names
+                normalizeLoanData(loan) {
+                    return {
+                        id: loan.transactionId || loan.id || '',
+                        transactionId: loan.transactionId || loan.id || '',
+                        loanTypeId: loan.loan_type_id || loan.loanTypeId || '',
+                        loanTypeName: loan.loan_type_name || loan.loanTypeName || '',
+                        transactionLoanAmount: loan.transactionLoanAmount || loan.amount || '',
+                        transactionMode: loan.transactionMode || loan.payment_mode || loan.transaction_mode || '',
+                        transactionCode: loan.transactionCode || loan.transaction_code || '',
+                        loanPeriod: loan.transactionLoanPeriod || loan.loanPeriod || loan.period_months || '',
+                        transactionStatus: loan.transactionLoanStatus || loan.transactionStatus || loan.status || '',
+                        startDate: loan.transactionLoanStartDate || loan.startDate || loan.start_date || '',
+                        endDate: loan.endDate || loan.end_date || '',
+                        transactionCreated: loan.transactionCreated || loan.created_at || loan.assignedDate || loan.assigned_date || '',
+                        interestRate: loan.interest_rate || loan.interestRate || '',
+                        outstandingBalance: loan.outstanding_balance || 0,
+                        lastRepayment: loan.last_repayment || null
+                    };
+                },
 
                 init() {
                     // Load member-specific loans data
@@ -7251,7 +7993,7 @@
                             }
                         });
 
-                    // Load loan types for dropdown (separate from member loans)
+                    // Load loan types for dropdown
                     fetch('/loans/all-data')
                         .then(res => res.json())
                         .then(data => {
@@ -7265,22 +8007,119 @@
 
                     // Listen for edit events
                     window.addEventListener('open-edit-loan-modal', (event) => {
-                        const loan = event.detail.loan;
-                        Alpine.store('loanData').currentLoan = loan;
+                        const rawLoan = event.detail.loan;
+
+                        // Debug: Log the raw loan data
+                        console.log('Raw loan data received:', rawLoan);
+
+                        // Normalize the loan data
+                        const normalizedLoan = this.normalizeLoanData(rawLoan);
+                        console.log('Normalized loan data:', normalizedLoan);
+                        console.log('Transaction Created:', normalizedLoan.transactionCreated);
+
+                        // Store the normalized loan data
+                        Alpine.store('loanData').currentLoan = normalizedLoan;
+
+                        // Open the modal
                         Alpine.store('loanData').editLoanModal = true;
 
-                        // Populate form fields
+                        // Clear any previous errors
+                        this.errors = {};
+
+                        // Find and set the current loan type
+                        if (normalizedLoan.loanTypeId && Alpine.store('loanData').loanTypes.length > 0) {
+                            const selectedType = Alpine.store('loanData').loanTypes.find(lt => lt.loanId == normalizedLoan.loanTypeId);
+                            if (selectedType) {
+                                Alpine.store('loanData').currentLoanType = selectedType;
+                            }
+                        }
+
+                        // Direct DOM manipulation as fallback
                         setTimeout(() => {
-                            document.getElementById('edit_loan_id') && (document.getElementById('edit_loan_id').value = loan.transactionId || '');
-                            document.getElementById('edit_amount') && (document.getElementById('edit_amount').value = loan.transactionLoanAmount || '');
-                            document.getElementById('edit_payment_mode') && (document.getElementById('edit_payment_mode').value = loan.transactionMode || '');
-                            document.getElementById('edit_transaction_code') && (document.getElementById('edit_transaction_code').value = loan.transactionCode || '');
-                            document.getElementById('edit_status') && (document.getElementById('edit_status').value = loan.transactionStatus || '');
+                            // Hidden loan ID
+                            const loanIdField = document.getElementById('edit_loan_id');
+                            if (loanIdField) loanIdField.value = normalizedLoan.transactionId;
+
+                            // Loan Type
+                            const loanTypeField = document.getElementById('edit_loan_type_id');
+                            if (loanTypeField && normalizedLoan.loanTypeId) {
+                                loanTypeField.value = normalizedLoan.loanTypeId;
+                                loanTypeField.dispatchEvent(new Event('change', { bubbles: true }));
+                            }
+
+                            // Amount
+                            const amountField = document.getElementById('edit_amount');
+                            if (amountField && normalizedLoan.transactionLoanAmount) {
+                                amountField.value = normalizedLoan.transactionLoanAmount;
+                            }
+
+                            // Payment Mode
+                            const paymentModeField = document.getElementById('edit_payment_mode');
+                            if (paymentModeField && normalizedLoan.transactionMode) {
+                                paymentModeField.value = normalizedLoan.transactionMode;
+                                paymentModeField.dispatchEvent(new Event('change', { bubbles: true }));
+                            }
+
+                            // Transaction Code
+                            const transactionCodeField = document.getElementById('edit_transaction_code');
+                            if (transactionCodeField && normalizedLoan.transactionCode) {
+                                transactionCodeField.value = normalizedLoan.transactionCode;
+                            }
+
+                            // Period
+                            const periodField = document.getElementById('edit_loan_period');
+                            if (periodField && normalizedLoan.loanPeriod) {
+                                periodField.value = normalizedLoan.loanPeriod;
+                                periodField.dispatchEvent(new Event('change', { bubbles: true }));
+                            }
+
+                            // Status
+                            const statusField = document.getElementById('edit_loan_status');
+                            if (statusField && normalizedLoan.transactionStatus) {
+                                statusField.value = normalizedLoan.transactionStatus;
+                            }
+
+                            // Start Date
+                            const startDateField = document.getElementById('edit_start_date');
+                            if (startDateField && normalizedLoan.startDate) {
+                                startDateField.value = this.formatDate(normalizedLoan.startDate);
+                            }
+
+                            // End Date
+                            const endDateField = document.getElementById('edit_end_date');
+                            if (endDateField) {
+                                if (normalizedLoan.endDate) {
+                                    endDateField.value = this.formatDate(normalizedLoan.endDate);
+                                } else if (normalizedLoan.startDate && normalizedLoan.loanPeriod) {
+                                    endDateField.value = this.calculateEndDate(normalizedLoan.startDate, normalizedLoan.loanPeriod);
+                                }
+                            }
+
+                            // Assigned Date
+                            const assignedDateField = document.getElementById('edit_assigned_date');
+                            if (assignedDateField) {
+                                if (normalizedLoan.transactionCreated) {
+                                    assignedDateField.value = this.formatDateTime(normalizedLoan.transactionCreated);
+                                    console.log('Setting assigned date to:', this.formatDateTime(normalizedLoan.transactionCreated));
+                                } else {
+                                    console.log('No transactionCreated found in normalized loan');
+                                }
+                            }
+
+                            // Interest Rate
+                            const interestRateField = document.getElementById('edit_interest_rate');
+                            if (interestRateField) {
+                                if (Alpine.store('loanData').currentLoanType) {
+                                    interestRateField.value = Alpine.store('loanData').currentLoanType.interest_rate + '%';
+                                } else if (normalizedLoan.interestRate) {
+                                    interestRateField.value = normalizedLoan.interestRate + '%';
+                                }
+                            }
                         }, 100);
                     });
                 },
 
-                // Add method to load member active loans count
+                // Load member active loans count
                 loadMemberActiveLoans() {
                     fetch('/bodaboda-member/{{ $memberId }}/loans/active/count')
                         .then(res => res.json())
@@ -7315,7 +8154,7 @@
                     }
                 },
 
-                handlePaymentModeChange(mode, prefix = '') {
+                handlePaymentModeChange(mode, prefix = 'edit_') {
                     const codeField = document.getElementById(prefix + 'transaction_code');
                     if (codeField) {
                         if (mode === 'Cash') {
@@ -7325,6 +8164,48 @@
                             codeField.readOnly = false;
                         }
                     }
+                },
+
+                validateEditForm() {
+                    this.errors = {};
+                    let isValid = true;
+
+                    const loanType = document.getElementById('edit_loan_type_id')?.value;
+                    const amount = document.getElementById('edit_amount')?.value;
+                    const period = document.getElementById('edit_loan_period')?.value;
+                    const paymentMode = document.getElementById('edit_payment_mode')?.value;
+                    const status = document.getElementById('edit_loan_status')?.value;
+
+                    if (!loanType || loanType === '') {
+                        this.errors.loan_type = 'Please select a loan type';
+                        isValid = false;
+                    }
+
+                    if (!this.validateField('amount', amount)) isValid = false;
+
+                    if (!period || period === '') {
+                        this.errors.loan_period = 'Please select repayment period';
+                        isValid = false;
+                    }
+
+                    if (!paymentMode || paymentMode === '') {
+                        this.errors.payment_mode = 'Please select payment mode';
+                        isValid = false;
+                    }
+
+                    if (!status || status === '') {
+                        this.errors.loan_status = 'Please select loan status';
+                        isValid = false;
+                    }
+
+                    // If payment mode is not Cash, transaction code is required
+                    const transactionCode = document.getElementById('edit_transaction_code')?.value;
+                    if (paymentMode !== 'Cash' && (!transactionCode || transactionCode === '')) {
+                        this.errors.transaction_code = 'Transaction code is required for non-cash payments';
+                        isValid = false;
+                    }
+
+                    return isValid;
                 },
 
                 validateAssignForm() {
@@ -7402,6 +8283,57 @@
                     }
 
                     return isValid;
+                },
+
+                editLoan() {
+                    if (!this.validateEditForm()) {
+                        alert('Please fix the errors in the form before submitting.');
+                        return;
+                    }
+
+                    Alpine.store('loanData').isUpdating = true;
+
+                    const formData = {
+                        loan_id: document.getElementById('edit_loan_id')?.value,
+                        loan_type_id: document.getElementById('edit_loan_type_id')?.value,
+                        amount: document.getElementById('edit_amount')?.value,
+                        period_months: document.getElementById('edit_loan_period')?.value,
+                        payment_mode: document.getElementById('edit_payment_mode')?.value,
+                        transaction_code: document.getElementById('edit_transaction_code')?.value || '',
+                        status: document.getElementById('edit_loan_status')?.value,
+                        _token: document.querySelector('input[name="_token"]')?.value
+                    };
+
+                    console.log('Submitting edit form:', formData);
+
+                    fetch('/bodaboda-member/{{ $memberId }}/loan/update', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        setTimeout(() => {
+                            Alpine.store('loanData').isUpdating = false;
+
+                            if (data.success) {
+                                alert(data.message);
+                                window.location.reload();
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        }, 750);
+                    })
+                    .catch(error => {
+                        setTimeout(() => {
+                            Alpine.store('loanData').isUpdating = false;
+                            alert('Error updating loan. Please try again.');
+                            console.error('Error:', error);
+                        }, 750);
+                    });
                 },
 
                 assignLoan() {
