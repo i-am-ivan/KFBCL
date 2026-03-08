@@ -109,7 +109,7 @@ Route::post('/check-phone', [UsersController::class, 'checkPhone']);
 // Main route for getting all roles
 Route::get('/user-roles/all', [UserRolesController::class, 'getAllUserRoles'])->name('user-roles.all');
 
-// User routes
+// User routes ----------------------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/users/dashboard-stats', [UsersController::class, 'getDashboardStats']);
 
 Route::get('/users/all', [UsersController::class, 'getAllUsers']);
@@ -129,6 +129,21 @@ Route::post('/users/update-user', [UsersController::class, 'updateSystemUser'])-
 
 // Delete system user from system
 Route::post('/users/delete-user', [UsersController::class, 'deleteSystemUser'])->name('users.delete-user');
+
+// User Profile Routes (protected by auth middleware)
+Route::middleware(['auth'])->group(function () {
+    // Get current user data
+    Route::get('/user/current', [UsersController::class, 'getCurrentUser'])->name('user.current');
+
+    // Update profile
+    Route::post('/user/profile/update', [UsersController::class, 'updateSystemUserProfile'])->name('user.profile.update');
+
+    // Update password
+    Route::post('/user/password/update', [UsersController::class, 'updateSystemUserPassword'])->name('user.password.update');
+
+    // Deactivate account
+    Route::post('/user/deactivate', [UsersController::class, 'deactivateSystemUserAccount'])->name('user.deactivate');
+});
 
 // Bodaboda module management ----------------------------------------------------------------------------------------------------------
 // Members

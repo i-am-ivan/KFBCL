@@ -2146,7 +2146,6 @@
 
     <!-- Scripts -->
     <script>
-
         document.addEventListener('alpine:init', () => {
 
             // 0. Load user roles to drop downs - UPDATED VERSION
@@ -2201,7 +2200,7 @@
             // Load stats immediately
             Alpine.store('userStats').loadStats();
 
-            // 2. USERS TABLE - Keep existing logic, just clean up
+            // 2. USERS TABLE - Updated with d-M-Y date format
             Alpine.data('usersTableFull', () => ({
                 allRows: [],
                 page: 1,
@@ -2228,16 +2227,12 @@
                                 gender: user.gender,
                                 phone: user.phone,
                                 nationalId: user.national_id,
-                                dob: user.date_of_birth,
+                                // Format DOB to d-M-Y format (11-Nov-1988)
+                                dob: user.date_of_birth ? this.formatDateDMY(user.date_of_birth) : 'N/A',
                                 userRole: user.role,
                                 userStatus: user.status,
-                                joinedOn: user.created_at ? new Date(user.created_at).toLocaleDateString('en-US', {
-                                    day: '2-digit',
-                                    month: 'short',
-                                    year: '2-digit',
-                                    hour: '2-digit',
-                                    minute: '2-digit'
-                                }).replace(',', '') : 'N/A',
+                                // Format joinedOn to d-M-Y format
+                                joinedOn: user.created_at ? this.formatDateDMY(user.created_at) : 'N/A',
                                 lastLogin: 'N/A'
                             }));
                         }
@@ -2250,7 +2245,23 @@
                     }
                 },
 
-                // KEEP ALL EXISTING TABLE METHODS - DON'T CHANGE
+                // Helper function to format dates as d-M-Y (11-Nov-1988)
+                formatDateDMY(dateString) {
+                    if (!dateString) return 'N/A';
+                    try {
+                        const date = new Date(dateString);
+                        // Get month abbreviation
+                        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                                       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                        const day = date.getDate().toString().padStart(2, '0');
+                        const month = months[date.getMonth()];
+                        const year = date.getFullYear();
+                        return `${day}-${month}-${year}`;
+                    } catch (e) {
+                        return dateString;
+                    }
+                },
+
                 get filteredRows() {
                     if (this.selectedRole === 'All Users') {
                         return this.allRows;
@@ -2384,7 +2395,6 @@
                     }
                 },
 
-                // KEEP ALL EXISTING TABLE METHODS - DON'T CHANGE
                 get totalPages() {
                     return Math.ceil(this.userRoles.length / this.perPage) || 1;
                 },
@@ -2446,7 +2456,7 @@
                 }
             }));
 
-            // 4. GLOBAL STORES - Keep existing modal stores
+            // 4. GLOBAL STORES - Updated with date formatting
             Alpine.store('userModal', {
                 editUserModal: false,
                 currentUser: null,
@@ -2477,7 +2487,30 @@
                     this.editForm.email = user.email;
                     this.editForm.phone = user.phone;
                     this.editForm.nationalId = user.nationalId;
-                    this.editForm.dob = user.dob;
+
+                    // Format the date to d-M-Y if it exists
+                    if (user.dob && user.dob !== 'N/A') {
+                        // Check if it's already in d-M-Y format (contains letters for month)
+                        if (!user.dob.match(/[A-Za-z]/)) {
+                            // If it's in Y-m-d format, convert it
+                            try {
+                                const date = new Date(user.dob);
+                                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                                               'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                                const day = date.getDate().toString().padStart(2, '0');
+                                const month = months[date.getMonth()];
+                                const year = date.getFullYear();
+                                this.editForm.dob = `${day}-${month}-${year}`;
+                            } catch (e) {
+                                this.editForm.dob = user.dob;
+                            }
+                        } else {
+                            this.editForm.dob = user.dob;
+                        }
+                    } else {
+                        this.editForm.dob = '';
+                    }
+
                     this.editForm.userRole = user.userRole;
                     this.editForm.userStatus = user.userStatus;
                     this.editUserModal = true;
@@ -3039,7 +3072,13 @@
                             if (!this.formData.dob?.trim()) {
                                 this.errors.dob = 'Date of birth is required';
                             } else {
-                                delete this.errors.dob;
+                                // Optional: Add format validation if needed
+                                const dateRegex = /^\d{2}-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\d{4}$/;
+                                if (!dateRegex.test(this.formData.dob)) {
+                                    this.errors.dob = 'Date must be in format: DD-MMM-YYYY (e.g., 11-Nov-1988)';
+                                } else {
+                                    delete this.errors.dob;
+                                }
                             }
                             break;
                     }
@@ -3184,7 +3223,6 @@
             }));
 
         });
-
     </script>
 
   </body>
