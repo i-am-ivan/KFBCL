@@ -1147,134 +1147,186 @@
                             User Settings
                         </h3>
                         <div class="flex flex-col h-full px-2 pr-14">
-                            <form action="" method="POST" x-data="editUserForm()" @submit.prevent="submitProfileUpdate">
+
+                            <form method="POST" x-data="editUserForm()" @submit.prevent="submitProfileUpdate">
+
                                 @csrf
                                 <div class="-mx-2.5 flex flex-wrap gap-y-5">
 
                                     <!-- Hidden user id component -->
                                     <input type="hidden" name="user_id" x-model="userId">
+
                                     <!-- First Name -->
                                     <div class="w-full px-2.5 xl:w-1/2">
                                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                        First Name
+                                            First Name
                                         </label>
                                         <input type="text" id="u_first_name" name="u_first_name"
-                                            x-model="$store.userModal.editForm.firstName"
+                                            x-model="formData.firstName"
+                                            @input.debounce="validateField('firstName'); clearError('firstName')"
+                                            @blur="validateField('firstName')"
+                                            :class="errors.firstName ? 'border-error-500 focus:border-error-300 focus:ring-error-500/10' : 'border-gray-300'"
                                             placeholder="Enter first name"
-                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                        <template x-if="errors.firstName">
+                                            <p class="mt-1 text-sm text-error-500" x-text="errors.firstName"></p>
+                                        </template>
                                     </div>
 
                                     <!-- Last Name -->
                                     <div class="w-full px-2.5 xl:w-1/2">
                                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                        Last Name
+                                            Last Name
                                         </label>
                                         <input type="text" id="u_last_name" name="u_last_name"
-                                            x-model="$store.userModal.editForm.lastName"
+                                            x-model="formData.lastName"
+                                            @input.debounce="validateField('lastName'); clearError('lastName')"
+                                            @blur="validateField('lastName')"
+                                            :class="errors.lastName ? 'border-error-500 focus:border-error-300 focus:ring-error-500/10' : 'border-gray-300'"
                                             placeholder="Enter last name"
-                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                        <template x-if="errors.lastName">
+                                            <p class="mt-1 text-sm text-error-500" x-text="errors.lastName"></p>
+                                        </template>
                                     </div>
 
                                     <!-- Gender -->
                                     <div class="w-full px-2.5 xl:w-1/2">
                                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                        Gender
+                                            Gender
                                         </label>
                                         <div class="relative z-20 bg-transparent">
-                                            <select x-model="$store.userModal.editForm.gender" id="u_gender" name="u_gender"
-                                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                            <select x-model="formData.gender" id="u_gender" name="u_gender"
+                                                    @change="validateField('gender'); clearError('gender')"
+                                                    @blur="validateField('gender')"
+                                                    :class="errors.gender ? 'border-error-500 focus:border-error-300 focus:ring-error-500/10' : 'border-gray-300'"
+                                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                                 <option value="">Select Gender</option>
                                                 <option value="Male">Male</option>
                                                 <option value="Female">Female</option>
                                             </select>
                                             <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                                                 <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                                 </svg>
                                             </span>
                                         </div>
+                                        <template x-if="errors.gender">
+                                            <p class="mt-1 text-sm text-error-500" x-text="errors.gender"></p>
+                                        </template>
                                     </div>
 
                                     <!-- Date of Birth -->
                                     <div class="w-full px-2.5 xl:w-1/2">
                                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                        Date of Birth
+                                            Date of Birth
                                         </label>
                                         <div class="relative">
                                             <input type="text" id="u_dob" name="u_dob"
-                                                    x-model="$store.userModal.editForm.dob"
-                                                    placeholder="YYYY-MM-DD"
-                                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 pl-4 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 flatpickr-input">
+                                                x-model="formData.dob"
+                                                @input.debounce="validateField('dob'); clearError('dob')"
+                                                @blur="validateField('dob')"
+                                                :class="errors.dob ? 'border-error-500 focus:border-error-300 focus:ring-error-500/10' : 'border-gray-300'"
+                                                placeholder="YYYY-MM-DD"
+                                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border bg-transparent bg-none px-4 py-2.5 pr-11 pl-4 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 flatpickr-input">
                                             <span class="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                                                 <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M6.66659 1.5415C7.0808 1.5415 7.41658 1.87729 7.41658 2.2915V2.99984H12.5833V2.2915C12.5833 1.87729 12.919 1.5415 13.3333 1.5415C13.7475 1.5415 14.0833 1.87729 14.0833 2.2915V2.99984L15.4166 2.99984C16.5212 2.99984 17.4166 3.89527 17.4166 4.99984V7.49984V15.8332C17.4166 16.9377 16.5212 17.8332 15.4166 17.8332H4.58325C3.47868 17.8332 2.58325 16.9377 2.58325 15.8332V7.49984V4.99984C2.58325 3.89527 3.47868 2.99984 4.58325 2.99984L5.91659 2.99984V2.2915C5.91659 1.87729 6.25237 1.5415 6.66659 1.5415ZM6.66659 4.49984H4.58325C4.30711 4.49984 4.08325 4.7237 4.08325 4.99984V6.74984H15.9166V4.99984C15.9166 4.7237 15.6927 4.49984 15.4166 4.49984H13.3333H6.66659ZM15.9166 8.24984H4.08325V15.8332C4.08325 16.1093 4.30711 16.3332 4.58325 16.3332H15.4166C15.6927 16.3332 15.9166 16.1093 15.9166 15.8332V8.24984Z" fill=""></path>
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M6.66659 1.5415C7.0808 1.5415 7.41658 1.87729 7.41658 2.2915V2.99984H12.5833V2.2915C12.5833 1.87729 12.919 1.5415 13.3333 1.5415C13.7475 1.5415 14.0833 1.87729 14.0833 2.2915V2.99984L15.4166 2.99984C16.5212 2.99984 17.4166 3.89527 17.4166 4.99984V7.49984V15.8332C17.4166 16.9377 16.5212 17.8332 15.4166 17.8332H4.58325C3.47868 17.8332 2.58325 16.9377 2.58325 15.8332V7.49984V4.99984C2.58325 3.89527 3.47868 2.99984 4.58325 2.99984L5.91659 2.99984V2.2915C5.91659 1.87729 6.25237 1.5415 6.66659 1.5415ZM6.66659 4.49984H4.58325C4.30711 4.49984 4.08325 4.7237 4.08325 4.99984V6.74984H15.9166V4.99984C15.9166 4.7237 15.6927 4.49984 15.4166 4.49984H13.3333H6.66659ZM15.9166 8.24984H4.08325V15.8332C4.08325 16.1093 4.30711 16.3332 4.58325 16.3332H15.4166C15.6927 16.3332 15.9166 16.1093 15.9166 15.8332V8.24984Z" fill=""></path>
                                                 </svg>
                                             </span>
                                         </div>
+                                        <template x-if="errors.dob">
+                                            <p class="mt-1 text-sm text-error-500" x-text="errors.dob"></p>
+                                        </template>
                                     </div>
 
                                     <!-- Email -->
                                     <div class="w-full px-2.5">
                                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                        Email
+                                            Email
                                         </label>
                                         <input type="email" id="u_email" name="u_email"
-                                            x-model="$store.userModal.editForm.email"
+                                            x-model="formData.email"
+                                            @input.debounce="validateField('email'); clearError('email')"
+                                            @blur="validateField('email')"
+                                            :class="errors.email ? 'border-error-500 focus:border-error-300 focus:ring-error-500/10' : 'border-gray-300'"
                                             placeholder="Enter email address"
-                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                        <template x-if="errors.email">
+                                            <p class="mt-1 text-sm text-error-500" x-text="errors.email"></p>
+                                        </template>
                                     </div>
 
                                     <!-- National ID -->
                                     <div class="w-full px-2.5 xl:w-1/2">
                                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                        National ID
+                                            National ID
                                         </label>
                                         <input type="text" id="u_national_id" name="u_national_id"
-                                            x-model="$store.userModal.editForm.nationalId"
+                                            x-model="formData.nationalId"
+                                            @input.debounce="validateField('nationalId'); clearError('nationalId')"
+                                            @blur="validateField('nationalId')"
+                                            :class="errors.nationalId ? 'border-error-500 focus:border-error-300 focus:ring-error-500/10' : 'border-gray-300'"
                                             placeholder="Enter national ID"
-                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                        <template x-if="errors.nationalId">
+                                            <p class="mt-1 text-sm text-error-500" x-text="errors.nationalId"></p>
+                                        </template>
                                     </div>
 
                                     <!-- Phone -->
                                     <div class="w-full px-2.5 xl:w-1/2">
                                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                        Phone
+                                            Phone
                                         </label>
                                         <input type="text" id="u_phone" name="u_phone"
-                                            x-model="$store.userModal.editForm.phone"
+                                            x-model="formData.phone"
+                                            @input.debounce="validateField('phone'); clearError('phone')"
+                                            @blur="validateField('phone')"
+                                            :class="errors.phone ? 'border-error-500 focus:border-error-300 focus:ring-error-500/10' : 'border-gray-300'"
                                             placeholder="Enter phone number"
-                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                        <template x-if="errors.phone">
+                                            <p class="mt-1 text-sm text-error-500" x-text="errors.phone"></p>
+                                        </template>
                                     </div>
 
-                                    <!-- User role Section -->
+                                    <!-- User Role -->
                                     <div class="w-full px-2.5 xl:w-1/2">
                                         <h3 class="text-normal font-semibold text-gray-500 dark:text-white/90 mb-2">User Role</h3>
                                         <div class="relative z-20 bg-transparent">
-                                        <select x-model="$store.userModal.editForm.userRole" id="u_role" name="u_role"
-                                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                            <option value="">Assign Role</option>
-                                            <option value="Chairman">Chairman</option>
-                                            <option value="Secretary General">Secretary General</option>
-                                            <option value="Treasurer">Treasurer</option>
-                                            <option value="Stage Manager">Stage Manager</option>
-                                            <option value="Secretary">Secretary</option>
-                                            <option value="Supervisor">Supervisor</option>
-                                            <option value="Coordinator">Coordinator</option>
-                                        </select>
-                                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                                        <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                        </svg>
-                                    </span>
+                                            <select x-model="formData.userRole" id="u_role" name="u_role"
+                                                    x-model="userRole"
+                                                    @change="validateField('userRole'); clearError('userRole')"
+                                                    @blur="validateField('userRole')"
+                                                    :class="errors.userRole ? 'border-error-500 focus:border-error-300 focus:ring-error-500/10' : 'border-gray-300'"
+                                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                <option value="">Assign Role</option>
+                                                <!-- Dynamically load roles from the store -->
+                                                <template x-for="role in $store.userRolesStore.roles" :key="role">
+                                                    <option :value="role" x-text="role"></option>
+                                                </template>
+                                            </select>
+                                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                </svg>
+                                            </span>
                                         </div>
+                                        <template x-if="errors.userRole">
+                                            <p class="mt-1 text-sm text-error-500" x-text="errors.userRole"></p>
+                                        </template>
                                     </div>
 
                                     <!-- User status Section -->
                                     <div class="w-full px-2.5 xl:w-1/2">
                                         <h3 class="text-normal font-semibold text-gray-500 dark:text-white/90 mb-2">Account Status</h3>
                                         <div class="relative z-20 bg-transparent">
-                                            <select x-model="$store.userModal.editForm.userStatus" id="u_status" name="u_status"
-                                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                            <select x-model="formData.userStatus" id="u_status" name="u_status"
+                                                    @change="validateField('userStatus'); clearError('userStatus')"
+                                                    @blur="validateField('userStatus')"
+                                                    :class="errors.userStatus ? 'border-error-500 focus:border-error-300 focus:ring-error-500/10' : 'border-gray-300'"
+                                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                                 <option value="">Status</option>
                                                 <option value="Active">Active</option>
                                                 <option value="Inactive">In-Active</option>
@@ -1283,21 +1335,24 @@
                                             </select>
                                             <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                                                 <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                                 </svg>
                                             </span>
                                         </div>
+                                        <template x-if="errors.userStatus">
+                                            <p class="mt-1 text-sm text-error-500" x-text="errors.userStatus"></p>
+                                        </template>
                                     </div>
 
                                 </div>
 
                                 <!-- Cancel and Update buttons at bottom right -->
                                 <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
-                                    <button type="button" @click="$store.userModal.editUserModal = false"  id="" name=""
+                                    <button type="button" @click="$store.userModal.editUserModal = false" id="" name=""
                                             class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
                                         Cancel
                                     </button>
-                                    <button type="button" @click="deleteUser()" :disbled="isDeleteing"
+                                    <button type="button" @click="deleteUser()" :disabled="isDeleting"
                                             class="rounded-lg border border-error-300 bg-white px-5 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
                                         <span x-show="!isDeleting">Delete</span>
                                         <span x-show="isDeleting">Deleting ... </span>
@@ -1308,7 +1363,9 @@
                                         <span x-show="isUpdating">Updating...</span>
                                     </button>
                                 </div>
+
                             </form>
+
                         </div>
                     </div>
 
@@ -2086,8 +2143,10 @@
 
 
     <script defer src="{{ asset('assets/bundle.js') }}"></script>
+
     <!-- Scripts -->
     <script>
+
         document.addEventListener('alpine:init', () => {
 
             // 0. Load user roles to drop downs - UPDATED VERSION
@@ -2847,22 +2906,174 @@
                 }
             }));
 
-            // 11. Manage deleting and updating system user data
+            // 11. Manage deleting and updating system user data - UPDATED VERSION
             Alpine.data('editUserForm', () => ({
                 isUpdating: false,
                 isDeleting: false,
                 userId: '',
+                errors: {},
+
+                // Form data matching the fields that need validation
+                formData: {
+                    firstName: '',
+                    lastName: '',
+                    gender: '',
+                    email: '',
+                    phone: '',
+                    nationalId: '',
+                    dob: '',
+                    userRole: '',
+                    userStatus: ''
+                },
 
                 init() {
                     // Initialize userId from the store
                     this.userId = Alpine.store('userModal').currentUser?.id || '';
+
+                    // Initialize form data from store
+                    this.formData.firstName = Alpine.store('userModal').editForm.firstName || '';
+                    this.formData.lastName = Alpine.store('userModal').editForm.lastName || '';
+                    this.formData.gender = Alpine.store('userModal').editForm.gender || '';
+                    this.formData.email = Alpine.store('userModal').editForm.email || '';
+                    this.formData.phone = Alpine.store('userModal').editForm.phone || '';
+                    this.formData.nationalId = Alpine.store('userModal').editForm.nationalId || '';
+                    this.formData.dob = Alpine.store('userModal').editForm.dob || '';
+                    this.formData.userRole = Alpine.store('userModal').editForm.userRole || '';
+                    this.formData.userStatus = Alpine.store('userModal').editForm.userStatus || '';
+
                     // Watch for changes to currentUser
                     this.$watch(() => Alpine.store('userModal').currentUser, (v) => {
                         this.userId = v?.id || '';
+                        this.formData.firstName = v?.firstName || '';
+                        this.formData.lastName = v?.lastName || '';
+                        this.formData.gender = v?.gender || '';
+                        this.formData.email = v?.email || '';
+                        this.formData.phone = v?.phone || '';
+                        this.formData.nationalId = v?.nationalId || '';
+                        this.formData.dob = v?.dob || '';
+                        this.formData.userRole = v?.userRole || '';
+                        this.formData.userStatus = v?.userStatus || '';
                     });
                 },
 
+                validateField(field) {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    const phoneRegex = /^\+?[\d\s\-\(\)]+$/;
+
+                    switch(field) {
+                        case 'firstName':
+                            if (!this.formData.firstName?.trim()) {
+                                this.errors.firstName = 'First name is required';
+                            } else if (this.formData.firstName.trim().length < 2) {
+                                this.errors.firstName = 'First name must be at least 2 characters';
+                            } else {
+                                delete this.errors.firstName;
+                            }
+                            break;
+
+                        case 'lastName':
+                            if (!this.formData.lastName?.trim()) {
+                                this.errors.lastName = 'Last name is required';
+                            } else if (this.formData.lastName.trim().length < 2) {
+                                this.errors.lastName = 'Last name must be at least 2 characters';
+                            } else {
+                                delete this.errors.lastName;
+                            }
+                            break;
+
+                        case 'email':
+                            if (!this.formData.email?.trim()) {
+                                this.errors.email = 'Email is required';
+                            } else if (!emailRegex.test(this.formData.email)) {
+                                this.errors.email = 'Please enter a valid email address';
+                            } else {
+                                delete this.errors.email;
+                            }
+                            break;
+
+                        case 'phone':
+                            if (!this.formData.phone?.trim()) {
+                                this.errors.phone = 'Phone number is required';
+                            } else if (!phoneRegex.test(this.formData.phone)) {
+                                this.errors.phone = 'Please enter a valid phone number';
+                            } else if (this.formData.phone.replace(/\D/g, '').length < 9) {
+                                this.errors.phone = 'Phone number is too short';
+                            } else {
+                                delete this.errors.phone;
+                            }
+                            break;
+
+                        case 'gender':
+                            if (!this.formData.gender) {
+                                this.errors.gender = 'Gender is required';
+                            } else {
+                                delete this.errors.gender;
+                            }
+                            break;
+
+                        case 'userRole':
+                            if (!this.formData.userRole) {
+                                this.errors.userRole = 'User role is required';
+                            } else {
+                                delete this.errors.userRole;
+                            }
+                            break;
+
+                        case 'userStatus':
+                            if (!this.formData.userStatus) {
+                                this.errors.userStatus = 'Account status is required';
+                            } else {
+                                delete this.errors.userStatus;
+                            }
+                            break;
+
+                        case 'nationalId':
+                            if (!this.formData.nationalId?.trim()) {
+                                this.errors.nationalId = 'National ID is required';
+                            } else {
+                                delete this.errors.nationalId;
+                            }
+                            break;
+
+                        case 'dob':
+                            if (!this.formData.dob?.trim()) {
+                                this.errors.dob = 'Date of birth is required';
+                            } else {
+                                delete this.errors.dob;
+                            }
+                            break;
+                    }
+                },
+
+                validateAll() {
+                    this.validateField('firstName');
+                    this.validateField('lastName');
+                    this.validateField('email');
+                    this.validateField('phone');
+                    this.validateField('gender');
+                    this.validateField('userRole');
+                    this.validateField('userStatus');
+                    this.validateField('nationalId');
+                    this.validateField('dob');
+
+                    return Object.keys(this.errors).length === 0;
+                },
+
+                clearError(field) {
+                    if (this.errors[field]) {
+                        delete this.errors[field];
+                    }
+                },
+
                 async submitProfileUpdate() {
+                    if (!this.validateAll()) {
+                        const firstError = Object.values(this.errors)[0];
+                        if (firstError) {
+                            alert('Error: ' + firstError);
+                        }
+                        return;
+                    }
+
                     this.isUpdating = true;
 
                     try {
@@ -2892,7 +3103,33 @@
                             Alpine.store('userModal').editUserModal = false;
                             window.location.href = "{{ route('treasurer.users') }}";
                         } else {
-                            alert(data.message || 'Failed to update user.');
+                            if (data.errors) {
+                                // Handle Laravel validation errors
+                                this.errors = {};
+                                for (const [field, messages] of Object.entries(data.errors)) {
+                                    // Map Laravel field names to our error keys
+                                    const fieldMap = {
+                                        'u_first_name': 'firstName',
+                                        'u_last_name': 'lastName',
+                                        'u_email': 'email',
+                                        'u_phone': 'phone',
+                                        'u_gender': 'gender',
+                                        'u_national_id': 'nationalId',
+                                        'u_dob': 'dob',
+                                        'u_role': 'userRole',
+                                        'u_status': 'userStatus'
+                                    };
+                                    const errorField = fieldMap[field] || field;
+                                    this.errors[errorField] = messages[0];
+                                }
+                                // Show first error
+                                const firstError = Object.values(this.errors)[0];
+                                if (firstError) {
+                                    alert('Error: ' + firstError);
+                                }
+                            } else {
+                                alert(data.message || 'Failed to update user.');
+                            }
                         }
                     } catch (e) {
                         console.error(e);
@@ -2946,12 +3183,10 @@
                 }
             }));
 
-
-
         });
+
     </script>
 
   </body>
 
 </html>
-SELECT * FROM `user_roles`
