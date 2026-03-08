@@ -1776,7 +1776,7 @@
                     </div>
 
                     <!-- Loans Table -->
-                    <div x-show="activeTab === 'loans'">
+                    <div x-show="activeTab === 'loans'" x-data="loansTable()">
 
                         <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
                                                         <div class="flex flex-col justify-between gap-5 border-b border-gray-200 px-5 py-4 sm:flex-row lg:items-center dark:border-gray-800">
@@ -1837,7 +1837,7 @@
                                                             <!-- Loan Table -->
                                                         <div>
                                                             <!-- Loan Table -->
-                                                            <div x-data="loansTable()" x-init="init()">
+                                                            <div x-init="init()">
                                                                 <div class="custom-scrollbar overflow-x-auto">
                                                                         <table class="w-full">
                                                                             <!-- table header start -->
@@ -1937,11 +1937,11 @@
                                                                                 </tbody>
                                                                             </template>
 
-                                                                            <!-- If there is data  display the table -->
+                                                                            <!-- If there is data display the table -->
                                                                             <template x-if="loans.length > 0">
                                                                                 <!-- table body start -->
                                                                                 <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800">
-                                                                                    <template x-for="loan in paginatedLoans" :key="loans.transactionID">
+                                                                                    <template x-for="loan in paginatedLoans" :key="loan.transactionId">
                                                                                         <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-900">
                                                                                             <!-- Loan # (Transaction ID) -->
                                                                                             <td class="p-4 whitespace-nowrap">
@@ -1951,26 +1951,26 @@
                                                                                             <!-- Loan/Interest (Loan Type Name + Interest Rate) -->
                                                                                             <td class="p-4 whitespace-nowrap">
                                                                                                 <div>
-                                                                                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="loan.loan_type_name || 'N/A'"></span>
-                                                                                                    <p class="text-xs text-gray-500 dark:text-gray-400" x-text="'Interest: ' + (loan.interest_rate || '0') + '%'"></p>
+                                                                                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="loan.loan_type_name || loan.loanTypeName || 'N/A'"></span>
+                                                                                                    <p class="text-xs text-gray-500 dark:text-gray-400" x-text="'Interest: ' + (loan.interest_rate || loan.interestRate || '0') + '%'"></p>
                                                                                                 </div>
                                                                                             </td>
 
                                                                                             <!-- Period (Months) -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="loan.transactionLoanPeriod || '0' + ' months'"></p>
+                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="(loan.transactionLoanPeriod || loan.loanPeriod || '0') + ' months'"></p>
                                                                                             </td>
 
                                                                                             <!-- Borrowed -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <p class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="'KES ' + Number(loan.transactionLoanAmount || 0).toLocaleString()"></p>
-                                                                                                <p class="text-xs text-gray-500 dark:text-gray-400" x-text="'Repaid: KES ' + Number(loan.outstanding_balance || 0).toLocaleString()"></p>
+                                                                                                <p class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="'KES ' + Number(loan.transactionLoanAmount || loan.amount || 0).toLocaleString()"></p>
+                                                                                                <p class="text-xs text-gray-500 dark:text-gray-400" x-text="'Outstanding: KES ' + Number(loan.outstanding_balance || loan.remaining_balance || 0).toLocaleString()"></p>
                                                                                             </td>
 
                                                                                             <!-- Total Loan -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <p class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="'KES ' + Number(loan.transactionLoanAmount || 0).toLocaleString()"></p>
-                                                                                                <p class="text-xs text-gray-500 dark:text-gray-400" x-text="'Interest: KES ' + Number(loan.outstanding_balance || 0).toLocaleString()"></p>
+                                                                                                <p class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="'KES ' + Number(loan.transactionTotalLoan || loan.totalLoan || loan.transactionLoanAmount || 0).toLocaleString()"></p>
+                                                                                                <p class="text-xs text-gray-500 dark:text-gray-400" x-text="'Interest: KES ' + Number((loan.transactionTotalLoan || 0) - (loan.transactionLoanAmount || 0)).toLocaleString()"></p>
                                                                                             </td>
 
                                                                                             <!-- Last Repayment (Amount/Date) -->
@@ -1993,7 +1993,7 @@
 
                                                                                             <!-- End Date (Calculate from start date + period) -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="loan.transactionLoanStartDate ? new Date(new Date(loan.transactionLoanStartDate).setDate(new Date(loan.transactionLoanStartDate).getDate() + (loan.transactionLoanPeriod * 30))).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'"></p>
+                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="loan.transactionLoanEndDate ? new Date(loan.transactionLoanEndDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : (loan.transactionLoanStartDate ? new Date(new Date(loan.transactionLoanStartDate).setDate(new Date(loan.transactionLoanStartDate).getDate() + ((loan.transactionLoanPeriod || 0) * 30))).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A')"></p>
                                                                                             </td>
 
                                                                                             <!-- Status -->
@@ -2018,13 +2018,11 @@
                                                                                                     </svg>
                                                                                                 </button>
                                                                                             </td>
-
                                                                                         </tr>
                                                                                     </template>
                                                                                 </tbody>
                                                                                 <!-- table body end -->
                                                                             </template>
-
 
                                                                         </table>
                                                                 </div>
@@ -4684,6 +4682,7 @@
                     <div class="relative z-20 bg-transparent">
                         <select id="loan_type_id"
                                 name="loan_type_id"
+                                x-model="$store.loanData.selectedLoanTypeId"
                                 @change="Alpine.store('loanData').updateLoanDetails($event.target.value); clearError('loan_type')"
                                 @blur="validateField('loan_type', $event.target.value)"
                                 :class="errors.loan_type ? 'border-red-500' : ''"
@@ -4703,6 +4702,18 @@
                     <span x-show="errors.loan_type" x-text="errors.loan_type" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
+                <!-- Min Borrowable (Read-only) -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Min Borrowable
+                    </label>
+                    <input readonly type="text"
+                        id="min_borrowable"
+                        name="min_borrowable"
+                        :value="$store.loanData.currentLoanType ? 'KES ' + Number($store.loanData.currentLoanType.min_amount).toLocaleString() : ''"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                </div>
+
                 <!-- Max Borrowable (Read-only) -->
                 <div class="w-full px-2.5 xl:w-1/2">
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
@@ -4712,18 +4723,6 @@
                         id="max_borrowable"
                         name="max_borrowable"
                         :value="$store.loanData.currentLoanType ? 'KES ' + Number($store.loanData.currentLoanType.max_amount).toLocaleString() : ''"
-                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
-                </div>
-
-                <!-- Min Borrowable (Read-only) -->
-                <div class="w-full px-2.5 xl:w-1/2">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Min Borrowable
-                    </label>
-                    <input readonly type="text"
-                        id="max_borrowable"
-                        name="max_borrowable"
-                        :value="$store.loanData.currentLoanType ? 'KES ' + Number($store.loanData.currentLoanType.min_amount).toLocaleString() : ''"
                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
                 </div>
 
@@ -4739,7 +4738,8 @@
                             step="0.01"
                             min="1"
                             placeholder="Amount to Borrow"
-                            @input="clearError('amount')"
+                            x-model="loanAmount"
+                            @input="clearError('amount'); calculateAndUpdateTotal()"
                             @blur="validateField('amount', $event.target.value)"
                             :class="errors.amount ? 'border-red-500' : ''"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
@@ -4755,7 +4755,8 @@
                     <div class="relative z-20 bg-transparent">
                         <select id="loan_period"
                                 name="loan_period"
-                                @change="$store.loanData.calculateDates($event.target.value); clearError('loan_period')"
+                                x-model="loanPeriod"
+                                @change="$store.loanData.calculateDates($event.target.value); clearError('loan_period'); calculateAndUpdateTotal()"
                                 @blur="validateField('loan_period', $event.target.value)"
                                 :class="errors.loan_period ? 'border-red-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
@@ -4812,7 +4813,8 @@
                     <div class="relative z-20 bg-transparent">
                         <select id="assign_payment_mode"
                                 name="payment_mode"
-                                @change="handlePaymentModeChange($event.target.value, 'assign_'); clearError('payment_mode')"
+                                x-model="paymentMode"
+                                @change="handlePaymentModeChange($event.target.value, 'assign_'); clearError('payment_mode'); generateTransactionCode()"
                                 @blur="validateField('payment_mode', $event.target.value)"
                                 :class="errors.payment_mode ? 'border-red-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
@@ -4839,7 +4841,8 @@
                         <input type="text"
                             id="assign_transaction_code"
                             name="transaction_code"
-                            readonly
+                            x-model="transactionCode"
+                            x-bind:readonly="paymentMode === 'Cash'"
                             @input="clearError('transaction_code')"
                             @blur="validateField('transaction_code', $event.target.value)"
                             :class="errors.transaction_code ? 'border-red-500' : ''"
@@ -4848,31 +4851,31 @@
                     <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
-                <!-- Total Amount -->
+                <!-- Total Repayment Amount -->
                 <div class="w-full px-2.5 xl:w-1/2">
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                         Total Repayment
                     </label>
                     <div class="relative">
-                        <input type="number"
-                            id="assign_amount"
-                            name="total_loan"
-                            step="0.01"
-                            min="1"
+                        <input type="text"
+                            id="total_repayment"
+                            name="total_repayment"
                             readonly
+                            x-model="totalRepayment"
                             placeholder="Total Payable"
-                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
                     </div>
                 </div>
 
                 <!-- Loan Status -->
-                <div class="w-full px-2.5  xl:w-1/2">
+                <div class="w-full px-2.5 xl:w-1/2">
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                         Loan Status
                     </label>
                     <div class="relative z-20 bg-transparent">
                         <select id="assign_loan_status"
                                 name="status"
+                                x-model="loanStatus"
                                 @change="clearError('loan_status')"
                                 @blur="validateField('loan_status', $event.target.value)"
                                 :class="errors.loan_status ? 'border-red-500' : ''"
@@ -4893,7 +4896,7 @@
             </div>
 
             <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-                <button @click="loansModal = false" type="button"
+                <button @click="$store.loanData.assignLoanModal = false" type="button"
                         class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
                     Cancel
                 </button>
@@ -7851,6 +7854,7 @@
 
     <!-- Member Loans -->
     <script>
+
         document.addEventListener('alpine:init', () => {
             // Store for loan data and modal states
             Alpine.store('loanData', {
@@ -7927,6 +7931,14 @@
                 errors: {},
                 memberActiveLoans: 0,
 
+                // New properties for assign form
+                loanAmount: '',
+                loanPeriod: '',
+                paymentMode: '',
+                transactionCode: '',
+                loanStatus: '',
+                totalRepayment: '',
+
                 // Date formatting functions
                 formatDate(dateString) {
                     if (!dateString) return '';
@@ -7962,6 +7974,30 @@
                     });
                 },
 
+                // Calculate total loan repayment using formula: A = P * (r(1+r)^n) / ((1+r)^n - 1)
+                calculateTotalLoan(amount, interestRate, periodMonths) {
+                    if (!amount || !interestRate || !periodMonths || amount <= 0 || interestRate <= 0 || periodMonths <= 0) {
+                        return 0;
+                    }
+
+                    // Convert annual interest rate to monthly (divide by 12) and percentage to decimal (divide by 100)
+                    const monthlyRate = (parseFloat(interestRate) / 100) / 12;
+                    const principal = parseFloat(amount);
+                    const months = parseInt(periodMonths);
+
+                    // Formula: P * (r * (1 + r)^n) / ((1 + r)^n - 1)
+                    const onePlusR = 1 + monthlyRate;
+                    const powerN = Math.pow(onePlusR, months);
+
+                    // Monthly payment
+                    const monthlyPayment = principal * (monthlyRate * powerN) / (powerN - 1);
+
+                    // Total repayment amount
+                    const totalLoan = monthlyPayment * months;
+
+                    return Math.round(totalLoan * 100) / 100; // Round to 2 decimal places
+                },
+
                 // Normalize loan data to handle different property names
                 normalizeLoanData(loan) {
                     return {
@@ -7988,9 +8024,16 @@
                     fetch('/bodaboda-member/{{ $memberId }}/loans/current')
                         .then(res => res.json())
                         .then(data => {
+                            console.log('Loans data received:', data); // Debug log
                             if (data.success) {
                                 this.loans = data.loans;
+                                console.log('Loans set:', this.loans); // Debug log
+                            } else {
+                                console.error('Failed to load loans:', data.message);
                             }
+                        })
+                        .catch(error => {
+                            console.error('Error loading loans:', error);
                         });
 
                     // Load loan types for dropdown
@@ -8344,15 +8387,27 @@
 
                     Alpine.store('loanData').isAssigning = true;
 
+                    // Parse total repayment to get numeric value
+                    let totalRepaymentValue = 0;
+                    if (this.totalRepayment) {
+                        const match = this.totalRepayment.match(/KES ([\d,]+\.\d{2})/);
+                        if (match) {
+                            totalRepaymentValue = parseFloat(match[1].replace(/,/g, ''));
+                        }
+                    }
+
                     const formData = {
                         loan_type_id: document.getElementById('loan_type_id')?.value,
-                        amount: document.getElementById('assign_amount')?.value,
-                        period_months: document.getElementById('loan_period')?.value,
-                        payment_mode: document.getElementById('assign_payment_mode')?.value,
-                        transaction_code: document.getElementById('assign_transaction_code')?.value || '',
-                        status: document.getElementById('assign_loan_status')?.value,
+                        amount: this.loanAmount,
+                        total_repayment: totalRepaymentValue,
+                        period_months: this.loanPeriod,
+                        payment_mode: this.paymentMode,
+                        transaction_code: this.transactionCode || '',
+                        status: this.loanStatus,
                         _token: document.querySelector('input[name="_token"]')?.value
                     };
+
+                    console.log('Submitting assign form:', formData);
 
                     fetch('/bodaboda-member/{{ $memberId }}/loan/assign', {
                         method: 'POST',
@@ -8372,6 +8427,9 @@
                                 window.location.reload();
                             } else {
                                 alert('Error: ' + data.message);
+                                if (data.errors) {
+                                    console.error('Validation errors:', data.errors);
+                                }
                             }
                         }, 750);
                     })
@@ -8431,6 +8489,56 @@
                     });
                 },
 
+                // Calculate and update total repayment
+                calculateAndUpdateTotal() {
+                    if (!this.loanAmount || !this.loanPeriod || !Alpine.store('loanData').currentLoanType) {
+                        this.totalRepayment = '';
+                        return;
+                    }
+
+                    const interestRate = Alpine.store('loanData').currentLoanType.interest_rate;
+                    const total = this.calculateTotalLoan(this.loanAmount, interestRate, this.loanPeriod);
+
+                    if (total > 0) {
+                        this.totalRepayment = 'KES ' + total.toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+                    } else {
+                        this.totalRepayment = '';
+                    }
+                },
+
+                // Generate transaction code based on payment mode
+                generateTransactionCode() {
+                    if (this.paymentMode === 'Cash') {
+                        // For cash, generate a cash receipt number
+                        const date = new Date();
+                        const year = date.getFullYear().toString().slice(-2);
+                        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                        const day = date.getDate().toString().padStart(2, '0');
+                        const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+                        this.transactionCode = `CASH-${year}${month}${day}-${random}`;
+                    } else {
+                        // For non-cash, make it editable and clear any auto-generated code
+                        this.transactionCode = '';
+                    }
+                },
+
+                // Override handlePaymentModeChange for assign form
+                handlePaymentModeChange(mode, prefix = 'assign_') {
+                    const codeField = document.getElementById(prefix + 'transaction_code');
+                    if (codeField) {
+                        if (mode === 'Cash') {
+                            codeField.readOnly = true;
+                            this.generateTransactionCode();
+                        } else {
+                            codeField.readOnly = false;
+                            this.transactionCode = '';
+                        }
+                    }
+                },
+
                 // Pagination methods
                 prevPage() {
                     if (this.page > 1) this.page--;
@@ -8461,9 +8569,10 @@
                 get endEntry() {
                     const end = this.page * this.itemsPerPage;
                     return end > this.loans.length ? this.loans.length : end;
-                }
+                },
             }));
         });
+
     </script>
 
     <!-- Member Fines -->

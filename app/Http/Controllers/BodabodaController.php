@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\UserRole;
+use Illuminate\Support\Facades\Log;
 use App\Models\Member;
 use Carbon\Carbon;
 Use App\Models\MemberKin;
@@ -20,6 +22,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\File;
+
 
 class BodabodaController extends Controller {
 
@@ -1937,6 +1940,36 @@ class BodabodaController extends Controller {
         }
     }
 
+    // Check and update loan status to Repaid if balance is zero
+    public function checkAndUpdateLoanStatus($loanId)
+    {
+        // Calculate total paid (Paid-In transactions)
+        $totalPaid = DB::table('member_loans_transactions')
+            ->where('transactionLoan', $loanId)
+            ->where('transactionType', 'Paid-In')
+            ->where('transactionStatus', 'Confirmed')
+            ->sum('transactionAmount');
+
+        // Get loan details
+        $loan = DB::table('member_loans')
+            ->where('transactionId', $loanId)
+            ->first();
+
+        if ($loan && $totalPaid >= $loan->transactionTotalLoan) {
+            // Update loan status to Repaid
+            DB::table('member_loans')
+                ->where('transactionId', $loanId)
+                ->update([
+                    'transactionLoanStatus' => 'Repaid',
+                    'transactionUpdatedOn' => now()
+                ]);
+
+            return true;
+        }
+
+        return false;
+    }
+
     // Assign loan to member
     public function assignMemberLoan(Request $request, $memberId)
     {
@@ -1944,6 +1977,7 @@ class BodabodaController extends Controller {
             $validated = $request->validate([
                 'loan_type_id' => 'required|integer|exists:member_loan_types,loanId',
                 'amount' => 'required|numeric|min:1',
+                'total_repayment' => 'required|numeric|min:0',
                 'period_months' => 'required|integer|min:1',
                 'payment_mode' => 'required|in:Cash,MPesa,Bank',
                 'transaction_code' => 'nullable|string|max:255',
@@ -1962,7 +1996,14 @@ class BodabodaController extends Controller {
                 ], 404);
             }
 
-            // Check if amount exceeds max borrowable
+            // Check if amount is within min and max
+            if ($validated['amount'] < $loanType->min_amount) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Amount is below minimum borrowable of ' . number_format($loanType->min_amount, 2)
+                ], 400);
+            }
+
             if ($validated['amount'] > $loanType->max_amount) {
                 return response()->json([
                     'success' => false,
@@ -1974,8 +2015,11 @@ class BodabodaController extends Controller {
             $startDate = Carbon::now()->addDays(30);
             $endDate = Carbon::now()->addDays(30 + ($validated['period_months'] * 30));
 
-            // Generate transaction code
-            $transactionCode = $validated['transaction_code'] ?? 'LOAN-' . strtoupper(uniqid());
+            // Generate transaction code if not provided
+            $transactionCode = $validated['transaction_code'];
+            if (empty($transactionCode) && $validated['payment_mode'] === 'Cash') {
+                $transactionCode = 'CASH-' . strtoupper(uniqid());
+            }
 
             DB::beginTransaction();
 
@@ -1984,8 +2028,10 @@ class BodabodaController extends Controller {
                 'memberId' => $memberId,
                 'transactionLoan' => $validated['loan_type_id'],
                 'transactionLoanAmount' => $validated['amount'],
+                'transactionTotalLoan' => $validated['total_repayment'],
                 'transactionLoanPeriod' => $validated['period_months'],
                 'transactionLoanStartDate' => $startDate,
+                'transactionLoanEndDate' => $endDate,
                 'transactionLoanRepaymentMode' => 1, // Default repayment mode
                 'transactionAuthor' => Auth::id(),
                 'transactionCreated' => now(),
@@ -1996,13 +2042,14 @@ class BodabodaController extends Controller {
 
             $loanId = DB::table('member_loans')->insertGetId($loanData);
 
-            // Insert into member_loans_transactions (initial disbursement)
+            // Insert into member_loans_transactions (initial disbursement - Paid-Out)
             $transactionData = [
                 'memberId' => $memberId,
                 'transactionLoan' => $loanId,
                 'transactionCode' => $transactionCode,
                 'transactionAmount' => $validated['amount'],
                 'transactionDate' => now(),
+                'transactionType' => 'Paid-Out', // Money going out to member
                 'transactionMode' => $validated['payment_mode'],
                 'transactionAuthor' => Auth::id(),
                 'transactionUpdatedOn' => now(),
@@ -2446,6 +2493,33 @@ class BodabodaController extends Controller {
             return response()->json([
                 'success' => false,
                 'message' => 'Error fetching total savings balance: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // ---------------------------------------------------------------------------------------
+    // Get all active user roles for dropdown
+    public function getUserRoles(Request $request)
+    {
+        try {
+            // Fetch only active roles and pluck the user_role field
+            $userRoles = UserRole::where('user_role_status', 'Active')
+                ->orderBy('user_role')
+                ->pluck('user_role')
+                ->toArray();
+
+            return response()->json([
+                'success' => true,
+                'userRoles' => $userRoles
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error fetching user roles: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch user roles',
+                'userRoles' => []
             ], 500);
         }
     }

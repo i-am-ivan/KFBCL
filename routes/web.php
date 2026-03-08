@@ -96,6 +96,8 @@ Route::post('/user-roles/create', [UserRolesController::class, 'createNewUserRol
 Route::post('/user-roles/{id}/update', [UserRolesController::class, 'updateUserRole'])->name('user-roles.update');
 
 Route::delete('/user-roles/{id}/delete', [UserRolesController::class, 'deleteUserRole'])->name('user-roles.delete');
+//
+Route::get('/user-roles/active', [BodabodaController::class, 'getUserRoles'])->name('user.roles.active');
 
 // Create new system user Routes
 Route::post('/users/create', [UsersController::class, 'store']);
