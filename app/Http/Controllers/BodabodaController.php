@@ -1199,6 +1199,181 @@ class BodabodaController extends Controller {
         }
     }
 
+    // 1. Get all vehicle data with owner information
+    public function getAllBodabodaVehicleData(): JsonResponse
+    {
+        $vehicles = DB::table('members_vehicles')
+            ->join('members', 'members.memberId', '=', 'members_vehicles.member')
+            ->select(
+                'members_vehicles.*',
+                DB::raw("CONCAT(members.firstname, ' ', members.lastname) as Owner"),
+                'members.email',
+                'members.phone1'
+            )
+            ->orderBy('members_vehicles.vehicleId', 'asc')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $vehicles
+        ], 200);
+    }
+
+    // 2. Count all vehicles
+    public function getCountAllBodabodaVehicles(): JsonResponse
+    {
+        $total = DB::table('members_vehicles')->count();
+        return response()->json(['total' => $total], 200);
+    }
+
+    // 3. Get motorcycle counts (Available vs Assigned)
+    public function getCountAllBodabodaMotorcycles(): JsonResponse
+    {
+        $motorcycles = DB::table('members_vehicles')
+            ->where('type', 'Motorcycle')
+            ->get();
+
+        $available = 0;
+        $assigned = 0;
+
+        foreach ($motorcycles as $cycle) {
+            $assignment = DB::table('member_assign_vehicles')
+                ->where('vehicle', $cycle->vehicleId)
+                ->where('status', 'Active')
+                ->first();
+
+            if ($assignment) {
+                $assigned++;
+            } else {
+                $available++;
+            }
+        }
+
+        return response()->json([
+            'available' => $available,
+            'assigned' => $assigned,
+            'total' => $motorcycles->count()
+        ], 200);
+    }
+
+    // 4. Get Tuk Tuk counts (Available vs Assigned)
+    public function getCountAllBodabodaTukTuk(): JsonResponse
+    {
+        $tuktuk = DB::table('members_vehicles')
+            ->where('type', 'Tuk Tuk')
+            ->get();
+
+        $available = 0;
+        $assigned = 0;
+
+        foreach ($tuktuk as $tt) {
+            $assignment = DB::table('member_assign_vehicles')
+                ->where('vehicle', $tt->vehicleId)
+                ->where('status', 'Active')
+                ->first();
+
+            if ($assignment) {
+                $assigned++;
+            } else {
+                $available++;
+            }
+        }
+
+        return response()->json([
+            'available' => $available,
+            'assigned' => $assigned,
+            'total' => $tuktuk->count()
+        ], 200);
+    }
+
+    // 5. Get overall vehicle availability counts
+    public function getCountAllBodabodaVehicleAvailability(): JsonResponse
+    {
+        $allVehicles = DB::table('members_vehicles')->get();
+
+        $available = 0;
+        $assigned = 0;
+
+        foreach ($allVehicles as $vehicle) {
+            $assignment = DB::table('member_assign_vehicles')
+                ->where('vehicle', $vehicle->vehicleId)
+                ->where('status', 'Active')
+                ->first();
+
+            if ($assignment) {
+                $assigned++;
+            } else {
+                $available++;
+            }
+        }
+
+        return response()->json([
+            'available' => $available,
+            'assigned' => $assigned,
+            'total' => $allVehicles->count()
+        ], 200);
+    }
+
+    // Optional: Get all stats in one call
+    public function getAllVehicleStats(): JsonResponse
+    {
+        $total = DB::table('members_vehicles')->count();
+
+        $motorcycles = DB::table('members_vehicles')->where('type', 'Motorcycle')->get();
+        $tuktuk = DB::table('members_vehicles')->where('type', 'Tuk Tuk')->get();
+        $allVehicles = DB::table('members_vehicles')->get();
+
+        $motorcycleAvailable = 0;
+        $motorcycleAssigned = 0;
+        foreach ($motorcycles as $cycle) {
+            $assignment = DB::table('member_assign_vehicles')
+                ->where('vehicle', $cycle->vehicleId)
+                ->where('status', 'Active')
+                ->first();
+            if ($assignment) $motorcycleAssigned++; else $motorcycleAvailable++;
+        }
+
+        $tuktukAvailable = 0;
+        $tuktukAssigned = 0;
+        foreach ($tuktuk as $tt) {
+            $assignment = DB::table('member_assign_vehicles')
+                ->where('vehicle', $tt->vehicleId)
+                ->where('status', 'Active')
+                ->first();
+            if ($assignment) $tuktukAssigned++; else $tuktukAvailable++;
+        }
+
+        $available = 0;
+        $assigned = 0;
+        foreach ($allVehicles as $vehicle) {
+            $assignment = DB::table('member_assign_vehicles')
+                ->where('vehicle', $vehicle->vehicleId)
+                ->where('status', 'Active')
+                ->first();
+            if ($assignment) $assigned++; else $available++;
+        }
+
+        return response()->json([
+            'success' => true,
+            'total' => $total,
+            'motorcycles' => [
+                'available' => $motorcycleAvailable,
+                'assigned' => $motorcycleAssigned,
+                'total' => $motorcycles->count()
+            ],
+            'tuktuk' => [
+                'available' => $tuktukAvailable,
+                'assigned' => $tuktukAssigned,
+                'total' => $tuktuk->count()
+            ],
+            'availability' => [
+                'available' => $available,
+                'assigned' => $assigned,
+                'total' => $total
+            ]
+        ], 200);
+    }
+
     // Contributions -----------------------------------------------------------------------------------------------------
     // Get all bodaboda contribution data
     public function getAllContributions(Request $request): JsonResponse

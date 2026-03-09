@@ -254,6 +254,19 @@ Route::get('/member-bonus-types/count', [BodabodaController::class, 'countAllMem
 
 Route::get('/member-fine-types/count', [BodabodaController::class, 'countAllMemberFineTypes']);
 
+// Vehicle routes
+Route::get('/vehicles/all', [BodabodaController::class, 'getAllBodabodaVehicleData'])->name('vehicles.all');
+
+Route::get('/vehicles/count', [BodabodaController::class, 'getCountAllBodabodaVehicles'])->name('vehicles.count');
+
+Route::get('/vehicles/motorcycles/count', [BodabodaController::class, 'getCountAllBodabodaMotorcycles'])->name('vehicles.motorcycles.count');
+
+Route::get('/vehicles/tuktuk/count', [BodabodaController::class, 'getCountAllBodabodaTukTuk'])->name('vehicles.tuktuk.count');
+
+Route::get('/vehicles/availability/count', [BodabodaController::class, 'getCountAllBodabodaVehicleAvailability'])->name('vehicles.availability.count');
+
+Route::get('/vehicles/stats', [BodabodaController::class, 'getAllVehicleStats'])->name('vehicles.stats');
+
 // Loans --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/member-transactions/count-active-loans', [BodabodaController::class, 'countActiveLoanTransactions']);
 
