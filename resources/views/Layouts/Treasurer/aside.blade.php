@@ -21,6 +21,7 @@
             </div>
 
             <div class="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
+
                 <!-- Sidebar Menu -->
                 <nav x-data="{selected: $persist('Dashboard')}">
                     <!-- MENU Group -->
@@ -103,6 +104,7 @@
                                     <span class="menu-item-text" :class="sidebarToggle ? 'xl:hidden' : ''">Users</span>
                                 </a>
                             </li>
+
                         </ul>
                     </div>
 
@@ -120,45 +122,42 @@
                         </h3>
 
                         <ul class="mb-6 flex flex-col gap-1">
-                            <!-- Overview (bodaboda.blade.php) -->
+                            <!-- Menu Item Members (from Bodaboda) -->
                             <li>
-                                <a href="{{ route('treasurer.bodaboda.overview') }}"
-                                @click="selected = 'BodabodaOverview'"
-                                class="menu-item group"
-                                :class="selected === 'BodabodaOverview' ? 'menu-item-active' : 'menu-item-inactive'">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chart-infographic">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M7 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
-                                        <path d="M7 3v4h4" />
-                                        <path d="M9 17l0 4" />
-                                        <path d="M17 14l0 7" />
-                                        <path d="M13 13l0 8" />
-                                        <path d="M21 12l0 9" />
-                                    </svg>
-                                    <span class="menu-item-text" :class="sidebarToggle ? 'xl:hidden' : ''">Overview</span>
-                                </a>
-                            </li>
-
-                            <!-- Members -->
-                            <li>
-                                <a href="{{ route('treasurer.members') }}"
+                                <a href="{{ route('treasurer.bodaboda.members') }}"
                                 @click="selected = 'Members'"
                                 class="menu-item group"
                                 :class="selected === 'Members' ? 'menu-item-active' : 'menu-item-inactive'">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-users">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-users-group">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
-                                        <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-                                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                                        <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
+                                        <path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                                        <path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" />
+                                        <path d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                                        <path d="M17 10h2a2 2 0 0 1 2 2v1" />
+                                        <path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                                        <path d="M3 13v-1a2 2 0 0 1 2 -2h2" />
                                     </svg>
                                     <span class="menu-item-text" :class="sidebarToggle ? 'xl:hidden' : ''">Members</span>
+                                </a>
+                            </li>
+                            <!-- Stages -->
+                            <li>
+                                <a href="{{ route('treasurer.bodaboda.stages') }}"
+                                @click="selected = 'Stages'"
+                                class="menu-item group"
+                                :class="selected === 'Stages' ? 'menu-item-active' : 'menu-item-inactive'">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-map-pin">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+                                        <path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z" />
+                                    </svg>
+                                    <span class="menu-item-text" :class="sidebarToggle ? 'xl:hidden' : ''">Stages</span>
                                 </a>
                             </li>
 
                             <!-- Vehicles -->
                             <li>
-                                <a href="{{ route('treasurer.vehicles') }}"
+                                <a href="{{ route('treasurer.bodaboda.vehicles') }}"
                                 @click="selected = 'Vehicles'"
                                 class="menu-item group"
                                 :class="selected === 'Vehicles' ? 'menu-item-active' : 'menu-item-inactive'">
@@ -173,149 +172,35 @@
                                 </a>
                             </li>
 
-                            <!-- Stages -->
+                            <!-- Finance -->
                             <li>
-                                <a href="{{ route('treasurer.stages') }}"
-                                @click="selected = 'Stages'"
+                                <a href="{{ route('treasurer.bodaboda.finance') }}"
+                                @click="selected = 'Finance'"
                                 class="menu-item group"
-                                :class="selected === 'Stages' ? 'menu-item-active' : 'menu-item-inactive'">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-map-pin">
+                                :class="selected === 'Finance' ? 'menu-item-active' : 'menu-item-inactive'">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chart-bar">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
-                                        <path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z" />
+                                        <path d="M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v8a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+                                        <path d="M9 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+                                        <path d="M15 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v16a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z" />
+                                        <path d="M4 20l14 0" />
                                     </svg>
-                                    <span class="menu-item-text" :class="sidebarToggle ? 'xl:hidden' : ''">Stages</span>
+                                    <span class="menu-item-text" :class="sidebarToggle ? 'xl:hidden' : ''">Finance</span>
                                 </a>
                             </li>
 
-                            <!-- Loans (bodabodaloans.blade.php) -->
+                            <!-- Wallet -->
                             <li>
-                                <a href="{{ route('treasurer.bodaboda.loans') }}"
-                                @click="selected = 'BodabodaLoans'"
+                                <a href="{{ route('treasurer.bodaboda.wallet') }}"
+                                @click="selected = 'Wallet'"
                                 class="menu-item group"
-                                :class="selected === 'BodabodaLoans' ? 'menu-item-active' : 'menu-item-inactive'">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-credit-card">
+                                :class="selected === 'Wallet' ? 'menu-item-active' : 'menu-item-inactive'">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-wallet">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M3 5m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
-                                        <path d="M3 10l18 0" />
-                                        <path d="M7 15l.01 0" />
-                                        <path d="M11 15l2 0" />
+                                        <path d="M17 8v-3a1 1 0 0 0 -1 -1h-10a2 2 0 0 0 0 4h12a1 1 0 0 1 1 1v3m0 4v3a1 1 0 0 1 -1 1h-12a2 2 0 0 1 -2 -2v-12" />
+                                        <path d="M20 12v4h-4a2 2 0 0 1 0 -4h4" />
                                     </svg>
-                                    <span class="menu-item-text" :class="sidebarToggle ? 'xl:hidden' : ''">Loans</span>
-                                </a>
-                            </li>
-
-                            <!-- Bonuses & Fines (bodabodabf.blade.php) -->
-                            <li>
-                                <a href="{{ route('treasurer.bodaboda.bf') }}"
-                                @click="selected = 'BodabodaBF'"
-                                class="menu-item group"
-                                :class="selected === 'BodabodaBF' ? 'menu-item-active' : 'menu-item-inactive'">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-gift">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M3 8m0 1a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1z" />
-                                        <path d="M12 8l0 13" />
-                                        <path d="M19 12v7a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-7" />
-                                        <path d="M7.5 8a2.5 2.5 0 0 1 0 -5a4.8 8 0 0 1 4.5 5a4.8 8 0 0 1 4.5 -5a2.5 2.5 0 0 1 0 5" />
-                                    </svg>
-                                    <span class="menu-item-text" :class="sidebarToggle ? 'xl:hidden' : ''">Bonuses & Fines</span>
-                                </a>
-                            </li>
-
-                            <!-- Contributions and Savings (contributions.blade.php) -->
-                            <li>
-                                <a href="{{ route('treasurer.bodaboda.cs') }}"
-                                @click="selected = 'BodabodaCS'"
-                                class="menu-item group"
-                                :class="selected === 'BodabodaCS' ? 'menu-item-active' : 'menu-item-inactive'">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-pig-money">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M15 11v.01" />
-                                        <path d="M5.173 8.378a3 3 0 1 1 4.656 -1.377" />
-                                        <path d="M16 4v3.803a6.019 6.019 0 0 1 2.658 3.197h1.341a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-1.342c-.336 .95 -.907 1.8 -1.658 2.473v2.027a1.5 1.5 0 0 1 -3 0v-.583a6.04 6.04 0 0 1 -1 .083h-4a6.04 6.04 0 0 1 -1 -.083v.583a1.5 1.5 0 0 1 -3 0v-2l0 -.027a6 6 0 0 1 4 -10.473h2.5l4.5 -3h0z" />
-                                    </svg>
-                                    <span class="menu-item-text" :class="sidebarToggle ? 'xl:hidden' : ''">Contributions & Savings</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <!-- MICROFINANCE GROUP -->
-                    <div>
-                        <h3 class="mb-4 text-xs leading-[20px] text-gray-400 uppercase">
-                            <span class="menu-group-title" :class="sidebarToggle ? 'xl:hidden' : ''">MICROFINANCE GROUP</span>
-                            <svg :class="sidebarToggle ? 'xl:block hidden' : 'hidden'"
-                                class="menu-group-icon mx-auto fill-current"
-                                width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M5.99915 10.2451C6.96564 10.2451 7.74915 11.0286 7.74915 11.9951V12.0051C7.74915 12.9716 6.96564 13.7551 5.99915 13.7551C5.03265 13.7551 4.24915 12.9716 4.24915 12.0051V11.9951C4.24915 11.0286 5.03265 10.2451 5.99915 10.2451ZM17.9991 10.2451C18.9656 10.2451 19.7491 11.0286 19.7491 11.9951V12.0051C19.7491 12.9716 18.9656 13.7551 17.9991 13.7551C17.0326 13.7551 16.2491 12.9716 16.2491 12.0051V11.9951C16.2491 11.0286 17.0326 10.2451 17.9991 10.2451ZM13.7491 11.9951C13.7491 11.0286 12.9656 10.2451 11.9991 10.2451C11.0326 10.2451 10.2491 11.0286 10.2491 11.9951V12.0051C10.2491 12.9716 11.0326 13.7551 11.9991 13.7551C12.9656 13.7551 13.7491 12.9716 13.7491 12.0051V11.9951Z"
-                                    fill="currentColor"/>
-                            </svg>
-                        </h3>
-
-                        <ul class="mb-6 flex flex-col gap-1">
-                            <!-- Overview -->
-                            <li>
-                                <a href="{{ route('treasurer.microfinance.overview') }}"
-                                @click="selected = 'MicroOverview'"
-                                class="menu-item group"
-                                :class="selected === 'MicroOverview' ? 'menu-item-active' : 'menu-item-inactive'">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chart-pie">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M10 3.2a9 9 0 1 0 10.8 10.8a1 1 0 0 0 -1 -1h-6.8a2 2 0 0 1 -2 -2v-7a.9 .9 0 0 0 -1 -.8" />
-                                        <path d="M15 3.5a9 9 0 0 1 5.5 5.5h-4.5a1 1 0 0 1 -1 -1v-4.5" />
-                                    </svg>
-                                    <span class="menu-item-text" :class="sidebarToggle ? 'xl:hidden' : ''">Overview</span>
-                                </a>
-                            </li>
-
-                            <!-- Loan Types -->
-                            <li>
-                                <a href="{{ route('treasurer.loan.types') }}"
-                                @click="selected = 'LoanTypes'"
-                                class="menu-item group"
-                                :class="selected === 'LoanTypes' ? 'menu-item-active' : 'menu-item-inactive'">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-category">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M4 4h6v6h-6z" />
-                                        <path d="M14 4h6v6h-6z" />
-                                        <path d="M4 14h6v6h-6z" />
-                                        <path d="M14 14h6v6h-6z" />
-                                    </svg>
-                                    <span class="menu-item-text" :class="sidebarToggle ? 'xl:hidden' : ''">Loan Types</span>
-                                </a>
-                            </li>
-
-                            <!-- Clients -->
-                            <li>
-                                <a href="{{ route('treasurer.microfinance.clients') }}"
-                                @click="selected = 'MicroClients'"
-                                class="menu-item group"
-                                :class="selected === 'MicroClients' ? 'menu-item-active' : 'menu-item-inactive'">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-users">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
-                                        <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-                                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                                        <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
-                                    </svg>
-                                    <span class="menu-item-text" :class="sidebarToggle ? 'xl:hidden' : ''">Clients</span>
-                                </a>
-                            </li>
-
-                            <!-- Fines & Penalties -->
-                            <li>
-                                <a href="{{ route('treasurer.microfinance.fines') }}"
-                                @click="selected = 'MicroFines'"
-                                class="menu-item group"
-                                :class="selected === 'MicroFines' ? 'menu-item-active' : 'menu-item-inactive'">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-alert-octagon">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M12.802 2.165l5.575 2.389c.48 .206 .863 .589 1.07 1.07l2.388 5.574c.22 .512 .22 1.092 0 1.604l-2.389 5.575c-.206 .48 -.589 .863 -1.07 1.07l-5.574 2.388c-.512 .22 -1.092 .22 -1.604 0l-5.575 -2.389a2.036 2.036 0 0 1 -1.07 -1.07l-2.388 -5.574a2.036 2.036 0 0 1 0 -1.604l2.389 -5.575c.206 -.48 .589 -.863 1.07 -1.07l5.574 -2.388a2.036 2.036 0 0 1 1.604 0z" />
-                                        <path d="M12 8v4" />
-                                        <path d="M12 16h.01" />
-                                    </svg>
-                                    <span class="menu-item-text" :class="sidebarToggle ? 'xl:hidden' : ''">Fines & Penalties</span>
+                                    <span class="menu-item-text" :class="sidebarToggle ? 'xl:hidden' : ''">Wallet</span>
                                 </a>
                             </li>
                         </ul>
@@ -324,7 +209,7 @@
                     <!-- REAL-ESTATE GROUP -->
                     <div>
                         <h3 class="mb-4 text-xs leading-[20px] text-gray-400 uppercase">
-                            <span class="menu-group-title" :class="sidebarToggle ? 'xl:hidden' : ''">REAL-ESTATE GROUP</span>
+                            <span class="menu-group-title" :class="sidebarToggle ? 'xl:hidden' : ''">REAL-ESTATE</span>
                             <svg :class="sidebarToggle ? 'xl:block hidden' : 'hidden'"
                                 class="menu-group-icon mx-auto fill-current"
                                 width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -335,12 +220,12 @@
                         </h3>
 
                         <ul class="mb-6 flex flex-col gap-1">
-                            <!-- Overview -->
+                            <!-- Real-Estate Overview -->
                             <li>
                                 <a href="{{ route('treasurer.realestate.overview') }}"
-                                @click="selected = 'RealOverview'"
+                                @click="selected = 'RealEstate'"
                                 class="menu-item group"
-                                :class="selected === 'RealOverview' ? 'menu-item-active' : 'menu-item-inactive'">
+                                :class="selected === 'RealEstate' ? 'menu-item-active' : 'menu-item-inactive'">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-building-community">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                         <path d="M8 9l5 5v7h-5v-4m0 4h-5v-7l5 -5m1 1v-6a1 1 0 0 1 1 -1h10a1 1 0 0 1 1 1v17h-8" />
@@ -349,40 +234,16 @@
                                         <path d="M17 11l0 .01" />
                                         <path d="M17 15l0 .01" />
                                     </svg>
-                                    <span class="menu-item-text" :class="sidebarToggle ? 'xl:hidden' : ''">Overview</span>
-                                </a>
-                            </li>
-
-                            <!-- Real-Estate Listings -->
-                            <li>
-                                <a href="{{ route('treasurer.realestate.listings') }}"
-                                @click="selected = 'Listings'"
-                                class="menu-item group"
-                                :class="selected === 'Listings' ? 'menu-item-active' : 'menu-item-inactive'">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-building-estate">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M3 21h18" />
-                                        <path d="M19 21v-4" />
-                                        <path d="M19 17h2v-2a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v2z" />
-                                        <path d="M14 21v-4" />
-                                        <path d="M14 17h2v-2a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v2z" />
-                                        <path d="M9 21v-4" />
-                                        <path d="M9 17h2v-2a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v2z" />
-                                        <path d="M4 21v-4" />
-                                        <path d="M4 17h2v-2a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v2z" />
-                                        <path d="M5 13v-5h14l2 5" />
-                                        <path d="M9 8v-2h6v2" />
-                                    </svg>
-                                    <span class="menu-item-text" :class="sidebarToggle ? 'xl:hidden' : ''">Real-Estate Listings</span>
+                                    <span class="menu-item-text" :class="sidebarToggle ? 'xl:hidden' : ''">Real-Estate</span>
                                 </a>
                             </li>
 
                             <!-- Clients -->
                             <li>
                                 <a href="{{ route('treasurer.realestate.clients') }}"
-                                @click="selected = 'RealClients'"
+                                @click="selected = 'Clients'"
                                 class="menu-item group"
-                                :class="selected === 'RealClients' ? 'menu-item-active' : 'menu-item-inactive'">
+                                :class="selected === 'Clients' ? 'menu-item-active' : 'menu-item-inactive'">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-users">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                         <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
@@ -412,7 +273,7 @@
                         <ul class="mb-6 flex flex-col gap-1">
                             <!-- Menu Item Profile -->
                             <li>
-                                <a href="{{ route('profile') }}"
+                                <a href="{{ route('treasurer.profile') }}"
                                 @click="selected = 'Profile'"
                                 class="menu-item group"
                                 :class="selected === 'Profile' ? 'menu-item-active' : 'menu-item-inactive'">
@@ -435,9 +296,7 @@
                                 <form action="{{ route('signout') }}" method="POST">
                                     @csrf
                                     <button type="submit"
-                                            @click="selected = 'Logout'"
-                                            class="menu-item group menu-item-inactive flex items-center w-full text-left"
-                                            :class="selected === 'Logout' ? 'menu-item-active' : 'menu-item-inactive'">
+                                            class="menu-item group menu-item-inactive flex items-center w-full text-left">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-logout-2">
                                             <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                             <path d="M10 8v-2a2 2 0 0 1 2 -2h7a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-7a2 2 0 0 1 -2 -2v-2"></path>
@@ -451,7 +310,8 @@
                         </ul>
                     </div>
                 </nav>
+
             </div>
-            
+
         </aside>
         <!-- ===== Sidebar End ===== -->

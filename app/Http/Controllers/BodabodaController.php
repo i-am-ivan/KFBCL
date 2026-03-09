@@ -10,6 +10,7 @@ use Carbon\Carbon;
 Use App\Models\MemberKin;
 use App\Models\MemberVehicle;
 use App\Models\Stage;
+use App\Models\Users;
 use App\Models\MemberContribution;
 use App\Models\MemberLoanType;
 use App\Models\MemberSaving;
@@ -70,6 +71,43 @@ class BodabodaController extends Controller {
     {
         $count = DB::table('members')->where('membership', 'Non-Member')->count();
         return response()->json(['count' => $count]);
+    }
+
+    // 1. Count Active Members
+    public function getCountActiveMembers(): JsonResponse
+    {
+        $count = Member::where('status', 'Active')->count();
+        return response()->json(['count' => $count], 200);
+    }
+
+    // 2. Count Pending Members
+    public function getCountPendingMembers(): JsonResponse
+    {
+        $count = Member::where('status', 'Pending')->count();
+        return response()->json(['count' => $count], 200);
+    }
+
+    // 3. Count Suspended Members
+    public function getCountSuspendedMembers(): JsonResponse
+    {
+        $count = Member::where('status', 'Suspended')->count();
+        return response()->json(['count' => $count], 200);
+    }
+
+    // Optional: Get all status counts in one call
+    public function getAllStatusCounts(): JsonResponse
+    {
+        $active = Member::where('status', 'Active')->count();
+        $pending = Member::where('status', 'Pending')->count();
+        $suspended = Member::where('status', 'Suspended')->count();
+        $total = Member::count();
+
+        return response()->json([
+            'active' => $active,
+            'pending' => $pending,
+            'suspended' => $suspended,
+            'total' => $total
+        ], 200);
     }
 
     // Add a new member with file uploads
@@ -807,7 +845,7 @@ class BodabodaController extends Controller {
             return response()->json([
                 'success' => true,
                 'message' => 'Stage updated successfully!',
-                'redirect' => route('treasurer.bodaboda')
+                'redirect' => route('treasurer.bodaboda.stages')
             ]);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -845,6 +883,71 @@ class BodabodaController extends Controller {
                 'message' => 'Error: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    // 2. Count all stage supervisors (Active users with role = 'Supervisor' OR 'Stage Manager')
+    public function getCountAllStageSupervisors(): JsonResponse
+    {
+        $count = Users::whereIn('role', ['Supervisor', 'Stage Manager'])
+                    ->where('status', 'Active')
+                    ->count();
+        return response()->json(['count' => $count], 200);
+    }
+
+    // 3. Get all stages data with supervisor info - you already have listAllStages() which does this
+    // But let's add a dedicated method if needed
+    public function getAllStagesDataWithSupervisors(): JsonResponse
+    {
+        $stages = Stage::leftJoin('members', 'stages.manager', '=', 'members.memberId')
+            ->leftJoin('users', function($join) {
+                $join->on('members.email', '=', 'users.email')
+                    ->orWhere('members.phone1', '=', 'users.phone');
+            })
+            ->select(
+                'stages.*',
+                DB::raw("COALESCE(CONCAT(members.firstname, ' ', members.lastname), '') as manager_name"),
+                'members.memberId as manager_id',
+                'users.id as user_id',
+                'users.role as user_role',
+                'users.status as user_status'
+            )
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $stages
+        ], 200);
+    }
+
+    // 4. Get all stage supervisors data (all users with role = 'Supervisor' OR 'Stage Manager')
+    public function getAllStageSupervisorData(): JsonResponse
+    {
+        $supervisors = Users::whereIn('role', ['Supervisor', 'Stage Manager'])
+                        ->select('id', 'name', 'email', 'phone', 'role', 'status', 'created_at')
+                        ->get();
+
+        return response()->json([
+            'success' => true,
+            'count' => $supervisors->count(),
+            'data' => $supervisors
+        ], 200);
+    }
+
+    // Optional: Get counts for both stages and supervisors in one call
+    public function getStagesStats(): JsonResponse
+    {
+        $totalStages = Stage::count();
+        $activeSupervisors = Users::whereIn('role', ['Supervisor', 'Stage Manager'])
+                                ->where('status', 'Active')
+                                ->count();
+        $totalSupervisors = Users::whereIn('role', ['Supervisor', 'Stage Manager'])->count();
+
+        return response()->json([
+            'success' => true,
+            'total_stages' => $totalStages,
+            'active_supervisors' => $activeSupervisors,
+            'total_supervisors' => $totalSupervisors
+        ], 200);
     }
 
     // Vehicles ---------------------------------------------------------------------------------------------------------

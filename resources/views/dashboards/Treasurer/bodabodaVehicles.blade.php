@@ -3576,7 +3576,7 @@
                             button.textContent = originalText;
                             button.disabled = false;
                             if (data.success) {
-                                window.location.href = "{{ route('treasurer.members') }}";
+                                window.location.href = "{{ route('treasurer.bodaboda.members') }}";
                             }
                         }, 750);
                     })
@@ -4242,7 +4242,7 @@
                             button.textContent = originalText;
                             button.disabled = false;
                             if (data.success) {
-                                window.location.href = "{{ route('treasurer.members') }}";
+                                window.location.href = "{{ route('treasurer.bodaboda.members') }}";
                             }
                         }, 750);
                     })
@@ -4606,7 +4606,7 @@
                             button.textContent = originalText;
                             button.disabled = false;
                             if (data.success) {
-                                window.location.href = "{{ route('treasurer.members') }}";
+                                window.location.href = "{{ route('treasurer.bodaboda.members') }}";
                             }
                         }, 750);
                     })

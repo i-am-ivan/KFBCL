@@ -159,7 +159,7 @@
                         <ul class="mb-6 flex flex-col gap-1">
                             <!-- Members -->
                             <li>
-                                <a href="{{ route('treasurer.members') }}"
+                                <a href="{{ route('treasurer.bodaboda.members') }}"
                                 @click="selected = 'Members'"
                                 class="menu-item group"
                                 :class="selected === 'Members' ? 'menu-item-active' : 'menu-item-inactive'">
@@ -5842,7 +5842,7 @@
                             button.textContent = originalText;
                             button.disabled = false;
                             if (data.success) {
-                                window.location.href = "{{ route('treasurer.members') }}";
+                                window.location.href = "{{ route('treasurer.bodaboda.members') }}";
                             }
                         }, 750);
                     })
@@ -6508,7 +6508,7 @@
                             button.textContent = originalText;
                             button.disabled = false;
                             if (data.success) {
-                                window.location.href = "{{ route('treasurer.members') }}";
+                                window.location.href = "{{ route('treasurer.bodaboda.members') }}";
                             }
                         }, 750);
                     })
@@ -6872,7 +6872,7 @@
                             button.textContent = originalText;
                             button.disabled = false;
                             if (data.success) {
-                                window.location.href = "{{ route('treasurer.members') }}";
+                                window.location.href = "{{ route('treasurer.bodaboda.members') }}";
                             }
                         }, 750);
                     })
