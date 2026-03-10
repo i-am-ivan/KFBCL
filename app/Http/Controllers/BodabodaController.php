@@ -1421,6 +1421,88 @@ class BodabodaController extends Controller {
         ], 200);
     }
 
+    // Get total wallet balance (Contributions + Savings)
+    public function getTotalWalletBalance(): JsonResponse
+    {
+        try {
+            // Get total contributions balance
+            $contributionsPaidIn = MemberContribution::where('transactionType', 'Paid-In')
+                ->where('transactionStatus', 'Confirmed')
+                ->sum('transactionAmount');
+
+            $contributionsPaidOut = MemberContribution::where('transactionType', 'Paid-Out')
+                ->where('transactionStatus', 'Confirmed')
+                ->sum('transactionAmount');
+
+            $contributionsBalance = $contributionsPaidIn - $contributionsPaidOut;
+
+            // Get total savings balance
+            $savingsPaidIn = MemberSaving::where('transactionStatus', 'Confirmed')
+                ->where('transactionType', 'Paid-In')
+                ->sum('transactionAmount');
+
+            $savingsPaidOut = MemberSaving::where('transactionStatus', 'Confirmed')
+                ->where('transactionType', 'Paid-Out')
+                ->sum('transactionAmount');
+
+            $savingsBalance = $savingsPaidIn - $savingsPaidOut;
+
+            // Calculate total wallet balance
+            $totalBalance = $contributionsBalance + $savingsBalance;
+
+            return response()->json([
+                'success' => true,
+                'total_balance' => $totalBalance,
+                'formatted' => 'KES ' . number_format($totalBalance, 2),
+                'contributions_balance' => $contributionsBalance,
+                'savings_balance' => $savingsBalance
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching total wallet balance: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Get total weekly contributions (Sunday to Saturday)
+    public function getTotalWeeklyContribution(): JsonResponse
+    {
+        try {
+            // Get start of week (Sunday) and end of week (Saturday)
+            $now = Carbon::now();
+            $startOfWeek = $now->copy()->startOfWeek(Carbon::SUNDAY);
+            $endOfWeek = $now->copy()->endOfWeek(Carbon::SATURDAY);
+
+            $totalPaidIn = MemberContribution::where('transactionType', 'Paid-In')
+                ->where('transactionStatus', 'Confirmed')
+                ->whereBetween('transactionDate', [$startOfWeek, $endOfWeek])
+                ->sum('transactionAmount');
+
+            $totalPaidOut = MemberContribution::where('transactionType', 'Paid-Out')
+                ->where('transactionStatus', 'Confirmed')
+                ->whereBetween('transactionDate', [$startOfWeek, $endOfWeek])
+                ->sum('transactionAmount');
+
+            $weeklyBalance = $totalPaidIn - $totalPaidOut;
+
+            return response()->json([
+                'success' => true,
+                'weekly_balance' => $weeklyBalance,
+                'formatted' => 'KES ' . number_format($weeklyBalance, 2),
+                'week_start' => $startOfWeek->format('Y-m-d'),
+                'week_end' => $endOfWeek->format('Y-m-d')
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching weekly contribution: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function getMemberContributionBalance(Request $request, $memberId): JsonResponse
     {
         $totalPaidIn = MemberContribution::where('memberId', $memberId)
@@ -2531,6 +2613,49 @@ class BodabodaController extends Controller {
                 'message' => 'Error fetching member loans: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    // 1. Get total loan amount borrowed (Active loans where end_date > today)
+    public function getTotalLoanBorrowed(): JsonResponse
+    {
+        $total = DB::table('member_loans')
+            ->where('transactionLoanEndDate', '>', Carbon::now())
+            ->where('transactionLoanStatus', 'Active')
+            ->sum('transactionLoanAmount');
+
+        return response()->json([
+            'success' => true,
+            'total' => $total,
+            'formatted' => 'KES ' . number_format($total, 2)
+        ], 200);
+    }
+
+    // 2. Get total overdue amount (where end_date + 2 months < today)
+    public function getTotalLoanOverdue(): JsonResponse
+    {
+        $total = DB::table('member_loans')
+            ->whereRaw('DATE_ADD(transactionLoanEndDate, INTERVAL 2 MONTH) < CURDATE()')
+            ->where('transactionLoanStatus', 'Active')
+            ->sum('transactionTotalLoan');
+
+        return response()->json([
+            'success' => true,
+            'total' => $total,
+            'formatted' => 'KES ' . number_format($total, 2)
+        ], 200);
+    }
+
+    // 3. Get count of defaulted loans (where end_date + 2 months < today)
+    public function getTotalLoanDefaulters(): JsonResponse
+    {
+        $count = DB::table('member_loans')
+            ->whereRaw('DATE_ADD(transactionLoanEndDate, INTERVAL 2 MONTH) < CURDATE()')
+            ->count();
+
+        return response()->json([
+            'success' => true,
+            'count' => $count
+        ], 200);
     }
 
     // Savings -----------------------------------------------------------------------------------------------------------

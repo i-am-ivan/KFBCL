@@ -96,14 +96,19 @@
                             <!-- Metric Item Start -->
                             <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
                                 <p class="text-theme-sm text-gray-500 dark:text-gray-400">
-                                    Loans
+                                    Borrowed
                                 </p>
 
                                 <div class="mt-3 flex items-end justify-between">
-                                    <div x-data="memberTableFull()" x-init="fetchTotalMembers()">
-                                        <h4 class="text-xl font-bold text-gray-500 dark:text-white/90">
-                                            <span x-text="totalMembers">0</span>
-                                        </h4>
+                                    <div class="px-5">
+                                        <div class="mt-1 flex items-center gap-2" x-data x-init="$store.loanStats.loadAllLoanStats()">
+                                            <span class="bg-success-50 dark:bg-success-500/15 text-success-600 inline-flex size-5 text-xl font-semibold items-center justify-center rounded-full">
+                                                KES
+                                            </span>
+                                            <h4 class="text-xl font-semibold text-gray-500 dark:text-white/90" x-show="!$store.loanStats.isLoading" x-text="$store.loanStats.borrowed.replace('KES ', ' ')">
+                                                0.00
+                                            </h4>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -112,42 +117,29 @@
                             <!-- Metric Item Start -->
                             <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
                                 <p class="text-theme-sm text-gray-500 dark:text-gray-400">
-                                    Bonuses
+                                    Active Loans
                                 </p>
 
                                 <div class="mt-3 flex items-end justify-between">
                                     <div x-data>
-                                        <h4 class="text-xl font-bold text-gray-500 dark:text-white/90"
-                                            x-text="$store.loanStats.activeLoans">
+                                        <h4 class="text-xl font-bold text-gray-500 dark:text-white/90" x-text="$store.loanStats.activeLoans">
                                             0
                                         </h4>
                                     </div>
 
-                                    <div class="flex items-center gap-1">
-                                        <span class="flex items-center gap-1 rounded-full bg-success-50 px-2 py-0.5 text-theme-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500">
-                                            0%
-                                        </span>
-
-                                        <span class="text-theme-xs text-gray-500 dark:text-gray-400">
-                                            Vs last month
-                                        </span>
-                                    </div>
                                 </div>
                             </div>
                             <!-- Metric Item End -->
 
                         <!-- Metric Item Start - Contributions Wallet -->
-                        <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]"
-                            x-data="{ balance: 'KES 0.00' }"
-                            x-init="fetch('/contributions/balance/total')
-                                    .then(res => res.json())
-                                    .then(data => { if(data.success) balance = data.formatted; })">
+                        <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
 
-                            <p class="text-theme-sm text-gray-500 dark:text-gray-400">Fines</p>
+                            <p class="text-theme-sm text-gray-500 dark:text-gray-400">Overdue</p>
 
                             <div class="mt-3 flex items-end justify-between">
-                                <div>
-                                    <h4 class="text-xl font-semibold text-gray-500 dark:text-white/90" x-text="balance">KES 0.00</h4>
+                                <div  x-data x-init="$store.loanStats.loadAllLoanStats()">
+                                    <span class="text-xl font-semibold text-warning-600 dark:text-white/90" x-show="!$store.loanStats.isLoading" x-text="$store.loanStats.overdue">KES 0.00</span>
+                                    <span class="text-xl font-semibold text-gray-500 dark:text-white/90" x-show="$store.loanStats.isLoading" class="text-sm">Loading ...</span>
                                 </div>
                             </div>
                         </div>
@@ -155,16 +147,15 @@
 
                         <!-- Metric Item Start -->
                         <div x-data="savingsStats" class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
-                            <p class="text-theme-sm text-gray-500 dark:text-gray-400">Non-Members</p>
+                            <p class="text-theme-sm text-gray-500 dark:text-gray-400">Defaulters</p>
 
                             <div class="mt-3 flex items-end justify-between">
-                                <div>
-                                    <h4 class="text-xl font-semibold text-gray-500 dark:text-white/90">
-                                        <span x-show="!isLoading">KES <span x-text="formatMoney(totalBalance)"></span></span>
-                                        <span x-show="isLoading">Loading...</span>
-                                    </h4>
+                                <div x-data x-init="$store.loanStats.loadAllLoanStats()">
+                                    <span class="text-xl font-semibold text-gray-500 dark:text-white/90" x-show="!$store.loanStats.isLoading" x-text="$store.loanStats.defaulters">0</span>
+                                    <span class="text-xl font-semibold text-gray-500 dark:text-white/90" x-show="$store.loanStats.isLoading" class="text-sm">Loading ...</span>
                                 </div>
                             </div>
+
                         </div>
                         <!-- Metric Item End -->
 
@@ -214,7 +205,7 @@
                         </div>
 
                         <div class="pt-4 dark:border-gray-800">
-                            
+
                                 <div x-show="activeTab === 'loans'" x-data="loanTypesTable()">
                                     <!-- Loan Settings Content -->
                                     <div class="relative ">
@@ -2671,9 +2662,16 @@
             // Add to your existing Alpine.store or create a new one
             Alpine.store('loanStats', {
                 activeLoans: 0,
+                borrowed: 'KES 0.00',
+                overdue: 'KES 0.00',
+                defaulters: 0,
+                isLoading: false,
 
                 init() {
                     this.loadActiveLoans();
+                    this.loadBorrowed();
+                    this.loadOverdue();
+                    this.loadDefaulters();
                 },
 
                 loadActiveLoans() {
@@ -2686,6 +2684,59 @@
                             console.error('Error loading active loans:', error);
                             this.activeLoans = 0;
                         });
+                },
+
+                loadBorrowed() {
+                    fetch('/stats/loans/borrowed')
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                this.borrowed = data.formatted || 'KES 0.00';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error loading borrowed:', error);
+                            this.borrowed = 'KES 0.00';
+                        });
+                },
+
+                loadOverdue() {
+                    fetch('/stats/loans/overdue')
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                this.overdue = data.formatted || 'KES 0.00';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error loading overdue:', error);
+                            this.overdue = 'KES 0.00';
+                        });
+                },
+
+                loadDefaulters() {
+                    fetch('/stats/loans/defaulters')
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                this.defaulters = data.count || 0;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error loading defaulters:', error);
+                            this.defaulters = 0;
+                        });
+                },
+
+                loadAllStats() {
+                    this.isLoading = true;
+                    Promise.all([
+                        this.loadBorrowed(),
+                        this.loadOverdue(),
+                        this.loadDefaulters()
+                    ]).finally(() => {
+                        this.isLoading = false;
+                    });
                 }
             });
 
@@ -2696,6 +2747,7 @@
                 }
             });
         });
+
     </script>
 
     <script>

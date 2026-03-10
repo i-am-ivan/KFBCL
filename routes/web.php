@@ -306,6 +306,13 @@ Route::get('/stats/loans/monthly', [BodabodaController::class, 'getMonthlyLoans'
 
 Route::get('/stats/loans/status', [BodabodaController::class, 'getLoanStatusDistribution']);
 
+// Loan stats routes
+Route::get('/stats/loans/borrowed', [BodabodaController::class, 'getTotalLoanBorrowed'])->name('stats.loans.borrowed');
+
+Route::get('/stats/loans/overdue', [BodabodaController::class, 'getTotalLoanOverdue'])->name('stats.loans.overdue');
+
+Route::get('/stats/loans/defaulters', [BodabodaController::class, 'getTotalLoanDefaulters'])->name('stats.loans.defaulters');
+
 // Loan routes
 Route::get('/loans/all-data', [BodabodaController::class, 'getAllLoanData']);
 
@@ -331,6 +338,11 @@ Route::get('/contributions/balance/total', [BodabodaController::class, 'getTotal
 Route::get('/contributions/balance/member/{memberId}', [BodabodaController::class, 'getMemberContributionBalance']);
 
 Route::get('/stats/contributions/monthly', [BodabodaController::class, 'getMonthlyContributions']);
+
+// Wallet balance routes
+Route::get('/wallet/balance/total', [BodabodaController::class, 'getTotalWalletBalance'])->name('wallet.balance.total');
+
+Route::get('/wallet/contributions/weekly', [BodabodaController::class, 'getTotalWeeklyContribution'])->name('wallet.contributions.weekly');
 
 // Savings ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Member Savings Routes

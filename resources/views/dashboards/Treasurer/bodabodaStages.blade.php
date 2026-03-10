@@ -92,7 +92,7 @@
                     <!-- Quick Stats -->
                     <div class="col-span-12">
                         <!-- Metric Group Two -->
-                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 xl:grid-cols-4">
+                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 xl:grid-cols-3">
                             <!-- Metric Item Start - All Stages -->
                             <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]"
                                 x-data="{ totalStages: 0 }"
@@ -108,6 +108,27 @@
                                         <h4 class="text-xl font-bold text-gray-500 dark:text-white/90" x-text="totalStages">
                                             0
                                         </h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Metric Item End -->
+
+                            <!-- Metric Item Start - Active Stages -->
+                            <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]"
+                                x-data="{ activeStages: 0 }"
+                                x-init="fetch('/stages/all')
+                                        .then(res => res.json())
+                                        .then(data => {
+                                            if(data.data) {
+                                                activeStages = data.data.filter(stage => stage.status === 'Active').length;
+                                            }
+                                        })">
+
+                                <p class="text-theme-sm text-gray-500 dark:text-gray-400">Active Stages</p>
+
+                                <div class="mt-3 flex items-end justify-between">
+                                    <div>
+                                        <h4 class="text-xl font-semibold text-gray-500 dark:text-white/90" x-text="activeStages">0</h4>
                                     </div>
                                 </div>
                             </div>
@@ -157,44 +178,7 @@
                                 </div>
                             </div>
                             <!-- Metric Item End -->
-
-                            <!-- Metric Item Start - Total Supervisors (All) -->
-                            <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]"
-                                x-data="{ totalSupervisors: 0 }"
-                                x-init="fetch('/stages/supervisors/all')
-                                        .then(res => res.json())
-                                        .then(data => { totalSupervisors = data.count || 0; })">
-
-                                <p class="text-theme-sm text-gray-500 dark:text-gray-400">Total Supervisors</p>
-
-                                <div class="mt-3 flex items-end justify-between">
-                                    <div>
-                                        <h4 class="text-xl font-semibold text-gray-500 dark:text-white/90" x-text="totalSupervisors">0</h4>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Metric Item End -->
-
-                            <!-- Metric Item Start - Active Stages -->
-                            <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]"
-                                x-data="{ activeStages: 0 }"
-                                x-init="fetch('/stages/all')
-                                        .then(res => res.json())
-                                        .then(data => {
-                                            if(data.data) {
-                                                activeStages = data.data.filter(stage => stage.status === 'Active').length;
-                                            }
-                                        })">
-
-                                <p class="text-theme-sm text-gray-500 dark:text-gray-400">Active Stages</p>
-
-                                <div class="mt-3 flex items-end justify-between">
-                                    <div>
-                                        <h4 class="text-xl font-semibold text-gray-500 dark:text-white/90" x-text="activeStages">0</h4>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Metric Item End -->
+                            
                         </div>
                         <!-- Metric Group Two -->
                     </div>
