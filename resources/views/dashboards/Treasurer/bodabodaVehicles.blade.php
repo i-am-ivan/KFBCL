@@ -302,6 +302,9 @@
                                                                             <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                                 Status
                                                                             </th>
+                                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                                Registered On
+                                                                            </th>
                                                                         </tr>
                                                                     </thead>
 
@@ -402,6 +405,14 @@
                                                                                                 x-text="row.status">
                                                                                             </span>
                                                                                         </td>
+
+                                                                                        <!-- Registered On -->
+                                                                                        <td class="p-4 whitespace-nowrap">
+                                                                                            <span
+                                                                                                class="text-sm text-gray-700 dark:text-gray-400 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                                                                                                x-text="row.created_on">
+                                                                                            </span>
+                                                                                        </td>
                                                                                     </tr>
                                                                                 </template>
                                                                             </template>
@@ -440,7 +451,7 @@
                                                                         to
                                                                         <span class="text-gray-800 dark:text-white/90" x-text="endEntry"></span>
                                                                         of
-                                                                        <span class="text-gray-800 dark:text-white/90" x-text="rows.length"></span>
+                                                                        <span class="text-gray-800 dark:text-white/90" x-text="filteredVehicles.length"></span>
                                                                     </span>
                                                                 </div>
 
@@ -452,41 +463,41 @@
                                                                             to
                                                                             <span class="text-gray-800 dark:text-white/90" x-text="endEntry"></span>
                                                                             of
-                                                                            <span class="text-gray-800 dark:text-white/90" x-text="rows.length"></span>
+                                                                            <span class="text-gray-800 dark:text-white/90" x-text="filteredVehicles.length"></span>
                                                                         </span>
                                                                     </div>
                                                                     <div class="flex w-full items-center justify-between gap-2 rounded-lg bg-gray-50 p-4 sm:w-auto sm:justify-normal sm:rounded-none sm:bg-transparent sm:p-0 dark:bg-gray-900 dark:sm:bg-transparent">
-                                                                    <button
+                                                                        <button
                                                                             class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
                                                                             :disabled="page === 1"
                                                                             @click="goToPage(page - 1)">
-                                                                                <span>
-                                                                                    <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                                                                        xmlns="http://www.w3.org/2000/svg">
-                                                                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                                                                                d="M2.58203 9.99868C2.58174 10.1909 2.6549 10.3833 2.80152 10.53L7.79818 15.5301C8.09097 15.8231 8.56584 15.8233 8.85883 15.5305C9.15183 15.2377 9.152 14.7629 8.85921 14.4699L5.13911 10.7472L16.6665 10.7472C17.0807 10.7472 17.4165 10.4114 17.4165 9.99715C17.4165 9.58294 17.0807 9.24715 16.6665 9.24715L5.14456 9.24715L8.85919 5.53016C9.15199 5.23717 9.15184 4.7623 8.85885 4.4695C8.56587 4.1767 8.09099 4.17685 7.79819 4.46984L2.84069 9.43049C2.68224 9.568 2.58203 9.77087 2.58203 9.99715C2.58203 9.99766 2.58203 9.99817 2.58203 9.99868Z"
-                                                                                                fill="" />
-                                                                                    </svg>
-                                                                                </span>
-                                                                    </button>
+                                                                            <span>
+                                                                                <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none"
+                                                                                    xmlns="http://www.w3.org/2000/svg">
+                                                                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                                                                        d="M2.58203 9.99868C2.58174 10.1909 2.6549 10.3833 2.80152 10.53L7.79818 15.5301C8.09097 15.8231 8.56584 15.8233 8.85883 15.5305C9.15183 15.2377 9.152 14.7629 8.85921 14.4699L5.13911 10.7472L16.6665 10.7472C17.0807 10.7472 17.4165 10.4114 17.4165 9.99715C17.4165 9.58294 17.0807 9.24715 16.6665 9.24715L5.14456 9.24715L8.85919 5.53016C9.15199 5.23717 9.15184 4.7623 8.85885 4.4695C8.56587 4.1767 8.09099 4.17685 7.79819 4.46984L2.84069 9.43049C2.68224 9.568 2.58203 9.77087 2.58203 9.99715C2.58203 9.99766 2.58203 9.99817 2.58203 9.99868Z"
+                                                                                        fill="" />
+                                                                                </svg>
+                                                                            </span>
+                                                                        </button>
 
-                                                                    <span class="block text-sm font-medium text-gray-700 sm:hidden dark:text-gray-400">
+                                                                        <span class="block text-sm font-medium text-gray-700 sm:hidden dark:text-gray-400">
                                                                             Page <span x-text="page"></span> of <span x-text="totalPages"></span>
                                                                         </span>
 
-                                                                    <ul class="hidden items-center gap-0.5 sm:flex">
-                                                                        <template x-for="n in totalPages" :key="n">
-                                                                        <li>
-                                                                            <a href="#" @click.prevent="goToPage(n)"
-                                                                            :class="page === n ? 'bg-brand-500 text-white' : 'hover:bg-brand-500 text-gray-700 dark:text-gray-400 hover:text-white dark:hover:text-white'"
-                                                                            class="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium">
-                                                                            <span x-text="n"></span>
-                                                                            </a>
-                                                                        </li>
-                                                                        </template>
-                                                                    </ul>
+                                                                        <ul class="hidden items-center gap-0.5 sm:flex">
+                                                                            <template x-for="n in totalPages" :key="n">
+                                                                                <li>
+                                                                                    <a href="#" @click.prevent="goToPage(n)"
+                                                                                    :class="page === n ? 'bg-brand-500 text-white' : 'hover:bg-brand-500 text-gray-700 dark:text-gray-400 hover:text-white dark:hover:text-white'"
+                                                                                    class="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium">
+                                                                                        <span x-text="n"></span>
+                                                                                    </a>
+                                                                                </li>
+                                                                            </template>
+                                                                        </ul>
 
-                                                                    <button
+                                                                        <button
                                                                             class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
                                                                             :disabled="page === totalPages"
                                                                             @click="goToPage(page + 1)">
@@ -498,7 +509,7 @@
                                                                                         fill="" />
                                                                                 </svg>
                                                                             </span>
-                                                                    </button>
+                                                                        </button>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -528,6 +539,7 @@
         // Vehicles Table Component
         function vehiclesTable() {
             return {
+
                 // Properties
                 vehicles: [],
                 filteredVehicles: [],
@@ -575,7 +587,14 @@
                                 insurance: vehicle.insurance || 'N/A',
                                 availability: vehicle.assignment_status === 'Active' ? 'Assigned' : 'Available',
                                 status: vehicle.status || 'Active',
-                                assignedRider: vehicle.assigned_rider || null
+                                assignedRider: vehicle.assigned_rider || null,
+                                // Format created_on date as [16 Mar, 2026]
+                                created_on: vehicle.created_on ?
+                                    new Date(vehicle.created_on).toLocaleDateString('en-GB', {
+                                        day: '2-digit',
+                                        month: 'short',
+                                        year: 'numeric'
+                                    }).replace(/ /g, ' ') : 'Loading'
                             }));
 
                             this.filteredVehicles = [...this.vehicles];

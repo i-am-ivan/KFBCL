@@ -2676,6 +2676,57 @@ class BodabodaController extends Controller {
         ], 200);
     }
 
+    // Get all loan transactions
+    public function getAllLoanTransactions(): JsonResponse
+    {
+        try {
+            $transactions = DB::table('member_loans')
+                ->join('members', 'members.memberId', '=', 'member_loans.memberId')
+                ->join('member_loan_types', 'member_loans.transactionLoan', '=', 'member_loan_types.loanId')
+                ->leftJoin('member_loans_transactions', function($join) {
+                    $join->on('member_loans_transactions.memberId', '=', 'member_loans.memberId')
+                        ->where('member_loans_transactions.transactionType', '=', 'Paid-In');
+                })
+                ->select(
+                    'member_loans.transactionId',
+                    DB::raw("CONCAT(members.firstname, ' ', members.lastname) as member_name"),
+                    'member_loan_types.loan_type_name',
+                    'member_loan_types.interest_rate',
+                    'member_loans.transactionLoanAmount as borrowed',
+                    'member_loans.transactionTotalLoan as total',
+                    'member_loans.transactionLoanStartDate as start_date',
+                    'member_loans.transactionLoanEndDate as end_date',
+                    DB::raw('COALESCE(SUM(member_loans_transactions.transactionAmount), 0) as repaid'),
+                    'member_loans.transactionLoanStatus as status'
+                )
+                ->groupBy(
+                    'member_loans.transactionId',
+                    'members.firstname',
+                    'members.lastname',
+                    'member_loan_types.loan_type_name',
+                    'member_loan_types.interest_rate',
+                    'member_loans.transactionLoanAmount',
+                    'member_loans.transactionTotalLoan',
+                    'member_loans.transactionLoanStartDate',
+                    'member_loans.transactionLoanEndDate',
+                    'member_loans.transactionLoanStatus'
+                )
+                ->orderBy('member_loans.transactionId', 'asc')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => $transactions
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching loan transactions: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     // Savings -----------------------------------------------------------------------------------------------------------
     public function getAllMemberSavings($memberId)
     {
