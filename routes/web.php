@@ -357,6 +357,8 @@ Route::post('/bodaboda-member/{memberId}/savings/withdraw', [BodabodaController:
 Route::put('/bodaboda-member/{memberId}/savings/{transactionId}/edit', [BodabodaController::class, 'editMemberSavings']);
 
 Route::get('/savings/all-balance', [BodabodaController::class, 'getAllMembersSavingsBalance']);
+// Savings routes
+Route::get('/savings/all', [BodabodaController::class, 'getAllSavings'])->name('savings.all');
 
 // Bonuses ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/bonus-types/summary', [BodabodaController::class, 'getAllBonusTypesSummary']);

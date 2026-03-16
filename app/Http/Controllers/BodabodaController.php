@@ -1392,6 +1392,24 @@ class BodabodaController extends Controller {
         return response()->json(['data' => $contributions], 200);
     }
 
+    // Get all bodaboda savings data (Paid-In, Confirmed transactions)
+    public function getAllSavings(Request $request): JsonResponse
+    {
+        $savings = MemberSaving::select([
+                'member_savings.*',
+                DB::raw('CONCAT(members.firstname, " ", members.lastname) as full_name'),
+                'members.membership',
+                'members.email'
+            ])
+            ->join('members', 'member_savings.memberId', '=', 'members.memberId')
+            ->where('member_savings.transactionType', 'Paid-In')
+            ->where('member_savings.transactionStatus', 'Confirmed')
+            ->orderBy('member_savings.transactionDate', 'desc')
+            ->get();
+
+        return response()->json(['data' => $savings], 200);
+    }
+
     public function getAllMemberContributions($memberId)
     {
         $contributions = DB::table('member_contributions')

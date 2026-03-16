@@ -444,78 +444,78 @@
                                     </div>
                                 </div>
 
-                                <div x-show="activeTab === 'savings'" style="display: none;">
+                                <div class="" x-show="activeTab === 'savings'" x-data="savingsTable()">
                                     <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-                                        <!-- Contributions content here -->
+                                        <!-- Savings content here -->
                                         <div class="flex flex-col justify-between gap-5 border-b border-gray-200 px-5 py-4 sm:flex-row lg:items-center dark:border-gray-800">
                                             <div>
                                                 <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
-                                                    Bodaboda Contributions
+                                                    Bodaboda Savings
                                                 </h3>
                                                 <p class="text-sm text-gray-500 dark:text-gray-400">
-                                                    Review contributions performance
+                                                    Review savings performance
                                                 </p>
                                             </div>
 
                                             <div class="hidden flex-col gap-3 sm:flex sm:flex-row sm:items-center">
-                                                    <!-- Membership Filter -->
-                                                    <div class="hidden lg:block">
-                                                        <select x-model="membershipFilter"
-                                                                @change="performFilter()"
-                                                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                            <option value="All">All Members</option>
-                                                            <option value="Member">Members</option>
-                                                            <option value="Non-Member">Non-members</option>
-                                                        </select>
-                                                    </div>
-
-                                                    <!-- Frequency Filter -->
-                                                    <div class="hidden lg:block">
-                                                        <select x-model="frequencyFilter"
-                                                                @change="performFilter()"
-                                                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                            <option value="Daily">Daily</option>
-                                                            <option value="Weekly">Weekly</option>
-                                                            <option value="Monthly">Monthly</option>
-                                                            <option value="Yearly">Yearly</option>
-                                                        </select>
-                                                    </div>
-
-                                                    <!-- Payment Type Filter -->
-                                                    <div class="hidden lg:block">
-                                                        <select x-model="paymentFilter"
-                                                                @change="performFilter()"
-                                                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                            <option value="All">All Payment Types</option>
-                                                            <option value="Cash">Cash</option>
-                                                            <option value="MPesa">MPesa</option>
-                                                            <option value="Bank">Bank</option>
-                                                        </select>
-                                                    </div>
-
-                                                    <!-- Print Button -->
-                                                    <div>
-                                                        <button @click="printContributionsReport()"
-                                                                class="hover:text-dark-900 shadow-theme-xs relative flex h-11 items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                                <path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2" />
-                                                                <path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4" />
-                                                                <rect x="7" y="13" width="10" height="8" rx="2" />
-                                                            </svg>
-                                                            Print
-                                                        </button>
-                                                    </div>
+                                                <!-- Membership Filter -->
+                                                <div class="hidden lg:block">
+                                                    <select x-model="membershipFilter"
+                                                            @change="performFilter()"
+                                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                        <option value="All">All Members</option>
+                                                        <option value="Member">Members</option>
+                                                        <option value="Non-Member">Non-members</option>
+                                                    </select>
                                                 </div>
 
+                                                <!-- Frequency Filter -->
+                                                <div class="hidden lg:block">
+                                                    <select x-model="frequencyFilter"
+                                                            @change="performFilter()"
+                                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                        <option value="Daily">Daily</option>
+                                                        <option value="Weekly">Weekly</option>
+                                                        <option value="Monthly">Monthly</option>
+                                                        <option value="Yearly">Yearly</option>
+                                                    </select>
+                                                </div>
+
+                                                <!-- Payment Type Filter -->
+                                                <div class="hidden lg:block">
+                                                    <select x-model="paymentFilter"
+                                                            @change="performFilter()"
+                                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                        <option value="All">All Payment Types</option>
+                                                        <option value="Cash">Cash</option>
+                                                        <option value="MPesa">MPesa</option>
+                                                        <option value="Bank">Bank</option>
+                                                    </select>
+                                                </div>
+
+                                                <!-- Print Button -->
+                                                <div>
+                                                    <button @click="printSavingsReport()"
+                                                            class="hover:text-dark-900 shadow-theme-xs relative flex h-11 items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                            <path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2" />
+                                                            <path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4" />
+                                                            <rect x="7" y="13" width="10" height="8" rx="2" />
+                                                        </svg>
+                                                        Print
+                                                    </button>
+                                                </div>
+                                            </div>
+
                                         </div>
-                                        <!-- Contributions table Table -->
+                                        <!-- Savings table -->
                                         <div x-init="init()">
                                             <div class="custom-scrollbar overflow-x-auto">
                                                 <table class="w-full table-auto">
                                                     <thead>
                                                         <tr class="border-b border-gray-200 dark:divide-gray-800 dark:border-gray-800">
-                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400"">
+                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                 #Transaction Code
                                                             </th>
                                                             <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
@@ -542,8 +542,8 @@
                                                         </tr>
                                                     </thead>
 
-                                                    <!-- Message if no contribution data found -->
-                                                    <template x-if="contributions.length === 0">
+                                                    <!-- Message if no savings data found -->
+                                                    <template x-if="savings.length === 0">
                                                         <tbody>
                                                             <tr>
                                                                 <td colspan="10" class="px-4 py-12 text-center">
@@ -553,8 +553,8 @@
                                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.801 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.801 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
                                                                         </svg>
                                                                         <div class="space-y-2">
-                                                                            <h2 class="text-xl font-semibold text-gray-700">No contribution records found</h2>
-                                                                            <p class="text-gray-500">Do some transactions to view contribution performance</p>
+                                                                            <h2 class="text-xl font-semibold text-gray-700">No savings records found</h2>
+                                                                            <p class="text-gray-500">Do some savings transactions to view performance</p>
                                                                         </div>
                                                                     </div>
                                                                 </td>
@@ -562,49 +562,49 @@
                                                         </tbody>
                                                     </template>
 
-                                                    <!-- If there are Contribution records display in table -->
-                                                    <template x-if="contributions.length > 0">
+                                                    <!-- If there are Savings records display in table -->
+                                                    <template x-if="savings.length > 0">
                                                         <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800">
-                                                            <template x-for="contribution in paginatedContributions" :key="contribution.transactionCode">
+                                                            <template x-for="saving in paginatedSavings" :key="saving.transactionCode">
                                                                 <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-900">
                                                                     <td class="p-4 whitespace-nowrap">
                                                                         <div class="group flex items-center gap-3">
                                                                             <p class="text-theme-xs font-medium text-gray-700 group-hover:underline dark:text-gray-400"
-                                                                                    x-text="contribution.transactionCode">
-                                                                                </p>
+                                                                            x-text="saving.transactionCode">
+                                                                            </p>
                                                                         </div>
                                                                     </td>
                                                                     <td class="p-4 whitespace-nowrap">
                                                                         <div>
                                                                             <span class="text-sm font-medium text-gray-700 dark:text-gray-400"
-                                                                                x-text="contribution.memberName">
+                                                                                x-text="saving.memberName">
                                                                             </span>
-                                                                            <p class="text-xs text-gray-500 dark:text-gray-400" x-text="row.memberEmail"></p>
+                                                                            <p class="text-xs text-gray-500 dark:text-gray-400" x-text="saving.memberEmail"></p>
                                                                         </div>
                                                                     </td>
                                                                     <td class="p-4 whitespace-nowrap">
-                                                                        <span class="text-sm text-gray-700 dark:text-gray-400" x-text="contribution.membership"></span>
+                                                                        <span class="text-sm text-gray-700 dark:text-gray-400" x-text="saving.membership"></span>
                                                                     </td>
                                                                     <td class="p-4 whitespace-nowrap">
-                                                                        <p class="text-sm text-gray-700 dark:text-gray-400" x-text="contribution.amount"></p>
+                                                                        <p class="text-sm text-gray-700 dark:text-gray-400" x-text="saving.amount"></p>
                                                                     </td>
                                                                     <td class="p-4 whitespace-nowrap">
-                                                                        <p class="text-sm text-gray-700 dark:text-gray-400" x-text="contribution.date"></p>
+                                                                        <p class="text-sm text-gray-700 dark:text-gray-400" x-text="saving.date"></p>
                                                                     </td>
                                                                     <td class="p-4 whitespace-nowrap">
-                                                                        <span class="text-sm text-gray-700 dark:text-gray-400" x-text="contribution.type"></span>
+                                                                        <span class="text-sm text-gray-700 dark:text-gray-400" x-text="saving.type"></span>
                                                                     </td>
                                                                     <td class="p-4 whitespace-nowrap">
-                                                                        <span class="text-sm text-gray-700 dark:text-gray-400" x-text="contribution.mode"></span>
+                                                                        <span class="text-sm text-gray-700 dark:text-gray-400" x-text="saving.mode"></span>
                                                                     </td>
                                                                     <td class="p-4 whitespace-nowrap">
                                                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
                                                                             :class="{
-                                                                                'bg-success-100 text-success-600 dark:bg-success-900/30 dark:text-success-400': contribution.status === 'Confirmed',
-                                                                                'bg-warning-100 text-warning-600 dark:bg-warning-900/30 dark:text-warning-400': contribution.status === 'Pending',
-                                                                                'bg-error-100 text-error-600 dark:bg-error-900/30 dark:text-error-400': contribution.status === 'Cancelled' || contribution.status === 'Reversed'
+                                                                                'bg-success-100 text-success-600 dark:bg-success-900/30 dark:text-success-400': saving.status === 'Confirmed',
+                                                                                'bg-warning-100 text-warning-600 dark:bg-warning-900/30 dark:text-warning-400': saving.status === 'Pending',
+                                                                                'bg-error-100 text-error-600 dark:bg-error-900/30 dark:text-error-400': saving.status === 'Cancelled' || saving.status === 'Reversed'
                                                                             }"
-                                                                            x-text="contribution.status">
+                                                                            x-text="saving.status">
                                                                         </span>
                                                                     </td>
                                                                 </tr>
@@ -622,7 +622,7 @@
                                                         to
                                                         <span class="text-gray-800 dark:text-white/90" x-text="endEntry"></span>
                                                         of
-                                                        <span class="text-gray-800 dark:text-white/90" x-text="contributions.length"></span>
+                                                        <span class="text-gray-800 dark:text-white/90" x-text="savings.length"></span>
                                                     </span>
                                                 </div>
 
@@ -634,41 +634,41 @@
                                                             to
                                                             <span class="text-gray-800 dark:text-white/90" x-text="endEntry"></span>
                                                             of
-                                                            <span class="text-gray-800 dark:text-white/90" x-text="contributions.length"></span>
+                                                            <span class="text-gray-800 dark:text-white/90" x-text="savings.length"></span>
                                                         </span>
                                                     </div>
                                                     <div class="flex w-full items-center justify-between gap-2 rounded-lg bg-gray-50 p-4 sm:w-auto sm:justify-normal sm:rounded-none sm:bg-transparent sm:p-0 dark:bg-gray-900 dark:sm:bg-transparent">
-                                                    <button
+                                                        <button
                                                             class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
                                                             :disabled="page === 1"
                                                             @click="goToPage(page - 1)">
-                                                                <span>
-                                                                    <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                                                        xmlns="http://www.w3.org/2000/svg">
-                                                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                                                                d="M2.58203 9.99868C2.58174 10.1909 2.6549 10.3833 2.80152 10.53L7.79818 15.5301C8.09097 15.8231 8.56584 15.8233 8.85883 15.5305C9.15183 15.2377 9.152 14.7629 8.85921 14.4699L5.13911 10.7472L16.6665 10.7472C17.0807 10.7472 17.4165 10.4114 17.4165 9.99715C17.4165 9.58294 17.0807 9.24715 16.6665 9.24715L5.14456 9.24715L8.85919 5.53016C9.15199 5.23717 9.15184 4.7623 8.85885 4.4695C8.56587 4.1767 8.09099 4.17685 7.79819 4.46984L2.84069 9.43049C2.68224 9.568 2.58203 9.77087 2.58203 9.99715C2.58203 9.99766 2.58203 9.99817 2.58203 9.99868Z"
-                                                                                fill="" />
-                                                                    </svg>
-                                                                </span>
-                                                    </button>
+                                                            <span>
+                                                                <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none"
+                                                                    xmlns="http://www.w3.org/2000/svg">
+                                                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                                                        d="M2.58203 9.99868C2.58174 10.1909 2.6549 10.3833 2.80152 10.53L7.79818 15.5301C8.09097 15.8231 8.56584 15.8233 8.85883 15.5305C9.15183 15.2377 9.152 14.7629 8.85921 14.4699L5.13911 10.7472L16.6665 10.7472C17.0807 10.7472 17.4165 10.4114 17.4165 9.99715C17.4165 9.58294 17.0807 9.24715 16.6665 9.24715L5.14456 9.24715L8.85919 5.53016C9.15199 5.23717 9.15184 4.7623 8.85885 4.4695C8.56587 4.1767 8.09099 4.17685 7.79819 4.46984L2.84069 9.43049C2.68224 9.568 2.58203 9.77087 2.58203 9.99715C2.58203 9.99766 2.58203 9.99817 2.58203 9.99868Z"
+                                                                        fill="" />
+                                                                </svg>
+                                                            </span>
+                                                        </button>
 
-                                                    <span class="block text-sm font-medium text-gray-700 sm:hidden dark:text-gray-400">
+                                                        <span class="block text-sm font-medium text-gray-700 sm:hidden dark:text-gray-400">
                                                             Page <span x-text="page"></span> of <span x-text="totalPages"></span>
                                                         </span>
 
-                                                    <ul class="hidden items-center gap-0.5 sm:flex">
-                                                        <template x-for="n in totalPages" :key="n">
-                                                        <li>
-                                                            <a href="#" @click.prevent="goToPage(n)"
-                                                            :class="page === n ? 'bg-brand-500 text-white' : 'hover:bg-brand-500 text-gray-700 dark:text-gray-400 hover:text-white dark:hover:text-white'"
-                                                            class="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium">
-                                                            <span x-text="n"></span>
-                                                            </a>
-                                                        </li>
-                                                        </template>
-                                                    </ul>
+                                                        <ul class="hidden items-center gap-0.5 sm:flex">
+                                                            <template x-for="n in totalPages" :key="n">
+                                                                <li>
+                                                                    <a href="#" @click.prevent="goToPage(n)"
+                                                                    :class="page === n ? 'bg-brand-500 text-white' : 'hover:bg-brand-500 text-gray-700 dark:text-gray-400 hover:text-white dark:hover:text-white'"
+                                                                    class="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium">
+                                                                        <span x-text="n"></span>
+                                                                    </a>
+                                                                </li>
+                                                            </template>
+                                                        </ul>
 
-                                                    <button
+                                                        <button
                                                             class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
                                                             :disabled="page === totalPages"
                                                             @click="goToPage(page + 1)">
@@ -680,13 +680,14 @@
                                                                         fill="" />
                                                                 </svg>
                                                             </span>
-                                                    </button>
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+
                         </div>
 
                     </div>
@@ -773,36 +774,295 @@
 
     </script>
 
+    <!-- Savings Alpine ------------------------------------------------------------------ -->
     <!-- Savings Stats ------------------------------------------------------------------------- -->
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('savingsStats', () => ({
+            totalBalance: 0,
+            isLoading: true,
+
+            init() {
+                this.loadTotalBalance();
+            },
+
+            loadTotalBalance() {
+                fetch('/savings/all-balance')
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            this.totalBalance = data.total_balance;
+                        }
+                        this.isLoading = false;
+                    })
+                    .catch(error => {
+                        console.error('Error loading total savings balance:', error);
+                        this.isLoading = false;
+                    });
+            },
+
+            formatMoney(amount) {
+                return amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            }
+        }));
+    });
+</script>
+
+<!-- Savings Alpine ------------------------------------------------------------------ -->
     <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('savingsStats', () => ({
-                totalBalance: 0,
-                isLoading: true,
+        // savingsTable.js - Data binding and pagination functionality for savings
+        function savingsTable() {
+            return {
+                // Savings data - loaded from Laravel backend
+                savings: [],
+                page: 1,
+                itemsPerPage: 10,
 
-                init() {
-                    this.loadTotalBalance();
+                // Filter properties
+                membershipFilter: 'All',
+                frequencyFilter: 'Daily',
+                paymentFilter: 'All',
+
+                // Initialize function - loads data from Laravel
+                async init() {
+                    console.log('Savings table initialized');
+                    await this.loadSavings();
                 },
 
-                loadTotalBalance() {
-                    fetch('/savings/all-balance')
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.success) {
-                                this.totalBalance = data.total_balance;
+                // Load savings from Laravel backend
+                async loadSavings() {
+                    try {
+                        const response = await fetch('/savings/all');
+                        const data = await response.json();
+
+                        if (data && data.data) {
+                            // Transform Laravel data for frontend display - ONLY Paid-In, Confirmed transactions
+                            this.savings = data.data.map(item => ({
+                                transactionCode: item.transactionCode || 'Loading ...',
+                                memberName: item.full_name || 'N/A',
+                                memberEmail: item.email || '',
+                                membership: item.membership || 'N/A',
+                                amount: 'KES ' + (parseFloat(item.transactionAmount || 0).toLocaleString()),
+                                date: new Date(item.transactionDate || Date.now()).toLocaleDateString('en-GB', {
+                                    day: '2-digit',
+                                    month: 'short',
+                                    year: 'numeric'
+                                }),
+                                type: item.transactionType || 'N/A',
+                                mode: item.transactionMode || 'N/A',
+                                status: item.transactionStatus || 'N/A',
+                                // Add raw date for frequency filtering
+                                rawDate: item.transactionDate ? new Date(item.transactionDate) : new Date()
+                            }));
+                        }
+                    } catch (error) {
+                        console.error('Error loading savings:', error);
+                        this.savings = [];
+                    }
+                },
+
+                // Filtered savings based on membership, frequency, and payment type
+                get filteredSavings() {
+                    let filtered = this.savings;
+
+                    // Apply membership filter (Member/Non-Member)
+                    if (this.membershipFilter !== 'All') {
+                        filtered = filtered.filter(s => s.membership === this.membershipFilter);
+                    }
+
+                    // Apply payment type filter
+                    if (this.paymentFilter !== 'All') {
+                        filtered = filtered.filter(s => s.mode === this.paymentFilter);
+                    }
+
+                    // Apply frequency filter based on transaction date
+                    if (this.frequencyFilter !== 'Daily') {
+                        const now = new Date();
+                        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+                        filtered = filtered.filter(s => {
+                            const transDate = new Date(s.rawDate);
+
+                            switch(this.frequencyFilter) {
+                                case 'Daily':
+                                    // Today's transactions
+                                    const txDate = new Date(transDate.getFullYear(), transDate.getMonth(), transDate.getDate());
+                                    return txDate.getTime() === today.getTime();
+
+                                case 'Weekly':
+                                    // Last 7 days
+                                    const weekAgo = new Date(today);
+                                    weekAgo.setDate(weekAgo.getDate() - 7);
+                                    return transDate >= weekAgo;
+
+                                case 'Monthly':
+                                    // Last 30 days
+                                    const monthAgo = new Date(today);
+                                    monthAgo.setDate(monthAgo.getDate() - 30);
+                                    return transDate >= monthAgo;
+
+                                case 'Yearly':
+                                    // Last 365 days
+                                    const yearAgo = new Date(today);
+                                    yearAgo.setDate(yearAgo.getDate() - 365);
+                                    return transDate >= yearAgo;
+
+                                default:
+                                    return true;
                             }
-                            this.isLoading = false;
-                        })
-                        .catch(error => {
-                            console.error('Error loading total savings balance:', error);
-                            this.isLoading = false;
                         });
+                    }
+
+                    return filtered;
                 },
 
-                formatMoney(amount) {
-                    return amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                // Computed properties for pagination
+                get totalPages() {
+                    return Math.ceil(this.filteredSavings.length / this.itemsPerPage);
+                },
+
+                get paginatedSavings() {
+                    const start = (this.page - 1) * this.itemsPerPage;
+                    const end = start + this.itemsPerPage;
+                    return this.filteredSavings.slice(start, end);
+                },
+
+                get startEntry() {
+                    return (this.page - 1) * this.itemsPerPage + 1;
+                },
+
+                get endEntry() {
+                    const end = this.page * this.itemsPerPage;
+                    return end > this.filteredSavings.length ? this.filteredSavings.length : end;
+                },
+
+                // Filter method
+                performFilter() {
+                    this.page = 1; // Reset to first page when filtering
+                },
+
+                // Print function for savings report
+                printSavingsReport() {
+                    // Create a new window for printing
+                    const printWindow = window.open('', '_blank');
+
+                    // Get current filtered and paginated data
+                    const currentData = this.paginatedSavings;
+
+                    // Generate table rows HTML
+                    const tableRows = currentData.map(saving => `
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">${saving.transactionCode || 'N/A'}</td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">
+                                <div><strong>${saving.memberName || 'N/A'}</strong></div>
+                                <div style="font-size: 12px; color: #6b7280;">${saving.membership || 'N/A'}</div>
+                            </td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">${saving.amount || 'KES 0'}</td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">${saving.date || 'N/A'}</td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">${saving.type || 'N/A'}</td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">${saving.mode || 'N/A'}</td>
+                            <td style="padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb;">
+                                <span style="display: inline-block; padding: 4px 8px; border-radius: 9999px; font-size: 12px; font-weight: 500;
+                                    ${saving.status === 'Confirmed' ? 'background-color: #d1fae5; color: #065f46;' :
+                                    saving.status === 'Pending' ? 'background-color: #fed7aa; color: #92400e;' :
+                                    saving.status === 'Cancelled' ? 'background-color: #fee2e2; color: #991b1b;' :
+                                    saving.status === 'Reversed' ? 'background-color: #e5e7eb; color: #1f2937;' :
+                                    'background-color: #f3f4f6; color: #1f2937;'}">
+                                    ${saving.status || 'N/A'}
+                                </span>
+                            </td>
+                        </tr>
+                    `).join('');
+
+                    // Write the print document
+                    printWindow.document.write(`
+                        <html>
+                        <head>
+                            <title>Savings Report</title>
+                            <style>
+                                body { font-family: Arial, sans-serif; margin: 20px; }
+                                h1 { color: #111827; font-size: 24px; margin-bottom: 10px; }
+                                .header { margin-bottom: 20px; color: #6b7280; font-size: 14px; }
+                                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                                th { background-color: #f9fafb; padding: 12px; text-align: left; font-weight: 600; color: #374151; border-bottom: 2px solid #e5e7eb; }
+                                td { padding: 12px; border-bottom: 1px solid #e5e7eb; }
+                                .footer { margin-top: 20px; text-align: right; color: #6b7280; font-size: 12px; }
+                                @media print {
+                                    body { margin: 0; }
+                                    button { display: none; }
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <h1>Savings Report</h1>
+                            <div class="header">
+                                <div>Generated on: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}</div>
+                                <div>Filters:
+                                    Membership - ${this.membershipFilter === 'All' ? 'All Members' : this.membershipFilter},
+                                    Frequency - ${this.frequencyFilter === 'Daily' ? 'Today' : this.frequencyFilter},
+                                    Payment Type - ${this.paymentFilter === 'All' ? 'All Types' : this.paymentFilter}
+                                </div>
+                                <div>Showing ${this.startEntry} to ${this.endEntry} of ${this.filteredSavings.length} savings</div>
+                            </div>
+
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Transaction Code</th>
+                                        <th>Member</th>
+                                        <th>Amount</th>
+                                        <th>Date</th>
+                                        <th>Type</th>
+                                        <th>Mode</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${tableRows}
+                                </tbody>
+                            </table>
+
+                            <div class="footer">
+                                <p>Report generated from Bodaboda Microfinance System</p>
+                            </div>
+                        </body>
+                        </html>
+                    `);
+
+                    printWindow.document.close();
+                    printWindow.focus();
+                    printWindow.print();
+                },
+
+                // Pagination methods
+                prevPage() {
+                    if (this.page > 1) this.page--;
+                },
+
+                nextPage() {
+                    if (this.page < this.totalPages) this.page++;
+                },
+
+                goToPage(page) {
+                    if (page >= 1 && page <= this.totalPages) this.page = page;
+                },
+
+                get originalTotalPages() {
+                    return Math.ceil(this.savings.length / this.itemsPerPage);
+                },
+
+                get originalPaginatedSavings() {
+                    const start = (this.page - 1) * this.itemsPerPage;
+                    const end = start + this.itemsPerPage;
+                    return this.savings.slice(start, end);
                 }
-            }));
+            };
+        }
+
+        // Initialize Alpine components
+        document.addEventListener('alpine:init', () => {
+            // Register the savingsTable component
+            Alpine.data('savingsTable', savingsTable);
         });
     </script>
 
