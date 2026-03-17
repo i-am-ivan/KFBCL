@@ -17,11 +17,15 @@ class MemberLoanType extends Model
 
     protected $fillable = [
         'loan_type_name',
+        'description',
         'interest_rate',
         'max_amount',
         'min_amount',
         'repayment_period_months',
-        'fine_percentage',
+        'min_duration',
+        'max_duration',
+        'grace_period',
+        'late_fine_percentage',
         'author',
         'status',
         'created_on',
@@ -30,7 +34,7 @@ class MemberLoanType extends Model
 
     protected $casts = [
         'interest_rate' => 'decimal:2',
-        'fine_percentage' => 'decimal:2',
+        'late_fine_percentage' => 'decimal:2',
         'max_amount' => 'decimal:2',
         'min_amount' => 'decimal:2',
         'created_on' => 'datetime',
