@@ -200,7 +200,7 @@
                         </div>
                         <p class="text-center text-sm text-gray-600">
                             Don't have an account?
-                            <a href="{{ url('/signup') }}" class="font-medium text-[#c5480e] hover:text-[#E62A1C]">Sign Up</a>
+                            Contact the system Admin for help
                         </p>
                     </div>
                 </div>

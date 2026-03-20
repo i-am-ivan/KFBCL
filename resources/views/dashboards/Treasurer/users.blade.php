@@ -28,7 +28,7 @@
     <div class="flex h-screen overflow-hidden">
 
         <!-- ===== Sidebar Start ===== -->
-        @include('Layouts.Treasurer.aside')
+        @include(Auth::user()->getAsideView())
         <!-- ===== Sidebar End ===== -->
 
       <!-- ===== Content Area Start ===== -->
@@ -446,7 +446,7 @@
                             </div>
                             </div>
                         </div>
-                        
+
                     </div>
 
                     <!-- User Roles Content -->
@@ -903,6 +903,7 @@
         </div>
 
         <div class="flex flex-col h-full px-2 pr-14">
+
             <form action="/users/create" method="POST" x-data="createUserForm" @submit.prevent="submitForm()">
                 @csrf
                 <div class="-mx-2.5 flex flex-wrap gap-y-5">
@@ -959,12 +960,16 @@
                     <!-- Date of Birth -->
                     <div class="w-full px-2.5 xl:w-1/2">
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Date of Birth
+                            Date of Birth <span class="text-xs text-gray-500 ml-1">(DD-Mon-YYYY)</span>
                         </label>
                         <div class="relative">
-                            <input type="text" id="dob" name="dob"
+                            <input type="text" id="date_of_birth" name="date_of_birth"
                                 x-model="dateOfBirth"
-                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 pl-4 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 flatpickr-input">
+                                @input="clearError('dateOfBirth'); formatDateInput()"
+                                @blur="validateField('dateOfBirth')"
+                                :class="errors.dateOfBirth ? 'border-red-500' : ''"
+                                placeholder="e.g., 18-Mar-1995"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 pl-4 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                             <span class="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                                 <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M6.66659 1.5415C7.0808 1.5415 7.41658 1.87729 7.41658 2.2915V2.99984H12.5833V2.2915C12.5833 1.87729 12.919 1.5415 13.3333 1.5415C13.7475 1.5415 14.0833 1.87729 14.0833 2.2915V2.99984L15.4166 2.99984C16.5212 2.99984 17.4166 3.89527 17.4166 4.99984V7.49984V15.8332C17.4166 16.9377 16.5212 17.8332 15.4166 17.8332H4.58325C3.47868 17.8332 2.58325 16.9377 2.58325 15.8332V7.49984V4.99984C2.58325 3.89527 3.47868 2.99984 4.58325 2.99984L5.91659 2.99984V2.2915C5.91659 1.87729 6.25237 1.5415 6.66659 1.5415ZM6.66659 4.49984H4.58325C4.30711 4.49984 4.08325 4.7237 4.08325 4.99984V6.74984H15.9166V4.99984C15.9166 4.7237 15.6927 4.49984 15.4166 4.49984H13.3333H6.66659ZM15.9166 8.24984H4.08325V15.8332C4.08325 16.1093 4.30711 16.3332 4.58325 16.3332H15.4166C15.6927 16.3332 15.9166 16.1093 15.9166 15.8332V8.24984Z" fill=""></path>
@@ -1096,6 +1101,7 @@
                     </button>
                 </div>
             </form>
+
         </div>
       </div>
     </div>
@@ -2560,7 +2566,7 @@
                 }
             }));
 
-            // 6. SIMPLE CREATE USER HANDLING
+            // 6. SIMPLE CREATE USER HANDLING - UPDATED WITH DATE VALIDATION
             Alpine.data('createUserForm', () => ({
                 firstName: '',
                 lastName: '',
@@ -2575,9 +2581,39 @@
                 errors: {},
                 isSubmitting: false,
 
+                // Format date input as user types
+                formatDateInput() {
+                    // Remove any non-alphanumeric characters
+                    let value = this.dateOfBirth.replace(/[^a-zA-Z0-9]/g, '');
+
+                    // Auto-format as user types
+                    if (value.length > 2) {
+                        let day = value.substring(0, 2);
+                        let month = value.substring(2, 5);
+                        let year = value.substring(5, 9);
+
+                        if (month.length > 0 && !month.match(/^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)$/i)) {
+                            // Capitalize first letter of month
+                            month = month.charAt(0).toUpperCase() + month.substring(1).toLowerCase();
+                            // Limit to 3 characters
+                            month = month.substring(0, 3);
+                        }
+
+                        let formatted = day;
+                        if (month) formatted += '-' + month;
+                        if (year) formatted += '-' + year;
+
+                        // Only update if the formatted value is different and not exceeding max length
+                        if (formatted.length <= 11 && formatted !== this.dateOfBirth) {
+                            this.dateOfBirth = formatted;
+                        }
+                    }
+                },
+
                 validateField(field) {
                     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                     const phoneRegex = /^\+?[\d\s\-\(\)]+$/;
+                    const dateRegex = /^\d{2}-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-\d{4}$/;
 
                     switch(field) {
                         case 'firstName':
@@ -2586,7 +2622,7 @@
                             } else if (this.firstName.trim().length < 2) {
                                 this.errors.firstName = 'First name must be at least 2 characters';
                             } else {
-                                this.errors.firstName = '';
+                                delete this.errors.firstName;
                             }
                             break;
 
@@ -2596,7 +2632,7 @@
                             } else if (this.lastName.trim().length < 2) {
                                 this.errors.lastName = 'Last name must be at least 2 characters';
                             } else {
-                                this.errors.lastName = '';
+                                delete this.errors.lastName;
                             }
                             break;
 
@@ -2606,7 +2642,7 @@
                             } else if (!emailRegex.test(this.email)) {
                                 this.errors.email = 'Please enter a valid email address';
                             } else {
-                                this.errors.email = '';
+                                delete this.errors.email;
                             }
                             break;
 
@@ -2618,7 +2654,7 @@
                             } else if (this.phone.replace(/\D/g, '').length < 9) {
                                 this.errors.phone = 'Phone number is too short';
                             } else {
-                                this.errors.phone = '';
+                                delete this.errors.phone;
                             }
                             break;
 
@@ -2626,7 +2662,7 @@
                             if (!this.gender) {
                                 this.errors.gender = 'Gender is required';
                             } else {
-                                this.errors.gender = '';
+                                delete this.errors.gender;
                             }
                             break;
 
@@ -2634,7 +2670,32 @@
                             if (!this.userRole) {
                                 this.errors.userRole = 'User role is required';
                             } else {
-                                this.errors.userRole = '';
+                                delete this.errors.userRole;
+                            }
+                            break;
+
+                        case 'dateOfBirth':
+                            if (!this.dateOfBirth) {
+                                this.errors.dateOfBirth = 'Date of birth is required';
+                            } else if (!dateRegex.test(this.dateOfBirth)) {
+                                this.errors.dateOfBirth = 'Date must be in format: DD-Mon-YYYY (e.g., 18-Mar-1995)';
+                            } else {
+                                // Check if user is at least 18 years old
+                                const dob = this.parseDate(this.dateOfBirth);
+                                if (dob) {
+                                    const today = new Date();
+                                    const eighteenYearsAgo = new Date(
+                                        today.getFullYear() - 18,
+                                        today.getMonth(),
+                                        today.getDate()
+                                    );
+
+                                    if (dob > eighteenYearsAgo) {
+                                        this.errors.dateOfBirth = 'User must be at least 18 years old';
+                                    } else {
+                                        delete this.errors.dateOfBirth;
+                                    }
+                                }
                             }
                             break;
 
@@ -2644,7 +2705,7 @@
                             } else if (this.password.length < 8) {
                                 this.errors.password = 'Password must be at least 8 characters';
                             } else {
-                                this.errors.password = '';
+                                delete this.errors.password;
                             }
                             this.validatePasswordMatch();
                             break;
@@ -2655,17 +2716,41 @@
                     }
                 },
 
+                // Helper to parse DD-Mon-YYYY date
+                parseDate(dateStr) {
+                    try {
+                        const parts = dateStr.split('-');
+                        if (parts.length !== 3) return null;
+
+                        const day = parseInt(parts[0], 10);
+                        const month = parts[1];
+                        const year = parseInt(parts[2], 10);
+
+                        const months = {
+                            'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+                            'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+                        };
+
+                        const monthIndex = months[month];
+                        if (monthIndex === undefined) return null;
+
+                        return new Date(year, monthIndex, day);
+                    } catch (e) {
+                        return null;
+                    }
+                },
+
                 validatePasswordMatch() {
                     if (this.confirmPassword && this.password !== this.confirmPassword) {
                         this.errors.confirmPassword = 'Passwords do not match';
                     } else if (this.confirmPassword) {
-                        this.errors.confirmPassword = '';
+                        delete this.errors.confirmPassword;
                     }
                 },
 
                 clearError(field) {
                     if (this.errors[field]) {
-                        this.errors[field] = '';
+                        delete this.errors[field];
                     }
                 },
 
@@ -2676,17 +2761,22 @@
                     this.validateField('phone');
                     this.validateField('gender');
                     this.validateField('userRole');
+                    this.validateField('dateOfBirth');
                     this.validateField('password');
                     this.validateField('confirmPassword');
 
-                    return !Object.values(this.errors).some(error => error !== '');
+                    return Object.keys(this.errors).length === 0;
                 },
 
                 async submitForm() {
                     if (!this.validateAll()) {
-                        const firstError = Object.values(this.errors).find(error => error !== '');
-                        if (firstError) {
-                            alert('Error: ' + firstError);
+                        // Scroll to the first error
+                        const firstErrorField = Object.keys(this.errors)[0];
+                        const errorElement = document.querySelector(`[x-model="${firstErrorField}"]`) ||
+                                            document.querySelector(`#${firstErrorField.replace(/([A-Z])/g, '_$1').toLowerCase()}`);
+                        if (errorElement) {
+                            errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            errorElement.focus();
                         }
                         return;
                     }
@@ -2694,16 +2784,35 @@
                     this.isSubmitting = true;
 
                     try {
-                        // Get the actual form element
-                        const form = document.querySelector('form[x-data="createUserForm"]');
+                        // Convert date from DD-Mon-YYYY to YYYY-MM-DD for database
+                        let formattedDate = '';
+                        if (this.dateOfBirth) {
+                            const dateObj = this.parseDate(this.dateOfBirth);
+                            if (dateObj) {
+                                const year = dateObj.getFullYear();
+                                const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                                const day = String(dateObj.getDate()).padStart(2, '0');
+                                formattedDate = `${year}-${month}-${day}`;
+                            }
+                        }
 
-                        // Fill the hidden form fields with Alpine data
-                        const hiddenFields = form.querySelectorAll('input[type="hidden"]');
+                        // Prepare form data
+                        const formData = new FormData();
+                        formData.append('first_name', this.firstName);
+                        formData.append('last_name', this.lastName);
+                        formData.append('email', this.email);
+                        formData.append('phone', this.phone);
+                        formData.append('gender', this.gender);
+                        formData.append('date_of_birth', formattedDate);
+                        formData.append('national_id', this.nationalId);
+                        formData.append('user_role', this.userRole);
+                        formData.append('password', this.password);
+                        formData.append('password_confirmation', this.confirmPassword);
+                        formData.append('_token', document.querySelector('input[name="_token"]').value);
 
-                        // Submit the actual form
                         const response = await fetch('/users/create', {
                             method: 'POST',
-                            body: new FormData(form),
+                            body: formData,
                             headers: {
                                 'Accept': 'application/json'
                             }
@@ -2725,6 +2834,7 @@
                             this.userRole = '';
                             this.password = '';
                             this.confirmPassword = '';
+                            this.errors = {};
 
                             // Close modal if it exists
                             if (typeof this.newUserModal !== 'undefined') {
@@ -2737,8 +2847,35 @@
                             }, 1000);
                         } else {
                             if (data.errors) {
-                                const firstError = Object.values(data.errors)[0][0];
-                                alert('Error: ' + firstError);
+                                // Map Laravel validation errors to our error object
+                                this.errors = {};
+                                for (const [field, messages] of Object.entries(data.errors)) {
+                                    const fieldMap = {
+                                        'first_name': 'firstName',
+                                        'last_name': 'lastName',
+                                        'email': 'email',
+                                        'phone': 'phone',
+                                        'gender': 'gender',
+                                        'date_of_birth': 'dateOfBirth',
+                                        'national_id': 'nationalId',
+                                        'user_role': 'userRole',
+                                        'password': 'password'
+                                    };
+                                    const errorField = fieldMap[field] || field;
+                                    this.errors[errorField] = messages[0];
+                                }
+
+                                // Show first error
+                                const firstError = Object.values(this.errors)[0];
+                                alert('Validation Error: ' + firstError);
+
+                                // Scroll to first error
+                                const firstErrorField = Object.keys(this.errors)[0];
+                                const errorElement = document.querySelector(`[x-model="${firstErrorField}"]`);
+                                if (errorElement) {
+                                    errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                    errorElement.focus();
+                                }
                             } else if (data.message) {
                                 alert('Error: ' + data.message);
                             } else {

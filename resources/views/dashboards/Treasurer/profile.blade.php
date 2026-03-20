@@ -32,7 +32,7 @@
         <div class="flex h-screen overflow-hidden">
 
         <!-- ===== Sidebar Start ===== -->
-        @include('Layouts.Treasurer.aside')
+        @include(Auth::user()->getAsideView())
         <!-- ===== Sidebar End ===== -->
 
         <!-- ===== Content Area Start ===== -->
@@ -41,7 +41,7 @@
             <div :class="sidebarToggle ? 'block xl:hidden' : 'hidden'" class="fixed z-50 h-screen w-full bg-gray-900/50 hidden"></div>
             <!-- Small Device Overlay End -->
 
-            <!-- ===== Header Start ===== -->
+                <!-- ===== Header Start ===== -->
                 @include('Layouts.General.header')
                 <!-- ===== Header End ===== -->
 
@@ -506,6 +506,7 @@
                 </div>
             </main>
             <!-- ===== Main Content End ===== -->
+
         </div>
         <!-- ===== Content Area End ===== -->
         </div>

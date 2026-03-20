@@ -566,6 +566,12 @@ class BodabodaController extends Controller {
         }
     }
 
+    public function show($id)
+    {
+        $member = Member::findOrFail($id);
+        return view('members.show', compact('member'));
+    }
+
     // Vehicles --------------------------------------------------------------------------------------
 
     public function addMemberVehicle(Request $request, $memberId)

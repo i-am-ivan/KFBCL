@@ -74,6 +74,7 @@ class UsersController extends Controller
             'userRoles' => $userRoles
         ]);
     }
+
     /**
      * Function to create new system users
      */
@@ -82,17 +83,22 @@ class UsersController extends Controller
         // Log the incoming request
         Log::info('Create user attempt:', $request->all());
 
-        // Validate input
+        // Validate input with custom rule for 18+ age
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email|unique:user_logins,email',
             'phone' => 'required|string|max:15|unique:users,phone',
             'gender' => 'required|in:Male,Female',
-            'date_of_birth' => 'nullable|date',
+            'date_of_birth' => 'required|date|before_or_equal:' . now()->subYears(18)->format('Y-m-d'),
             'national_id' => 'nullable|string|max:255',
             'user_role' => 'required|in:Chairman,Secretary,Treasurer,Supervisor,IT,Receptionist',
             'password' => 'required|string|min:8|confirmed',
+        ], [
+            'date_of_birth.before_or_equal' => 'User must be at least 18 years old.',
+            'date_of_birth.required' => 'Date of birth is required.',
+            'user_role.required' => 'Please select a user role.',
+            'user_role.in' => 'Invalid role selected.',
         ]);
 
         if ($validator->fails()) {
@@ -107,6 +113,9 @@ class UsersController extends Controller
         DB::beginTransaction();
 
         try {
+            // Format date if needed (should already be in Y-m-d from frontend)
+            $dateOfBirth = $request->date_of_birth;
+
             // Create user
             $user = User::create([
                 'first_name' => $request->first_name,
@@ -115,7 +124,7 @@ class UsersController extends Controller
                 'phone' => $request->phone,
                 'gender' => $request->gender,
                 'national_id' => $request->national_id,
-                'date_of_birth' => $request->date_of_birth,
+                'date_of_birth' => $dateOfBirth,
                 'role' => $request->user_role,
                 'status' => 'Active',
             ]);

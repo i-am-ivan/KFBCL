@@ -36,7 +36,7 @@
     <div class="flex h-screen overflow-hidden">
 
         <!-- ===== Sidebar Start ===== -->
-        @include('Layouts.Treasurer.aside')
+        @include(Auth::user()->getAsideView())
         <!-- ===== Sidebar End ===== -->
 
         <!-- ===== Content Area Start ===== -->
@@ -178,7 +178,7 @@
                                 </div>
                             </div>
                             <!-- Metric Item End -->
-                            
+
                         </div>
                         <!-- Metric Group Two -->
                     </div>

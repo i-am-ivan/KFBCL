@@ -37,7 +37,7 @@
     <div class="flex h-screen overflow-hidden">
 
         <!-- ===== Sidebar Start ===== -->
-        @include('Layouts.Treasurer.aside')
+        @include(Auth::user()->getAsideView())
         <!-- ===== Sidebar End ===== -->
 
         <!-- ===== Content Area Start ===== -->
