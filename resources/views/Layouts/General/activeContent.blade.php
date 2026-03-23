@@ -744,18 +744,15 @@
                     <div x-show="activeTab === 'vehicles'" x-data="memberInfo">
                         <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
 
-                            @php
-                                // Check if vehicles are loaded
-                                $count = $Member->vehicles->count();
-                                $isLoaded = $Member->relationLoaded('vehicles');
-                                echo "Count: $count | Loaded: " . ($isLoaded ? 'Yes' : 'No');
-                            @endphp
-
-                            @if($count > 0)
-                                @include('Layouts.General.nonMemberVehicles', ['Member' => $Member])
-                            @else
-                                @include('Layouts.General.memberVehicles', ['Member' => $Member])
-                            @endif
+                            <div>
+                                <!-- Your existing Alpine code that works -->
+                                <div x-show="memberData?.membership === 'Non-Member'">
+                                    @include('Layouts.General.nonMemberVehicles')
+                                </div>
+                                <div x-show="memberData?.membership !== 'Non-Member'">
+                                    @include('Layouts.General.memberVehicles')
+                                </div>
+                            </div>
 
                         </div>
 
