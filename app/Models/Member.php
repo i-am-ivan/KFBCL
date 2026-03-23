@@ -27,17 +27,6 @@ class Member extends Model
         return $this->status !== 'Active';
     }
 
-    // Check member membership type
-    public function isMember()
-    {
-        return $this->membership === 'Member';
-    }
-
-    public function isNonMember()
-    {
-        return $this->membership !== 'Non-Member';
-    }
-
     public function identification()
     {
         return $this->hasOne(MemberIdentification::class, 'member_id', 'memberId');

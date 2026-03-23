@@ -741,17 +741,129 @@
                     </div>
 
                     <!-- Vehicles Table (already complete) -->
-                    <div x-show="activeTab === 'vehicles'" x-data="memberInfo">
-                        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+                    <div x-show="activeTab === 'vehicles'">
+                        <div>
 
-                            <div>
-                                <!-- Your existing Alpine code that works -->
-                                <div x-show="memberData?.membership === 'Non-Member'">
-                                    @include('Layouts.General.nonMemberVehicles')
+                            <div x-data="memberInfo">
+                                <!-- Display table based on Membership -->
+                                <div x-show="memberData?.member?.membership === 'Member'">
+
+                                    <div class="col-span-12 mb-4">
+                                        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+                                            @include('Layouts.General.memberVehicles')
+                                        </div>
+                                    </div>
+
                                 </div>
-                                <div x-show="memberData?.membership !== 'Non-Member'">
-                                    @include('Layouts.General.memberVehicles')
+
+                                <div x-show="memberData?.member?.membership === 'Non-Member'">
+
+                                    <div class="col-span-12 mb-4">
+                                        <!-- Show the current vehicle assigned or if not assinged details -->
+                                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-1 md:gap-6 xl:grid-cols-1">
+                                                <!-- Metric Item Start -->
+                                                <div class=" rounded-2xl border border-gray-200 bg-white p-5 lg:p-6 dark:border-gray-800 dark:bg-white/[0.03]">
+
+                                                    <div class="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between" x-data="memberInfo">
+
+                                                        <!-- If no Vehicle is assigned -->
+                                                        <div x-show="!$store.vehicleData?.currentVehicle" class="flex w-full items-center justify-between">
+                                                            <div class="flex w-full flex-col items-center gap-6 xl:flex-row">
+                                                                <div class="h-[78px] w-[78px] overflow-hidden rounded-full border border-gray-200 bg-gray-100 flex items-center justify-center dark:border-gray-800 dark:bg-gray-800">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="size-5">
+                                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                                        <path d="M5 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+                                                                        <path d="M19 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+                                                                        <path d="M7.5 14h5l4 -4h-10.5m1.5 4l4 -4"></path>
+                                                                        <path d="M13 6h2l1.5 3l2 4"></path>
+                                                                    </svg>
+                                                                </div>
+                                                                <div class="order-3 xl:order-2">
+                                                                    <h4 class="mb-2 text-center text-lg font-semibold text-gray-800 xl:text-left dark:text-white/90">
+                                                                        Vehicle
+                                                                    </h4>
+                                                                    <div class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
+                                                                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                                                                            <span>No Vehicle Assigned</span>
+                                                                        </p>
+                                                                        <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
+                                                                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                                                                            <span>Click Assign Vehicle to assign vehicle for member</span>
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="flex flex-col gap-3 sm:flex-row">
+                                                                <div>
+                                                                    <button @click="assignMemberVehicle = true" class="shadow-theme-xs inline-flex flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                                                            <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                        </svg>
+                                                                        Assign Vehicle
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- If Vehicle is assigned -->
+                                                        <div x-show="$store.vehicleData?.currentVehicle" class="flex w-full items-center justify-between">
+                                                            <div class="flex w-full flex-col items-center gap-6 xl:flex-row">
+                                                                <div class="h-[78px] w-[78px] overflow-hidden rounded-full border border-gray-200 bg-gray-100 flex items-center justify-center dark:border-gray-800 dark:bg-gray-800">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="size-5">
+                                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                                        <path d="M5 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+                                                                        <path d="M19 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
+                                                                        <path d="M7.5 14h5l4 -4h-10.5m1.5 4l4 -4"></path>
+                                                                        <path d="M13 6h2l1.5 3l2 4"></path>
+                                                                    </svg>
+                                                                </div>
+                                                                <div class="order-3 xl:order-2">
+                                                                    <h4 class="mb-2 text-center text-lg font-semibold text-gray-800 xl:text-left dark:text-white/90" x-text="$store.vehicleData?.currentVehicle?.plate_number || 'Loading ...'">
+                                                                        Vehicle
+                                                                    </h4>
+                                                                    <div class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
+                                                                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                                                                            <span x-text="$store.vehicleData?.currentVehicle?.type + ': ' + $store.vehicleData?.currentVehicle?.make + ' ' + $store.vehicleData?.currentVehicle?.brand + ' ' + $store.vehicleData?.currentVehicle?.model + ' - ' + $store.vehicleData?.currentVehicle?.CC + ' CC'">
+                                                                                Motorcycle: Cruse Boxer Bajaj - 150 CC
+                                                                            </span>
+                                                                        </p>
+                                                                        <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
+                                                                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                                                                            <span x-text="$store.vehicleData?.currentVehicle?.plate_number || 'Loading ...'">Number Plate</span>
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="flex flex-col gap-3 sm:flex-row">
+                                                                <div>
+                                                                    <button @click="$dispatch('open-reassign-vehicle-modal', { vehicle: $store.vehicleData.currentVehicle })" class="shadow-theme-xs inline-flex flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                                                            <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                                        </svg>
+                                                                        Re-Assign Vehicle
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                                <!-- Metric Item End -->
+                                            </div>
+                                    </div>
+
+                                    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+                                        <!-- Show assigned Vehicle history -->
+                                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-1 md:gap-6 xl:grid-cols-1">
+                                            @include('Layouts.General.nonMemberVehicles')
+                                        </div>
+                                    </div>
+
                                 </div>
+
                             </div>
 
                         </div>

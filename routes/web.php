@@ -267,6 +267,8 @@ Route::get('/vehicles/availability/count', [BodabodaController::class, 'getCount
 
 Route::get('/vehicles/stats', [BodabodaController::class, 'getAllVehicleStats'])->name('vehicles.stats');
 
+Route::get('/treasurer/bodaboda-member/{memberId}/vehicles/nonmember/details', [BodabodaController::class, 'getNonMemberVehiclesWithDetails']);
+
 // Loans --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/member-transactions/count-active-loans', [BodabodaController::class, 'countActiveLoanTransactions']);
 

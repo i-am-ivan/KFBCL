@@ -4157,7 +4157,9 @@
 
                 loadNonMemberVehicleData() {
                     console.log('Loading non-member vehicle data...');
-                    let url = '/bodaboda-member/' + this.memberId + '/vehicles/nonmember/all';
+                    // Get the member ID from the URL path
+                    let memberId = window.location.pathname.split('/').pop();
+                    let url = '/treasurer/bodaboda-member/' + memberId + '/vehicles/nonmember/details';
                     console.log('Fetching:', url);
 
                     fetch(url)
@@ -4165,28 +4167,21 @@
                         .then(data => {
                             console.log('Non-member vehicles response:', data);
                             if (data.success) {
-                                // Force a new array reference
                                 this.nonMemberVehicles = [...(data.vehicles || [])];
                                 console.log('Non-member vehicles set:', this.nonMemberVehicles);
 
-                                // Reset page to trigger re-evaluation
+                                // Find the currently assigned vehicle (availability = 'Assigned')
+                                const currentVehicle = this.nonMemberVehicles.find(v => v.availability === 'Assigned');
+                                if (currentVehicle) {
+                                    Alpine.store('vehicleData').currentVehicle = currentVehicle;
+                                } else {
+                                    Alpine.store('vehicleData').currentVehicle = null;
+                                }
+
                                 this.pageNonMember = 1;
                             }
                         })
                         .catch(error => console.error('Error loading non-member vehicles:', error));
-
-                    // Get non-member count
-                    fetch('/bodaboda-member/' + this.memberId + '/vehicles/nonmember/count')
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.success) {
-                                this.nonMemberCount = data.count || 0;
-                            }
-                        })
-                        .catch(error => console.error('Error loading non-member count:', error))
-                        .finally(() => {
-                            this.isLoading = false;
-                        });
                 },
 
                 setupEventListeners() {

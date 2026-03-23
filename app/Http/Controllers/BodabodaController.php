@@ -1380,6 +1380,34 @@ class BodabodaController extends Controller {
         ], 200);
     }
 
+    public function getNonMemberVehiclesWithDetails($memberId)
+    {
+        $vehicles = DB::table('member_assign_vehicles')
+            ->join('members_vehicles', 'member_assign_vehicles.vehicle', '=', 'members_vehicles.vehicleId')
+            ->join('members', 'members_vehicles.member', '=', 'members.memberId')
+            ->where('member_assign_vehicles.rider', $memberId)
+            ->select(
+                'member_assign_vehicles.assignedId',
+                'member_assign_vehicles.rider',
+                'member_assign_vehicles.vehicle',
+                DB::raw("CONCAT('VHLC', members_vehicles.vehicleId) as vehicle_code"),
+                DB::raw("CONCAT(members_vehicles.type, ': ', members_vehicles.brand, ' ', members_vehicles.yom, ' , ', members_vehicles.make, ' ', members_vehicles.model, ' ', members_vehicles.CC, ' - CC ') as vehicle"),
+                DB::raw("CONCAT(members.firstname, ' ', members.lastname) as owner"),
+                'members_vehicles.availability',
+                DB::raw("DATE_FORMAT(member_assign_vehicles.assignedDate, '%M, %e %Y') as assigned_date"),
+                DB::raw("DATE_FORMAT(member_assign_vehicles.updated_on, '%M, %e %Y') as reassigned_date"),
+                DB::raw("DATEDIFF(member_assign_vehicles.updated_on, member_assign_vehicles.assignedDate) as duration_days"),
+                'member_assign_vehicles.status'
+            )
+            ->orderBy('member_assign_vehicles.rider', 'ASC')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'vehicles' => $vehicles
+        ]);
+    }
+
     // Contributions -----------------------------------------------------------------------------------------------------
     // Get all bodaboda contribution data
     public function getAllContributions(Request $request): JsonResponse

@@ -1,10 +1,13 @@
-<div class="flex flex-col justify-between gap-5 border-b border-gray-200 px-5 py-4 sm:flex-row lg:items-center dark:border-gray-800">
+                                                        <div class="flex flex-col justify-between gap-5 border-b border-gray-200 px-5 py-4 sm:flex-row lg:items-center dark:border-gray-800">
+
+                                                            <!-- Assigned Vehicle Details -->
+
                                                             <div>
                                                                     <h3 class="text-lg font-semibold text-gray-600 dark:text-white/90">
                                                                         Vehicle
                                                                     </h3>
                                                                     <p class="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
-                                                                        Manage Member Vehicles
+                                                                        Vehicle assignment history
                                                                     </p>
                                                             </div>
 
@@ -31,22 +34,11 @@
                                                                     </button>
                                                                 </div>
 
-                                                                <!-- Assign Vehicle -->
-                                                                <div>
-
-                                                                        <button
-                                                                            @click="assignMemberVehicle = true" class="shadow-theme-xs inline-flex flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                                                            <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                            </svg>
-                                                                            Assign Vehicle
-                                                                        </button>
-                                                                </div>
-
                                                             </div>
+
                                                         </div>
 
-                                                        <!-- Vehicles Table -->
+                                                        <!-- Assigned Vehicles Table -->
                                                         <div>
 
                                                             <!-- Non-Member Vehicles Table -->
@@ -68,35 +60,21 @@
                                                                                     <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                                         <div class="flex items-center">
                                                                                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Type
+                                                                                                Vehicle
                                                                                             </p>
                                                                                         </div>
                                                                                     </th>
                                                                                     <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                                         <div class="flex items-center">
                                                                                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Plate Number
+                                                                                                Owner
                                                                                             </p>
                                                                                         </div>
                                                                                     </th>
                                                                                     <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                                         <div class="flex items-center">
                                                                                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Brand
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Model
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Make
+                                                                                                Avaialbility
                                                                                             </p>
                                                                                         </div>
                                                                                     </th>
@@ -110,17 +88,25 @@
                                                                                     <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                                         <div class="flex items-center">
                                                                                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Status
+                                                                                                Date Re-Assigned
                                                                                             </p>
                                                                                         </div>
                                                                                     </th>
                                                                                     <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                                         <div class="flex items-center">
                                                                                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Actions
+                                                                                                Duration
                                                                                             </p>
                                                                                         </div>
                                                                                     </th>
+                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                                        <div class="flex items-center">
+                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                                                                                Status
+                                                                                            </p>
+                                                                                        </div>
+                                                                                    </th>
+
                                                                                 </tr>
                                                                             </thead>
                                                                             <!-- table header end -->
@@ -145,7 +131,6 @@
                                                                                 </tbody>
                                                                             </template>
 
-
                                                                             <!-- If there is data display the table -->
                                                                             <template x-if="nonMemberVehicles.length > 0">
                                                                                 <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800">
@@ -153,60 +138,49 @@
                                                                                         <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-900">
                                                                                             <!-- Vehicle Code -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <p class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="vehicle.assignedId || 'N/A'"></p>
+                                                                                                <p class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="vehicle.vehicle_code || 'N/A'"></p>
                                                                                             </td>
 
-                                                                                            <!-- Type -->
+                                                                                            <!-- Vehicle -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="vehicle.type || 'N/A'"></p>
+                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="vehicle.vehicle || 'N/A'"></p>
                                                                                             </td>
 
-                                                                                            <!-- Plate Number -->
+                                                                                            <!-- Owner -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="vehicle.plate_number || 'N/A'"></p>
+                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="vehicle.owner || 'N/A'"></p>
                                                                                             </td>
 
-                                                                                            <!-- Brand -->
+                                                                                            <!-- Availability -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="vehicle.brand || 'N/A'"></p>
+                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="vehicle.availability || 'N/A'"></p>
                                                                                             </td>
 
-                                                                                            <!-- Model -->
+                                                                                            <!-- Date Assigned -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="vehicle.model || 'N/A'"></p>
+                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="vehicle.assigned_date || 'N/A'"></p>
                                                                                             </td>
 
-                                                                                            <!-- Make -->
+                                                                                            <!-- Date Re-Assigned -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="vehicle.make || 'N/A'"></p>
+                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="vehicle.reassigned_date || 'N/A'"></p>
                                                                                             </td>
 
-                                                                                            <!-- Date Assigned - COMMENTED OUT because data not in response -->
+                                                                                            <!-- Duration -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="vehicle.assignedDate || 'N/A'"></p>
+                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="vehicle.duration_days + ' days'"></p>
                                                                                             </td>
 
-                                                                                            <!-- Status - FIXED: using vehicle.status not vehicle.vehicle_status -->
+                                                                                            <!-- Status -->
                                                                                             <td class="p-4 whitespace-nowrap">
                                                                                                 <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full"
                                                                                                     :class="vehicle.status === 'Approved' ? 'bg-success-50 text-success-700 dark:bg-success-500/15 dark:text-success-500' : 'bg-warning-50 text-warning-700 dark:bg-warning-500/15 dark:text-warning-500'"
                                                                                                     x-text="vehicle.status || 'N/A'">
                                                                                                 </span>
                                                                                             </td>
-
-                                                                                            <!-- Actions - Reassign button -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <button @click="$dispatch('open-reassign-vehicle-modal', { vehicle: vehicle })"
-                                                                                                    class="shadow-theme-xs inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-                                                                                                    <svg class="w-[22px] h-[22px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 12h4m-2 2v-4M4 18v-4a2 2 0 0 1 2-2h6m0 0-2-2m2 2-2 2"></path>
-                                                                                                    </svg>
-                                                                                                </button>
-                                                                                            </td>
                                                                                         </tr>
                                                                                     </template>
                                                                                 </tbody>
-
                                                                             </template>
 
                                                                         </table>
