@@ -1677,78 +1677,85 @@
 
                 <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4" x-show="assignMemberVehicle">
 
+                    <!-- Search Section with Dropdown -->
                     <div class="w-full px-2.5">
-                        <div class="flex flex-wrap shadow-xs rounded-base -space-x-0.5">
-                            <button id="dropdown-button"
-                                data-dropdown-toggle="dropdown"
-                                type="button"
-                                class="inline-flex items-center shrink-0 z-10 text-body bg-neutral-secondary-medium box-border border border-default-medium hover:bg-neutral-tertiary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary font-medium leading-5 rounded-s-base text-sm px-4 py-2.5 focus:outline-none">
-                                <svg class="w-4 h-4 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
-                                    fill="none"
-                                    viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.143 4H4.857A.857.857 0 0 0 4 4.857v4.286c0 .473.384.857.857.857h4.286A.857.857 0 0 0 10 9.143V4.857A.857.857 0 0 0 9.143 4Zm10 0h-4.286a.857.857 0 0 0-.857.857v4.286c0 .473.384.857.857.857h4.286A.857.857 0 0 0 20 9.143V4.857A.857.857 0 0 0 19.143 4Zm-10 10H4.857a.857.857 0 0 0-.857.857v4.286c0 .473.384.857.857.857h4.286a.857.857 0 0 0 .857-.857v-4.286A.857.857 0 0 0 9.143 14Zm10 0h-4.286a.857.857 0 0 0-.857.857v4.286c0 .473.384.857.857.857h4.286a.857.857 0 0 0 .857-.857v-4.286a.857.857 0 0 0-.857-.857Z"/>
-                                </svg>
-                                Vehicle Type
-                                <svg class="w-4 h-4 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/></svg>
-                            </button>
-                            <div id="dropdown" class="z-10 hidden bg-neutral-primary-medium border border-default-medium rounded-base shadow-lg w-44">
-                                <ul class="p-2 text-sm text-body font-medium" aria-labelledby="dropdown-button">
-                                    <li>
-                                        <a href="Motorcycle" class="block p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded-md">Motorcycle</a>
-                                    </li>
-                                    <li>
-                                        <a href="Tuk Tuk" class="block p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded-md">Tuk Tuk</a>
-                                    </li>
-                                </ul>
-                            </div>
+                        <div class="flex flex-wrap shadow-xs rounded-base -space-x-0.5 relative">
                             <input type="search"
                                 id="search-dropdown"
-                                class="px-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm focus:ring-brand focus:border-brand block w-full placeholder:text-body"
-                                placeholder="Search Number Plate"
-                                required>
+                                x-model="vehicleSearchTerm"
+                                @input.debounce.300ms="searchVehicles()"
+                                @focus="loadInitialVehicles()"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent py-3 pr-[84px] text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
+                                placeholder="Search Number Plate or Vehicle Code"
+                                autocomplete="off">
+
+                            <!-- Dropdown Results -->
+                            <div x-show="searchResults.length > 0 && vehicleSearchTerm.length > 0"
+                                @click.away="searchResults = []"
+                                class="absolute top-full left-0 right-0 mt-1 z-50 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg max-h-64 overflow-y-auto">
+                                <template x-for="vehicle in searchResults" :key="vehicle.vehicleId">
+                                    <div @click="selectVehicle(vehicle)"
+                                        class="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-b-0">
+                                        <div class="flex justify-between items-center">
+                                            <div>
+                                                <p class="font-medium text-gray-900 dark:text-white" x-text="vehicle.type + ': ' + vehicle.brand + ' (' + vehicle.yom + ') ' + vehicle.make + ' ' + vehicle.model + ' - ' + vehicle.CC"></p>
+                                                <p class="text-sm text-gray-500 dark:text-gray-400" x-text="vehicle.vehicle_code + ' - ' + vehicle.plate_number"></p>
+                                            </div>
+                                            <span :class="vehicle.availability === 'Available' ? 'text-green-600' : 'text-red-600'"
+                                                class="text-xs font-medium px-2 py-1 rounded-full"
+                                                :class="vehicle.availability === 'Available' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'"
+                                                x-text="vehicle.availability">
+                                            </span>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <!-- Loading indicator -->
+                            <div x-show="isSearching" class="absolute right-3 top-2.5">
+                                <svg class="animate-spin h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="w-full px-2.5">
+                    <!-- Vehicle Details Section - Shows when vehicle is selected -->
+                    <div class="w-full px-2.5" x-show="selectedVehicle">
                         <h4 class="border-b border-gray-200 pb-4 text-base font-medium text-gray-800 dark:border-gray-800 dark:text-white/90">
                             Vehicle Details
                         </h4>
                     </div>
 
-                    <div class="w-full px-2.5 border-b border-gray-200">
+                    <div class="w-full px-2.5 border-b border-gray-200" x-show="selectedVehicle">
                         <div class="min-w-[500px]">
                             <div class="flex flex-col gap-2">
-                                <div x-data="{checked: false}" @click="checked = !checked" class="flex cursor-pointer items-center gap-9 rounded-lg p-3 hover:bg-gray-50 dark:hover:bg-white/[0.03]">
+                                <div class="flex cursor-pointer items-center gap-9 rounded-lg p-3 bg-gray-50 dark:bg-white/[0.03]">
                                     <div class="flex items-start gap-3">
                                         <div>
                                             <span class="mb-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
                                                 Vehicle Code
                                             </span>
-                                            <span class="text-theme-sm font-medium text-gray-700 dark:text-gray-400">
-                                                VH0102
-                                            </span>
+                                            <span class="text-theme-sm font-medium text-gray-700 dark:text-gray-400" x-text="selectedVehicle.vehicle_code || 'N/A'"></span>
                                         </div>
                                     </div>
                                     <div>
-                                        <span class="mb-1 block text-theme-sm font-medium text-gray-700 dark:text-gray-400">
-                                        Motorcycle: Cruse Boxer Bajaj - 150 CC
-                                        </span>
-                                        <span class="text-theme-xs text-gray-500 dark:text-gray-400">
-                                        KMC 127 L
-                                        </span>
+                                        <span class="mb-1 block text-theme-sm font-medium text-gray-700 dark:text-gray-400" x-text="selectedVehicle.vehicle_display || 'N/A'"></span>
+                                        <span class="text-theme-xs text-gray-500 dark:text-gray-400" x-text="selectedVehicle.plate_number"></span>
                                     </div>
                                     <div>
-                                        <span class="mb-1 block text-theme-sm font-medium text-gray-700 dark:text-gray-400">
-                                        Available
-                                        </span>
+                                        <span class="mb-1 block text-theme-sm font-medium"
+                                            :class="selectedVehicle.availability === 'Available' ? 'text-green-600' : 'text-red-600'"
+                                            x-text="selectedVehicle.availability || 'N/A'"></span>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
+
+                    <!-- Hidden input for vehicle_id -->
+                    <input type="hidden" name="assign_vehicle_id" x-model="selectedVehicleId" value="" id="" name=""/>
 
                     <!-- Status -->
                     <div class="w-full px-2.5">
@@ -1758,11 +1765,11 @@
                         <div class="relative z-20 bg-transparent">
                             <select id="assign_status"
                                     name="status"
+                                    x-model="assignStatus"
                                     @change="clearError('assign_status')"
-                                    @blur="validateField('assign_status', $event.target.value)"
-                                    :class="errors.Status ? 'border-error-500' : ''"
+                                    :class="errors.assign_status ? 'border-error-500' : ''"
                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                <option value="">Status</option>
+                                <option value="">Select Status</option>
                                 <option value="Approved">Approved</option>
                                 <option value="Pending">Pending</option>
                                 <option value="Cancelled">Cancelled</option>
@@ -1784,9 +1791,9 @@
                     </button>
                     <button type="submit"
                             class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
-                            :disabled="$store.vehicleData.isAssigning">
-                        <span x-show="!$store.vehicleData.isAssigning">Assign Vehicle</span>
-                        <span x-show="$store.vehicleData.isAssigning">Assigning ...</span>
+                            :disabled="!selectedVehicle || isSubmitting">
+                        <span x-show="!isSubmitting">Assign Vehicle</span>
+                        <span x-show="isSubmitting">Assigning ...</span>
                     </button>
                 </div>
 
@@ -1844,7 +1851,7 @@
                             name="vehicle_type"
                             readonly
                             :value="$store.vehicleData.currentVehicle ?
-                                    `${$store.vehicleData.currentVehicle.type || 'N/A'} - ${$store.vehicleData.currentVehicle.plate_number || 'N/A'}` :
+                                    `${$store.vehicleData.currentVehicle.type || 'Loading ... '} - ${$store.vehicleData.currentVehicle.plate_number || 'Loading ... '}` :
                                     ''"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     </div>
@@ -4131,6 +4138,15 @@
                 searchDropdown: null,
                 isLoading: true,
 
+                // Search Assign Vehicle
+                vehicleSearchTerm: '',
+                searchResults: [],
+                isSearching: false,
+                selectedVehicle: null,
+                selectedVehicleId: null,
+                assignStatus: '',
+                isSubmitting: false,
+
                 init() {
                     console.log('vehiclesTable initializing...');
                     let memberId = window.location.pathname.split('/').pop();
@@ -4330,6 +4346,98 @@
                         isValid = false;
                     }
                     return isValid;
+                },
+
+                async loadInitialVehicles() {
+                    if (this.vehicleSearchTerm.length === 0) {
+                        this.isSearching = true;
+                        try {
+                            const response = await fetch(`/vehicles/search?limit=5`);
+                            const data = await response.json();
+                            if (data.success) {
+                                this.searchResults = data.vehicles;
+                            }
+                        } catch (error) {
+                            console.error('Error loading vehicles:', error);
+                        } finally {
+                            this.isSearching = false;
+                        }
+                    }
+                },
+
+                async searchVehicles() {
+                    if (this.vehicleSearchTerm.length < 1) {
+                        this.searchResults = [];
+                        return;
+                    }
+
+                    this.isSearching = true;
+
+                    try {
+                        const response = await fetch(`/vehicles/search?q=${encodeURIComponent(this.vehicleSearchTerm)}`);
+                        const data = await response.json();
+
+                        if (data.success) {
+                            this.searchResults = data.vehicles;
+                        }
+                    } catch (error) {
+                        console.error('Search error:', error);
+                    } finally {
+                        this.isSearching = false;
+                    }
+                },
+
+                selectVehicle(vehicle) {
+                    this.selectedVehicle = vehicle;
+                    this.selectedVehicleId = vehicle.vehicleId;
+                    this.vehicleSearchTerm = vehicle.plate_number;
+                    this.searchResults = [];
+                },
+
+                async assignVehicle() {
+                    if (!this.selectedVehicle) {
+                        alert('Please select a vehicle first');
+                        return;
+                    }
+
+                    if (!this.assignStatus) {
+                        alert('Please select a status');
+                        return;
+                    }
+
+                    this.isSubmitting = true;
+
+                    try {
+                        const formData = {
+                            vehicle_id: this.selectedVehicleId,
+                            status: this.assignStatus,
+                            _token: document.querySelector('input[name="_token"]')?.value
+                        };
+
+                        const response = await fetch('/bodaboda-member/' + this.memberId + '/vehicle/assign', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value
+                            },
+                            body: JSON.stringify(formData)
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            alert(data.message);
+                            window.location.reload();
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    } catch (error) {
+                        alert('Error assigning vehicle. Please try again.');
+                        console.error('Error:', error);
+                    } finally {
+                        this.isSubmitting = false;
+                        this.assignMemberVehicle = false;
+                    }
                 },
 
                 assignVehicle() {

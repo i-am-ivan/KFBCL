@@ -1408,6 +1408,44 @@ class BodabodaController extends Controller {
         ]);
     }
 
+    public function searchVehicles(Request $request)
+    {
+        $limit = $request->get('limit', 10);
+        $searchTerm = $request->get('q');
+
+        $query = DB::table('members_vehicles')
+            ->where('availability', 'Available')
+            ->select(
+                'vehicleId',
+                'plate_number',
+                'type',
+                'brand',
+                'model',
+                'make',
+                'CC',
+                'yom',
+                'availability',
+                DB::raw("CONCAT('VHLC', vehicleId) as vehicle_code"),
+                DB::raw("CONCAT(type, ': ', brand, ' ', yom, ' , ', make, ' ', model, ' ', CC, ' - CC') as vehicle_display")
+            );
+
+        if ($searchTerm) {
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('plate_number', 'LIKE', "%{$searchTerm}%")
+                ->orWhere('model', 'LIKE', "%{$searchTerm}%")
+                ->orWhere('make', 'LIKE', "%{$searchTerm}%")
+                ->orWhere(DB::raw("CONCAT('VHLC', vehicleId)"), 'LIKE', "%{$searchTerm}%");
+            });
+        }
+
+        $vehicles = $query->limit($limit)->get();
+
+        return response()->json([
+            'success' => true,
+            'vehicles' => $vehicles
+        ]);
+    }
+
     // Contributions -----------------------------------------------------------------------------------------------------
     // Get all bodaboda contribution data
     public function getAllContributions(Request $request): JsonResponse
