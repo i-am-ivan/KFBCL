@@ -1675,67 +1675,79 @@
 
                 @csrf
 
-                <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
+                <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4" x-show="assignMemberVehicle">
+
+                    <div class="w-full px-2.5">
+                        <div class="flex flex-wrap shadow-xs rounded-base -space-x-0.5">
+                            <button id="dropdown-button"
+                                data-dropdown-toggle="dropdown"
+                                type="button"
+                                class="inline-flex items-center shrink-0 z-10 text-body bg-neutral-secondary-medium box-border border border-default-medium hover:bg-neutral-tertiary-medium hover:text-heading focus:ring-4 focus:ring-neutral-tertiary font-medium leading-5 rounded-s-base text-sm px-4 py-2.5 focus:outline-none">
+                                <svg class="w-4 h-4 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    fill="none"
+                                    viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.143 4H4.857A.857.857 0 0 0 4 4.857v4.286c0 .473.384.857.857.857h4.286A.857.857 0 0 0 10 9.143V4.857A.857.857 0 0 0 9.143 4Zm10 0h-4.286a.857.857 0 0 0-.857.857v4.286c0 .473.384.857.857.857h4.286A.857.857 0 0 0 20 9.143V4.857A.857.857 0 0 0 19.143 4Zm-10 10H4.857a.857.857 0 0 0-.857.857v4.286c0 .473.384.857.857.857h4.286a.857.857 0 0 0 .857-.857v-4.286A.857.857 0 0 0 9.143 14Zm10 0h-4.286a.857.857 0 0 0-.857.857v4.286c0 .473.384.857.857.857h4.286a.857.857 0 0 0 .857-.857v-4.286a.857.857 0 0 0-.857-.857Z"/>
+                                </svg>
+                                Vehicle Type
+                                <svg class="w-4 h-4 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/></svg>
+                            </button>
+                            <div id="dropdown" class="z-10 hidden bg-neutral-primary-medium border border-default-medium rounded-base shadow-lg w-44">
+                                <ul class="p-2 text-sm text-body font-medium" aria-labelledby="dropdown-button">
+                                    <li>
+                                        <a href="Motorcycle" class="block p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded-md">Motorcycle</a>
+                                    </li>
+                                    <li>
+                                        <a href="Tuk Tuk" class="block p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded-md">Tuk Tuk</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <input type="search"
+                                id="search-dropdown"
+                                class="px-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm focus:ring-brand focus:border-brand block w-full placeholder:text-body"
+                                placeholder="Search Number Plate"
+                                required>
+                        </div>
+                    </div>
+
                     <div class="w-full px-2.5">
                         <h4 class="border-b border-gray-200 pb-4 text-base font-medium text-gray-800 dark:border-gray-800 dark:text-white/90">
-                            Assign Vehcicle
+                            Vehicle Details
                         </h4>
                     </div>
 
-                    <!-- Vehicle Type -->
-                    <div class="w-full px-2.5">
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Vehicle Type
-                        </label>
-                        <div class="relative z-20 bg-transparent">
-                            <select id="assign_vehicle_type"
-                                    name="vehicle_type"
-                                    @change="loadAvailableVehicles($event.target.value); clearError('assign_vehicle_type')"
-                                    @blur="validateField('assign_vehicle_type', $event.target.value)"
-                                  :class="errors.assign_vehicle_type ? 'border-error-500' : ''"
-                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                <option value="">Vehicle Type</option>
-                                <option value="Motorcycle">Motorcycle</option>
-                                <option value="Tuk Tuk">Tuk Tuk</option>
-                            </select>
-                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </span>
-                        </div>
-                        <span x-show="errors.assign_vehicle_type" x-text="errors.assign_vehicle_type" class="text-xs text-error-500 mt-1"></span>
-                    </div>
+                    <div class="w-full px-2.5 border-b border-gray-200">
+                        <div class="min-w-[500px]">
+                            <div class="flex flex-col gap-2">
+                                <div x-data="{checked: false}" @click="checked = !checked" class="flex cursor-pointer items-center gap-9 rounded-lg p-3 hover:bg-gray-50 dark:hover:bg-white/[0.03]">
+                                    <div class="flex items-start gap-3">
+                                        <div>
+                                            <span class="mb-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
+                                                Vehicle Code
+                                            </span>
+                                            <span class="text-theme-sm font-medium text-gray-700 dark:text-gray-400">
+                                                VH0102
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <span class="mb-1 block text-theme-sm font-medium text-gray-700 dark:text-gray-400">
+                                        Motorcycle: Cruse Boxer Bajaj - 150 CC
+                                        </span>
+                                        <span class="text-theme-xs text-gray-500 dark:text-gray-400">
+                                        KMC 127 L
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span class="mb-1 block text-theme-sm font-medium text-gray-700 dark:text-gray-400">
+                                        Available
+                                        </span>
+                                    </div>
+                                </div>
 
-                    <!-- Vehicle -->
-                    <div class="w-full px-2.5">
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Select Vehicle
-                        </label>
-                        <div class="relative z-20 bg-transparent">
-                            <select id="assign_vehicle_select"
-                                    name="vehicle"
-                                    @change="clearError('assign_vehicle')"
-                                    @blur="validateField('assign_vehicle', $event.target.value)"
-                                    :class="errors.assign_vehicle ? 'border-error-500' : ''"
-                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                <option value="">Find Vehicle</option>
-                                <template x-for="vehicle in $store.vehicleData.availableVehicles" :key="vehicle.vehicleId">
-                                    <option
-                                        :value="vehicle.vehicleId + '|' + vehicle.type + '|' + vehicle.brand + ' ' + vehicle.model + '|' + vehicle.plate_number"
-                                        x-text="vehicle.type + ': ' + vehicle.brand + ' ' + vehicle.model + ' - ' + vehicle.plate_number"
-                                        >
-                                    </option>
-                                </template>
-                            </select>
-                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </span>
+                            </div>
                         </div>
-                        <span x-show="errors.assign_vehicle_select" x-text="errors.assign_vehicle_select" class="text-xs text-error-500 mt-1"></span>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Type to search by Plate number ...</p>
                     </div>
 
                     <!-- Status -->
