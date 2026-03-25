@@ -20,7 +20,7 @@
 
     </head>
 
-<body x-data="{ page: 'profile', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'loanTypeModal' : false, 'personalInformationModal': false , 'sidebarToggle': false, 'scrollTop': false, 'identificationDocumentsModal': false, 'nextKinModal': false, 'vehiclesModal': false, 'contributionsModal': false, 'savingsModal': false, 'loansModal': false, 'finesPenaltiesModal': false, 'deleteMemberAccount': false, 'editNextKinModal': false, 'editMemberVehiclesModal': false, 'assignMemberVehicle': false, 'reassignMemberVehicle': false, 'withdrawContribution':false, 'withdrawSavingsModal': false, 'payLoan': false, 'withdrawContributionModal': false, 'editContributionModal': false, 'awardBonusModal': false, 'repayLoanModal': false}"
+<body x-data="{ page: 'profile', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'loanTypeModal' : false, 'personalInformationModal': false , 'sidebarToggle': false, 'scrollTop': false, 'identificationDocumentsModal': false, 'nextKinModal': false, 'vehiclesModal': false, 'contributionsModal': false, 'savingsModal': false, 'loansModal': false, 'finesPenaltiesModal': false, 'deleteMemberAccount': false, 'editNextKinModal': false, 'editMemberVehiclesModal': false, 'assignMemberVehicle': false, 'reassignMemberVehicle': false, 'withdrawContribution':false, 'withdrawSavingsModal': false, 'payLoan': false, 'withdrawContributionModal': false, 'editContributionModal': false, 'awardBonusModal': false, 'repayLoanModal': false, 'editLoanModal': false}"
       x-init="
          darkMode = JSON.parse(localStorage.getItem('darkMode'));
          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
@@ -36,278 +36,9 @@
   <!-- ===== Page Wrapper Start ===== -->
   <div class="flex h-screen overflow-hidden">
 
-    <!-- ===== Sidebar Start ===== -->
-    <aside :class="sidebarToggle ? 'translate-x-0 xl:w-[90px]' : '-translate-x-full'"
-                    class="sidebar fixed top-0 left-0 z-9999 flex h-screen w-[290px] flex-col overflow-y-auto border-r border-gray-200 bg-white px-5 transition-all duration-300 xl:static xl:translate-x-0 dark:border-gray-800 dark:bg-black"
-                    @click.outside="sidebarToggle = false">
-
-                    <!-- SIDEBAR HEADER -->
-                    <div :class="sidebarToggle ? 'justify-center' : 'justify-between'"
-                        class="sidebar-header flex items-center gap-2 pt-8 pb-7">
-                        <a href="{{ route('treasurer.dashboard') }}" class="flex items-center">
-                            <!-- Small Circular Logo with Border -->
-                            <div class="h-10 w-10 rounded-full bg-gray-100 border-2 border-dark-brown flex items-center justify-center overflow-hidden">
-                                <img src="{{ asset('company_logo.png') }}" alt="KFBCL Logo" class="h-full w-full object-cover">
-                            </div>
-
-                            <!-- Company Name and Tagline (Hidden when sidebar collapsed on desktop) -->
-                            <div class="ml-3" :class="sidebarToggle ? 'hidden xl:block' : 'block'">
-                                <h2 class="text-lg font-bold text-dark-brown">KFBCL</h2>
-                                <p class="text-xs text-gray-500">Growing together</p>
-                            </div>
-                        </a>
-                    </div>
-                    <!-- SIDEBAR HEADER -->
-
-                    <div class="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
-                    <!-- Sidebar Menu -->
-                    <nav x-data="{selected: $persist('Dashboard')}">
-                        <!-- Menu Group -->
-                        <div>
-                            <h3 class="mb-4 text-xs leading-[20px] text-gray-400 uppercase">
-                                <span class="menu-group-title"
-                                    :class="sidebarToggle ? 'xl:hidden' : ''">
-                                MENU
-                                </span>
-                                <svg
-                                        :class="sidebarToggle ? 'xl:block hidden' : 'hidden'"
-                                        class="menu-group-icon mx-auto fill-current"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                >
-                                <path
-                                        fill-rule="evenodd"
-                                        clip-rule="evenodd"
-                                        d="M5.99915 10.2451C6.96564 10.2451 7.74915 11.0286 7.74915 11.9951V12.0051C7.74915 12.9716 6.96564 13.7551 5.99915 13.7551C5.03265 13.7551 4.24915 12.9716 4.24915 12.0051V11.9951C4.24915 11.0286 5.03265 10.2451 5.99915 10.2451ZM17.9991 10.2451C18.9656 10.2451 19.7491 11.0286 19.7491 11.9951V12.0051C19.7491 12.9716 18.9656 13.7551 17.9991 13.7551C17.0326 13.7551 16.2491 12.9716 16.2491 12.0051V11.9951C16.2491 11.0286 17.0326 10.2451 17.9991 10.2451ZM13.7491 11.9951C13.7491 11.0286 12.9656 10.2451 11.9991 10.2451C11.0326 10.2451 10.2491 11.0286 10.2491 11.9951V12.0051C10.2491 12.9716 11.0326 13.7551 11.9991 13.7551C12.9656 13.7551 13.7491 12.9716 13.7491 12.0051V11.9951Z"
-                                        fill="currentColor"
-                                />
-                                </svg>
-                            </h3>
-
-                            <ul class="mb-6 flex flex-col gap-1">
-                                <!-- Menu Item Dashboard -->
-                                <li>
-                                    <a href="{{ route('treasurer.dashboard') }}" @click="selected = (selected === 'Dashboard' ? '':'Dashboard')" class="menu-item group"
-                                        :class=" (selected === 'Dashboard') || (page === 'dashboard') ? 'menu-item-active' : 'menu-item-inactive'">
-                                        <svg :class="(selected === 'Dashboard') || (page === 'dashboard') ? 'menu-item-icon-active'  :'menu-item-icon-inactive'"
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                                d="M5.5 3.25C4.25736 3.25 3.25 4.25736 3.25 5.5V8.99998C3.25 10.2426 4.25736 11.25 5.5 11.25H9C10.2426 11.25 11.25 10.2426 11.25 8.99998V5.5C11.25 4.25736 10.2426 3.25 9 3.25H5.5ZM4.75 5.5C4.75 5.08579 5.08579 4.75 5.5 4.75H9C9.41421 4.75 9.75 5.08579 9.75 5.5V8.99998C9.75 9.41419 9.41421 9.74998 9 9.74998H5.5C5.08579 9.74998 4.75 9.41419 4.75 8.99998V5.5ZM5.5 12.75C4.25736 12.75 3.25 13.7574 3.25 15V18.5C3.25 19.7426 4.25736 20.75 5.5 20.75H9C10.2426 20.75 11.25 19.7427 11.25 18.5V15C11.25 13.7574 10.2426 12.75 9 12.75H5.5ZM4.75 15C4.75 14.5858 5.08579 14.25 5.5 14.25H9C9.41421 14.25 9.75 14.5858 9.75 15V18.5C9.75 18.9142 9.41421 19.25 9 19.25H5.5C5.08579 19.25 4.75 18.9142 4.75 18.5V15ZM12.75 5.5C12.75 4.25736 13.7574 3.25 15 3.25H18.5C19.7426 3.25 20.75 4.25736 20.75 5.5V8.99998C20.75 10.2426 19.7426 11.25 18.5 11.25H15C13.7574 11.25 12.75 10.2426 12.75 8.99998V5.5ZM15 4.75C14.5858 4.75 14.25 5.08579 14.25 5.5V8.99998C14.25 9.41419 14.5858 9.74998 15 9.74998H18.5C18.9142 9.74998 19.25 9.41419 19.25 8.99998V5.5C19.25 5.08579 18.9142 4.75 18.5 4.75H15ZM15 12.75C13.7574 12.75 12.75 13.7574 12.75 15V18.5C12.75 19.7426 13.7574 20.75 15 20.75H18.5C19.7426 20.75 20.75 19.7427 20.75 18.5V15C20.75 13.7574 19.7426 12.75 18.5 12.75H15ZM14.25 15C14.25 14.5858 14.5858 14.25 15 14.25H18.5C18.9142 14.25 19.25 14.5858 19.25 15V18.5C19.25 18.9142 18.9142 19.25 18.5 19.25H15C14.5858 19.25 14.25 18.9142 14.25 18.5V15Z"
-                                                fill="currentColor"/>
-                                        </svg>
-                                        <span class="menu-item-text"
-                                            :class="sidebarToggle ? 'xl:hidden' : ''">Dashboard</span>
-                                    </a>
-                                </li>
-
-                                <!-- Menu Item Appointments -->
-                                <li>
-                                    <a href="{{ route('treasurer.appointments') }}" @click="selected = (selected === 'Appointments' ? '':'Appointments')" class="menu-item group"
-                                        :class="(selected === 'Appointments') || (page === 'appointments') ? 'menu-item-active' : 'menu-item-inactive'">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-event">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M4 5m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" />
-                                        <path d="M16 3l0 4" />
-                                        <path d="M8 3l0 4" />
-                                        <path d="M4 11l16 0" />
-                                        <path d="M8 15h2v2h-2z" />
-                                        </svg>
-                                        <span class="menu-item-text"
-                                            :class="sidebarToggle ? 'xl:hidden' : ''">Appointments</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <!-- Manage Group -->
-                        <div>
-                            <h3 class="mb-4 text-xs leading-[20px] text-gray-400 uppercase">
-                            <span class="menu-group-title"
-                                    :class="sidebarToggle ? 'xl:hidden' : ''">MANAGE</span>
-                                <svg
-                                        :class="sidebarToggle ? 'xl:block hidden' : 'hidden'"
-                                        class="menu-group-icon mx-auto fill-current"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                >
-                                <path
-                                        fill-rule="evenodd"
-                                        clip-rule="evenodd"
-                                        d="M5.99915 10.2451C6.96564 10.2451 7.74915 11.0286 7.74915 11.9951V12.0051C7.74915 12.9716 6.96564 13.7551 5.99915 13.7551C5.03265 13.7551 4.24915 12.9716 4.24915 12.0051V11.9951C4.24915 11.0286 5.03265 10.2451 5.99915 10.2451ZM17.9991 10.2451C18.9656 10.2451 19.7491 11.0286 19.7491 11.9951V12.0051C19.7491 12.9716 18.9656 13.7551 17.9991 13.7551C17.0326 13.7551 16.2491 12.9716 16.2491 12.0051V11.9951C16.2491 11.0286 17.0326 10.2451 17.9991 10.2451ZM13.7491 11.9951C13.7491 11.0286 12.9656 10.2451 11.9991 10.2451C11.0326 10.2451 10.2491 11.0286 10.2491 11.9951V12.0051C10.2491 12.9716 11.0326 13.7551 11.9991 13.7551C12.9656 13.7551 13.7491 12.9716 13.7491 12.0051V11.9951Z"
-                                        fill="currentColor"
-                                />
-                                </svg>
-                            </h3>
-
-                            <ul class="mb-6 flex flex-col gap-1">
-                                <!-- Menu Item Users -->
-                                <li>
-                                    <a href="{{ route('treasurer.users') }}" @click="selected = (selected === 'Users' ? '':'Users')" class="menu-item group"
-                                        :class=" (selected === 'Users') || (page === 'users') ? 'menu-item-active' : 'menu-item-inactive'">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-users">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
-                                        <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-                                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                                        <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
-                                        </svg>
-                                        <span class="menu-item-text"
-                                            :class="sidebarToggle ? 'xl:hidden' : ''">Users</span>
-                                    </a>
-                                </li>
-
-                                <!-- Menu Item Bodaboda Group -->
-                                <li>
-                                    <a href="{{ route('treasurer.bodaboda') }}" @click="selected = (selected === 'Bodaboda Group' ? '':'Bodaboda Group')" class="menu-item group"
-                                        :class=" (selected === 'Bodaboda Group') || (page === 'bodaboda') ? 'menu-item-active' : 'menu-item-inactive'">
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                            width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
-                                            stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-motorbike">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M5 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
-                                        <path d="M19 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
-                                        <path d="M7.5 14h5l4 -4h-10.5m1.5 4l4 -4" />
-                                        <path d="M13 6h2l1.5 3l2 4" />
-                                        </svg>
-                                        <span class="menu-item-text"
-                                            :class="sidebarToggle ? 'xl:hidden' : ''">Bodaboda Group</span>
-                                    </a>
-                                </li>
-
-                                <!-- Menu Item Loans -->
-                                <li>
-                                    <a href="{{ route('treasurer.loans') }}" @click="selected = (selected === 'Loans' ? '':'Loans')" class="menu-item group"
-                                        :class="(selected === 'Loans') || (page === 'loans') ? 'menu-item-active' : 'menu-item-inactive'">
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="1.5"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            class="icon icon-tabler icons-tabler-outline icon-tabler-credit-card"
-                                        >
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M3 5m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
-                                        <path d="M3 10l18 0" />
-                                        <path d="M7 15l.01 0" />
-                                        <path d="M11 15l2 0" />
-                                        </svg>
-                                        <span class="menu-item-text"
-                                            :class="sidebarToggle ? 'xl:hidden' : ''">Loans</span>
-                                    </a>
-                                </li>
-
-                                <!-- Menu Item Real-Estate -->
-                                <li>
-                                    <a href="{{ route('treasurer.real.estate') }}" @click="selected = (selected === 'Real Estate' ? '':'Real Estate')" class="menu-item group"
-                                        :class="(selected === 'Real Estate') || (page === 'real estate') ? 'menu-item-active' : 'menu-item-inactive'">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-building">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M3 21l18 0" />
-                                        <path d="M9 8l1 0" />
-                                        <path d="M9 12l1 0" />
-                                        <path d="M9 16l1 0" />
-                                        <path d="M14 8l1 0" />
-                                        <path d="M14 12l1 0" />
-                                        <path d="M14 16l1 0" />
-                                        <path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16" />
-                                        </svg>
-                                        <span class="menu-item-text"
-                                            :class="sidebarToggle ? 'xl:hidden' : ''">Real Estate</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <!-- Settings Group -->
-                        <div>
-                        <h3 class="mb-4 text-xs leading-[20px] text-gray-400 uppercase">
-                        <span class="menu-group-title"
-                        :class="sidebarToggle ? 'xl:hidden' : ''">SETTINGS</span>
-                            <svg
-                                    :class="sidebarToggle ? 'xl:block hidden' : 'hidden'"
-                                    class="menu-group-icon mx-auto fill-current"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                            >
-                            <path
-                                    fill-rule="evenodd"
-                                    clip-rule="evenodd"
-                                    d="M5.99915 10.2451C6.96564 10.2451 7.74915 11.0286 7.74915 11.9951V12.0051C7.74915 12.9716 6.96564 13.7551 5.99915 13.7551C5.03265 13.7551 4.24915 12.9716 4.24915 12.0051V11.9951C4.24915 11.0286 5.03265 10.2451 5.99915 10.2451ZM17.9991 10.2451C18.9656 10.2451 19.7491 11.0286 19.7491 11.9951V12.0051C19.7491 12.9716 18.9656 13.7551 17.9991 13.7551C17.0326 13.7551 16.2491 12.9716 16.2491 12.0051V11.9951C16.2491 11.0286 17.0326 10.2451 17.9991 10.2451ZM13.7491 11.9951C13.7491 11.0286 12.9656 10.2451 11.9991 10.2451C11.0326 10.2451 10.2491 11.0286 10.2491 11.9951V12.0051C10.2491 12.9716 11.0326 13.7551 11.9991 13.7551C12.9656 13.7551 13.7491 12.9716 13.7491 12.0051V11.9951Z"
-                                    fill="currentColor"
-                            />
-                            </svg>
-                        </h3>
-
-                        <ul class="mb-6 flex flex-col gap-1">
-                            <!-- Menu Item Profile -->
-                            <li>
-                                <a href="{{ route('profile') }}" @click="selected = (selected === 'Profile' ? '':'Profile')"
-                                    class="menu-item group"
-                                    :class=" (selected === 'Profile') && (page === 'profile') ? 'menu-item-active' : 'menu-item-inactive'">
-                                    <svg
-                                            :class="(selected === 'Profile') && (page === 'profile') ?  'menu-item-icon-active'  :'menu-item-icon-inactive'"
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                    <path
-                                            fill-rule="evenodd"
-                                            clip-rule="evenodd"
-                                            d="M12 3.5C7.30558 3.5 3.5 7.30558 3.5 12C3.5 14.1526 4.3002 16.1184 5.61936 17.616C6.17279 15.3096 8.24852 13.5955 10.7246 13.5955H13.2746C15.7509 13.5955 17.8268 15.31 18.38 17.6167C19.6996 16.119 20.5 14.153 20.5 12C20.5 7.30558 16.6944 3.5 12 3.5ZM17.0246 18.8566V18.8455C17.0246 16.7744 15.3457 15.0955 13.2746 15.0955H10.7246C8.65354 15.0955 6.97461 16.7744 6.97461 18.8455V18.856C8.38223 19.8895 10.1198 20.5 12 20.5C13.8798 20.5 15.6171 19.8898 17.0246 18.8566ZM2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12ZM11.9991 7.25C10.8847 7.25 9.98126 8.15342 9.98126 9.26784C9.98126 10.3823 10.8847 11.2857 11.9991 11.2857C13.1135 11.2857 14.0169 10.3823 14.0169 9.26784C14.0169 8.15342 13.1135 7.25 11.9991 7.25ZM8.48126 9.26784C8.48126 7.32499 10.0563 5.75 11.9991 5.75C13.9419 5.75 15.5169 7.32499 15.5169 9.26784C15.5169 11.2107 13.9419 12.7857 11.9991 12.7857C10.0563 12.7857 8.48126 11.2107 8.48126 9.26784Z"
-                                            fill="currentColor"
-                                    />
-                                    </svg>
-                                    <span class="menu-item-text"
-                                        :class="sidebarToggle ? 'xl:hidden' : ''">Profile</span>
-                                </a>
-                            </li>
-                        </ul>
-                        </div>
-
-                        <!-- Logout Item -->
-                        <div class="mt-auto">
-                            <ul class="flex flex-col gap-1">
-                                <li>
-                                <form action="{{ route('signout') }}" method="POST" style="display: inline;">
-                                    @csrf
-                                    <button type="submit" @click="selected = (selected === 'Logout' ? '':'Logout')" class="menu-item group menu-item-inactive flex items-center w-full text-left" :class="(selected === 'Logout') ? 'menu-item-active' : 'menu-item-inactive'">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-logout-2">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <path d="M10 8v-2a2 2 0 0 1 2 -2h7a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-7a2 2 0 0 1 -2 -2v-2"></path>
-                                        <path d="M15 12h-12l3 -3"></path>
-                                        <path d="M6 15l-3 -3"></path>
-                                        </svg>
-                                        <span class="menu-item-text ml-3" :class="sidebarToggle ? 'xl:hidden' : ''">Logout</span>
-                                    </button>
-                                </form>
-                                </li>
-                            </ul>
-                        </div>
-                    </nav>
-                    <!-- Sidebar Menu -->
-                    </div>
-
-    </aside>
-    <!-- ===== Sidebar End ===== -->
+        <!-- ===== Sidebar Start ===== -->
+        @include(Auth::user()->getAsideView())
+        <!-- ===== Sidebar End ===== -->
 
     <!-- ===== Content Area Start ===== -->
     <div class="relative flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
@@ -318,223 +49,21 @@
         <!-- Small Device Overlay End -->
 
         <!-- ===== Header Start ===== -->
-        <header x-data="{menuToggle: false}"
-                        class="sticky top-0 z-99999 flex w-full border-gray-200 bg-white xl:border-b dark:border-gray-800 dark:bg-gray-900">
-                    <div class="flex grow flex-col items-center justify-between xl:flex-row xl:px-6">
-                    <div class="flex w-full items-center justify-between gap-2 border-b border-gray-200 px-3 py-3 sm:gap-4 lg:py-4 xl:justify-normal xl:border-b-0 xl:px-0 dark:border-gray-800">
-                        <!-- Hamburger Toggle BTN -->
-                        <button :class="sidebarToggle ? 'xl:bg-transparent dark:xl:bg-transparent bg-gray-100 dark:bg-gray-800' : ''"
-                                class="z-99999 flex h-10 w-10 items-center justify-center rounded-lg border-gray-200 text-gray-500 xl:h-11 xl:w-11 xl:border dark:border-gray-800 dark:text-gray-400"
-                                @click.stop="sidebarToggle = !sidebarToggle">
-                        <svg
-                                class="hidden fill-current xl:block"
-                                width="16"
-                                height="12"
-                                viewBox="0 0 16 12"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                    fill-rule="evenodd"
-                                    clip-rule="evenodd"
-                                    d="M0.583252 1C0.583252 0.585788 0.919038 0.25 1.33325 0.25H14.6666C15.0808 0.25 15.4166 0.585786 15.4166 1C15.4166 1.41421 15.0808 1.75 14.6666 1.75L1.33325 1.75C0.919038 1.75 0.583252 1.41422 0.583252 1ZM0.583252 11C0.583252 10.5858 0.919038 10.25 1.33325 10.25L14.6666 10.25C15.0808 10.25 15.4166 10.5858 15.4166 11C15.4166 11.4142 15.0808 11.75 14.6666 11.75L1.33325 11.75C0.919038 11.75 0.583252 11.4142 0.583252 11ZM1.33325 5.25C0.919038 5.25 0.583252 5.58579 0.583252 6C0.583252 6.41421 0.919038 6.75 1.33325 6.75L7.99992 6.75C8.41413 6.75 8.74992 6.41421 8.74992 6C8.74992 5.58579 8.41413 5.25 7.99992 5.25L1.33325 5.25Z"
-                                    fill=""
-                            />
-                        </svg>
-
-                        <svg
-                                :class="sidebarToggle ? 'hidden' : 'block xl:hidden'"
-                                class="fill-current xl:hidden"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                    fill-rule="evenodd"
-                                    clip-rule="evenodd"
-                                    d="M3.25 6C3.25 5.58579 3.58579 5.25 4 5.25L20 5.25C20.4142 5.25 20.75 5.58579 20.75 6C20.75 6.41421 20.4142 6.75 20 6.75L4 6.75C3.58579 6.75 3.25 6.41422 3.25 6ZM3.25 18C3.25 17.5858 3.58579 17.25 4 17.25L20 17.25C20.4142 17.25 20.75 17.5858 20.75 18C20.75 18.4142 20.4142 18.75 20 18.75L4 18.75C3.58579 18.75 3.25 18.4142 3.25 18ZM4 11.25C3.58579 11.25 3.25 11.5858 3.25 12C3.25 12.4142 3.58579 12.75 4 12.75L12 12.75C12.4142 12.75 12.75 12.4142 12.75 12C12.75 11.5858 12.4142 11.25 12 11.25L4 11.25Z"
-                                    fill=""
-                            />
-                        </svg>
-
-                        <!-- cross icon -->
-                        <svg
-                                :class="sidebarToggle ? 'block xl:hidden' : 'hidden'"
-                                class="fill-current"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                    fill-rule="evenodd"
-                                    clip-rule="evenodd"
-                                    d="M6.21967 7.28131C5.92678 6.98841 5.92678 6.51354 6.21967 6.22065C6.51256 5.92775 6.98744 5.92775 7.28033 6.22065L11.999 10.9393L16.7176 6.22078C17.0105 5.92789 17.4854 5.92788 17.7782 6.22078C18.0711 6.51367 18.0711 6.98855 17.7782 7.28144L13.0597 12L17.7782 16.7186C18.0711 17.0115 18.0711 17.4863 17.7782 17.7792C17.4854 18.0721 17.0105 18.0721 16.7176 17.7792L11.999 13.0607L7.28033 17.7794C6.98744 18.0722 6.51256 18.0722 6.21967 17.7794C5.92678 17.4865 5.92678 17.0116 6.21967 16.7187L10.9384 12L6.21967 7.28131Z"
-                                    fill=""
-                            />
-                        </svg>
-                        </button>
-                        <!-- Hamburger Toggle BTN -->
-
-                        <a href="{{ route('treasurer.dashboard') }}" class="xl:hidden">
-                        <img class="dark:hidden" src="{{ asset('company_logo.png') }}" alt="Logo" />
-                        <img
-                                class="hidden dark:block"
-                                src="{{ asset('company_logo.png') }}"
-                                alt="Logo"
-                        />
-                        </a>
-
-                        <!-- Application nav menu button -->
-                        <button class="z-99999 flex h-10 w-10 items-center justify-center rounded-lg text-gray-700 hover:bg-gray-100 xl:hidden dark:text-gray-400 dark:hover:bg-gray-800"
-                                :class="menuToggle ? 'bg-gray-100 dark:bg-gray-800' : ''"
-                                @click.stop="menuToggle = !menuToggle">
-                        <svg
-                                class="fill-current"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                    fill-rule="evenodd"
-                                    clip-rule="evenodd"
-                                    d="M5.99902 10.4951C6.82745 10.4951 7.49902 11.1667 7.49902 11.9951V12.0051C7.49902 12.8335 6.82745 13.5051 5.99902 13.5051C5.1706 13.5051 4.49902 12.8335 4.49902 12.0051V11.9951C4.49902 11.1667 5.1706 10.4951 5.99902 10.4951ZM17.999 10.4951C18.8275 10.4951 19.499 11.1667 19.499 11.9951V12.0051C19.499 12.8335 18.8275 13.5051 17.999 13.5051C17.1706 13.5051 16.499 12.8335 16.499 12.0051V11.9951C16.499 11.1667 17.1706 10.4951 17.999 10.4951ZM13.499 11.9951C13.499 11.1667 12.8275 10.4951 11.999 10.4951C11.1706 10.4951 10.499 11.1667 10.499 11.9951V12.0051C10.499 12.8335 11.1706 13.5051 11.999 13.5051C12.8275 13.5051 13.499 12.8335 13.499 12.0051V11.9951Z"
-                                    fill=""
-                            />
-                        </svg>
-                        </button>
-                        <!-- Application nav menu button -->
-
-                    </div>
-
-                    <div :class="menuToggle ? 'flex' : 'hidden'"
-                        class="shadow-theme-md w-full items-center justify-between gap-4 px-5 py-4 xl:flex xl:justify-end xl:px-0 xl:shadow-none">
-                        <div class="2xsm:gap-3 flex items-center gap-2">
-                        </div>
-
-                        <!-- User Area -->
-                        <div
-                                class="relative"
-                                x-data="{ dropdownOpen: false }"
-                                @click.outside="dropdownOpen = false"
-                        >
-                        <a
-                                class="flex items-center text-gray-700 dark:text-gray-400"
-                                href="#"
-                                @click.prevent="dropdownOpen = ! dropdownOpen"
-                        >
-
-
-                            <span class="text-theme-sm mr-1 block font-medium"> {{ Auth::user()->first_name }} {{ Auth::user()->last_name }} </span>
-
-                            <svg
-                                    :class="dropdownOpen && 'rotate-180'"
-                                    class="stroke-gray-500 dark:stroke-gray-400"
-                                    width="18"
-                                    height="20"
-                                    viewBox="0 0 18 20"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                            >
-                            <path
-                                    d="M4.3125 8.65625L9 13.3437L13.6875 8.65625"
-                                    stroke=""
-                                    stroke-width="1.5"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                            />
-                            </svg>
-                        </a>
-
-                        <!-- Dropdown Start -->
-                        <div x-show="dropdownOpen"
-                            class="shadow-theme-lg dark:bg-gray-dark absolute right-0 mt-[17px] flex w-[260px] flex-col rounded-2xl border border-gray-200 bg-white p-3 dark:border-gray-800">
-                            <div>
-                            <span
-                                    class="text-theme-sm block font-medium text-gray-700 dark:text-gray-400"
-                            >
-                                {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}
-                            </span>
-                            <span
-                                    class="text-theme-xs mt-0.5 block text-gray-500 dark:text-gray-400"
-                            >
-                                <p>{{ Auth::user()->email }} </p>
-                            </span>
-                            </div>
-
-                            <ul
-                                    class="flex flex-col gap-1 border-b border-gray-200 pt-4 pb-3 dark:border-gray-800"
-                            >
-                            <li>
-                                <a
-                                        href="profile.php"
-                                        class="group text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-                                >
-                                <svg
-                                        class="fill-gray-500 group-hover:fill-gray-700 dark:fill-gray-400 dark:group-hover:fill-gray-300"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                            fill-rule="evenodd"
-                                            clip-rule="evenodd"
-                                            d="M12 3.5C7.30558 3.5 3.5 7.30558 3.5 12C3.5 14.1526 4.3002 16.1184 5.61936 17.616C6.17279 15.3096 8.24852 13.5955 10.7246 13.5955H13.2746C15.7509 13.5955 17.8268 15.31 18.38 17.6167C19.6996 16.119 20.5 14.153 20.5 12C20.5 7.30558 16.6944 3.5 12 3.5ZM17.0246 18.8566V18.8455C17.0246 16.7744 15.3457 15.0955 13.2746 15.0955H10.7246C8.65354 15.0955 6.97461 16.7744 6.97461 18.8455V18.856C8.38223 19.8895 10.1198 20.5 12 20.5C13.8798 20.5 15.6171 19.8898 17.0246 18.8566ZM2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12ZM11.9991 7.25C10.8847 7.25 9.98126 8.15342 9.98126 9.26784C9.98126 10.3823 10.8847 11.2857 11.9991 11.2857C13.1135 11.2857 14.0169 10.3823 14.0169 9.26784C14.0169 8.15342 13.1135 7.25 11.9991 7.25ZM8.48126 9.26784C8.48126 7.32499 10.0563 5.75 11.9991 5.75C13.9419 5.75 15.5169 7.32499 15.5169 9.26784C15.5169 11.2107 13.9419 12.7857 11.9991 12.7857C10.0563 12.7857 8.48126 11.2107 8.48126 9.26784Z"
-                                            fill=""
-                                    />
-                                </svg>
-                                Profile
-                                </a>
-                            </li>
-                            </ul>
-                            <a href="{{ route('signout') }}"
-                                    class="group text-theme-sm mt-3 flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-                            >
-                            <svg
-                                    class="fill-gray-500 group-hover:fill-gray-700 dark:group-hover:fill-gray-300"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <path
-                                        fill-rule="evenodd"
-                                        clip-rule="evenodd"
-                                        d="M15.1007 19.247C14.6865 19.247 14.3507 18.9112 14.3507 18.497L14.3507 14.245H12.8507V18.497C12.8507 19.7396 13.8581 20.747 15.1007 20.747H18.5007C19.7434 20.747 20.7507 19.7396 20.7507 18.497L20.7507 5.49609C20.7507 4.25345 19.7433 3.24609 18.5007 3.24609H15.1007C13.8581 3.24609 12.8507 4.25345 12.8507 5.49609V9.74501L14.3507 9.74501V5.49609C14.3507 5.08188 14.6865 4.74609 15.1007 4.74609L18.5007 4.74609C18.9149 4.74609 19.2507 5.08188 19.2507 5.49609L19.2507 18.497C19.2507 18.9112 18.9149 19.247 18.5007 19.247H15.1007ZM3.25073 11.9984C3.25073 12.2144 3.34204 12.4091 3.48817 12.546L8.09483 17.1556C8.38763 17.4485 8.86251 17.4487 9.15549 17.1559C9.44848 16.8631 9.44863 16.3882 9.15583 16.0952L5.81116 12.7484L16.0007 12.7484C16.4149 12.7484 16.7507 12.4127 16.7507 11.9984C16.7507 11.5842 16.4149 11.2484 16.0007 11.2484L5.81528 11.2484L9.15585 7.90554C9.44864 7.61255 9.44847 7.13767 9.15547 6.84488C8.86248 6.55209 8.3876 6.55226 8.09481 6.84525L3.52309 11.4202C3.35673 11.5577 3.25073 11.7657 3.25073 11.9984Z"
-                                        fill=""
-                                />
-                            </svg>
-
-                            Logout
-                            </a>
-                        </div>
-                        <!-- Dropdown End -->
-                        </div>
-                        <!-- User Area -->
-                    </div>
-                    </div>
-        </header>
+        @include('Layouts.General.header')
         <!-- ===== Header End ===== -->
 
         <!-- ===== Main Content Start ===== -->
         <main>
-          <div class="mx-auto max-w-(--breakpoint-2xl) p-4 pb-20 md:p-6 md:pb-6">
+
+        <div class="mx-auto max-w-(--breakpoint-2xl) p-4 pb-20 md:p-6 md:pb-6">
             <!-- Breadcrumb Start -->
-            <div x-data="{ pageName: `Bodaboda Member`}">
+            <div x-data="{ pageName: `Bodaboda Member Profile`}">
               <div class="flex flex-wrap items-center justify-between gap-3 pb-6">
                 <h2 class="text-xl font-semibold text-gray-800 dark:text-white/90" x-text="pageName"></h2>
                 <nav>
                   <ol class="flex items-center gap-1.5">
                     <li>
-                      <a class="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400" href="{{ route('treasurer.bodaboda') }}">Bodaboda List
+                      <a class="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400" href="{{ route('treasurer.bodaboda.members') }}">Bodaboda List
                         <svg
                           class="stroke-current"
                           width="17"
@@ -566,7 +95,7 @@
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-1 md:gap-6 xl:grid-cols-1">
                     <!-- Metric Item Start -->
                     <div class=" rounded-2xl border border-gray-200 bg-white p-5 lg:p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-                        <div class="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+                        <div class="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between" x-data="memberInfo">
 
                                 <div class="flex w-full flex-col items-center gap-6 xl:flex-row">
                                     <div class="h-[78px] w-[78px] overflow-hidden rounded-full border border-gray-200 bg-gray-100 flex items-center justify-center dark:border-gray-800 dark:bg-gray-800">
@@ -574,7 +103,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                         </svg>
                                     </div>
-                                    <div class="order-3 xl:order-2" x-data="memberInfo">
+                                    <div class="order-3 xl:order-2">
                                         <h4 class="mb-2 text-center text-lg font-semibold text-gray-800 xl:text-left dark:text-white/90" x-text="memberData?.member?.firstname + ' ' + memberData?.member?.lastname">
                                                 James Mwangi
                                         </h4>
@@ -582,7 +111,6 @@
                                             <p class="text-sm text-gray-500 dark:text-gray-400">Membership: <span x-text="memberData?.member?.membership">Member</span></p>
                                             <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
                                             <p class="text-sm text-gray-500 dark:text-gray-400">
-                                                <span class="bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500 rounded-full px-2 py-0.5 text-xs font-medium"><span x-text="memberData?.member?.status">Active</span></span>
                                                 Member since <span x-text="formatDate(memberData?.member?.created_on)">December 09, 2025 15:24</span>
                                             </p>
                                         </div>
@@ -590,12 +118,14 @@
                                 </div>
 
                                 <div class="flex flex-col gap-3 sm:flex-row">
-                                    <button @click="isProfileNextOfKinModal = true" class="flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
-                                        <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
-                                            </svg>
-                                            Print
-                                        </button>
+
+                                    <div>
+                                        <p class="text-xl text-gray-500 dark:text-gray-400">
+                                            <span class="bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500 rounded-full px-2 py-0.5 text-medium font-semibold">
+                                                <span x-text="memberData?.member?.status">Active</span>
+                                            </span>
+                                        </p>
+                                    </div>
                                 </div>
                         </div>
                     </div>
@@ -720,2097 +250,30 @@
 
             <!-- Tabbed Section -->
             <div class="rounded-xl border border-gray-200 p-6 bg-white dark:border-gray-800 dark:bg-white/[0.03]" x-data="{ activeTab: 'personal' }">
-                <!-- Top Navigation Menu -->
-                <div class="border-b border-gray-200 dark:border-gray-800">
-                    <nav class="-mb-px flex space-x-2 overflow-x-auto [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-200 dark:[&::-webkit-scrollbar-thumb]:bg-gray-600 dark:[&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:h-1.5">
-                        <button @click="activeTab = 'personal'"
-                                :class="activeTab === 'personal' ? 'text-brand-500 border-brand-500 dark:text-brand-400 dark:border-brand-400' : 'text-gray-500 border-transparent hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
-                                class="inline-flex items-center gap-2 border-b-2 px-2.5 py-2 text-sm font-medium transition-colors duration-200 ease-in-out text-brand-500 border-brand-500 dark:text-brand-400 dark:border-brand-400">
-                            <svg class="size-5"  fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                            </svg>
-                            Personal Information
-                        </button>
-
-                        <button @click="activeTab = 'documents'"
-                                :class="activeTab === 'documents' ? 'text-brand-500 border-brand-500 dark:text-brand-400 dark:border-brand-400' : 'text-gray-500 border-transparent hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
-                                class="inline-flex items-center gap-2 border-b-2 px-2.5 py-2 text-sm font-medium transition-colors duration-200 ease-in-out text-brand-500 border-brand-500 dark:text-brand-400 dark:border-brand-400">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="size-5" :class="activeTab === 'documents' ? 'text-brand-600 dark:text-brand-400' : 'text-gray-700 dark:text-gray-300'">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                            <path d="M3 5m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z"></path>
-                            <path d="M3 10l18 0"></path>
-                            <path d="M7 15l.01 0"></path>
-                            <path d="M11 15l2 0"></path>
-                            </svg>
-                            Verification
-                        </button>
-
-                        <button @click="activeTab = 'next-of-kin'"
-                                :class="activeTab === 'next-of-kin' ? 'text-brand-500 border-brand-500 dark:text-brand-400 dark:border-brand-400' : 'text-gray-500 border-transparent hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
-                                class="inline-flex items-center gap-2 border-b-2 px-2.5 py-2 text-sm font-medium transition-colors duration-200 ease-in-out text-brand-500 border-brand-500 dark:text-brand-400 dark:border-brand-400">
-                            <svg class="size-5"  fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                            </svg>
-                            Next of Kin
-                        </button>
-
-                        <button @click="activeTab = 'vehicles'"
-                                :class="activeTab === 'vehicles' ? 'text-brand-500 border-brand-500 dark:text-brand-400 dark:border-brand-400' : 'text-gray-500 border-transparent hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
-                                class="inline-flex items-center gap-2 border-b-2 px-2.5 py-2 text-sm font-medium transition-colors duration-200 ease-in-out text-brand-500 border-brand-500 dark:text-brand-400 dark:border-brand-400">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="size-5">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                <path d="M5 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
-                                <path d="M19 16m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
-                                <path d="M7.5 14h5l4 -4h-10.5m1.5 4l4 -4"></path>
-                                <path d="M13 6h2l1.5 3l2 4"></path>
-                            </svg>
-                            Vehicles
-                        </button>
-
-                        <button @click="activeTab = 'contributions'"
-                                :class="activeTab === 'contributions' ? 'text-brand-500 border-brand-500 dark:text-brand-400 dark:border-brand-400' : 'text-gray-500 border-transparent hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
-                                class="inline-flex items-center gap-2 border-b-2 px-2.5 py-2 text-sm font-medium transition-colors duration-200 ease-in-out text-brand-500 border-brand-500 dark:text-brand-400 dark:border-brand-400">
-                            <svg width="20" height="20" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="size-5" :class="activeTab === 'contributions' ? 'text-brand-600 dark:text-brand-400' : 'text-gray-700 dark:text-gray-300'">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-width="1" d="M8 7V6a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1M3 18v-7a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Zm8-3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"></path>
-                            </svg>
-                            Contributions
-                        </button>
-
-                        <button @click="activeTab = 'savings'"
-                                :class="activeTab === 'savings' ? 'text-brand-500 border-brand-500 dark:text-brand-400 dark:border-brand-400' : 'text-gray-500 border-transparent hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
-                                class="inline-flex items-center gap-2 border-b-2 px-2.5 py-2 text-sm font-medium transition-colors duration-200 ease-in-out text-brand-500 border-brand-500 dark:text-brand-400 dark:border-brand-400">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="size-5" >
-                                <path d="M15.3086 2C15.7228 2 16.0586 2.33579 16.0586 2.75V2.91898C16.807 3.10815 17.3609 3.78601 17.3609 4.59323C17.3609 5.00744 17.0251 5.34323 16.6109 5.34323C16.1967 5.34323 15.8609 5.00744 15.8609 4.59323C15.8609 4.46796 15.7594 4.36641 15.6341 4.36641H15.2391C14.9724 4.36641 14.7563 4.58257 14.7563 4.84921C14.7563 5.05046 14.8811 5.2306 15.0695 5.30127L16.0744 5.67811C16.8482 5.96833 17.3609 6.70814 17.3609 7.53464C17.3609 8.39065 16.8185 9.11996 16.0586 9.39759V9.63372C16.0586 10.0479 15.7228 10.3837 15.3086 10.3837C14.8944 10.3837 14.5586 10.0479 14.5586 9.63372V9.46488C13.8101 9.2757 13.2563 8.59785 13.2563 7.79062C13.2563 7.37641 13.5921 7.04062 14.0063 7.04062C14.4205 7.04062 14.7563 7.37641 14.7563 7.79062C14.7563 7.91589 14.8578 8.01744 14.9831 8.01744H15.3781C15.6448 8.01744 15.8609 7.80129 15.8609 7.53464C15.8609 7.3334 15.7361 7.15326 15.5477 7.08259L14.5428 6.70575C13.7689 6.41552 13.2563 5.67571 13.2563 4.84921C13.2563 3.99321 13.7987 3.2639 14.5586 2.98626V2.75C14.5586 2.33579 14.8944 2 15.3086 2Z" fill="currentColor"></path>
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M19.4266 11.0844C20.0839 10.5513 21.0447 10.6316 21.6044 11.2664C22.1114 11.8415 22.1317 12.6979 21.6525 13.2964L17.7859 18.125C17.4104 18.5938 16.8423 18.8667 16.2417 18.8667H10.0685C9.8825 18.8667 9.70317 18.9358 9.56527 19.0606L9.04042 19.5355C9.14503 19.864 9.01125 20.2324 8.7004 20.4119L6.1238 21.8995C5.76508 22.1066 5.30638 21.9837 5.09928 21.625L2.10061 16.4311C1.8935 16.0724 2.01641 15.6137 2.37513 15.4066L4.95173 13.919C5.18986 13.7815 5.47206 13.7895 5.69546 13.9153L7.38764 12.5626C7.94114 12.1201 8.64057 11.8151 9.41278 11.8116C10.2262 11.8079 11.5119 11.8799 12.6754 12.3045H15.2732C15.9345 12.3045 16.512 12.6637 16.8212 13.1975L19.4266 11.0844ZM8.55886 17.9483L8.2864 18.1948L6.53627 15.1635L8.32425 13.7342C8.66549 13.4614 9.04628 13.3133 9.41955 13.3116C10.1887 13.3081 11.296 13.3834 12.222 13.7363C12.3365 13.7799 12.4613 13.8045 12.5912 13.8045H15.2732C15.432 13.8045 15.5608 13.9333 15.5608 14.0922C15.5608 14.1589 15.5381 14.2203 15.5 14.2691L15.4269 14.3284C15.4184 14.3352 15.4102 14.3422 15.4021 14.3494C15.3633 14.3688 15.3195 14.3798 15.2732 14.3798H12.5383C12.1241 14.3798 11.7883 14.7156 11.7883 15.1298C11.7883 15.544 12.1241 15.8798 12.5383 15.8798H15.2732C15.7583 15.8798 16.1984 15.6865 16.5205 15.3728L20.3715 12.2494C20.404 12.223 20.4515 12.227 20.4792 12.2584C20.5043 12.2868 20.5053 12.3292 20.4816 12.3588L16.615 17.1874C16.5242 17.3007 16.3869 17.3667 16.2417 17.3667H10.0685C9.51056 17.3667 8.97255 17.574 8.55886 17.9483ZM3.77464 16.3307L6.02332 20.2255L7.30088 19.4879L5.05221 15.5931L3.77464 16.3307Z" fill="currentColor"></path>
-                            </svg>
-                            Savings
-                        </button>
-
-                        <button @click="activeTab = 'loans'"
-                                :class="activeTab === 'loans' ? 'text-brand-500 border-brand-500 dark:text-brand-400 dark:border-brand-400' : 'text-gray-500 border-transparent hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
-                                class="inline-flex items-center gap-2 border-b-2 px-2.5 py-2 text-sm font-medium transition-colors duration-200 ease-in-out text-brand-500 border-brand-500 dark:text-brand-400 dark:border-brand-400">
-                            <svg class="size-5" :class="activeTab === 'loans' ? 'text-brand-600 dark:text-brand-400' : 'text-gray-700 dark:text-gray-300'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
-                            Loans
-                        </button>
-
-                        <button @click="activeTab = 'fines'"
-                                :class="activeTab === 'fines' ? 'text-brand-500 border-brand-500 dark:text-brand-400 dark:border-brand-400' : 'text-gray-500 border-transparent hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
-                                class="inline-flex items-center gap-2 border-b-2 px-2.5 py-2 text-sm font-medium transition-colors duration-200 ease-in-out text-brand-500 border-brand-500 dark:text-brand-400 dark:border-brand-400">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="size-5" :class="activeTab === 'fines' ? 'text-brand-600 dark:text-brand-400' : 'text-gray-700 dark:text-gray-300'">
-                            <path d="M17.8076 2C18.2218 2 18.5576 2.33579 18.5576 2.75V2.91898C19.3061 3.10815 19.8599 3.78601 19.8599 4.59323C19.8599 5.00744 19.5242 5.34323 19.1099 5.34323C18.6957 5.34323 18.3599 5.00744 18.3599 4.59323C18.3599 4.46796 18.2584 4.36641 18.1331 4.36641H17.7381C17.4714 4.36641 17.2553 4.58257 17.2553 4.84921C17.2553 5.05046 17.3801 5.2306 17.5686 5.30127L18.5734 5.67811C19.3473 5.96833 19.8599 6.70814 19.8599 7.53464C19.8599 8.39065 19.3175 9.11996 18.5576 9.39759V9.63372C18.5576 10.0479 18.2218 10.3837 17.8076 10.3837C17.3934 10.3837 17.0576 10.0479 17.0576 9.63372V9.46488C16.3092 9.2757 15.7553 8.59785 15.7553 7.79062C15.7553 7.37641 16.0911 7.04062 16.5053 7.04062C16.9195 7.04062 17.2553 7.37641 17.2553 7.79062C17.2553 7.91589 17.3568 8.01744 17.4821 8.01744H17.8771C18.1438 8.01744 18.3599 7.80129 18.3599 7.53464C18.3599 7.3334 18.2351 7.15326 18.0467 7.08259L17.0418 6.70575C16.268 6.41552 15.7553 5.67571 15.7553 4.84921C15.7553 3.99321 16.2977 3.2639 17.0576 2.98626V2.75C17.0576 2.33579 17.3934 2 17.8076 2Z" fill="currentColor"></path>
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 3.25045C4.25736 3.25045 3.25 4.25781 3.25 5.50045V18.5005C3.25 19.7431 4.25736 20.7505 5.5 20.7505H5.83333C7.07597 20.7505 8.08333 19.7431 8.08333 18.5005V5.50045C8.08333 4.25781 7.07598 3.25045 5.83333 3.25045H5.5ZM4.75 5.50045C4.75 5.08624 5.08579 4.75045 5.5 4.75045H5.83333C6.24755 4.75045 6.58333 5.08624 6.58333 5.50045V18.5005C6.58333 18.9147 6.24755 19.2505 5.83333 19.2505H5.5C5.08579 19.2505 4.75 18.9147 4.75 18.5005V5.50045Z" fill="currentColor"></path>
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M11.833 9.63424C10.5904 9.63424 9.58301 10.6416 9.58301 11.8842V18.5005C9.58301 19.7432 10.5904 20.7505 11.833 20.7505H12.1663C13.409 20.7505 14.4163 19.7432 14.4163 18.5005V11.8842C14.4163 10.6416 13.409 9.63424 12.1663 9.63424H11.833ZM11.083 11.8842C11.083 11.47 11.4188 11.1342 11.833 11.1342H12.1663C12.5806 11.1342 12.9163 11.47 12.9163 11.8842V18.5005C12.9163 18.9147 12.5806 19.2505 12.1663 19.2505H11.833C11.4188 19.2505 11.083 18.9147 11.083 18.5005V11.8842Z" fill="currentColor"></path>
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M15.916 14.9223C15.916 13.6797 16.9234 12.6723 18.166 12.6723H18.4993C19.742 12.6723 20.7493 13.6797 20.7493 14.9223V18.5005C20.7493 19.7432 19.742 20.7505 18.4993 20.7505H18.166C16.9234 20.7505 15.916 19.7432 15.916 18.5005V14.9223ZM18.166 14.1723C17.7518 14.1723 17.416 14.5081 17.416 14.9223V18.5005C17.416 18.9147 17.7518 19.2505 18.166 19.2505H18.4993C18.9136 19.2505 19.2493 18.9147 19.2493 18.5005V14.9223C19.2493 14.5081 18.9136 14.1723 18.4993 14.1723H18.166Z" fill="currentColor"></path>
-                            </svg>
-                            Fines & Penalties
-                        </button>
-
-                        <button @click="activeTab = 'account'"
-                                :class="activeTab === 'account' ? 'text-brand-500 border-brand-500 dark:text-brand-400 dark:border-brand-400' : 'text-gray-500 border-transparent hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'"
-                                class="inline-flex items-center gap-2 border-b-2 px-2.5 py-2 text-sm font-medium transition-colors duration-200 ease-in-out text-brand-500 border-brand-500 dark:text-brand-400 dark:border-brand-400">
-                            <svg class="size-5" :class="activeTab === 'account' ? 'text-brand-600 dark:text-brand-400' : 'text-gray-700 dark:text-gray-300'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            </svg>
-                            Settings
-                        </button>
-                    </nav>
-                </div>
-
-                <!-- Content Area - Your existing code continues here -->
-                <div class="pt-4 dark:border-gray-800 mb-8 gap-4 md:gap-6 p-6">
-                    <!-- Personal Information -->
-                    <div x-show="activeTab === 'personal'" class="border-b" x-data="memberInfo">
-                      <!-- Header: Title Left + Edit Button Right -->
-                      <div class="relative mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-                        <h3 class="text-xl font-semibold text-gray-800 dark:text-white/90 border-b">
-                          Personal Information
-                        </h3>
-                        <button @click="personalInformationModal = true"
-                                class="shadow-theme-xs flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 sm:w-auto dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-                          <svg class="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M15.0911 2.78206C14.2125 1.90338 12.7878 1.90338 11.9092 2.78206L4.57524 10.116C4.26682 10.4244 4.0547 10.8158 3.96468 11.2426L3.31231 14.3352C3.25997 14.5833 3.33653 14.841 3.51583 15.0203C3.69512 15.1996 3.95286 15.2761 4.20096 15.2238L7.29355 14.5714C7.72031 14.4814 8.11172 14.2693 8.42013 13.9609L15.7541 6.62695C16.6327 5.74827 16.6327 4.32365 15.7541 3.44497L15.0911 2.78206ZM12.9698 3.84272C13.2627 3.54982 13.7376 3.54982 14.0305 3.84272L14.6934 4.50563C14.9863 4.79852 14.9863 5.2734 14.6934 5.56629L14.044 6.21573L12.3204 4.49215L12.9698 3.84272ZM11.2597 5.55281L5.6359 11.1766C5.53309 11.2794 5.46238 11.4099 5.43238 11.5522L5.01758 13.5185L6.98394 13.1037C7.1262 13.0737 7.25666 13.003 7.35947 12.9002L12.9833 7.27639L11.2597 5.55281Z" fill=""></path>
-                          </svg>
-                          Edit
-                        </button>
-                      </div>
-
-                      <div class="relative grid grid-cols-1 gap-6 lg:grid-cols-1">
-                        <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                          <div>
-                            <span class="mb-1 text-xs text-gray-500 dark:text-gray-400">First Name</span>
-                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.firstname || 'Loading...'">+254 723 000 000</p>
-                          </div>
-                          <div>
-                            <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Last Name</p>
-                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.lastname || 'Loading...'">+254 725 000 000</p>
-                          </div>
-                        </div>
-                        <div>
-                          <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Email</p>
-                          <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.email || 'Loading...'">randomuser@pimjo.com</p>
-                        </div>
-                        <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                          <div>
-                            <span class="mb-1 text-xs text-gray-500 dark:text-gray-400">Primary Phone</span>
-                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.phone1 || 'Loading...'">+254 723 000 000</p>
-                          </div>
-                          <div>
-                            <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Secondary Phone</p>
-                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.phone2 || 'Loading...'">+254 725 000 000</p>
-                          </div>
-                          <div>
-                            <span class="mb-1 text-xs text-gray-500 dark:text-gray-400">Gender</span>
-                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.gender || 'Loading...'">+254 723 000 000</p>
-                          </div>
-                          <div>
-                            <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Date of Birth</p>
-                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.dob || 'Loading...'">+254 725 000 000</p>
-                          </div>
-                          <div>
-                            <span class="mb-1 text-xs text-gray-500 dark:text-gray-400">Membership</span>
-                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.membership">+254 723 000 000</p>
-                          </div>
-                          <div>
-                            <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Membership Status</p>
-                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.status || 'Loading...'">+254 725 000 000</p>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-
-                    <!-- Addresses -->
-                    <div x-show="activeTab === 'documents'" x-data="memberInfo">
-                        <!-- Header: Title Left + Edit Button Right -->
-                        <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-                            <h3 class="text-2xl font-semibold text-gray-800 dark:text-white/90">
-                            Identification & Documents
-                            </h3>
-                            <button @click="identificationDocumentsModal = true"
-                                    class="shadow-theme-xs flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-6 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 sm:w-auto dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-                            <svg class="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M15.0911 2.78206C14.2125 1.90338 12.7878 1.90338 11.9092 2.78206L4.57524 10.116C4.26682 10.4244 4.0547 10.8158 3.96468 11.2426L3.31231 14.3352C3.25997 14.5833 3.33653 14.841 3.51583 15.0203C3.69512 15.1996 3.95286 15.2761 4.20096 15.2238L7.29355 14.5714C7.72031 14.4814 8.11172 14.2693 8.42013 13.9609L15.7541 6.62695C16.6327 5.74827 16.6327 4.32365 15.7541 3.44497L15.0911 2.78206ZM12.9698 3.84272C13.2627 3.54982 13.7376 3.54982 14.0305 3.84272L14.6934 4.50563C14.9863 4.79852 14.9863 5.2734 14.6934 5.56629L14.044 6.21573L12.3204 4.49215L12.9698 3.84272ZM11.2597 5.55281L5.6359 11.1766C5.53309 11.2794 5.46238 11.4099 5.43238 11.5522L5.01758 13.5185L6.98394 13.1037C7.1262 13.0737 7.25666 13.003 7.35947 12.9002L12.9833 7.27639L11.2597 5.55281Z" fill=""></path>
-                            </svg>
-                            Edit
-                            </button>
-                        </div>
-
-                        <!-- Details Grid Below -->
-                        <div class="grid grid-cols-1 gap-6 lg:grid-cols-1">
-                            <div class="w-full" x-data="memberInfo">
-                                <div class="flex justify-between items-start border-b border-gray-200 dark:border-gray-800 pb-3">
-                                                                            <h4 class="text-base font-medium text-gray-800 dark:text-white/90">
-                                                                                Identification
-                                                                            </h4>
-                                </div>
-
-                                                                        <!-- Driving License -->
-                                <div class="mt-4 space-y-4 p-6">
-                                                                            <!-- Driving License and Type -->
-                                    <div>
-                                        <div class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left p-4">
-                                            <p class="text-sm text-gray-500 dark:text-gray-400"  x-text="memberData?.identification?.national_id || 'Not provided'">[ National ID number ]</p>
-
-                                        </div>
-
-                                        <div class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left p-4">
-                                            <p class="text-sm text-gray-500 dark:text-gray-400" x-text="memberData?.identification?.driver_license || 'Not provided'">[Driving License]</p>
-                                            <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
-                                            <p class="text-sm text-gray-500 dark:text-gray-400" x-text="memberData?.identification?.driving_license_type || 'Not provided'">[DL Type]</p>
-                                            <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
-                                            <p class="text-sm text-gray-500 dark:text-gray-400" x-text="memberData?.identification?.ntsa_compliance || 'Not provided'">[NTSA Compliance]</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                                                        <!-- National ID -->
-                                <div class="mt-4 p-6">
-                                                                            <!-- National ID front back -->
-                                                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-2">
-                                                                                <div class="border border-gray-200 dark:border-gray-700 rounded p-4">
-                                                                                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">National ID Front</p>
-                                                                                    <div class="flex items-center justify-between mt-2">
-                                                                                        <span class="text-sm text-gray-700 dark:text-gray-300">Status:</span>
-                                                                                        <span class="text-xs px-2 py-1 rounded" :class="memberData?.identification?.national_id_front_path ? 'bg-green-100 text-green-600 dark:bg-green-800 dark:text-green-400' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'"></span>
-                                                                                        <span class="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400" -text="memberData?.identification?.national_id_front_path ? 'Uploaded' : 'Pending Upload'">
-                                                                                            [Pending Upload]
-                                                                                        </span>
-                                                                                    </div>
-                                                                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Format: PNG, JPG, WebP (Max 5MB)</p>
-                                                                                </div>
-                                                                                <div class="border border-gray-200 dark:border-gray-700 rounded p-4">
-                                                                                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">National ID Back</p>
-                                                                                    <div class="flex items-center justify-between mt-2">
-                                                                                        <span class="text-sm text-gray-700 dark:text-gray-300">Status:</span>
-                                                                                        <span class="text-xs px-2 py-1 rounded" :class="memberData?.identification?.national_id_back_path ? 'bg-green-100 text-green-600 dark:bg-green-800 dark:text-green-400' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'"></span>
-                                                                                        <span class="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400" x-text="memberData?.identification?.national_id_back_path ? 'Uploaded' : 'Pending Upload'">
-                                                                                            [Pending Upload]
-                                                                                        </span>
-                                                                                    </div>
-                                                                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Format: PNG, JPG, WebP (Max 5MB)</p>
-                                                                                </div>
-                                                                            </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Contact Information -->
-                    <div x-show="activeTab === 'savings'">
-                        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-                                                        <div class="flex flex-col justify-between gap-5 border-b border-gray-200 px-5 py-4 sm:flex-row lg:items-center dark:border-gray-800">
-                                                            <div>
-                                                                    <h3 class="text-lg font-semibold text-gray-600 dark:text-white/90">
-                                                                        Savings
-                                                                    </h3>
-                                                                    <p class="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
-                                                                        Manage all member savings here.
-                                                                    </p>
-                                                            </div>
-
-                                                            <div class="hidden flex-col gap-3 sm:flex sm:flex-row sm:items-center">
-                                                                <!-- Filter by Frequency -->
-                                                                <div class="hidden lg:block">
-                                                                    <select x-model="statusFilter" @change="performFilter()" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                                        <option value="All">Frequency</option>
-                                                                        <option value="Daily">Daily</option>
-                                                                        <option value="Weekly">Weekly</option>
-                                                                        <option value="Monthly">Monthly</option>
-                                                                    </select>
-                                                                </div>
-
-                                                                <!-- Filter by Frequency -->
-                                                                <div class="hidden lg:block">
-                                                                    <select x-model="statusFilter" @change="performFilter()" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                                        <option value="All">Status</option>
-                                                                        <option value="Daily">Confirmed</option>
-                                                                        <option value="Weekly">Under Review</option>
-                                                                        <option value="Monthly">Cancelled</option>
-                                                                    </select>
-                                                                </div>
-
-                                                                <!-- Print Button -->
-                                                                <div>
-                                                                    <button @click="printMembersReport()"
-                                                                        class="hover:text-dark-900 shadow-theme-xs relative flex h-11 items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                                            <path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2"></path>
-                                                                            <path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4"></path>
-                                                                            <rect x="7" y="13" width="10" height="8" rx="2"></rect>
-                                                                        </svg>
-                                                                        Print
-                                                                    </button>
-                                                                </div>
-
-                                                                <div>
-                                                                    <button @click="withdrawSavingsModal = true"
-                                                                        class="hover:text-dark-900 shadow-theme-xs relative flex inline-flex h-11 items-center justify-center  gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-700 hover:bg-gray-600 sm:w-auto">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                                                            <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                        </svg>
-                                                                        Withdraw
-                                                                    </button>
-                                                                </div>
-
-                                                                <!-- Create new loan type button -->
-                                                                <div>
-                                                                    <button @click="savingsModal = true"
-                                                                            class="shadow-theme-xs inline-flex flex w-full justify-center rounded-lg border border-gray-500 bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                                                            <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                        </svg>
-                                                                        Add Savings
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                            <!-- Savings Table -->
-                                                        <div>
-                                                            <!-- Savings Table -->
-                                                            <div x-data="savingsTable()" x-init="init()">
-                                                                <div class="custom-scrollbar overflow-x-auto">
-                                                                        <table class="w-full">
-                                                                            <!-- table header start -->
-                                                                            <thead>
-                                                                                <tr class="border-b border-gray-200 dark:divide-gray-800 dark:border-gray-800">
-                                                                                    <th class="p-4 whitespace-nowrap">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Transaction ID
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Amount
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Transaction Date
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Mode
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-
-                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Status
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Actions
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <!-- table header end -->
-
-                                                                            <!-- Message if no savings data found -->
-                                                                            <template x-if="savings.length === 0">
-                                                                                <tbody>
-                                                                                    <tr>
-                                                                                        <td colspan="10" class="px-4 py-12 text-center">
-                                                                                            <div class="inline-flex flex-col items-center justify-center space-y-4 p-4">
-                                                                                                <!-- Documents Outline SVG Icon -->
-                                                                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.801 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.801 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"></path>
-                                                                                                </svg>
-                                                                                                <div class="space-y-2">
-                                                                                                    <h2 class="text-xl font-semibold text-gray-700">No savings records found</h2>
-                                                                                                    <p class="text-gray-500">Do some transactions to view savings performance</p>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </td>
-                                                                                    </tr>
-                                                                                </tbody>
-                                                                            </template>
-
-                                                                            <!-- If there is data  display the table -->
-                                                                            <template x-if="savings.length > 0">
-                                                                                <!-- table body start -->
-                                                                                <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800">
-                                                                                    <template x-for="saving in paginatedSavings" :key="saving.transactionId">
-                                                                                        <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-900">
-                                                                                            <!-- LoanTypeID -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <div class="flex items-center gap-3">
-                                                                                                        <div>
-                                                                                                            <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="saving.transactionCode || 'N/A'"></p>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                            <!-- Type -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="'Ksh ' + (saving.transactionAmount ? saving.transactionAmount.toLocaleString() : '0')"></p>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                            <!-- Repayment Type -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="saving.transactionDate ? new Date(saving.transactionDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'"></p>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                            <!-- Created On -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="saving.transactionMode || 'N/A'"></p>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                            <!-- Status -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <p :class="saving.transactionStatus === 'Confirmed' || saving.transactionStatus === 'Approved' ? 'bg-success-50 text-theme-xs text-success-700 dark:bg-success-500/15 dark:text-success-500' :
-                                                                                                            saving.transactionStatus === 'Pending' ? 'bg-warning-50 text-theme-xs text-warning-700 dark:bg-warning-500/15 dark:text-warning-500' :
-                                                                                                            'bg-error-50 text-theme-xs text-error-600 dark:bg-error-500/15 dark:text-error-500'"
-                                                                                                    class="rounded-full px-2 py-0.5 font-medium"
-                                                                                                    x-text="saving.transactionStatus || 'N/A'"></p>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                            <!-- Actions -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <button @click="editSavingModal(saving)" class="shadow-theme-xs inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-                                                                                                        <svg class="w-[28px] h-[28px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.1" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"></path>
-                                                                                                        </svg>
-                                                                                                    </button>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                    </template>
-                                                                                </tbody>
-                                                                                <!-- table body end -->
-                                                                            </template>
-
-                                                                        </table>
-                                                                </div>
-                                                                    <!-- Table Navigations -->
-                                                                <div class="border-t border-gray-200 px-5 py-4 dark:border-gray-800">
-                                                                        <div class="flex justify-center pb-4 sm:hidden">
-                                                                            <span class="block text-sm font-medium text-gray-500 dark:text-gray-400">
-                                                                                Showing
-                                                                                <span class="text-gray-800 dark:text-white/90" x-text="startEntry">1</span>
-                                                                                to
-                                                                                <span class="text-gray-800 dark:text-white/90" x-text="endEntry">1</span>
-                                                                                of
-                                                                                <span class="text-gray-800 dark:text-white/90" x-text="savings.length">1</span>
-                                                                            </span>
-                                                                        </div>
-
-                                                                        <div class="flex items-center justify-between">
-                                                                            <div class="hidden sm:block">
-                                                                                <span class="block text-sm font-medium text-gray-500 dark:text-gray-400">
-                                                                                Showing
-                                                                                <span class="text-gray-800 dark:text-white/90" x-text="startEntry">1</span>
-                                                                                to
-                                                                                <span class="text-gray-800 dark:text-white/90" x-text="endEntry">1</span>
-                                                                                of
-                                                                                <span class="text-gray-800 dark:text-white/90" x-text="savings.length">1</span>
-                                                                                </span>
-                                                                            </div>
-                                                                            <div class="flex w-full items-center justify-between gap-2 rounded-lg bg-gray-50 p-4 sm:w-auto sm:justify-normal sm:rounded-none sm:bg-transparent sm:p-0 dark:bg-gray-900 dark:sm:bg-transparent">
-                                                                                <button class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" :disabled="page === 1" @click="goToPage(page - 1)" disabled="disabled">
-                                                                                <span>
-                                                                                    <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M2.58203 9.99868C2.58174 10.1909 2.6549 10.3833 2.80152 10.53L7.79818 15.5301C8.09097 15.8231 8.56584 15.8233 8.85883 15.5305C9.15183 15.2377 8.152 14.7629 8.85921 14.4699L5.13911 10.7472L16.6665 10.7472C17.0807 10.7472 17.4165 10.4114 17.4165 9.99715C17.4165 9.58294 17.0807 9.24715 16.6665 9.24715L5.14456 9.24715L8.85919 5.53016C9.15199 5.23717 9.15184 4.7623 8.85885 4.4695C8.56587 4.1767 8.09099 4.17685 7.79819 4.46984L2.84069 9.43049C2.68224 9.568 2.58203 9.77087 2.58203 9.99715C2.58203 9.99766 2.58203 9.99817 2.58203 9.99868Z" fill=""></path>
-                                                                                    </svg>
-                                                                                </span>
-                                                                                </button>
-
-                                                                                <span class="block text-sm font-medium text-gray-700 sm:hidden dark:text-gray-400">
-                                                                                Page <span x-text="page">1</span> of <span x-text="totalPages">1</span>
-                                                                                </span>
-
-                                                                                <ul class="hidden items-center gap-0.5 sm:flex">
-                                                                                <template x-for="n in totalPages" :key="n">
-                                                                                    <li>
-                                                                                    <a href="#" @click.prevent="goToPage(n)" :class="page === n ? 'bg-brand-500 text-white' : 'hover:bg-brand-500 text-gray-700 dark:text-gray-400 hover:text-white dark:hover:text-white'" class="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium">
-                                                                                        <span x-text="n"></span>
-                                                                                    </a>
-                                                                                    </li>
-                                                                                </template>
-                                                                                </ul>
-
-                                                                                <button class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" :disabled="page === totalPages" @click="goToPage(page + 1)" disabled="disabled">
-                                                                                <span>
-                                                                                    <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M17.4165 9.9986C17.4168 10.1909 17.3437 10.3832 17.197 10.53L12.2004 15.5301C11.9076 15.8231 11.4327 15.8233 11.1397 15.5305C10.8467 15.2377 10.8465 14.7629 11.1393 14.4699L14.8594 10.7472L3.33203 10.7472C2.91782 10.7472 2.58203 10.4114 2.58203 9.99715C2.58203 9.58294 2.91782 9.24715 3.33203 9.24715L14.854 9.24715L11.1393 5.53016C10.8465 5.23717 10.8467 4.7623 11.1397 4.4695C11.4327 4.1767 11.9075 4.17685 12.2003 4.46984L17.1578 9.43049C17.3163 9.568 17.4165 9.77087 17.4165 9.99715C17.4165 9.99763 17.4165 9.99812 17.4165 9.9986Z" fill=""></path>
-                                                                                    </svg>
-                                                                                </span>
-                                                                                </button>
-                                                                            </div>
-                                                                        </div>
-                                                                </div>
-
-                                                            </div>
-
-                                                        </div>
-                        </div>
-                    </div>
-
-                    <!-- Next of Kin Table -->
-                    <div x-show="activeTab === 'next-of-kin'">
-                      <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]" x-data="{ memberData: memberInfo().memberData }">
-                                        <!-- Stages table -->
-                                        <div class="flex flex-col justify-between gap-5 border-b border-gray-200 px-5 py-4 sm:flex-row lg:items-center dark:border-gray-800">
-                                            <div>
-                                                    <h3 class="text-lg font-semibold text-gray-600 dark:text-white/90">
-                                                        Next of Kin
-                                                    </h3>
-                                                    <p class="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
-                                                        Manage all member name next of kin list
-                                                    </p>
-                                            </div>
-
-                                            <div class="hidden flex-col gap-3 sm:flex sm:flex-row sm:items-center">
-                                                    <div class="hidden lg:block">
-                                                        <select x-model="statusFilter" @change="performFilter()" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                            <option value="All">Status</option>
-                                                            <option value="Approved">Approved</option>
-                                                            <option value="Blacklisted">Blacklisted</option>
-                                                            <option value="Under Review">Under Review</option>
-                                                        </select>
-                                                    </div>
-
-                                                    <div>
-                                                        <button @click="printMembersReport()" class="hover:text-dark-900 shadow-theme-xs relative flex h-11 items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                            <path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2"></path>
-                                                            <path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4"></path>
-                                                            <rect x="7" y="13" width="10" height="8" rx="2"></rect>
-                                                        </svg>
-                                                        Print
-                                                        </button>
-                                                    </div>
-
-                                                    <button @click="nextKinModal = true" class="shadow-theme-xs inline-flex flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                                                <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                </svg>
-                                                                Add Kin
-                                                            </button>
-
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <!-- Table Container -->
-                                        <div class="custom-scrollbar overflow-x-auto" x-data="kinTable">
-                                                <table class="w-full">
-                                                    <!-- table header start -->
-                                                    <thead>
-                                                        <tr class="border-b border-gray-200 dark:divide-gray-800 dark:border-gray-800">
-                                                            <th class="p-4 whitespace-nowrap">
-                                                                <div class="flex items-center">
-                                                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">#Kin ID</p>
-                                                                </div>
-                                                            </th>
-                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                <div class="flex items-center">
-                                                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Kin</p>
-                                                                </div>
-                                                            </th>
-                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                <div class="flex items-center">
-                                                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Relationship</p>
-                                                                </div>
-                                                            </th>
-                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                <div class="flex items-center">
-                                                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Phone Number</p>
-                                                                </div>
-                                                            </th>
-                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                <div class="flex items-center">
-                                                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Email</p>
-                                                                </div>
-                                                            </th>
-                                                            <th class="pp-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                <div class="flex items-center">
-                                                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Status</p>
-                                                                </div>
-                                                            </th>
-                                                            <th class="pp-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                <div class="flex items-center">
-                                                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">Actions</p>
-                                                                </div>
-                                                            </th>
-                                                        </tr>
-                                                    </thead>
-                                                    <!-- table header end -->
-
-                                                    <!-- table body start -->
-                                                    <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800">
-                                                        <!-- Empty state message when no kin -->
-                                                        <template x-if="kins.length === 0">
-                                                            <tr class="transition">
-                                                                <td colspan="7" class="p-8">
-                                                                    <div class="flex flex-col items-center justify-center gap-4">
-                                                                        <!-- outline documents svg icon -->
-                                                                        <svg class="w-16 h-16 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 13h6M9 17h6M7 7h6l2 2h4v8a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"></path>
-                                                                        </svg>
-
-                                                                        <div class="text-center">
-                                                                            <h2 class="text-lg font-semibold text-gray-700 dark:text-gray-300">No kin found.</h2>
-                                                                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">You can add a kins to manage</p>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </template>
-
-                                                        <!-- Rows when there are kin -->
-                                                        <template x-if="kins.length > 0">
-                                                            <template x-for="kin in currentItems" :key="kin.kin_id">
-                                                                <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-900">
-                                                                    <td class="p-4 whitespace-nowrap">
-                                                                        <div class="flex items-center col-span-2">
-                                                                            <div class="flex items-center gap-3">
-                                                                                <div>
-                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="kin.kin_id || 'N/A'"></p>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td class="p-4 whitespace-nowrap">
-                                                                        <div class="flex items-center col-span-2">
-                                                                            <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="kin.firstname + ' ' + kin.lastname"></p>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td class="p-4 whitespace-nowrap">
-                                                                        <div class="flex items-center col-span-2">
-                                                                            <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="kin.relation || 'N/A'"></p>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td class="p-4 whitespace-nowrap">
-                                                                        <div class="flex items-center col-span-2">
-                                                                            <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="kin.phone || 'N/A'"></p>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td class="p-4 whitespace-nowrap">
-                                                                        <div class="flex items-center col-span-2">
-                                                                            <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="kin.email || 'N/A'"></p>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td class="p-4 whitespace-nowrap">
-                                                                        <div class="flex items-center col-span-2">
-                                                                            <p :class="kin.status === 'Approved' ? 'bg-success-50 text-theme-xs text-success-700 dark:bg-success-500/15 dark:text-success-500' : 'bg-error-50 text-theme-xs text-error-600 dark:bg-error-500/15 dark:text-error-500'" class="rounded-full px-2 py-0.5 font-medium" x-text="kin.status || 'N/A'"></p>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td class="p-4 whitespace-nowrap">
-                                                                        <div class="flex items-center col-span-2">
-                                                                            <button @click="$dispatch('open-edit-modal', { kin: kin })" class="shadow-theme-xs inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-                                                                                <svg class="w-[28px] h-[28px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.1" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"></path>
-                                                                                </svg>
-                                                                            </button>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                            </template>
-                                                        </template>
-                                                    </tbody>
-                                                    <!-- table body end -->
-                                                </table>
-
-
-                                                    <!-- Pagination -->
-                                                <div class="border-t border-gray-200 px-5 py-4 dark:border-gray-800">
-                                                    <div class="flex justify-center pb-4 sm:hidden">
-                                                        <span class="block text-sm font-medium text-gray-500 dark:text-gray-400">
-                                                            Showing
-                                                            <span class="text-gray-800 dark:text-white/90" x-text="startIndex">0</span>
-                                                            to
-                                                            <span class="text-gray-800 dark:text-white/90" x-text="endIndex">0</span>
-                                                            of
-                                                            <span class="text-gray-800 dark:text-white/90" x-text="kins.length">0</span>
-                                                        </span>
-                                                    </div>
-
-                                                    <div class="flex items-center justify-between">
-                                                        <div class="hidden sm:block">
-                                                            <span class="block text-sm font-medium text-gray-500 dark:text-gray-400">
-                                                                Showing
-                                                                <span class="text-gray-800 dark:text-white/90" x-text="startIndex">0</span>
-                                                                to
-                                                                <span class="text-gray-800 dark:text-white/90" x-text="endIndex">0</span>
-                                                                of
-                                                                <span class="text-gray-800 dark:text-white/90" x-text="kins.length">0</span>
-                                                            </span>
-                                                        </div>
-                                                        <div class="flex w-full items-center justify-between gap-2 rounded-lg bg-gray-50 p-4 sm:w-auto sm:justify-normal sm:rounded-none sm:bg-transparent sm:p-0 dark:bg-gray-900 dark:sm:bg-transparent">
-                                                            <button class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" :disabled="currentPage === 1" @click="prevPage()" disabled="disabled">
-                                                                <span>
-                                                                    <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M2.58203 9.99868C2.58174 10.1909 2.6549 10.3833 2.80152 10.53L7.79818 15.5301C8.09097 15.8231 8.56584 15.8233 8.85883 15.5305C9.15183 15.2377 9.152 14.7629 8.85921 14.4699L5.13911 10.7472L16.6665 10.7472C17.0807 10.7472 17.4165 10.4114 17.4165 9.99715C17.4165 9.58294 17.0807 9.24715 16.6665 9.24715L5.14456 9.24715L8.85919 5.53016C9.15199 5.23717 9.15184 4.7623 8.85885 4.4695C8.56587 4.1767 8.09099 4.17685 7.79819 4.46984L2.84069 9.43049C2.68224 9.568 2.58203 9.77087 2.58203 9.99715C2.58203 9.99766 2.58203 9.99817 2.58203 9.99868Z" fill=""></path>
-                                                                    </svg>
-                                                                </span>
-                                                            </button>
-
-                                                            <span class="block text-sm font-medium text-gray-700 sm:hidden dark:text-gray-400">
-                                                                Page <span x-text="currentPage">1</span> of <span x-text="totalPages">0</span>
-                                                            </span>
-
-                                                            <ul class="hidden items-center gap-0.5 sm:flex">
-                                                                <template x-for="n in totalPages" :key="n">
-                                                                    <li>
-                                                                        <a href="#" @click.prevent="goToPage(n)" :class="currentPage === n ? 'bg-brand-500 text-white' : 'hover:bg-brand-500 text-gray-700 dark:text-gray-400 hover:text-white dark:hover:text-white'" class="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium">
-                                                                            <span x-text="n"></span>
-                                                                        </a>
-                                                                    </li>
-                                                                </template>
-                                                            </ul>
-
-                                                            <button class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" :disabled="currentPage === totalPages" @click="nextPage()">
-                                                                <span>
-                                                                    <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M17.4165 9.9986C17.4168 10.1909 17.3437 10.3832 17.197 10.53L12.2004 15.5301C11.9076 15.8231 11.4327 15.8233 11.1397 15.5305C10.8467 15.2377 10.8465 14.7629 11.1393 14.4699L14.8594 10.7472L3.33203 10.7472C2.91782 10.7472 2.58203 10.4114 2.58203 9.99715C2.58203 9.58294 2.91782 9.24715 3.33203 9.24715L14.854 9.24715L11.1393 5.53016C10.8465 5.23717 10.8467 4.7623 11.1397 4.4695C11.4327 4.1767 11.9075 4.17685 12.2003 4.46984L17.1578 9.43049C17.3163 9.568 17.4165 9.77087 17.4165 9.99715C17.4165 9.99763 17.4165 9.99812 17.4165 9.9986Z" fill=""></path>
-                                                                    </svg>
-                                                                </span>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                    </div>
-
-                    <!-- Vehicles Table (already complete) -->
-                    <div x-show="activeTab === 'vehicles'">
-                        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-                                                        <div class="flex flex-col justify-between gap-5 border-b border-gray-200 px-5 py-4 sm:flex-row lg:items-center dark:border-gray-800">
-                                                            <div>
-                                                                    <h3 class="text-lg font-semibold text-gray-600 dark:text-white/90">
-                                                                        Vehicle
-                                                                    </h3>
-                                                                    <p class="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
-                                                                        Manage Member Vehicles
-                                                                    </p>
-                                                            </div>
-
-                                                            <div class="hidden flex-col gap-3 sm:flex sm:flex-row sm:items-center">
-                                                                <!-- Filter by Frequency -->
-                                                                <div class="hidden lg:block">
-                                                                    <select x-model="statusFilter" @change="performFilter()" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                                        <option value="All">Vehicle Type</option>
-                                                                        <option value="Motorcycle">Motorcycle</option>
-                                                                        <option value="Tuk Tuk">Tuk Tuk</option>
-                                                                    </select>
-                                                                </div>
-
-                                                                <!-- Print Button -->
-                                                                <div>
-                                                                    <button @click="printMembersReport()" class="hover:text-dark-900 shadow-theme-xs relative flex h-11 items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                                            <path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2"></path>
-                                                                            <path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4"></path>
-                                                                            <rect x="7" y="13" width="10" height="8" rx="2"></rect>
-                                                                        </svg>
-                                                                        Print
-                                                                    </button>
-                                                                </div>
-
-                                                                <!-- Create new loan type button -->
-                                                                <div x-data="memberInfo">
-                                                                        <button
-                                                                            x-show="memberData?.member?.membership === 'Member'"
-                                                                            @click="vehiclesModal = true" class="shadow-theme-xs inline-flex flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                                                            <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                            </svg>
-                                                                            Add Vehicle
-                                                                        </button>
-
-                                                                        <button
-                                                                            x-show="memberData?.member?.membership === 'Non-Member'"
-                                                                            @click="assignMemberVehicle = true" class="shadow-theme-xs inline-flex flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                                                            <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                            </svg>
-                                                                            Assign Vehicle
-                                                                        </button>
-                                                                </div>
-
-                                                            </div>
-                                                        </div>
-
-                                                        <!-- Vehicles Table -->
-                                                        <div x-data="memberInfo">
-                                                            <!-- Vehicles Table -->
-                                                            <!-- Members Vehicle Table -->
-                                                            <div x-show="memberData?.member?.membership === 'Member'">
-
-                                                                <div x-data="vehiclesTable" x-init="init()">
-                                                                    <div class="custom-scrollbar overflow-x-auto">
-                                                                            <table class="w-full">
-                                                                                <!-- table header start -->
-                                                                                <thead>
-                                                                                    <tr class="border-b border-gray-200 dark:divide-gray-800 dark:border-gray-800">
-                                                                                        <th class="p-4 whitespace-nowrap">
-                                                                                            <div class="flex items-center">
-                                                                                                <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                    Vehicle Code
-                                                                                                </p>
-                                                                                            </div>
-                                                                                        </th>
-                                                                                        <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                            <div class="flex items-center">
-                                                                                                <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                    Type/Plate Number
-                                                                                                </p>
-                                                                                            </div>
-                                                                                        </th>
-                                                                                        <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                            <div class="flex items-center">
-                                                                                                <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                    Brand/Model
-                                                                                                </p>
-                                                                                            </div>
-                                                                                        </th>
-                                                                                        <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                            <div class="flex items-center">
-                                                                                                <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                    Make/CC
-                                                                                                </p>
-                                                                                            </div>
-                                                                                        </th>
-                                                                                        <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                            <div class="flex items-center">
-                                                                                                <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                    Insuarance
-                                                                                                </p>
-                                                                                            </div>
-                                                                                        </th>
-                                                                                        <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                            <div class="flex items-center">
-                                                                                                <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                    NTSA Compliant
-                                                                                                </p>
-                                                                                            </div>
-                                                                                        </th>
-                                                                                        <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                            <div class="flex items-center">
-                                                                                                <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                    Year of Manufacture
-                                                                                                </p>
-                                                                                            </div>
-                                                                                        </th>
-                                                                                        <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                            <div class="flex items-center">
-                                                                                                <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                    Status
-                                                                                                </p>
-                                                                                            </div>
-                                                                                        </th>
-                                                                                        <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                            <div class="flex items-center">
-                                                                                                <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                    Actions
-                                                                                                </p>
-                                                                                            </div>
-                                                                                        </th>
-                                                                                    </tr>
-                                                                                </thead>
-                                                                                <!-- table header end -->
-
-                                                                                <!-- Message if no loans data found -->
-                                                                                <template x-if="memberVehicles.length === 0">
-                                                                                    <tbody>
-                                                                                        <tr>
-                                                                                            <td colspan="10" class="px-4 py-12 text-center">
-                                                                                                <div class="inline-flex flex-col items-center justify-center space-y-4 p-4">
-                                                                                                    <!-- Documents Outline SVG Icon -->
-                                                                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.801 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.801 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"></path>
-                                                                                                    </svg>
-                                                                                                    <div class="space-y-2">
-                                                                                                        <h2 class="text-xl font-semibold text-gray-700">No Vehicle records found</h2>
-                                                                                                        <p class="text-gray-500">Add a new vehicle record to manage.</p>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                    </tbody>
-                                                                                </template>
-
-                                                                                <!-- If there is data  display the table -->
-                                                                                <template x-if="memberVehicles.length > 0">
-                                                                                    <!-- table body start -->
-                                                                                    <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800">
-                                                                                        <template x-for="vehicle in paginatedMemberVehicles" :key="vehicle.vehicleId">
-                                                                                            <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-900">
-                                                                                                <!-- LoanTypeID -->
-                                                                                                <td class="p-4 whitespace-nowrap">
-                                                                                                    <div class="flex items-center col-span-2">
-                                                                                                        <div class="flex items-center gap-3">
-                                                                                                            <div>
-                                                                                                                <p class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="vehicle.vehicleId || 'N/A'"></p>
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                </td>
-                                                                                                <!-- Type/Plate Number (stacked as requested) -->
-                                                                                                <td class="p-4 whitespace-nowrap">
-                                                                                                    <div>
-                                                                                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="vehicle.type || 'N/A'"></span>
-                                                                                                        <p class="text-xs text-gray-500 dark:text-gray-400" x-text="vehicle.plate_number || 'N/A'"></p>
-                                                                                                    </div>
-                                                                                                </td>
-                                                                                                <!-- Brand/Model -->
-                                                                                                <td class="p-4 whitespace-nowrap">
-                                                                                                    <div>
-                                                                                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="vehicle.brand || 'N/A'"> </span>
-                                                                                                        <p class="text-xs text-gray-500 dark:text-gray-400" x-text="vehicle.model || 'N/A'"> </p>
-                                                                                                    </div>
-                                                                                                </td>
-                                                                                                <!-- Make/CC -->
-                                                                                                <td class="p-4 whitespace-nowrap">
-                                                                                                    <div>
-                                                                                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="vehicle.make || 'N/A'"></span>
-                                                                                                        <p class="text-xs text-gray-500 dark:text-gray-400" x-text="vehicle.CC || 'N/A'"></p>
-                                                                                                    </div>
-                                                                                                </td>
-                                                                                                <!-- Insurance -->
-                                                                                                <td class="p-4 whitespace-nowrap">
-                                                                                                    <div class="flex items-center col-span-2">
-                                                                                                        <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="vehicle.insurance || 'N/A'"></p>
-                                                                                                    </div>
-                                                                                                </td>
-                                                                                                <!-- NTSA Compliant -->
-                                                                                                <td class="p-4 whitespace-nowrap">
-                                                                                                    <div class="flex items-center col-span-2">
-                                                                                                        <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="vehicle.NTSA_compliant || 'N/A'"></p>
-                                                                                                    </div>
-                                                                                                </td>
-                                                                                                <!-- Created On -->
-                                                                                                <td class="p-4 whitespace-nowrap">
-                                                                                                    <div class="flex items-center col-span-2">
-                                                                                                        <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="vehicle.yom || 'N/A'"></p>
-                                                                                                    </div>
-                                                                                                </td>
-                                                                                                <!-- Status -->
-                                                                                                <td class="p-4 whitespace-nowrap">
-                                                                                                    <div class="flex items-center col-span-2">
-                                                                                                        <p :class="vehicle.status === 'Approved' || vehicle.status === 'Active' ? 'bg-success-50 text-theme-xs text-success-700 dark:bg-success-500/15 dark:text-success-500' : 'bg-error-50 text-theme-xs text-error-600 dark:bg-error-500/15 dark:text-error-500'" class="rounded-full px-2 py-0.5 font-medium" x-text="vehicle.status || 'N/A'"></p>
-                                                                                                    </div>
-                                                                                                </td>
-                                                                                                <!-- Actions -->
-                                                                                                <td class="p-4 whitespace-nowrap">
-                                                                                                    <div class="flex items-center col-span-2">
-                                                                                                        <button @click="$dispatch('open-edit-vehicle-modal', { vehicle: vehicle })"
-                                                                                                            class="shadow-theme-xs inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-                                                                                                            <svg class="w-[28px] h-[28px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                                                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.1" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"></path>
-                                                                                                            </svg>
-                                                                                                        </button>
-                                                                                                    </div>
-                                                                                                </td>
-                                                                                            </tr>
-                                                                                        </template>
-                                                                                    </tbody>
-                                                                                    <!-- table body end -->
-                                                                                </template>
-
-
-                                                                            </table>
-                                                                    </div>
-                                                                        <!-- Table Navigations -->
-                                                                    <div class="border-t border-gray-200 px-5 py-4 dark:border-gray-800">
-                                                                            <div class="flex justify-center pb-4 sm:hidden">
-                                                                                <span class="block text-sm font-medium text-gray-500 dark:text-gray-400">
-                                                                                    Showing
-                                                                                    <span class="text-gray-800 dark:text-white/90" x-text="startEntryMember">1</span>
-                                                                                    to
-                                                                                    <span class="text-gray-800 dark:text-white/90" x-text="endEntryMember">1</span>
-                                                                                    of
-                                                                                    <span class="text-gray-800 dark:text-white/90" x-text="memberVehicles.length">1</span>
-                                                                                </span>
-                                                                            </div>
-
-                                                                            <div class="flex items-center justify-between">
-                                                                                <div class="hidden sm:block">
-                                                                                    <span class="block text-sm font-medium text-gray-500 dark:text-gray-400">
-                                                                                    Showing
-                                                                                    <span class="text-gray-800 dark:text-white/90" x-text="startEntryMember">1</span>
-                                                                                    to
-                                                                                    <span class="text-gray-800 dark:text-white/90" x-text="endEntryMember">1</span>
-                                                                                    of
-                                                                                    <span class="text-gray-800 dark:text-white/90" x-text="memberVehicles.length">1</span>
-                                                                                    </span>
-                                                                                </div>
-                                                                                <div class="flex w-full items-center justify-between gap-2 rounded-lg bg-gray-50 p-4 sm:w-auto sm:justify-normal sm:rounded-none sm:bg-transparent sm:p-0 dark:bg-gray-900 dark:sm:bg-transparent">
-                                                                                    <button class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
-                                                                                        :disabled="pageMember === 1"
-                                                                                        @click="prevPageMember"
-                                                                                        disabled="disabled">
-                                                                                        <span>
-                                                                                            <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M2.58203 9.99868C2.58174 10.1909 2.6549 10.3833 2.80152 10.53L7.79818 15.5301C8.09097 15.8231 8.56584 15.8233 8.85883 15.5305C9.15183 15.2377 8.152 14.7629 8.85921 14.4699L5.13911 10.7472L16.6665 10.7472C17.0807 10.7472 17.4165 10.4114 17.4165 9.99715C17.4165 9.58294 17.0807 9.24715 16.6665 9.24715L5.14456 9.24715L8.85919 5.53016C9.15199 5.23717 9.15184 4.7623 8.85885 4.4695C8.56587 4.1767 8.09099 4.17685 7.79819 4.46984L2.84069 9.43049C2.68224 9.568 2.58203 9.77087 2.58203 9.99715C2.58203 9.99766 2.58203 9.99817 2.58203 9.99868Z" fill=""></path>
-                                                                                            </svg>
-                                                                                        </span>
-                                                                                    </button>
-
-                                                                                    <span class="block text-sm font-medium text-gray-700 sm:hidden dark:text-gray-400">
-                                                                                    Page <span x-text="page">1</span> of <span x-text="totalPages">1</span>
-                                                                                    </span>
-
-                                                                                    <ul class="hidden items-center gap-0.5 sm:flex">
-                                                                                        <template x-for="n in totalPagesMember" :key="n">
-                                                                                            <li>
-                                                                                                <a href="#" @click.prevent="goToPageMember(n)"
-                                                                                                :class="pageMember === n ? 'bg-brand-500 text-white' : 'hover:bg-brand-500 text-gray-700 dark:text-gray-400 hover:text-white dark:hover:text-white'"
-                                                                                                class="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium">
-                                                                                                    <span x-text="n"></span>
-                                                                                                </a>
-                                                                                            </li>
-                                                                                        </template>
-                                                                                    </ul>
-
-                                                                                    <button class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
-                                                                                        :disabled="pageMember === totalPagesMember"
-                                                                                        @click="goToPage(page + 1)"
-                                                                                        disabled="disabled">
-                                                                                        <span>
-                                                                                            <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M17.4165 9.9986C17.4168 10.1909 17.3437 10.3832 17.197 10.53L12.2004 15.5301C11.9076 15.8231 11.4327 15.8233 11.1397 15.5305C10.8467 15.2377 10.8465 14.7629 11.1393 14.4699L14.8594 10.7472L3.33203 10.7472C2.91782 10.7472 2.58203 10.4114 2.58203 9.99715C2.58203 9.58294 2.91782 9.24715 3.33203 9.24715L14.854 9.24715L11.1393 5.53016C10.8465 5.23717 10.8467 4.7623 11.1397 4.4695C11.4327 4.1767 11.9075 4.17685 12.2003 4.46984L17.1578 9.43049C17.3163 9.568 17.4165 9.77087 17.4165 9.99715C17.4165 9.99763 17.4165 9.99812 17.4165 9.9986Z" fill=""></path>
-                                                                                            </svg>
-                                                                                        </span>
-                                                                                    </button>
-                                                                                </div>
-                                                                            </div>
-                                                                    </div>
-
-                                                                </div>
-
-                                                            </div>
-
-                                                            <!-- Non-Member Vehicles Table -->
-                                                            <div x-show="memberData?.member?.membership === 'Non-Member'">
-
-                                                                <div x-data="vehiclesTable" x-init="init()">
-                                                                    <div class="custom-scrollbar overflow-x-auto">
-                                                                        <table class="w-full">
-                                                                            <!-- table header start -->
-                                                                            <thead>
-                                                                                <tr class="border-b border-gray-200 dark:divide-gray-800 dark:border-gray-800">
-                                                                                    <th class="p-4 whitespace-nowrap">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Vehicle Code
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Type
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Plate Number
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Brand
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Model
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Make
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Date Assigned
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Status
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Actions
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <!-- table header end -->
-
-                                                                            <!-- Message if no assigned vehicles found -->
-                                                                            <template x-if="nonMemberVehicles.length === 0">
-                                                                                <tbody>
-                                                                                    <tr>
-                                                                                        <td colspan="9" class="px-4 py-12 text-center">
-                                                                                            <div class="inline-flex flex-col items-center justify-center space-y-4 p-4">
-                                                                                                <!-- Documents Outline SVG Icon -->
-                                                                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.801 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.801 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"></path>
-                                                                                                </svg>
-                                                                                                <div class="space-y-2">
-                                                                                                    <h2 class="text-xl font-semibold text-gray-700">No assigned vehicles found</h2>
-                                                                                                    <p class="text-gray-500">This member has no vehicles assigned.</p>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </td>
-                                                                                    </tr>
-                                                                                </tbody>
-                                                                            </template>
-
-
-                                                                            <!-- If there is data display the table -->
-                                                                            <template x-if="nonMemberVehicles.length > 0">
-                                                                                <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800">
-                                                                                    <template x-for="vehicle in paginatedNonMemberVehicles" :key="vehicle.assignedId">
-                                                                                        <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-900">
-                                                                                            <!-- Vehicle Code -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <p class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="vehicle.assignedId || 'N/A'"></p>
-                                                                                            </td>
-
-                                                                                            <!-- Type -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="vehicle.type || 'N/A'"></p>
-                                                                                            </td>
-
-                                                                                            <!-- Plate Number -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="vehicle.plate_number || 'N/A'"></p>
-                                                                                            </td>
-
-                                                                                            <!-- Brand -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="vehicle.brand || 'N/A'"></p>
-                                                                                            </td>
-
-                                                                                            <!-- Model -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="vehicle.model || 'N/A'"></p>
-                                                                                            </td>
-
-                                                                                            <!-- Make -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="vehicle.make || 'N/A'"></p>
-                                                                                            </td>
-
-                                                                                            <!-- Date Assigned - COMMENTED OUT because data not in response -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="vehicle.assignedDate || 'N/A'"></p>
-                                                                                            </td>
-
-                                                                                            <!-- Status - FIXED: using vehicle.status not vehicle.vehicle_status -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full"
-                                                                                                    :class="vehicle.status === 'Approved' ? 'bg-success-50 text-success-700 dark:bg-success-500/15 dark:text-success-500' : 'bg-warning-50 text-warning-700 dark:bg-warning-500/15 dark:text-warning-500'"
-                                                                                                    x-text="vehicle.status || 'N/A'">
-                                                                                                </span>
-                                                                                            </td>
-
-                                                                                            <!-- Actions - Reassign button -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <button @click="$dispatch('open-reassign-vehicle-modal', { vehicle: vehicle })"
-                                                                                                    class="shadow-theme-xs inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-                                                                                                    <svg class="w-[22px] h-[22px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 12h4m-2 2v-4M4 18v-4a2 2 0 0 1 2-2h6m0 0-2-2m2 2-2 2"></path>
-                                                                                                    </svg>
-                                                                                                </button>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                    </template>
-                                                                                </tbody>
-
-                                                                            </template>
-
-                                                                        </table>
-                                                                    </div>
-
-                                                                    <!-- Table Navigations -->
-                                                                    <div class="border-t border-gray-200 px-5 py-4 dark:border-gray-800">
-                                                                        <div class="flex justify-center pb-4 sm:hidden">
-                                                                            <span class="block text-sm font-medium text-gray-500 dark:text-gray-400">
-                                                                                Showing
-                                                                                <span class="text-gray-800 dark:text-white/90" x-text="startEntryNonMember">1</span>
-                                                                                to
-                                                                                <span class="text-gray-800 dark:text-white/90" x-text="endEntryNonMember">1</span>
-                                                                                of
-                                                                                <span class="text-gray-800 dark:text-white/90" x-text="nonMemberVehicles.length">0</span>
-                                                                            </span>
-                                                                        </div>
-
-                                                                        <div class="flex items-center justify-between">
-                                                                            <div class="hidden sm:block">
-                                                                                <span class="block text-sm font-medium text-gray-500 dark:text-gray-400">
-                                                                                    Showing
-                                                                                    <span class="text-gray-800 dark:text-white/90" x-text="startEntryNonMember">1</span>
-                                                                                    to
-                                                                                    <span class="text-gray-800 dark:text-white/90" x-text="endEntryNonMember">1</span>
-                                                                                    of
-                                                                                    <span class="text-gray-800 dark:text-white/90" x-text="nonMemberVehicles.length">0</span>
-                                                                                </span>
-                                                                            </div>
-
-                                                                            <div class="flex w-full items-center justify-between gap-2 rounded-lg bg-gray-50 p-4 sm:w-auto sm:justify-normal sm:rounded-none sm:bg-transparent sm:p-0 dark:bg-gray-900 dark:sm:bg-transparent">
-                                                                                <button class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
-                                                                                        :disabled="pageNonMember === 1"
-                                                                                        @click="prevPageNonMember">
-                                                                                    <span>
-                                                                                        <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M2.58203 9.99868C2.58174 10.1909 2.6549 10.3833 2.80152 10.53L7.79818 15.5301C8.09097 15.8231 8.56584 15.8233 8.85883 15.5305C9.15183 15.2377 9.152 14.7629 8.85921 14.4699L5.13911 10.7472L16.6665 10.7472C17.0807 10.7472 17.4165 10.4114 17.4165 9.99715C17.4165 9.58294 17.0807 9.24715 16.6665 9.24715L5.14456 9.24715L8.85919 5.53016C9.15199 5.23717 9.15184 4.7623 8.85885 4.4695C8.56587 4.1767 8.09099 4.17685 7.79819 4.46984L2.84069 9.43049C2.68224 9.568 2.58203 9.77087 2.58203 9.99715C2.58203 9.99766 2.58203 9.99817 2.58203 9.99868Z" fill=""></path>
-                                                                                        </svg>
-                                                                                    </span>
-                                                                                </button>
-
-                                                                                <span class="block text-sm font-medium text-gray-700 sm:hidden dark:text-gray-400">
-                                                                                    Page <span x-text="pageNonMember">1</span> of <span x-text="totalPagesNonMember">1</span>
-                                                                                </span>
-
-                                                                                <ul class="hidden items-center gap-0.5 sm:flex">
-                                                                                        <template x-for="n in totalPagesNonMember" :key="n">
-                                                                                            <li>
-                                                                                                <a href="#" @click.prevent="goToPageNonMember(n)"
-                                                                                                :class="pageNonMember === n ? 'bg-brand-500 text-white' : 'hover:bg-brand-500 text-gray-700 dark:text-gray-400 hover:text-white dark:hover:text-white'"
-                                                                                                class="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium">
-                                                                                                    <span x-text="n"></span>
-                                                                                                </a>
-                                                                                            </li>
-                                                                                        </template>
-                                                                                    </ul>
-
-                                                                                <button class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
-                                                                                        :disabled="pageNonMember === totalPagesNonMember"
-                                                                                        @click="nextPageNonMember">
-                                                                                    <span>
-                                                                                        <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M17.4165 9.9986C17.4168 10.1909 17.3437 10.3832 17.197 10.53L12.2004 15.5301C11.9076 15.8231 11.4327 15.8233 11.1397 15.5305C10.8467 15.2377 10.8465 14.7629 11.1393 14.4699L14.8594 10.7472L3.33203 10.7472C2.91782 10.7472 2.58203 10.4114 2.58203 9.99715C2.58203 9.58294 2.91782 9.24715 3.33203 9.24715L14.854 9.24715L11.1393 5.53016C10.8465 5.23717 10.8467 4.7623 11.1397 4.4695C11.4327 4.1767 11.9075 4.17685 12.2003 4.46984L17.1578 9.43049C17.3163 9.568 17.4165 9.77087 17.4165 9.99715C17.4165 9.99763 17.4165 9.99812 17.4165 9.9986Z" fill=""></path>
-                                                                                        </svg>
-                                                                                    </span>
-                                                                                </button>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-
-                                                                </div>
-
-                                                            </div>
-
-                                                        </div>
-
-                                                    </div>
-
-                    </div>
-
-                    <!-- Contributions Table -->
-                    <div x-show="activeTab === 'contributions'">
-                        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]" x-data="contributionsTable()" x-init="init()">
-                                        <!-- Contributions content here -->
-                                        <div class="flex flex-col justify-between gap-5 border-b border-gray-200 px-5 py-4 sm:flex-row lg:items-center dark:border-gray-800">
-                                            <div>
-                                                <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
-                                                    Contributions
-                                                </h3>
-                                                <p class="text-sm text-gray-500 dark:text-gray-400">
-                                                    Review contributions performance
-                                                </p>
-                                            </div>
-
-                                            <div class="hidden flex-col gap-3 sm:flex sm:flex-row sm:items-center">
-
-                                                <div class="hidden lg:block">
-                                                    <select x-model="frequencyFilter" @change="performFilter()" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                        <option value="Daily">Daily</option>
-                                                        <option value="Weekly">Weekly</option>
-                                                        <option value="Monthly">Monthly</option>
-                                                        <option value="Yearly">Yearly</option>
-                                                    </select>
-                                                </div>
-
-                                                <div class="hidden lg:block">
-                                                    <select x-model="transactionFilter" @change="performFilter()" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                        <option value="All">All Transactions</option>
-                                                        <option value="Paid-In">Paid-In</option>
-                                                        <option value="Paid-Out">Paid-Out</option>
-                                                    </select>
-                                                </div>
-
-                                                <div class="hidden lg:block">
-                                                    <select x-model="paymentFilter" @change="performFilter()" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                        <option value="All">All Payment Types</option>
-                                                        <option value="Cash">Cash</option>
-                                                        <option value="MPesa">MPesa</option>
-                                                        <option value="Bank">Bank</option>
-                                                    </select>
-                                                </div>
-
-                                                <div>
-                                                    <button @click="printMembersReport()" class="hover:text-dark-900 shadow-theme-xs relative flex h-11 items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                            <path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2"></path>
-                                                            <path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4"></path>
-                                                            <rect x="7" y="13" width="10" height="8" rx="2"></rect>
-                                                        </svg>
-                                                        Print
-                                                    </button>
-                                                </div>
-
-                                                <div>
-                                                    <button @click="withdrawContributionModal = true"
-                                                        class="hover:text-dark-900 shadow-theme-xs relative flex inline-flex h-11 items-center justify-center  gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-700 hover:bg-gray-600 sm:w-auto">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                                            <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                        </svg>
-                                                        Withdraw
-                                                    </button>
-                                                </div>
-
-                                                <!-- Create New Fine Type button -->
-                                                <div>
-
-                                                        <button @click="contributionsModal = true" class="shadow-theme-xs inline-flex flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                                                <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                            </svg>
-                                                            Make Contribution
-                                                        </button>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                        <!-- Contributions table Table -->
-                                        <div>
-                                            <div class="custom-scrollbar overflow-x-auto">
-                                                <table class="w-full table-auto">
-                                                    <thead>
-                                                        <tr class="border-b border-gray-200 dark:divide-gray-800 dark:border-gray-800">
-                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                #Transaction Code
-                                                            </th>
-                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                Amount
-                                                            </th>
-                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                Mode
-                                                            </th>
-                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                Transaction Code
-                                                            </th>
-                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                Transaction Date
-                                                            </th>
-                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                Status
-                                                            </th>
-                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                Action
-                                                            </th>
-                                                        </tr>
-                                                    </thead>
-
-                                                    <!-- Message if no contributions data found -->
-                                                    <template x-if="contributions.length === 0">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td colspan="10" class="px-4 py-12 text-center">
-                                                                    <div class="inline-flex flex-col items-center justify-center space-y-4 p-4">
-                                                                        <!-- Documents Outline SVG Icon -->
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.801 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.801 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"></path>
-                                                                        </svg>
-                                                                        <div class="space-y-2">
-                                                                            <h2 class="text-xl font-semibold text-gray-700">No Contribution records found</h2>
-                                                                            <p class="text-gray-500">Do some transactions to view Contribution performance</p>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </template>
-
-                                                    <!-- If records found display in table -->
-                                                    <template x-if="contributions.length > 0">
-                                                        <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800">
-                                                            <template x-for="contribution in paginatedContributions" :key="contribution.transactionId">
-                                                                <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-900">
-                                                                    <td class="p-4 whitespace-nowrap">
-                                                                        <div class="group flex items-center gap-3">
-                                                                            <span class="text-theme-xs font-medium text-gray-700 dark:text-gray-400" x-text="contribution.transactionCode || 'N/A'"></span>
-                                                                        </div>
-                                                                    </td>
-                                                                    <!-- Amount -->
-                                                                    <td class="p-4 whitespace-nowrap">
-                                                                        <div>
-                                                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="'Ksh ' + (contribution.transactionAmount ? contribution.transactionAmount.toLocaleString() : '0')"></span>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td class="p-4 whitespace-nowrap">
-                                                                        <div>
-                                                                            <span class="text-sm text-gray-700 dark:text-gray-400" x-text="contribution.transactionMode || 'N/A'"></span>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td class="p-4 whitespace-nowrap">
-                                                                         <span class="text-sm text-gray-700 dark:text-gray-400" x-text="contribution.transactionType || 'N/A'"></span>
-                                                                    </td>
-                                                                    <td class="p-4 whitespace-nowrap">
-                                                                        <p class="text-sm text-gray-700 dark:text-gray-400" x-text="contribution.transactionDate ? new Date(contribution.transactionDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'"></p>
-                                                                    </td>
-                                                                    <td class="p-4 whitespace-nowrap">
-                                                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" :class="{
-                                                                                'bg-success-100 text-success-600 dark:bg-success-900/30 dark:text-success-400': contribution.transactionStatus === 'Confirmed' || contribution.transactionStatus === 'Approved',
-                                                                                'bg-warning-100 text-warning-600 dark:bg-warning-900/30 dark:text-warning-400': contribution.transactionStatus === 'Pending',
-                                                                                'bg-error-100 text-error-600 dark:bg-error-900/30 dark:text-error-400': contribution.transactionStatus === 'Cancelled' || contribution.transactionStatus === 'Reversed'
-                                                                            }" x-text="contribution.transactionStatus || 'N/A'">
-                                                                        </span>
-                                                                    </td>
-                                                                    <td class="p-4 whitespace-nowrap">
-                                                                        <button @click="$dispatch('open-edit-contribution-modal', { contribution: contribution })"
-                                                                            class="shadow-theme-xs inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-                                                                            <svg class="w-[22px] h-[22px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                                                <path stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.1" d="M7 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h1m4-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm7.441 1.559a1.907 1.907 0 0 1 0 2.698l-6.069 6.069L10 19l.674-3.372 6.07-6.07a1.907 1.907 0 0 1 2.697 0Z"></path>
-                                                                            </svg>
-                                                                        </button>
-                                                                    </td>
-                                                                </tr>
-                                                            </template>
-                                                        </tbody>
-                                                    </template>
-
-                                                </table>
-                                            </div>
-
-                                            <div class="border-t border-gray-200 px-5 py-4 dark:border-gray-800">
-                                                <div class="flex justify-center pb-4 sm:hidden">
-                                                    <span class="block text-sm font-medium text-gray-500 dark:text-gray-400">
-                                                        Showing
-                                                        <span class="text-gray-800 dark:text-white/90" x-text="startEntry">1</span>
-                                                        to
-                                                        <span class="text-gray-800 dark:text-white/90" x-text="endEntry">1</span>
-                                                        of
-                                                        <span class="text-gray-800 dark:text-white/90" x-text="contributions.length">1</span>
-                                                    </span>
-                                                </div>
-
-                                                <div class="flex items-center justify-between">
-                                                    <div class="hidden sm:block">
-                                                        <span class="block text-sm font-medium text-gray-500 dark:text-gray-400">
-                                                            Showing
-                                                            <span class="text-gray-800 dark:text-white/90" x-text="startEntry">1</span>
-                                                            to
-                                                            <span class="text-gray-800 dark:text-white/90" x-text="endEntry">1</span>
-                                                            of
-                                                            <span class="text-gray-800 dark:text-white/90" x-text="contributions.length">1</span>
-                                                        </span>
-                                                    </div>
-                                                    <div class="flex w-full items-center justify-between gap-2 rounded-lg bg-gray-50 p-4 sm:w-auto sm:justify-normal sm:rounded-none sm:bg-transparent sm:p-0 dark:bg-gray-900 dark:sm:bg-transparent">
-                                                    <button class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" :disabled="page === 1" @click="goToPage(page - 1)" disabled="disabled">
-                                                                <span>
-                                                                    <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M2.58203 9.99868C2.58174 10.1909 2.6549 10.3833 2.80152 10.53L7.79818 15.5301C8.09097 15.8231 8.56584 15.8233 8.85883 15.5305C9.15183 15.2377 9.152 14.7629 8.85921 14.4699L5.13911 10.7472L16.6665 10.7472C17.0807 10.7472 17.4165 10.4114 17.4165 9.99715C17.4165 9.58294 17.0807 9.24715 16.6665 9.24715L5.14456 9.24715L8.85919 5.53016C9.15199 5.23717 9.15184 4.7623 8.85885 4.4695C8.56587 4.1767 8.09099 4.17685 7.79819 4.46984L2.84069 9.43049C2.68224 9.568 2.58203 9.77087 2.58203 9.99715C2.58203 9.99766 2.58203 9.99817 2.58203 9.99868Z" fill=""></path>
-                                                                    </svg>
-                                                                </span>
-                                                    </button>
-
-                                                    <span class="block text-sm font-medium text-gray-700 sm:hidden dark:text-gray-400">
-                                                            Page <span x-text="page">1</span> of <span x-text="totalPages">1</span>
-                                                        </span>
-
-                                                    <ul class="hidden items-center gap-0.5 sm:flex">
-                                                        <template x-for="n in totalPages" :key="n">
-                                                            <li>
-                                                                <a href="#" @click.prevent="goToPage(n)" :class="page === n ? 'bg-brand-500 text-white' : 'hover:bg-brand-500 text-gray-700 dark:text-gray-400 hover:text-white dark:hover:text-white'" class="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium">
-                                                                <span x-text="n"></span>
-                                                                </a>
-                                                            </li>
-                                                        </template>
-                                                    </ul>
-
-                                                    <button class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" :disabled="page === totalPages" @click="goToPage(page + 1)" disabled="disabled">
-                                                            <span>
-                                                                <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M17.4165 9.9986C17.4168 10.1909 17.3437 10.3832 17.197 10.53L12.2004 15.5301C11.9076 15.8231 11.4327 15.8233 11.1397 15.5305C10.8467 15.2377 10.8465 14.7629 11.1393 14.4699L14.8594 10.7472L3.33203 10.7472C2.91782 10.7472 2.58203 10.4114 2.58203 9.99715C2.58203 9.58294 2.91782 9.24715 3.33203 9.24715L14.854 9.24715L11.1393 5.53016C10.8465 5.23717 10.8467 4.7623 11.1397 4.4695C11.4327 4.1767 11.9075 4.17685 12.2003 4.46984L17.1578 9.43049C17.3163 9.568 17.4165 9.77087 17.4165 9.99715C17.4165 9.99763 17.4165 9.99812 17.4165 9.9986Z" fill=""></path>
-                                                                </svg>
-                                                            </span>
-                                                    </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                    </div>
-
-                    <!-- Loans Table -->
-                    <div x-show="activeTab === 'loans'">
-
-                       <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-                                                        <div class="flex flex-col justify-between gap-5 border-b border-gray-200 px-5 py-4 sm:flex-row lg:items-center dark:border-gray-800">
-                                                            <div>
-                                                                    <h3 class="text-lg font-semibold text-gray-600 dark:text-white/90">
-                                                                        Loan Types
-                                                                    </h3>
-                                                                    <p class="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
-                                                                        Manage your system loan types
-                                                                    </p>
-                                                            </div>
-
-                                                            <div class="hidden flex-col gap-3 sm:flex sm:flex-row sm:items-center">
-                                                                <!-- Filter by Frequency -->
-                                                                <div class="hidden lg:block">
-                                                                    <select x-model="statusFilter" @change="performFilter()" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                                        <option value="All">Frequency</option>
-                                                                        <option value="Daily">Daily</option>
-                                                                        <option value="Weekly">Weekly</option>
-                                                                        <option value="Monthly">Monthly</option>
-                                                                    </select>
-                                                                </div>
-
-                                                                <!-- Print Button -->
-                                                                <div>
-                                                                    <button @click="printMembersReport()" class="hover:text-dark-900 shadow-theme-xs relative flex h-11 items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                                            <path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2"></path>
-                                                                            <path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4"></path>
-                                                                            <rect x="7" y="13" width="10" height="8" rx="2"></rect>
-                                                                        </svg>
-                                                                        Print
-                                                                    </button>
-                                                                </div>
-
-                                                                <div>
-                                                                    <button @click="repayLoanModal = true"
-                                                                        class="hover:text-dark-900 shadow-theme-xs relative flex inline-flex h-11 items-center justify-center  gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-700 hover:bg-gray-600 sm:w-auto">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                                                                <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                            </svg>
-                                                                            Repay Loan
-                                                                    </button>
-                                                                </div>
-
-                                                                <!-- Create new loan type button -->
-                                                                <div>
-                                                                        <button @click="loansModal = true" class="shadow-theme-xs inline-flex flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">
-                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                                                            <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                                                            </svg>
-                                                                            Assign Loan
-                                                                        </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                            <!-- Loan Types Table -->
-                                                        <div>
-                                                            <!-- Loan Types Table -->
-                                                            <div x-data="loansTable()" x-init="init()">
-                                                                <div class="custom-scrollbar overflow-x-auto">
-                                                                        <table class="w-full">
-                                                                            <!-- table header start -->
-                                                                            <thead>
-                                                                                <tr class="border-b border-gray-200 dark:divide-gray-800 dark:border-gray-800">
-                                                                                    <th class="p-4 whitespace-nowrap">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Transaction Code
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Loan/Interest
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Period (Months)
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Amount
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Start Date
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                End Date
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Last Repayment (Amount/Date)
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Status
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Actions
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <!-- table header end -->
-
-                                                                            <!-- Message if no loans data found -->
-                                                                            <template x-if="loans.length === 0">
-                                                                                <tbody>
-                                                                                    <tr>
-                                                                                        <td colspan="10" class="px-4 py-12 text-center">
-                                                                                            <div class="inline-flex flex-col items-center justify-center space-y-4 p-4">
-                                                                                                <!-- Documents Outline SVG Icon -->
-                                                                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.801 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.801 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"></path>
-                                                                                                </svg>
-                                                                                                <div class="space-y-2">
-                                                                                                    <h2 class="text-xl font-semibold text-gray-700">No loans records found</h2>
-                                                                                                    <p class="text-gray-500">Do some transactions to view loans performance</p>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </td>
-                                                                                    </tr>
-                                                                                </tbody>
-                                                                            </template>
-
-                                                                            <!-- If there is data  display the table -->
-                                                                            <template x-if="loans.length > 0">
-                                                                                <!-- table body start -->
-                                                                                <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800">
-                                                                                    <template x-for="loan in paginatedLoans" :key="loans.transactionID">
-                                                                                        <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-900">
-                                                                                            <!-- Loan # (Transaction ID) -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <p class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="loan.transactionId || 'N/A'"></p>
-                                                                                            </td>
-
-                                                                                            <!-- Loan/Interest (Loan Type Name + Interest Rate) -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <div>
-                                                                                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="loan.loan_type_name || 'N/A'"></span>
-                                                                                                    <p class="text-xs text-gray-500 dark:text-gray-400" x-text="'Interest: ' + (loan.interest_rate || '0') + '%'"></p>
-                                                                                                </div>
-                                                                                            </td>
-
-                                                                                            <!-- Period (Months) -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="loan.transactionLoanPeriod || '0' + ' months'"></p>
-                                                                                            </td>
-
-                                                                                            <!-- Amount -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <p class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="'KES ' + Number(loan.transactionLoanAmount || 0).toLocaleString()"></p>
-                                                                                                <p class="text-xs text-gray-500 dark:text-gray-400" x-text="'Outstanding: KES ' + Number(loan.outstanding_balance || 0).toLocaleString()"></p>
-                                                                                            </td>
-
-                                                                                            <!-- Start Date -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="loan.transactionLoanStartDate ? new Date(loan.transactionLoanStartDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'"></p>
-                                                                                            </td>
-
-                                                                                            <!-- End Date (Calculate from start date + period) -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400" x-text="loan.transactionLoanStartDate ? new Date(new Date(loan.transactionLoanStartDate).setDate(new Date(loan.transactionLoanStartDate).getDate() + (loan.transactionLoanPeriod * 30))).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'"></p>
-                                                                                            </td>
-
-                                                                                            <!-- Last Repayment (Amount/Date) -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <template x-if="loan.last_repayment">
-                                                                                                    <div>
-                                                                                                        <p class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="'KES ' + Number(loan.last_repayment.amount || 0).toLocaleString()"></p>
-                                                                                                        <p class="text-xs text-gray-500 dark:text-gray-400" x-text="loan.last_repayment.date ? new Date(loan.last_repayment.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'"></p>
-                                                                                                    </div>
-                                                                                                </template>
-                                                                                                <template x-if="!loan.last_repayment">
-                                                                                                    <span class="text-sm text-gray-400">No repayments yet</span>
-                                                                                                </template>
-                                                                                            </td>
-
-                                                                                            <!-- Status -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full"
-                                                                                                    :class="{
-                                                                                                        'bg-success-100 text-success-600 dark:bg-success-900/30 dark:text-success-400': loan.transactionLoanStatus === 'Active' || loan.transactionLoanStatus === 'Approved',
-                                                                                                        'bg-warning-100 text-warning-600 dark:bg-warning-900/30 dark:text-warning-400': loan.transactionLoanStatus === 'Under Review' || loan.transactionLoanStatus === 'Pending',
-                                                                                                        'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400': loan.transactionLoanStatus === 'Repaid',
-                                                                                                        'bg-error-100 text-error-600 dark:bg-error-900/30 dark:text-error-400': loan.transactionLoanStatus === 'Defaulted' || loan.transactionLoanStatus === 'Stopped' || loan.transactionLoanStatus === 'Cancelled'
-                                                                                                    }"
-                                                                                                    x-text="loan.transactionLoanStatus || loan.transactionStatus || 'N/A'">
-                                                                                                </span>
-                                                                                            </td>
-
-                                                                                            <!-- Actions -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <button @click="$dispatch('open-edit-loan-modal', { loan: loan })"
-                                                                                                    class="shadow-theme-xs inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-                                                                                                    <svg class="w-[22px] h-[22px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                                                                        <path stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.1" d="M7 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h1m4-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm7.441 1.559a1.907 1.907 0 0 1 0 2.698l-6.069 6.069L10 19l.674-3.372 6.07-6.07a1.907 1.907 0 0 1 2.697 0Z"></path>
-                                                                                                    </svg>
-                                                                                                </button>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                    </template>
-                                                                                </tbody>
-                                                                                <!-- table body end -->
-                                                                            </template>
-
-
-                                                                        </table>
-                                                                </div>
-                                                                    <!-- Table Navigations -->
-                                                                <div class="border-t border-gray-200 px-5 py-4 dark:border-gray-800">
-                                                                        <div class="flex justify-center pb-4 sm:hidden">
-                                                                            <span class="block text-sm font-medium text-gray-500 dark:text-gray-400">
-                                                                                Showing
-                                                                                <span class="text-gray-800 dark:text-white/90" x-text="startEntry">1</span>
-                                                                                to
-                                                                                <span class="text-gray-800 dark:text-white/90" x-text="endEntry">1</span>
-                                                                                of
-                                                                                <span class="text-gray-800 dark:text-white/90" x-text="loans.length">1</span>
-                                                                            </span>
-                                                                        </div>
-
-                                                                        <div class="flex items-center justify-between">
-                                                                            <div class="hidden sm:block">
-                                                                                <span class="block text-sm font-medium text-gray-500 dark:text-gray-400">
-                                                                                Showing
-                                                                                <span class="text-gray-800 dark:text-white/90" x-text="startEntry">1</span>
-                                                                                to
-                                                                                <span class="text-gray-800 dark:text-white/90" x-text="endEntry">1</span>
-                                                                                of
-                                                                                <span class="text-gray-800 dark:text-white/90" x-text="loans.length">1</span>
-                                                                                </span>
-                                                                            </div>
-                                                                            <div class="flex w-full items-center justify-between gap-2 rounded-lg bg-gray-50 p-4 sm:w-auto sm:justify-normal sm:rounded-none sm:bg-transparent sm:p-0 dark:bg-gray-900 dark:sm:bg-transparent">
-                                                                                <button class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" :disabled="page === 1" @click="goToPage(page - 1)" disabled="disabled">
-                                                                                <span>
-                                                                                    <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M2.58203 9.99868C2.58174 10.1909 2.6549 10.3833 2.80152 10.53L7.79818 15.5301C8.09097 15.8231 8.56584 15.8233 8.85883 15.5305C9.15183 15.2377 8.152 14.7629 8.85921 14.4699L5.13911 10.7472L16.6665 10.7472C17.0807 10.7472 17.4165 10.4114 17.4165 9.99715C17.4165 9.58294 17.0807 9.24715 16.6665 9.24715L5.14456 9.24715L8.85919 5.53016C9.15199 5.23717 9.15184 4.7623 8.85885 4.4695C8.56587 4.1767 8.09099 4.17685 7.79819 4.46984L2.84069 9.43049C2.68224 9.568 2.58203 9.77087 2.58203 9.99715C2.58203 9.99766 2.58203 9.99817 2.58203 9.99868Z" fill=""></path>
-                                                                                    </svg>
-                                                                                </span>
-                                                                                </button>
-
-                                                                                <span class="block text-sm font-medium text-gray-700 sm:hidden dark:text-gray-400">
-                                                                                Page <span x-text="page">1</span> of <span x-text="totalPages">1</span>
-                                                                                </span>
-
-                                                                                <ul class="hidden items-center gap-0.5 sm:flex">
-                                                                                <template x-for="n in totalPages" :key="n">
-                                                                                    <li>
-                                                                                        <a href="#" @click.prevent="goToPage(n)" :class="page === n ? 'bg-brand-500 text-white' : 'hover:bg-brand-500 text-gray-700 dark:text-gray-400 hover:text-white dark:hover:text-white'" class="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium">
-                                                                                            <span x-text="n"></span>
-                                                                                        </a>
-                                                                                    </li>
-                                                                                </template>
-
-
-                                                                                </ul>
-
-                                                                                <button class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" :disabled="page === totalPages" @click="goToPage(page + 1)" disabled="disabled">
-                                                                                    <span>
-                                                                                        <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M17.4165 9.9986C17.4168 10.1909 17.3437 10.3832 17.197 10.53L12.2004 15.5301C11.9076 15.8231 11.4327 15.8233 11.1397 15.5305C10.8467 15.2377 10.8465 14.7629 11.1393 14.4699L14.8594 10.7472L3.33203 10.7472C2.91782 10.7472 2.58203 10.4114 2.58203 9.99715C2.58203 9.58294 2.91782 9.24715 3.33203 9.24715L14.854 9.24715L11.1393 5.53016C10.8465 5.23717 10.8467 4.7623 11.1397 4.4695C11.4327 4.1767 11.9075 4.17685 12.2003 4.46984L17.1578 9.43049C17.3163 9.568 17.4165 9.77087 17.4165 9.99715C17.4165 9.99763 17.4165 9.99812 17.4165 9.9986Z" fill=""></path>
-                                                                                        </svg>
-                                                                                    </span>
-                                                                                </button>
-                                                                            </div>
-                                                                        </div>
-                                                                </div>
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                    </div>
-
-                    <!-- Fines Table -->
-                    <div x-show="activeTab === 'fines'">
-                        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
-                                        <!-- Contributions content here -->
-                                        <div class="flex flex-col justify-between gap-5 border-b border-gray-200 px-5 py-4 sm:flex-row lg:items-center dark:border-gray-800">
-                                            <div>
-                                                <h3 class="text-lg font-semibold text-gray-800 dark:text-white/90">
-                                                    Fines & Penalties
-                                                </h3>
-                                                <p class="text-sm text-gray-500 dark:text-gray-400">
-                                                    Review Fines & Penalties performance
-                                                </p>
-                                            </div>
-
-                                            <div class="hidden flex-col gap-3 sm:flex sm:flex-row sm:items-center">
-
-                                                <div class="hidden lg:block">
-                                                    <select x-model="statusFilter" @change="performFilter()" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                        <option value="Daily">Frequency</option>
-                                                        <option value="Daily">Daily</option>
-                                                        <option value="Weekly">Weekly</option>
-                                                        <option value="Monthly">Monthly</option>
-                                                        <option value="Yearly">Yearly</option>
-                                                    </select>
-                                                </div>
-
-                                                <div class="hidden lg:block">
-                                                    <select x-model="statusFilter" @change="performFilter()" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                        <option value="All">Payment Type</option>
-                                                        <option value="Cash">Cash</option>
-                                                        <option value="MPesa">MPesa</option>
-                                                        <option value="Bank">Bank</option>
-                                                    </select>
-                                                </div>
-
-                                                <div>
-                                                    <button @click="printMembersReport()" class="hover:text-dark-900 shadow-theme-xs relative flex h-11 items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                                        <path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2"></path>
-                                                        <path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4"></path>
-                                                        <rect x="7" y="13" width="10" height="8" rx="2"></rect>
-                                                    </svg>
-                                                    Print
-                                                    </button>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                        <!-- Contributions table Table -->
-                                        <div x-data="finesTable()" x-init="init()">
-                                            <div class="custom-scrollbar overflow-x-auto">
-                                                <table class="w-full table-auto">
-                                                    <thead>
-                                                        <tr class="border-b border-gray-200 dark:divide-gray-800 dark:border-gray-800">
-                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                #Code
-                                                            </th>
-                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                Type
-                                                            </th>
-                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                Percentage
-                                                            </th>
-                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                Total Fines
-                                                            </th>
-                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                Total Issued
-                                                            </th>
-                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                Created On
-                                                            </th>
-                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                Status
-                                                            </th>
-                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                Action
-                                                            </th>
-                                                        </tr>
-                                                    </thead>
-
-                                                    <!-- Message if no fines data found -->
-                                                    <template x-if="fines.length === 0">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td colspan="10" class="px-4 py-12 text-center">
-                                                                    <div class="inline-flex flex-col items-center justify-center space-y-4 p-4">
-                                                                        <!-- Documents Outline SVG Icon -->
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.801 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.801 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"></path>
-                                                                        </svg>
-                                                                        <div class="space-y-2">
-                                                                            <h2 class="text-xl font-semibold text-gray-700">No fines records found</h2>
-                                                                            <p class="text-gray-500">Do some transactions to view fines performance</p>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </template>
-
-                                                    <!-- If records found display in table -->
-                                                    <template x-if="fines.length > 0">
-                                                        <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800">
-                                                            <template x-for="fine in paginatedFines" :key="fine.FineID">
-                                                                <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-900">
-                                                                    <td class="p-4 whitespace-nowrap">
-                                                                        <div class="group flex items-center gap-3">
-                                                                        <a href="view-member.php" class="text-theme-xs font-medium text-gray-700 group-hover:underline dark:text-gray-400" x-text="fine.FineID"></a>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td class="p-4 whitespace-nowrap">
-                                                                        <div>
-                                                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="fine.Type"></span>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td class="p-4 whitespace-nowrap">
-                                                                        <span class="text-sm text-gray-700 dark:text-gray-400" x-text="fine.Percentage"></span>
-                                                                    </td>
-                                                                    <td class="p-4 whitespace-nowrap">
-                                                                        <span class="text-sm text-gray-700 dark:text-gray-400" x-text="fine.TotalFineAmount"></span>
-                                                                    </td>
-                                                                    <td class="p-4 whitespace-nowrap">
-                                                                        <p class="text-sm text-gray-700 dark:text-gray-400 truncate max-w-[200px]" x-text="fine.TotalFinesIssued + ' issued'" :title="fine.TotalFinesIssued + ' issued'"></p>
-                                                                    </td>
-                                                                    <td class="p-4 whitespace-nowrap">
-                                                                        <p class="text-sm text-gray-700 dark:text-gray-400 truncate max-w-[200px]" x-text="fine.CreatedOn"></p>
-                                                                    </td>
-                                                                    <td class="p-4 whitespace-nowrap">
-                                                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" :class="{
-                                                                                'bg-success-100 text-success-600 dark:bg-success-900/30 dark:text-success-400': fine.Status === 'Active',
-                                                                                'bg-warning-100 text-warning-600 dark:bg-warning-900/30 dark:text-warning-400': fine.Status === 'Suspended' || fine.Status === 'In-Active',
-                                                                                'bg-error-100 text-error-600 dark:bg-error-900/30 dark:text-error-400': fine.Status === 'Blacklisted' || fine.Status === 'Under Review'
-                                                                            }" x-text="fine.Status">
-                                                                        </span>
-                                                                    </td>
-                                                                    <td class="p-4 whitespace-nowrap">
-                                                                        <button @click="$store.fineTypeData.editFine(fine)" class="shadow-theme-xs inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-                                                                            <svg class="w-[22px] h-[22px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                                                <path stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.1" d="M7 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h1m4-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm7.441 1.559a1.907 1.907 0 0 1 0 2.698l-6.069 6.069L10 19l.674-3.372 6.07-6.07a1.907 1.907 0 0 1 2.697 0Z"></path>
-                                                                            </svg>
-                                                                        </button>
-                                                                    </td>
-                                                                </tr>
-                                                            </template>
-                                                        </tbody>
-                                                    </template>
-
-                                                </table>
-                                            </div>
-
-                                            <div class="border-t border-gray-200 px-5 py-4 dark:border-gray-800">
-                                                <div class="flex justify-center pb-4 sm:hidden">
-                                                    <span class="block text-sm font-medium text-gray-500 dark:text-gray-400">
-                                                        Showing
-                                                        <span class="text-gray-800 dark:text-white/90" x-text="startEntry">1</span>
-                                                        to
-                                                        <span class="text-gray-800 dark:text-white/90" x-text="endEntry">1</span>
-                                                        of
-                                                        <span class="text-gray-800 dark:text-white/90" x-text="fines.length">1</span>
-                                                    </span>
-                                                </div>
-
-                                                <div class="flex items-center justify-between">
-                                                    <div class="hidden sm:block">
-                                                        <span class="block text-sm font-medium text-gray-500 dark:text-gray-400">
-                                                            Showing
-                                                            <span class="text-gray-800 dark:text-white/90" x-text="startEntry">1</span>
-                                                            to
-                                                            <span class="text-gray-800 dark:text-white/90" x-text="endEntry">1</span>
-                                                            of
-                                                            <span class="text-gray-800 dark:text-white/90" x-text="fines.length">1</span>
-                                                        </span>
-                                                    </div>
-                                                    <div class="flex w-full items-center justify-between gap-2 rounded-lg bg-gray-50 p-4 sm:w-auto sm:justify-normal sm:rounded-none sm:bg-transparent sm:p-0 dark:bg-gray-900 dark:sm:bg-transparent">
-                                                    <button class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" :disabled="page === 1" @click="goToPage(page - 1)" disabled="disabled">
-                                                                <span>
-                                                                    <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M2.58203 9.99868C2.58174 10.1909 2.6549 10.3833 2.80152 10.53L7.79818 15.5301C8.09097 15.8231 8.56584 15.8233 8.85883 15.5305C9.15183 15.2377 9.152 14.7629 8.85921 14.4699L5.13911 10.7472L16.6665 10.7472C17.0807 10.7472 17.4165 10.4114 17.4165 9.99715C17.4165 9.58294 17.0807 9.24715 16.6665 9.24715L5.14456 9.24715L8.85919 5.53016C9.15199 5.23717 9.15184 4.7623 8.85885 4.4695C8.56587 4.1767 8.09099 4.17685 7.79819 4.46984L2.84069 9.43049C2.68224 9.568 2.58203 9.77087 2.58203 9.99715C2.58203 9.99766 2.58203 9.99817 2.58203 9.99868Z" fill=""></path>
-                                                                    </svg>
-                                                                </span>
-                                                    </button>
-
-                                                    <span class="block text-sm font-medium text-gray-700 sm:hidden dark:text-gray-400">
-                                                            Page <span x-text="page">1</span> of <span x-text="totalPages">1</span>
-                                                        </span>
-
-                                                    <ul class="hidden items-center gap-0.5 sm:flex">
-                                                        <template x-for="n in totalPages" :key="n">
-                                                        <li>
-                                                            <a href="#" @click.prevent="goToPage(n)" :class="page === n ? 'bg-brand-500 text-white' : 'hover:bg-brand-500 text-gray-700 dark:text-gray-400 hover:text-white dark:hover:text-white'" class="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium">
-                                                            <span x-text="n"></span>
-                                                            </a>
-                                                        </li>
-                                                        </template>
-                                                    </ul>
-
-                                                    <button class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" :disabled="page === totalPages" @click="goToPage(page + 1)" disabled="disabled">
-                                                            <span>
-                                                                <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M17.4165 9.9986C17.4168 10.1909 17.3437 10.3832 17.197 10.53L12.2004 15.5301C11.9076 15.8231 11.4327 15.8233 11.1397 15.5305C10.8467 15.2377 10.8465 14.7629 11.1393 14.4699L14.8594 10.7472L3.33203 10.7472C2.91782 10.7472 2.58203 10.4114 2.58203 9.99715C2.58203 9.58294 2.91782 9.24715 3.33203 9.24715L14.854 9.24715L11.1393 5.53016C10.8465 5.23717 10.8467 4.7623 11.1397 4.4695C11.4327 4.1767 11.9075 4.17685 12.2003 4.46984L17.1578 9.43049C17.3163 9.568 17.4165 9.77087 17.4165 9.99715C17.4165 9.99763 17.4165 9.99812 17.4165 9.9986Z" fill=""></path>
-                                                                </svg>
-                                                            </span>
-                                                    </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                    </div>
-
-                    <!-- Settings (Notification toggles & preferences) -->
-                    <div x-show="activeTab === 'account'">
-                      <h3 class="mb-4 text-xl font-medium text-gray-800 dark:text-white/90">Settings</h3>
-                      <div class="grid grid-cols-1 gap-5 sm:grid-cols-1 xl:grid-cols-1">
-                        <article class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/3">
-                          <div class="relative p-5 pb-9">
-                            <h3 class="mb-3 text-lg font-semibold text-gray-800 dark:text-white/90">
-                              Membership Settings
-                            </h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">
-                              Manage Bodaboda member account.
-                            </p>
-                          </div>
-                          <div class="flex items-center justify-between border-t border-gray-200 p-5 dark:border-gray-800">
-                            <div class="flex gap-3">
-                              <div class="order-3 xl:order-2">
-                                <h4 class="mb-2 text-center text-medium font-semibold text-gray-600 xl:text-left dark:text-white/90">
-                                  Account Status
-                                </h4>
-                                <div class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
-                                  <p class="text-sm text-gray-500 dark:text-gray-400">Member #KBSTK202601</p>
-                                  <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
-                                  <p class="text-sm text-gray-500 dark:text-gray-400">Role: Rider</p>
-                                  <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
-                                  <p class="text-sm text-gray-500 dark:text-gray-400"><span class="bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500 rounded-full px-2 py-0.5 text-xs font-medium">Active</span> since December 09, 2025 15:24</p>
-                                </div>
-                              </div>
-                            </div>
-                            <div x-data="{ switcherToggle: false }">
-                              <button @click="deleteMemberAccount = true"
-                                      class="shadow-theme-xs inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-medium text-while-700 ring-1 ring-gray-300 transition hover:bg-gray-50 dark:bg-error-700 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]">
-                                De-Activate Account
-                              </button>
-                            </div>
-                          </div>
-                        </article>
-                    </div>
-
-                    </div>
-                  </div>
-                </div>
-
-              </div>
+                @php
+                    if(!isset($Member)) {
+                        $Member = new \App\Models\Member();
+                        $Member->status = 'Active'; // or whatever default
+                    }
+                @endphp
+                <!-- Content Area -->
+                @if($Member->isProfileActive())
+                    <!-- Profile Active -->
+                    @include('Layouts.General.activeContent')
+                @else
+                    <!-- Profile Not Active -->
+                    @include('Layouts.General.activateMember')
+                @endif
+
+            </div>
+
+        </div>
 
           </div>
+
         </main>
         <!-- ===== Main Content End ===== -->
+
     </div>
         <!-- ===== Content Area End ===== -->
   </div>
@@ -4212,68 +1675,87 @@
 
                 @csrf
 
-                <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
+                <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4" x-show="assignMemberVehicle">
+
+                    <!-- Search Section with Dropdown -->
                     <div class="w-full px-2.5">
+                        <div class="flex flex-wrap shadow-xs rounded-base -space-x-0.5 relative">
+                            <input type="search"
+                                id="search-dropdown"
+                                x-model="vehicleSearchTerm"
+                                @input.debounce.300ms="searchVehicles()"
+                                @focus="loadInitialVehicles()"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent py-3 pr-[84px] text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
+                                placeholder="Search Number Plate or Vehicle Code"
+                                autocomplete="off">
+
+                            <!-- Dropdown Results -->
+                            <div x-show="searchResults.length > 0 && vehicleSearchTerm.length > 0"
+                                @click.away="searchResults = []"
+                                class="absolute top-full left-0 right-0 mt-1 z-50 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg max-h-64 overflow-y-auto">
+                                <template x-for="vehicle in searchResults" :key="vehicle.vehicleId">
+                                    <div @click="selectVehicle(vehicle)"
+                                        class="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-b-0">
+                                        <div class="flex justify-between items-center">
+                                            <div>
+                                                <p class="font-medium text-gray-900 dark:text-white" x-text="vehicle.type + ': ' + vehicle.brand + ' (' + vehicle.yom + ') ' + vehicle.make + ' ' + vehicle.model + ' - ' + vehicle.CC"></p>
+                                                <p class="text-sm text-gray-500 dark:text-gray-400" x-text="vehicle.vehicle_code + ' - ' + vehicle.plate_number"></p>
+                                            </div>
+                                            <span :class="vehicle.availability === 'Available' ? 'text-green-600' : 'text-red-600'"
+                                                class="text-xs font-medium px-2 py-1 rounded-full"
+                                                :class="vehicle.availability === 'Available' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'"
+                                                x-text="vehicle.availability">
+                                            </span>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <!-- Loading indicator -->
+                            <div x-show="isSearching" class="absolute right-3 top-2.5">
+                                <svg class="animate-spin h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vehicle Details Section - Shows when vehicle is selected -->
+                    <div class="w-full px-2.5" x-show="selectedVehicle">
                         <h4 class="border-b border-gray-200 pb-4 text-base font-medium text-gray-800 dark:border-gray-800 dark:text-white/90">
-                            Assign Vehcicle
+                            Vehicle Details
                         </h4>
                     </div>
 
-                    <!-- Vehicle Type -->
-                    <div class="w-full px-2.5">
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Vehicle Type
-                        </label>
-                        <div class="relative z-20 bg-transparent">
-                            <select id="assign_vehicle_type"
-                                    name="vehicle_type"
-                                    @change="loadAvailableVehicles($event.target.value); clearError('assign_vehicle_type')"
-                                    @blur="validateField('assign_vehicle_type', $event.target.value)"
-                                  :class="errors.assign_vehicle_type ? 'border-error-500' : ''"
-                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                <option value="">Vehicle Type</option>
-                                <option value="Motorcycle">Motorcycle</option>
-                                <option value="Tuk Tuk">Tuk Tuk</option>
-                            </select>
-                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </span>
+                    <div class="w-full px-2.5 border-b border-gray-200" x-show="selectedVehicle">
+                        <div class="min-w-[500px]">
+                            <div class="flex flex-col gap-2">
+                                <div class="flex cursor-pointer items-center gap-9 rounded-lg p-3 bg-gray-50 dark:bg-white/[0.03]">
+                                    <div class="flex items-start gap-3">
+                                        <div>
+                                            <span class="mb-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
+                                                Vehicle Code
+                                            </span>
+                                            <span class="text-theme-sm font-medium text-gray-700 dark:text-gray-400" x-text="selectedVehicle.vehicle_code || 'N/A'"></span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <span class="mb-1 block text-theme-sm font-medium text-gray-700 dark:text-gray-400" x-text="selectedVehicle.vehicle_display || 'N/A'"></span>
+                                        <span class="text-theme-xs text-gray-500 dark:text-gray-400" x-text="selectedVehicle.plate_number"></span>
+                                    </div>
+                                    <div>
+                                        <span class="mb-1 block text-theme-sm font-medium"
+                                            :class="selectedVehicle.availability === 'Available' ? 'text-green-600' : 'text-red-600'"
+                                            x-text="selectedVehicle.availability || 'N/A'"></span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <span x-show="errors.assign_vehicle_type" x-text="errors.assign_vehicle_type" class="text-xs text-error-500 mt-1"></span>
                     </div>
 
-                    <!-- Vehicle -->
-                    <div class="w-full px-2.5">
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Select Vehicle
-                        </label>
-                        <div class="relative z-20 bg-transparent">
-                            <select id="assign_vehicle_select"
-                                    name="vehicle"
-                                    @change="clearError('assign_vehicle')"
-                                    @blur="validateField('assign_vehicle', $event.target.value)"
-                                    :class="errors.assign_vehicle ? 'border-error-500' : ''"
-                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                <option value="">Find Vehicle</option>
-                                <template x-for="vehicle in $store.vehicleData.availableVehicles" :key="vehicle.vehicleId">
-                                    <option
-                                        :value="vehicle.vehicleId + '|' + vehicle.type + '|' + vehicle.brand + ' ' + vehicle.model + '|' + vehicle.plate_number"
-                                        x-text="vehicle.type + ': ' + vehicle.brand + ' ' + vehicle.model + ' - ' + vehicle.plate_number"
-                                        >
-                                    </option>
-                                </template>
-                            </select>
-                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </span>
-                        </div>
-                        <span x-show="errors.assign_vehicle_select" x-text="errors.assign_vehicle_select" class="text-xs text-error-500 mt-1"></span>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Type to search by Plate number ...</p>
-                    </div>
+                    <!-- Hidden input for vehicle_id -->
+                    <input type="hidden" name="assign_vehicle_id" x-model="selectedVehicleId" value="" id="" name=""/>
 
                     <!-- Status -->
                     <div class="w-full px-2.5">
@@ -4283,11 +1765,11 @@
                         <div class="relative z-20 bg-transparent">
                             <select id="assign_status"
                                     name="status"
+                                    x-model="assignStatus"
                                     @change="clearError('assign_status')"
-                                    @blur="validateField('assign_status', $event.target.value)"
-                                    :class="errors.Status ? 'border-error-500' : ''"
+                                    :class="errors.assign_status ? 'border-error-500' : ''"
                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                <option value="">Status</option>
+                                <option value="">Select Status</option>
                                 <option value="Approved">Approved</option>
                                 <option value="Pending">Pending</option>
                                 <option value="Cancelled">Cancelled</option>
@@ -4309,9 +1791,9 @@
                     </button>
                     <button type="submit"
                             class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
-                            :disabled="$store.vehicleData.isAssigning">
-                        <span x-show="!$store.vehicleData.isAssigning">Assign Vehicle</span>
-                        <span x-show="$store.vehicleData.isAssigning">Assigning ...</span>
+                            :disabled="!selectedVehicle || isSubmitting">
+                        <span x-show="!isSubmitting">Assign Vehicle</span>
+                        <span x-show="isSubmitting">Assigning ...</span>
                     </button>
                 </div>
 
@@ -4369,7 +1851,7 @@
                             name="vehicle_type"
                             readonly
                             :value="$store.vehicleData.currentVehicle ?
-                                    `${$store.vehicleData.currentVehicle.type || 'N/A'} - ${$store.vehicleData.currentVehicle.plate_number || 'N/A'}` :
+                                    `${$store.vehicleData.currentVehicle.type || 'Loading ... '} - ${$store.vehicleData.currentVehicle.plate_number || 'Loading ... '}` :
                                     ''"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     </div>
@@ -5124,7 +2606,7 @@
 
         <div class="px-2 pr-14">
             <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Assign Loan</h4>
-            <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the amount you wish to withdraw.</p>
+            <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the amount you wish to assign to member.</p>
         </div>
 
         <form class="flex flex-col" method="POST" x-data="loansTable" @submit.prevent="assignLoan">
@@ -5139,6 +2621,7 @@
                     <div class="relative z-20 bg-transparent">
                         <select id="loan_type_id"
                                 name="loan_type_id"
+                                x-model="$store.loanData.selectedLoanTypeId"
                                 @change="Alpine.store('loanData').updateLoanDetails($event.target.value); clearError('loan_type')"
                                 @blur="validateField('loan_type', $event.target.value)"
                                 :class="errors.loan_type ? 'border-red-500' : ''"
@@ -5158,15 +2641,15 @@
                     <span x-show="errors.loan_type" x-text="errors.loan_type" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
-                <!-- Interest Rate (Read-only) -->
+                <!-- Min Borrowable (Read-only) -->
                 <div class="w-full px-2.5 xl:w-1/2">
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Interest Rate
+                        Min Borrowable
                     </label>
                     <input readonly type="text"
-                        id="interest_rate"
-                        name="interest_rate"
-                        :value="$store.loanData.currentLoanType ? $store.loanData.currentLoanType.interest_rate + '%' : ''"
+                        id="min_borrowable"
+                        name="min_borrowable"
+                        :value="$store.loanData.currentLoanType ? 'KES ' + Number($store.loanData.currentLoanType.min_amount).toLocaleString() : ''"
                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
                 </div>
 
@@ -5182,6 +2665,27 @@
                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
                 </div>
 
+                <!-- Amount -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Loan Amount
+                    </label>
+                    <div class="relative">
+                        <input type="number"
+                            id="assign_amount"
+                            name="amount"
+                            step="0.01"
+                            min="1"
+                            placeholder="Amount to Borrow"
+                            x-model="loanAmount"
+                            @input="clearError('amount'); calculateAndUpdateTotal()"
+                            @blur="validateField('amount', $event.target.value)"
+                            :class="errors.amount ? 'border-red-500' : ''"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    </div>
+                    <span x-show="errors.amount" x-text="errors.amount" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
                 <!-- Period (Months) -->
                 <div class="w-full px-2.5 xl:w-1/2">
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
@@ -5190,7 +2694,8 @@
                     <div class="relative z-20 bg-transparent">
                         <select id="loan_period"
                                 name="loan_period"
-                                @change="$store.loanData.calculateDates($event.target.value); clearError('loan_period')"
+                                x-model="loanPeriod"
+                                @change="$store.loanData.calculateDates($event.target.value); clearError('loan_period'); calculateAndUpdateTotal()"
                                 @blur="validateField('loan_period', $event.target.value)"
                                 :class="errors.loan_period ? 'border-red-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
@@ -5201,6 +2706,8 @@
                             <option value="12">12 Months</option>
                             <option value="24">24 Months</option>
                             <option value="36">36 Months</option>
+                            <option value="48">48 Months</option>
+                            <option value="60">60 Months</option>
                         </select>
                         <span class="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-700 dark:text-gray-400">
                             <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -5209,69 +2716,6 @@
                         </span>
                     </div>
                     <span x-show="errors.loan_period" x-text="errors.loan_period" class="text-xs text-error-500 mt-1"></span>
-                </div>
-
-                <!-- Payment Mode -->
-                <div class="w-full px-2.5 xl:w-1/2">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Payment Mode
-                    </label>
-                    <div class="relative z-20 bg-transparent">
-                        <select id="assign_payment_mode"
-                                name="payment_mode"
-                                @change="handlePaymentModeChange($event.target.value, 'assign_'); clearError('payment_mode')"
-                                @blur="validateField('payment_mode', $event.target.value)"
-                                :class="errors.payment_mode ? 'border-red-500' : ''"
-                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                            <option value="">Select Payment Mode</option>
-                            <option value="Cash">Cash</option>
-                            <option value="MPesa">MPesa</option>
-                            <option value="Bank">Bank</option>
-                        </select>
-                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </span>
-                    </div>
-                    <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
-                </div>
-
-                <!-- Amount -->
-                <div class="w-full px-2.5 xl:w-1/2">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Amount
-                    </label>
-                    <div class="relative">
-                        <input type="number"
-                            id="assign_amount"
-                            name="amount"
-                            step="0.01"
-                            min="1"
-                            @input="clearError('amount')"
-                            @blur="validateField('amount', $event.target.value)"
-                            :class="errors.amount ? 'border-red-500' : ''"
-                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                    </div>
-                    <span x-show="errors.amount" x-text="errors.amount" class="text-xs text-error-500 mt-1"></span>
-                </div>
-
-                <!-- Transaction Code -->
-                <div class="w-full px-2.5 xl:w-1/2">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Transaction Code
-                    </label>
-                    <div class="relative">
-                        <input type="text"
-                            id="assign_transaction_code"
-                            name="transaction_code"
-                            readonly
-                            @input="clearError('transaction_code')"
-                            @blur="validateField('transaction_code', $event.target.value)"
-                            :class="errors.transaction_code ? 'border-red-500' : ''"
-                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                    </div>
-                    <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
                 <!-- Start Date (Read-only) -->
@@ -5300,14 +2744,77 @@
                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
                 </div>
 
+                <!-- Payment Mode -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Payment Mode
+                    </label>
+                    <div class="relative z-20 bg-transparent">
+                        <select id="assign_payment_mode"
+                                name="payment_mode"
+                                x-model="paymentMode"
+                                @change="handlePaymentModeChange($event.target.value, 'assign_'); clearError('payment_mode'); generateTransactionCode()"
+                                @blur="validateField('payment_mode', $event.target.value)"
+                                :class="errors.payment_mode ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value="">Select Payment Mode</option>
+                            <option value="Cash">Cash</option>
+                            <option value="MPesa">MPesa</option>
+                            <option value="Bank">Bank</option>
+                        </select>
+                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <!-- Transaction Code -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Transaction Code
+                    </label>
+                    <div class="relative">
+                        <input type="text"
+                            id="assign_transaction_code"
+                            name="transaction_code"
+                            x-model="transactionCode"
+                            x-bind:readonly="paymentMode === 'Cash'"
+                            @input="clearError('transaction_code')"
+                            @blur="validateField('transaction_code', $event.target.value)"
+                            :class="errors.transaction_code ? 'border-red-500' : ''"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    </div>
+                    <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <!-- Total Repayment Amount -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Total Repayment
+                    </label>
+                    <div class="relative">
+                        <input type="text"
+                            id="total_repayment"
+                            name="total_repayment"
+                            readonly
+                            x-model="totalRepayment"
+                            placeholder="Total Payable"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                    </div>
+                </div>
+
                 <!-- Loan Status -->
-                <div class="w-full px-2.5">
+                <div class="w-full px-2.5 xl:w-1/2">
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                         Loan Status
                     </label>
                     <div class="relative z-20 bg-transparent">
                         <select id="assign_loan_status"
                                 name="status"
+                                x-model="loanStatus"
                                 @change="clearError('loan_status')"
                                 @blur="validateField('loan_status', $event.target.value)"
                                 :class="errors.loan_status ? 'border-red-500' : ''"
@@ -5328,7 +2835,7 @@
             </div>
 
             <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-                <button @click="loansModal = false" type="button"
+                <button @click="$store.loanData.assignLoanModal = false" type="button"
                         class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
                     Cancel
                 </button>
@@ -5340,6 +2847,278 @@
                 </button>
             </div>
         </form>
+
+        </div>
+    </div>
+
+    <!-- editLoansModal -->
+    <div x-show="$store.loanData.editLoanModal" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999">
+        <div class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
+        <div @click.outside="$store.loanData.editLoanModal = false" class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+            <!-- close btn -->
+            <button @click="$store.loanData.editLoanModal = false" class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300">
+                <svg
+                        class="fill-current"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                >
+                <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M6.04289 16.5418C5.65237 16.9323 5.65237 17.5655 6.04289 17.956C6.43342 18.3465 7.06658 18.3465 7.45711 17.956L11.9987 13.4144L16.5408 17.9565C16.9313 18.347 17.5645 18.347 17.955 17.9565C18.3455 17.566 18.3455 16.9328 17.955 16.5423L13.4129 12.0002L17.955 7.45808C18.3455 7.06756 18.3455 6.43439 17.955 6.04387C17.5645 5.65335 16.9313 5.65335 16.5408 6.04387L11.9987 10.586L7.45711 6.04439C7.06658 5.65386 6.43342 5.65386 6.04289 6.04439C5.65237 6.43491 5.65237 7.06808 6.04289 7.4586L10.5845 12.0002L6.04289 16.5418Z"
+                        fill=""
+                />
+                </svg>
+            </button>
+
+            <div class="px-2 pr-14">
+                <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Assign Loan</h4>
+                <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the amount you wish to withdraw.</p>
+            </div>
+
+            <form class="flex flex-col" method="POST" x-data="loansTable" @submit.prevent="editLoan">
+                @csrf
+                <!-- Hidden field for loan ID when editing -->
+                <input type="hidden" id="edit_loan_id" name="loan_id" x-model="$store.loanData.currentLoan.transactionId">
+
+                <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
+                    <!-- Loan Type Dropdown -->
+                    <div class="w-full px-2.5">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Loan Type
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="edit_loan_type_id"
+                                    name="loan_type_id"
+                                    x-model="$store.loanData.currentLoan.loanTypeId"
+                                    @change="Alpine.store('loanData').updateLoanDetails($event.target.value); clearError('loan_type')"
+                                    @blur="validateField('loan_type', $event.target.value)"
+                                    :class="errors.loan_type ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Select Loan Type</option>
+                                <template x-for="loanType in $store.loanData.loanTypes" :key="loanType.loanId">
+                                    <option :value="loanType.loanId"
+                                            x-text="loanType.loan_type_name + ' @ ' + loanType.interest_rate + '%'"
+                                            :selected="loanType.loanId == $store.loanData.currentLoan?.loanTypeId"></option>
+                                </template>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.loan_type" x-text="errors.loan_type" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Interest Rate (Read-only) -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Interest Rate
+                        </label>
+                        <input readonly type="text"
+                            id="edit_interest_rate"
+                            name="interest_rate"
+                            x-bind:value="$store.loanData.currentLoanType ? $store.loanData.currentLoanType.interest_rate + '%' : ($store.loanData.currentLoan?.interestRate ? $store.loanData.currentLoan.interestRate + '%' : ($store.loanData.currentLoan?.loanTypeName ? $store.loanData.currentLoan.loanTypeName.split('@')[1]?.trim() || '' : ''))"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                    </div>
+
+                    <!-- Max Borrowable (Read-only) -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Max Borrowable
+                        </label>
+                        <input readonly type="text"
+                            id="edit_max_borrowable"
+                            name="max_borrowable"
+                            x-bind:value="$store.loanData.currentLoanType ? 'KES ' + Number($store.loanData.currentLoanType.max_amount).toLocaleString() : ''"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                    </div>
+
+                    <!-- Period (Months) -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Period (Months)
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="edit_loan_period"
+                                    name="loan_period"
+                                    x-model="$store.loanData.currentLoan.loanPeriod"
+                                    @change="$store.loanData.calculateDates($event.target.value); clearError('loan_period')"
+                                    @blur="validateField('loan_period', $event.target.value)"
+                                    :class="errors.loan_period ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Select Period</option>
+                                <option value="1" :selected="$store.loanData.currentLoan?.loanPeriod == 1">1 Month (30 Days)</option>
+                                <option value="3" :selected="$store.loanData.currentLoan?.loanPeriod == 3">3 Months</option>
+                                <option value="6" :selected="$store.loanData.currentLoan?.loanPeriod == 6">6 Months</option>
+                                <option value="12" :selected="$store.loanData.currentLoan?.loanPeriod == 12">12 Months</option>
+                                <option value="24" :selected="$store.loanData.currentLoan?.loanPeriod == 24">24 Months</option>
+                                <option value="36" :selected="$store.loanData.currentLoan?.loanPeriod == 36">36 Months</option>
+                            </select>
+                            <span class="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-700 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.loan_period" x-text="errors.loan_period" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Payment Mode -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Payment Mode
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="edit_payment_mode"
+                                    name="payment_mode"
+                                    x-model="$store.loanData.currentLoan.transactionMode"
+                                    @change="handlePaymentModeChange($event.target.value, 'edit_'); clearError('payment_mode')"
+                                    @blur="validateField('payment_mode', $event.target.value)"
+                                    :class="errors.payment_mode ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Select Payment Mode</option>
+                                <option value="Cash" :selected="$store.loanData.currentLoan?.transactionMode == 'Cash'">Cash</option>
+                                <option value="MPesa" :selected="$store.loanData.currentLoan?.transactionMode == 'MPesa'">MPesa</option>
+                                <option value="Bank" :selected="$store.loanData.currentLoan?.transactionMode == 'Bank'">Bank</option>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Amount -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Amount
+                        </label>
+                        <div class="relative">
+                            <input type="number"
+                                id="edit_amount"
+                                name="amount"
+                                step="0.01"
+                                min="1"
+                                x-model="$store.loanData.currentLoan.transactionLoanAmount"
+                                @input="clearError('amount')"
+                                @blur="validateField('amount', $event.target.value)"
+                                :class="errors.amount ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        </div>
+                        <span x-show="errors.amount" x-text="errors.amount" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Transaction Code -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Transaction Code
+                        </label>
+                        <div class="relative">
+                            <input type="text"
+                                id="edit_transaction_code"
+                                name="transaction_code"
+                                x-model="$store.loanData.currentLoan.transactionCode"
+                                x-bind:readonly="$store.loanData.currentLoan?.transactionMode === 'Cash'"
+                                @input="clearError('transaction_code')"
+                                @blur="validateField('transaction_code', $event.target.value)"
+                                :class="errors.transaction_code ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        </div>
+                        <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Start Date (Read-only) -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Start Date
+                        </label>
+                        <input type="text"
+                            id="edit_start_date"
+                            name="start_date"
+                            readonly
+                            x-bind:value="formatDate($store.loanData.currentLoan?.startDate)"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                    </div>
+
+                    <!-- End Date (Read-only) -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            End Date
+                        </label>
+                        <input type="text"
+                            id="edit_end_date"
+                            name="end_date"
+                            readonly
+                            x-bind:value="formatDate($store.loanData.currentLoan?.endDate) || calculateEndDate($store.loanData.currentLoan?.startDate, $store.loanData.currentLoan?.loanPeriod)"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                    </div>
+
+                    <!-- Assigned Date (Read-only for edit) -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Assigned On
+                        </label>
+                        <input type="text"
+                            id="edit_assigned_date"
+                            name="assigned_date"
+                            readonly
+                            x-bind:value="formatDateTime($store.loanData.currentLoan?.transactionCreated)"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                    </div>
+
+                    <!-- Loan Status -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Loan Status
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="edit_loan_status"
+                                    name="status"
+                                    x-model="$store.loanData.currentLoan.transactionStatus"
+                                    @change="clearError('loan_status')"
+                                    @blur="validateField('loan_status', $event.target.value)"
+                                    :class="errors.loan_status ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Select Status</option>
+                                <option value="Active" :selected="$store.loanData.currentLoan?.transactionStatus == 'Active'">Active</option>
+                                <option value="Approved" :selected="$store.loanData.currentLoan?.transactionStatus == 'Approved'">Approved</option>
+                                <option value="Under Review" :selected="$store.loanData.currentLoan?.transactionStatus == 'Under Review'">Under Review</option>
+                                <option value="Pending" :selected="$store.loanData.currentLoan?.transactionStatus == 'Pending'">Pending</option>
+                                <option value="Repaid" :selected="$store.loanData.currentLoan?.transactionStatus == 'Repaid'">Repaid</option>
+                                <option value="Defaulted" :selected="$store.loanData.currentLoan?.transactionStatus == 'Defaulted'">Defaulted</option>
+                                <option value="Cancelled" :selected="$store.loanData.currentLoan?.transactionStatus == 'Cancelled'">Cancelled</option>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.loan_status" x-text="errors.loan_status" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+                    <button @click="$store.loanData.editLoanModal = false" type="button"
+                            class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                            :disabled="$store.loanData.isUpdating">
+                        <span x-show="!$store.loanData.isUpdating">Update Loan</span>
+                        <span x-show="$store.loanData.isUpdating">Updating ...</span>
+                    </button>
+                </div>
+
+            </form>
 
         </div>
     </div>
@@ -5616,57 +3395,81 @@
 
     <!-- deleteMemberAccount -->
     <div x-show="deleteMemberAccount" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999">
+
         <div class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
+
         <div @click.outside="deleteMemberAccount = false" class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
-        <!-- close btn -->
-        <button @click="deleteMemberAccount = false" class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300">
-            <svg
-                    class="fill-current"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-            >
-            <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M6.04289 16.5418C5.65237 16.9323 5.65237 17.5655 6.04289 17.956C6.43342 18.3465 7.06658 18.3465 7.45711 17.956L11.9987 13.4144L16.5408 17.9565C16.9313 18.347 17.5645 18.347 17.955 17.9565C18.3455 17.566 18.3455 16.9328 17.955 16.5423L13.4129 12.0002L17.955 7.45808C18.3455 7.06756 18.3455 6.43439 17.955 6.04387C17.5645 5.65335 16.9313 5.65335 16.5408 6.04387L11.9987 10.586L7.45711 6.04439C7.06658 5.65386 6.43342 5.65386 6.04289 6.04439C5.65237 6.43491 5.65237 7.06808 6.04289 7.4586L10.5845 12.0002L6.04289 16.5418Z"
-                    fill=""
-            />
-            </svg>
-        </button>
-        <div class="px-2 pr-14">
-            <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Withdraw from Wallet</h4>
-            <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the amount you wish to withdraw.</p>
-        </div>
-        <form class="flex flex-col">
-            <div class="custom-scrollbar h-[450px] overflow-y-auto px-2">
-            <div class="mt-7">
-                <h5 class="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">Withdraw</h5>
+            <!-- close btn -->
+            <button @click="deleteMemberAccount = false" class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300">
+                <svg
+                        class="fill-current"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                >
+                <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M6.04289 16.5418C5.65237 16.9323 5.65237 17.5655 6.04289 17.956C6.43342 18.3465 7.06658 18.3465 7.45711 17.956L11.9987 13.4144L16.5408 17.9565C16.9313 18.347 17.5645 18.347 17.955 17.9565C18.3455 17.566 18.3455 16.9328 17.955 16.5423L13.4129 12.0002L17.955 7.45808C18.3455 7.06756 18.3455 6.43439 17.955 6.04387C17.5645 5.65335 16.9313 5.65335 16.5408 6.04387L11.9987 10.586L7.45711 6.04439C7.06658 5.65386 6.43342 5.65386 6.04289 6.04439C5.65237 6.43491 5.65237 7.06808 6.04289 7.4586L10.5845 12.0002L6.04289 16.5418Z"
+                        fill=""
+                />
+                </svg>
+            </button>
 
-                <div class="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-                <div class="col-span-2 lg:col-span-1">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Amount</label>
-                    <input type="text" placeholder="Enter Amount ..."
-                        class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"/>
+                <div class="text-center">
+
+                    <div class="relative z-1 mb-7 flex items-center justify-center">
+                        <svg class="fill-error-50 dark:fill-error-500/15" width="90" height="90" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M34.364 6.85053C38.6205 -2.28351 51.3795 -2.28351 55.636 6.85053C58.0129 11.951 63.5594 14.6722 68.9556 13.3853C78.6192 11.0807 86.5743 21.2433 82.2185 30.3287C79.7862 35.402 81.1561 41.5165 85.5082 45.0122C93.3019 51.2725 90.4628 63.9451 80.7747 66.1403C75.3648 67.3661 71.5265 72.2695 71.5572 77.9156C71.6123 88.0265 60.1169 93.6664 52.3918 87.3184C48.0781 83.7737 41.9219 83.7737 37.6082 87.3184C29.8831 93.6664 18.3877 88.0266 18.4428 77.9156C18.4735 72.2695 14.6352 67.3661 9.22531 66.1403C-0.462787 63.9451 -3.30193 51.2725 4.49185 45.0122C8.84391 41.5165 10.2138 35.402 7.78151 30.3287C3.42572 21.2433 11.3808 11.0807 21.0444 13.3853C26.4406 14.6722 31.9871 11.951 34.364 6.85053Z" fill="" fill-opacity=""></path>
+                        </svg>
+
+                        <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                        <svg class="fill-error-600 dark:fill-error-500" width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.62684 11.7496C9.04105 11.1638 9.04105 10.2141 9.62684 9.6283C10.2126 9.04252 11.1624 9.04252 11.7482 9.6283L18.9985 16.8786L26.2485 9.62851C26.8343 9.04273 27.7841 9.04273 28.3699 9.62851C28.9556 10.2143 28.9556 11.164 28.3699 11.7498L21.1198 18.9999L28.3699 26.25C28.9556 26.8358 28.9556 27.7855 28.3699 28.3713C27.7841 28.9571 26.8343 28.9571 26.2485 28.3713L18.9985 21.1212L11.7482 28.3715C11.1624 28.9573 10.2126 28.9573 9.62684 28.3715C9.04105 27.7857 9.04105 26.836 9.62684 26.2502L16.8771 18.9999L9.62684 11.7496Z" fill=""></path>
+                        </svg>
+                        </span>
+                    </div>
+
+                    <!-- De-Activate Account Component -->
+                    <div x-data="accountDeactivation">
+                        <h4 class="sm:text-title-sm mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
+                            Confirm Account De-Activation
+                        </h4>
+                        <p class="text-sm leading-6 text-gray-500 dark:text-gray-400">
+                            Are you sure you want to De-Activate this member's account?.
+                        </p>
+
+                        <!-- Error display -->
+                        <template x-if="errors.general">
+                            <div class="mt-4 rounded-lg bg-error-50 p-4 text-sm text-error-700 dark:bg-error-500/15 dark:text-error-500">
+                                <p x-text="errors.general"></p>
+                            </div>
+                        </template>
+
+                        <div class="mt-8 flex w-full items-center justify-center gap-3">
+                            <button
+                                @click="closeDeactivationModal"
+                                type="button"
+                                class="shadow-theme-xs flex justify-center rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+                                No, Cancel
+                            </button>
+                            <button
+                                @click="deactivateAccount"
+                                :disabled="isDeactivating"
+                                type="button"
+                                class="shadow-theme-xs flex justify-center rounded-lg bg-red-500 px-4 py-3 text-sm font-medium text-white hover:bg-red-600 disabled:opacity-70 disabled:cursor-not-allowed">
+                                <span x-show="!isDeactivating">Yes, Deactivate Account</span>
+                                <span x-show="isDeactivating" class="flex items-center">
+                                    Deactivating...
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+
                 </div>
 
-                <div class="col-span-2 lg:col-span-1">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Confirm Password</label>
-                    <input type="password" placeholder="Confirm Password"
-                        class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"/>
-                </div>
-                </div>
-            </div>
-            </div>
-            <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-            <button @click="deleteMemberAccount = false" type="button"
-                    class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
-                Cancel</button>
-            <button type="button" class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">Withdraw</button>
-            </div>
-        </form>
         </div>
     </div>
 
@@ -6335,6 +4138,15 @@
                 searchDropdown: null,
                 isLoading: true,
 
+                // Search Assign Vehicle
+                vehicleSearchTerm: '',
+                searchResults: [],
+                isSearching: false,
+                selectedVehicle: null,
+                selectedVehicleId: null,
+                assignStatus: '',
+                isSubmitting: false,
+
                 init() {
                     console.log('vehiclesTable initializing...');
                     let memberId = window.location.pathname.split('/').pop();
@@ -6373,7 +4185,9 @@
 
                 loadNonMemberVehicleData() {
                     console.log('Loading non-member vehicle data...');
-                    let url = '/bodaboda-member/' + this.memberId + '/vehicles/nonmember/all';
+                    // Get the member ID from the URL path
+                    let memberId = window.location.pathname.split('/').pop();
+                    let url = '/treasurer/bodaboda-member/' + memberId + '/vehicles/nonmember/details';
                     console.log('Fetching:', url);
 
                     fetch(url)
@@ -6381,28 +4195,21 @@
                         .then(data => {
                             console.log('Non-member vehicles response:', data);
                             if (data.success) {
-                                // Force a new array reference
                                 this.nonMemberVehicles = [...(data.vehicles || [])];
                                 console.log('Non-member vehicles set:', this.nonMemberVehicles);
 
-                                // Reset page to trigger re-evaluation
+                                // Find the currently assigned vehicle (availability = 'Assigned')
+                                const currentVehicle = this.nonMemberVehicles.find(v => v.availability === 'Assigned');
+                                if (currentVehicle) {
+                                    Alpine.store('vehicleData').currentVehicle = currentVehicle;
+                                } else {
+                                    Alpine.store('vehicleData').currentVehicle = null;
+                                }
+
                                 this.pageNonMember = 1;
                             }
                         })
                         .catch(error => console.error('Error loading non-member vehicles:', error));
-
-                    // Get non-member count
-                    fetch('/bodaboda-member/' + this.memberId + '/vehicles/nonmember/count')
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.success) {
-                                this.nonMemberCount = data.count || 0;
-                            }
-                        })
-                        .catch(error => console.error('Error loading non-member count:', error))
-                        .finally(() => {
-                            this.isLoading = false;
-                        });
                 },
 
                 setupEventListeners() {
@@ -6539,6 +4346,98 @@
                         isValid = false;
                     }
                     return isValid;
+                },
+
+                async loadInitialVehicles() {
+                    if (this.vehicleSearchTerm.length === 0) {
+                        this.isSearching = true;
+                        try {
+                            const response = await fetch(`/vehicles/search?limit=5`);
+                            const data = await response.json();
+                            if (data.success) {
+                                this.searchResults = data.vehicles;
+                            }
+                        } catch (error) {
+                            console.error('Error loading vehicles:', error);
+                        } finally {
+                            this.isSearching = false;
+                        }
+                    }
+                },
+
+                async searchVehicles() {
+                    if (this.vehicleSearchTerm.length < 1) {
+                        this.searchResults = [];
+                        return;
+                    }
+
+                    this.isSearching = true;
+
+                    try {
+                        const response = await fetch(`/vehicles/search?q=${encodeURIComponent(this.vehicleSearchTerm)}`);
+                        const data = await response.json();
+
+                        if (data.success) {
+                            this.searchResults = data.vehicles;
+                        }
+                    } catch (error) {
+                        console.error('Search error:', error);
+                    } finally {
+                        this.isSearching = false;
+                    }
+                },
+
+                selectVehicle(vehicle) {
+                    this.selectedVehicle = vehicle;
+                    this.selectedVehicleId = vehicle.vehicleId;
+                    this.vehicleSearchTerm = vehicle.plate_number;
+                    this.searchResults = [];
+                },
+
+                async assignVehicle() {
+                    if (!this.selectedVehicle) {
+                        alert('Please select a vehicle first');
+                        return;
+                    }
+
+                    if (!this.assignStatus) {
+                        alert('Please select a status');
+                        return;
+                    }
+
+                    this.isSubmitting = true;
+
+                    try {
+                        const formData = {
+                            vehicle_id: this.selectedVehicleId,
+                            status: this.assignStatus,
+                            _token: document.querySelector('input[name="_token"]')?.value
+                        };
+
+                        const response = await fetch('/bodaboda-member/' + this.memberId + '/vehicle/assign', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value
+                            },
+                            body: JSON.stringify(formData)
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            alert(data.message);
+                            window.location.reload();
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    } catch (error) {
+                        alert('Error assigning vehicle. Please try again.');
+                        console.error('Error:', error);
+                    } finally {
+                        this.isSubmitting = false;
+                        this.assignMemberVehicle = false;
+                    }
                 },
 
                 assignVehicle() {
@@ -6818,7 +4717,6 @@
 
     <!-- Member Contributions -->
     <script>
-
         document.addEventListener('alpine:init', () => {
             // Store for contribution data and modal states
             Alpine.store('contributionData', {
@@ -6827,8 +4725,9 @@
                 isContributing: false,
                 isWithdrawing: false,
                 isUpdating: false,
-                memberBalance: 0, // Added for member balance
-                memberBalanceFormatted: 'KES 0.00' // Added formatted balance
+                memberBalance: 0,
+                memberBalanceFormatted: 'KES 0.00',
+                lastTransaction: null // Add this to store the last transaction for printing
             });
 
             Alpine.data('contributionsTable', () => ({
@@ -6850,7 +4749,7 @@
                         .then(res => res.json())
                         .then(data => {
                             this.allContributions = data;
-                            this.applyFilters(); // Apply filters after data loads
+                            this.applyFilters();
                         });
 
                     // Load member contribution balance
@@ -6908,27 +4807,19 @@
 
                             switch(this.frequencyFilter) {
                                 case 'Daily':
-                                    // Daily shows today's transactions
                                     return transDate >= today;
-
                                 case 'Weekly':
-                                    // Weekly shows last 7 days
                                     const weekAgo = new Date(today);
                                     weekAgo.setDate(weekAgo.getDate() - 7);
                                     return transDate >= weekAgo;
-
                                 case 'Monthly':
-                                    // Monthly shows last 30 days
                                     const monthAgo = new Date(today);
                                     monthAgo.setDate(monthAgo.getDate() - 30);
                                     return transDate >= monthAgo;
-
                                 case 'Yearly':
-                                    // Yearly shows last 365 days
                                     const yearAgo = new Date(today);
                                     yearAgo.setDate(yearAgo.getDate() - 365);
                                     return transDate >= yearAgo;
-
                                 default:
                                     return true;
                             }
@@ -6936,7 +4827,7 @@
                     }
 
                     this.contributions = filtered;
-                    this.page = 1; // Reset to first page after filtering
+                    this.page = 1;
                 },
 
                 performFilter() {
@@ -7061,6 +4952,7 @@
                     }
                 },
 
+                // UPDATED contribute() method with receipt printing
                 contribute() {
                     if (!this.validateContributeForm()) {
                         alert('Please fix the errors in the form before submitting.');
@@ -7091,10 +4983,27 @@
                             Alpine.store('contributionData').isContributing = false;
 
                             if (data.success) {
-                                alert(data.message);
-                                window.location.reload();
+                                // Store the transaction data for receipt
+                                Alpine.store('contributionData').lastTransaction = data.transaction;
+
+                                // Show success message with print prompt
+                                const printReceipt = confirm(
+                                    '✅ Contribution saved successfully!\n\nTransaction Code: ' +
+                                    (data.transaction?.transaction_code || 'N/A') +
+                                    '\nAmount: KES ' + parseFloat(formData.amount).toFixed(2) +
+                                    '\n\nWould you like to print the receipt?'
+                                );
+
+                                if (printReceipt) {
+                                    // User wants to print - use hidden iframe approach
+                                    this.printReceipt(data.transaction || formData);
+                                } else {
+                                    // User doesn't want to print, just reload
+                                    window.location.reload();
+                                }
                             } else {
                                 alert('Error: ' + data.message);
+                                window.location.reload();
                             }
                         }, 750);
                     })
@@ -7105,6 +5014,235 @@
                             console.error('Error:', error);
                         }, 750);
                     });
+                },
+
+                // NEW: Print receipt method
+                printReceipt(transaction) {
+                    // Create receipt HTML
+                    const receiptHTML = this.generateReceiptHTML(transaction);
+
+                    // Create filename: HH_mm_ss_dd_mm_Contribution_Receipt.pdf
+                    const now = new Date();
+                    const hours = String(now.getHours()).padStart(2, '0');
+                    const minutes = String(now.getMinutes()).padStart(2, '0');
+                    const seconds = String(now.getSeconds()).padStart(2, '0');
+                    const day = String(now.getDate()).padStart(2, '0');
+                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                    const filename = `${hours}_${minutes}_${seconds}_${day}_${month}_Contribution_Receipt.pdf`;
+
+                    // Create hidden iframe
+                    const iframe = document.createElement('iframe');
+                    iframe.style.position = 'absolute';
+                    iframe.style.width = '0';
+                    iframe.style.height = '0';
+                    iframe.style.border = 'none';
+                    iframe.style.opacity = '0';
+                    iframe.style.pointerEvents = 'none';
+
+                    document.body.appendChild(iframe);
+
+                    // Write receipt to iframe with compact styling
+                    const iframeDoc = iframe.contentWindow.document;
+                    iframeDoc.open();
+                    iframeDoc.write(`
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <title>Contribution Receipt</title>
+                            <style>
+                                @media print {
+                                    @page {
+                                        size: 80mm auto; /* 80mm ≈ 3.15 inches */
+                                        margin: 2mm;
+                                    }
+                                    body {
+                                        font-family: 'Courier New', monospace;
+                                        font-size: 10pt;
+                                        line-height: 1.2;
+                                        max-width: 72mm;
+                                        margin: 0 auto;
+                                        padding: 0;
+                                    }
+                                    .receipt {
+                                        white-space: pre-wrap;
+                                        padding: 2mm;
+                                    }
+                                    .receipt-header {
+                                        text-align: center;
+                                        margin-bottom: 1mm;
+                                    }
+                                    .receipt-header img {
+                                        max-width: 15mm;
+                                        margin: 0 auto;
+                                    }
+                                    .receipt-header h2 {
+                                        margin: 1mm 0;
+                                        font-size: 12pt;
+                                        font-weight: bold;
+                                    }
+                                    .receipt-header small {
+                                        font-size: 8pt;
+                                        display: block;
+                                    }
+                                    .receipt-line {
+                                        border-top: 1px dashed #000;
+                                        margin: 1mm 0;
+                                    }
+                                    .receipt-row {
+                                        margin: 1.5mm 0;
+                                        font-size: 9pt;
+                                    }
+                                    .receipt-footer {
+                                        text-align: center;
+                                        margin: 0.5mm 0;
+                                        font-size: 8pt;
+                                    }
+                                    .text-bold {
+                                        font-weight: bold;
+                                    }
+                                    .amount {
+                                        font-size: 11pt;
+                                        font-weight: bold;
+                                    }
+                                    table {
+                                        width: 100%;
+                                        border-collapse: collapse;
+                                    }
+                                    td {
+                                        padding: 0.5mm 0;
+                                        font-size: 9pt;
+                                    }
+                                    .label {
+                                        width: 40%;
+                                    }
+                                    .value {
+                                        width: 60%;
+                                        font-weight: bold;
+                                    }
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="receipt">
+                                ${receiptHTML}
+                            </div>
+                            <script>
+                                window.onload = function() {
+                                    // Set PDF filename in print dialog if browser supports it
+                                    const style = document.createElement('style');
+                                    style.innerHTML = \`
+                                        @page {
+                                            size: 80mm auto;
+                                            margin: 2mm;
+                                            @bottom-center {
+                                                content: "Page " counter(page);
+                                                font-size: 7pt;
+                                            }
+                                        }
+                                    \`;
+                                    document.head.appendChild(style);
+
+                                    setTimeout(() => {
+                                        window.print();
+                                    }, 100);
+
+                                    window.onafterprint = function() {
+                                        window.parent.location.reload();
+                                    };
+
+                                    setTimeout(() => {
+                                        window.parent.location.reload();
+                                    }, 5000);
+                                }
+                            <\/script>
+                        </body>
+                        </html>
+                    `);
+                    iframeDoc.close();
+                },
+
+                // NEW: Generate compact receipt HTML
+                generateReceiptHTML(transaction) {
+                    // Format date: Mar 03, 2026 18:40
+                    const date = new Date();
+                    const formattedDate = date.toLocaleString('en-US', {
+                        month: 'short',
+                        day: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    }).replace(',', '');
+
+                    const memberId = '{{ $memberId }}';
+                    const amount = parseFloat(transaction.amount || 0).toFixed(2);
+                    const paymentMode = transaction.payment_mode || 'N/A';
+                    const transactionCode = transaction.transaction_code || 'N/A';
+                    const status = transaction.status || 'Completed';
+
+                    // Get auth ID from meta tag or use placeholder
+                    const authId = '{{ Auth::id() }}';
+
+                    return `
+                        <div class="receipt-header">
+                            <img src="{{ asset('company_logo.png') }}" alt="Logo" style="max-width: 15mm;" />
+                            <h2>KFBCL</h2>
+                            <small>Growing together</small>
+                        </div>
+
+                        <div class="receipt-line"></div>
+
+                        <table>
+                            <tr>
+                                <td class="label">Type:</td>
+                                <td class="value">Contribution</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Member:</td>
+                                <td class="value">${memberId}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">By:</td>
+                                <td class="value">${authId}</td>
+                            </tr>
+                        </table>
+
+                        <div class="receipt-line"></div>
+
+                        <table>
+                            <tr>
+                                <td class="label">Amount:</td>
+                                <td class="value amount">KES ${amount}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Mode:</td>
+                                <td class="value">${paymentMode}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Code:</td>
+                                <td class="value">${transactionCode}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Status:</td>
+                                <td class="value">${status}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Date:</td>
+                                <td class="value">${formattedDate}</td>
+                            </tr>
+                        </table>
+
+                        <div class="receipt-line"></div>
+
+                        <div class="receipt-footer">
+                            Thank you<br>
+                            &copy; KFBCL<br>
+                            Growing together
+                        </div>
+
+                        <div class="receipt-line"></div>
+
+                    `;
                 },
 
                 withdraw() {
@@ -7233,7 +5371,6 @@
                 }
             }));
         });
-
     </script>
 
     <!-- Member Savings -->
@@ -7244,7 +5381,8 @@
                 editSavingModal: false,
                 currentSaving: null,
                 isAdding: false,
-                isUpdating: false
+                isUpdating: false,
+                lastTransaction: null // Add this to store the last transaction for printing
             });
 
             Alpine.data('savingsTable', () => ({
@@ -7309,9 +5447,15 @@
                         this.errors.Status = 'Please select status';
                     }
 
+                    // Validate transaction code for non-cash payments
+                    if (data.payment_mode !== 'Cash' && (!data.transaction_code || data.transaction_code === '')) {
+                        this.errors.transaction_code = 'Transaction code is required for non-cash payments';
+                    }
+
                     return Object.keys(this.errors).length === 0;
                 },
 
+                // UPDATED addSavings() method with receipt printing
                 addSavings() {
                     console.log('Add Savings clicked'); // Debug
                     const form = document.getElementById('addSavingsForm');
@@ -7336,26 +5480,48 @@
                     .then(res => res.json())
                     .then(data => {
                         if (data.success) {
+                            // Store transaction data for receipt
+                            Alpine.store('savingData').lastTransaction = data.transaction;
+
                             this.savingsModal = false;
                             this.loadSavings();
                             this.loadBalance();
                             form.reset();
                             this.errors = {};
-                            alert('Savings added successfully!');
-                            location.reload(); // Add this line
+
+                            // Show success message with print prompt
+                            const printReceipt = confirm(
+                                '✅ Savings added successfully!\n\nTransaction Code: ' +
+                                (data.transaction?.transaction_code || 'N/A') +
+                                '\nAmount: KES ' + parseFloat(data.savings_Amount || 0).toFixed(2) +
+                                '\n\nWould you like to print the receipt?'
+                            );
+
+                            if (printReceipt) {
+                                // User wants to print - use hidden iframe approach
+                                this.printReceipt(data.transaction || {
+                                    amount: data.savings_Amount,
+                                    payment_mode: data.payment_mode,
+                                    transaction_code: data.transaction_code,
+                                    status: data.Status
+                                });
+                            } else {
+                                // User doesn't want to print, just reload
+                                window.location.reload();
+                            }
                         } else {
                             alert(data.message);
+                            Alpine.store('savingData').isAdding = false;
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
                         alert('Error adding savings: ' + error.message);
-                    })
-                    .finally(() => {
                         Alpine.store('savingData').isAdding = false;
                     });
                 },
 
+                // UPDATED withdrawSavings() method with receipt printing
                 withdrawSavings() {
                     console.log('Withdraw Savings clicked'); // Debug
                     const form = document.getElementById('withdrawSavingsForm');
@@ -7379,24 +5545,277 @@
                     .then(res => res.json())
                     .then(data => {
                         if (data.success) {
+                            // Store transaction data for receipt
+                            Alpine.store('savingData').lastTransaction = data.transaction;
+
                             this.withdrawSavingsModal = false;
                             this.loadSavings();
                             this.loadBalance();
                             form.reset();
                             this.errors = {};
-                            alert('Withdrawal successful!');
-                            location.reload(); // Add this line
+
+                            // Show success message with print prompt
+                            const printReceipt = confirm(
+                                '✅ Withdrawal successful!\n\nTransaction Code: ' +
+                                (data.transaction?.transaction_code || 'N/A') +
+                                '\nAmount: KES ' + parseFloat(data.savings_Amount || 0).toFixed(2) +
+                                '\n\nWould you like to print the receipt?'
+                            );
+
+                            if (printReceipt) {
+                                // User wants to print - use hidden iframe approach
+                                this.printReceipt(data.transaction || {
+                                    amount: data.savings_Amount,
+                                    payment_mode: data.payment_mode,
+                                    transaction_code: data.transaction_code,
+                                    status: data.Status,
+                                    transaction_type: 'Withdrawal'
+                                });
+                            } else {
+                                // User doesn't want to print, just reload
+                                window.location.reload();
+                            }
                         } else {
                             alert(data.message);
+                            Alpine.store('savingData').isAdding = false;
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
                         alert('Error processing withdrawal: ' + error.message);
-                    })
-                    .finally(() => {
                         Alpine.store('savingData').isAdding = false;
                     });
+                },
+
+                // NEW: Print receipt method (adapted from contributions)
+                printReceipt(transaction) {
+                    // Determine transaction type for filename
+                    const transactionType = transaction.transaction_type === 'Withdrawal' ? 'Withdrawal' : 'Savings';
+
+                    // Create receipt HTML
+                    const receiptHTML = this.generateReceiptHTML(transaction, transactionType);
+
+                    // Create filename: HH_mm_ss_dd_mm_Savings_Receipt.pdf
+                    const now = new Date();
+                    const hours = String(now.getHours()).padStart(2, '0');
+                    const minutes = String(now.getMinutes()).padStart(2, '0');
+                    const seconds = String(now.getSeconds()).padStart(2, '0');
+                    const day = String(now.getDate()).padStart(2, '0');
+                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                    const filename = `${hours}_${minutes}_${seconds}_${day}_${month}_${transactionType}_Receipt.pdf`;
+
+                    // Create hidden iframe
+                    const iframe = document.createElement('iframe');
+                    iframe.style.position = 'absolute';
+                    iframe.style.width = '0';
+                    iframe.style.height = '0';
+                    iframe.style.border = 'none';
+                    iframe.style.opacity = '0';
+                    iframe.style.pointerEvents = 'none';
+
+                    document.body.appendChild(iframe);
+
+                    // Write receipt to iframe with compact styling
+                    const iframeDoc = iframe.contentWindow.document;
+                    iframeDoc.open();
+                    iframeDoc.write(`
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <title>${transactionType} Receipt</title>
+                            <style>
+                                @media print {
+                                    @page {
+                                        size: 80mm auto; /* 80mm ≈ 3.15 inches */
+                                        margin: 2mm;
+                                    }
+                                    body {
+                                        font-family: 'Courier New', monospace;
+                                        font-size: 10pt;
+                                        line-height: 1.2;
+                                        max-width: 72mm;
+                                        margin: 0 auto;
+                                        padding: 0;
+                                    }
+                                    .receipt {
+                                        white-space: pre-wrap;
+                                        padding: 2mm;
+                                    }
+                                    .receipt-header {
+                                        text-align: center;
+                                        margin-bottom: 1mm;
+                                    }
+                                    .receipt-header img {
+                                        max-width: 15mm;
+                                        margin: 0 auto;
+                                    }
+                                    .receipt-header h2 {
+                                        margin: 1mm 0;
+                                        font-size: 12pt;
+                                        font-weight: bold;
+                                    }
+                                    .receipt-header small {
+                                        font-size: 8pt;
+                                        display: block;
+                                    }
+                                    .receipt-line {
+                                        border-top: 1px dashed #000;
+                                        margin: 1mm 0;
+                                    }
+                                    .receipt-row {
+                                        margin: 1.5mm 0;
+                                        font-size: 9pt;
+                                    }
+                                    .receipt-footer {
+                                        text-align: center;
+                                        margin: 0.5mm 0;
+                                        font-size: 8pt;
+                                    }
+                                    .text-bold {
+                                        font-weight: bold;
+                                    }
+                                    .amount {
+                                        font-size: 11pt;
+                                        font-weight: bold;
+                                    }
+                                    table {
+                                        width: 100%;
+                                        border-collapse: collapse;
+                                    }
+                                    td {
+                                        padding: 0.5mm 0;
+                                        font-size: 9pt;
+                                    }
+                                    .label {
+                                        width: 40%;
+                                    }
+                                    .value {
+                                        width: 60%;
+                                        font-weight: bold;
+                                    }
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="receipt">
+                                ${receiptHTML}
+                            </div>
+                            <script>
+                                window.onload = function() {
+                                    // Set PDF filename in print dialog if browser supports it
+                                    const style = document.createElement('style');
+                                    style.innerHTML = \`
+                                        @page {
+                                            size: 80mm auto;
+                                            margin: 2mm;
+                                            @bottom-center {
+                                                content: "Page " counter(page);
+                                                font-size: 7pt;
+                                            }
+                                        }
+                                    \`;
+                                    document.head.appendChild(style);
+
+                                    setTimeout(() => {
+                                        window.print();
+                                    }, 100);
+
+                                    window.onafterprint = function() {
+                                        window.parent.location.reload();
+                                    };
+
+                                    setTimeout(() => {
+                                        window.parent.location.reload();
+                                    }, 5000);
+                                }
+                            <\/script>
+                        </body>
+                        </html>
+                    `);
+                    iframeDoc.close();
+                },
+
+                // NEW: Generate compact receipt HTML for savings
+                generateReceiptHTML(transaction, transactionType = 'Savings') {
+                    // Format date: Mar 03, 2026 18:40
+                    const date = new Date();
+                    const formattedDate = date.toLocaleString('en-US', {
+                        month: 'short',
+                        day: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    }).replace(',', '');
+
+                    const memberId = '{{ $memberId }}';
+                    const amount = parseFloat(transaction.amount || transaction.savings_Amount || 0).toFixed(2);
+                    const paymentMode = transaction.payment_mode || 'N/A';
+                    const transactionCode = transaction.transaction_code || 'N/A';
+                    const status = transaction.status || 'Completed';
+
+                    // Get auth ID from meta tag or use placeholder
+                    const authId = '{{ Auth::id() }}';
+
+                    return `
+                        <div class="receipt-header">
+                            <img src="{{ asset('company_logo.png') }}" alt="Logo" style="max-width: 15mm;" />
+                            <h2>KFBCL</h2>
+                            <small>Growing together</small>
+                        </div>
+
+                        <div class="receipt-line"></div>
+
+                        <table>
+                            <tr>
+                                <td class="label">Type:</td>
+                                <td class="value">${transactionType}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Member:</td>
+                                <td class="value">${memberId}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">By:</td>
+                                <td class="value">${authId}</td>
+                            </tr>
+                        </table>
+
+                        <div class="receipt-line"></div>
+
+                        <table>
+                            <tr>
+                                <td class="label">Amount:</td>
+                                <td class="value amount">KES ${amount}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Mode:</td>
+                                <td class="value">${paymentMode}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Code:</td>
+                                <td class="value">${transactionCode}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Status:</td>
+                                <td class="value">${status}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Date:</td>
+                                <td class="value">${formattedDate}</td>
+                            </tr>
+                        </table>
+
+                        <div class="receipt-line"></div>
+
+                        <div class="receipt-footer">
+                            Thank you<br>
+                            &copy; KFBCL<br>
+                            Growing together
+                        </div>
+
+                        <div class="receipt-line"></div>
+                    `;
                 },
 
                 updateSavings() {
@@ -7430,16 +5849,15 @@
                             form.reset();
                             this.errors = {};
                             alert('Savings transaction updated successfully!');
-                            location.reload(); // Add this line
+                            location.reload();
                         } else {
                             alert(data.message);
+                            Alpine.store('savingData').isUpdating = false;
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
                         alert('Error updating savings: ' + error.message);
-                    })
-                    .finally(() => {
                         Alpine.store('savingData').isUpdating = false;
                     });
                 },
@@ -7495,10 +5913,12 @@
 
     <!-- Member Loans -->
     <script>
+
         document.addEventListener('alpine:init', () => {
             // Store for loan data and modal states
             Alpine.store('loanData', {
                 currentLoan: null,
+                currentLoanType: null,
                 currentTransaction: null,
                 editLoanModal: false,
                 repayLoanModal: false,
@@ -7531,16 +5951,23 @@
                     const selected = this.loanTypes.find(lt => lt.loanId == loanTypeId);
                     if (selected) {
                         this.currentLoanType = selected;
+
+                        // Also update the current loan's loanTypeId if it exists
+                        if (this.currentLoan) {
+                            this.currentLoan.loanTypeId = loanTypeId;
+                        }
                     }
                 },
 
                 calculateDates(periodMonths) {
+                    if (!periodMonths) return;
+
                     const today = new Date();
                     const start = new Date(today);
                     start.setDate(start.getDate() + 30);
 
                     const end = new Date(start);
-                    end.setDate(end.getDate() + (periodMonths * 30));
+                    end.setDate(end.getDate() + (parseInt(periodMonths) * 30));
 
                     this.startDate = start.toLocaleDateString('en-GB', {
                         day: '2-digit',
@@ -7561,18 +5988,114 @@
                 page: 1,
                 itemsPerPage: 10,
                 errors: {},
+                memberActiveLoans: 0,
+
+                // New properties for assign form
+                loanAmount: '',
+                loanPeriod: '',
+                paymentMode: '',
+                transactionCode: '',
+                loanStatus: '',
+                totalRepayment: '',
+
+                // Date formatting functions
+                formatDate(dateString) {
+                    if (!dateString) return '';
+                    const date = new Date(dateString);
+                    return date.toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: '2-digit',
+                        year: 'numeric'
+                    });
+                },
+
+                formatDateTime(dateTimeString) {
+                    if (!dateTimeString) return '';
+                    const date = new Date(dateTimeString);
+                    return date.toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                    }).replace(',', '');
+                },
+
+                calculateEndDate(startDate, periodMonths) {
+                    if (!startDate || !periodMonths) return '';
+                    const date = new Date(startDate);
+                    date.setDate(date.getDate() + (parseInt(periodMonths) * 30));
+                    return date.toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: '2-digit',
+                        year: 'numeric'
+                    });
+                },
+
+                // Calculate total loan repayment using formula: A = P * (r(1+r)^n) / ((1+r)^n - 1)
+                calculateTotalLoan(amount, interestRate, periodMonths) {
+                    if (!amount || !interestRate || !periodMonths || amount <= 0 || interestRate <= 0 || periodMonths <= 0) {
+                        return 0;
+                    }
+
+                    // Convert annual interest rate to monthly (divide by 12) and percentage to decimal (divide by 100)
+                    const monthlyRate = (parseFloat(interestRate) / 100) / 12;
+                    const principal = parseFloat(amount);
+                    const months = parseInt(periodMonths);
+
+                    // Formula: P * (r * (1 + r)^n) / ((1 + r)^n - 1)
+                    const onePlusR = 1 + monthlyRate;
+                    const powerN = Math.pow(onePlusR, months);
+
+                    // Monthly payment
+                    const monthlyPayment = principal * (monthlyRate * powerN) / (powerN - 1);
+
+                    // Total repayment amount
+                    const totalLoan = monthlyPayment * months;
+
+                    return Math.round(totalLoan * 100) / 100; // Round to 2 decimal places
+                },
+
+                // Normalize loan data to handle different property names
+                normalizeLoanData(loan) {
+                    return {
+                        id: loan.transactionId || loan.id || '',
+                        transactionId: loan.transactionId || loan.id || '',
+                        loanTypeId: loan.loan_type_id || loan.loanTypeId || '',
+                        loanTypeName: loan.loan_type_name || loan.loanTypeName || '',
+                        transactionLoanAmount: loan.transactionLoanAmount || loan.amount || '',
+                        transactionMode: loan.transactionMode || loan.payment_mode || loan.transaction_mode || '',
+                        transactionCode: loan.transactionCode || loan.transaction_code || '',
+                        loanPeriod: loan.transactionLoanPeriod || loan.loanPeriod || loan.period_months || '',
+                        transactionStatus: loan.transactionLoanStatus || loan.transactionStatus || loan.status || '',
+                        startDate: loan.transactionLoanStartDate || loan.startDate || loan.start_date || '',
+                        endDate: loan.endDate || loan.end_date || '',
+                        transactionCreated: loan.transactionCreated || loan.created_at || loan.assignedDate || loan.assigned_date || '',
+                        interestRate: loan.interest_rate || loan.interestRate || '',
+                        outstandingBalance: loan.outstanding_balance || 0,
+                        lastRepayment: loan.last_repayment || null
+                    };
+                },
 
                 init() {
                     // Load member-specific loans data
                     fetch('/bodaboda-member/{{ $memberId }}/loans/current')
                         .then(res => res.json())
                         .then(data => {
+                            console.log('Loans data received:', data); // Debug log
                             if (data.success) {
                                 this.loans = data.loans;
+                                console.log('Loans set:', this.loans); // Debug log
+                            } else {
+                                console.error('Failed to load loans:', data.message);
                             }
+                        })
+                        .catch(error => {
+                            console.error('Error loading loans:', error);
                         });
 
-                    // Load loan types for dropdown (separate from member loans)
+                    // Load loan types for dropdown
                     fetch('/loans/all-data')
                         .then(res => res.json())
                         .then(data => {
@@ -7586,22 +6109,119 @@
 
                     // Listen for edit events
                     window.addEventListener('open-edit-loan-modal', (event) => {
-                        const loan = event.detail.loan;
-                        Alpine.store('loanData').currentLoan = loan;
+                        const rawLoan = event.detail.loan;
+
+                        // Debug: Log the raw loan data
+                        console.log('Raw loan data received:', rawLoan);
+
+                        // Normalize the loan data
+                        const normalizedLoan = this.normalizeLoanData(rawLoan);
+                        console.log('Normalized loan data:', normalizedLoan);
+                        console.log('Transaction Created:', normalizedLoan.transactionCreated);
+
+                        // Store the normalized loan data
+                        Alpine.store('loanData').currentLoan = normalizedLoan;
+
+                        // Open the modal
                         Alpine.store('loanData').editLoanModal = true;
 
-                        // Populate form fields
+                        // Clear any previous errors
+                        this.errors = {};
+
+                        // Find and set the current loan type
+                        if (normalizedLoan.loanTypeId && Alpine.store('loanData').loanTypes.length > 0) {
+                            const selectedType = Alpine.store('loanData').loanTypes.find(lt => lt.loanId == normalizedLoan.loanTypeId);
+                            if (selectedType) {
+                                Alpine.store('loanData').currentLoanType = selectedType;
+                            }
+                        }
+
+                        // Direct DOM manipulation as fallback
                         setTimeout(() => {
-                            document.getElementById('edit_loan_id') && (document.getElementById('edit_loan_id').value = loan.transactionId || '');
-                            document.getElementById('edit_amount') && (document.getElementById('edit_amount').value = loan.transactionLoanAmount || '');
-                            document.getElementById('edit_payment_mode') && (document.getElementById('edit_payment_mode').value = loan.transactionMode || '');
-                            document.getElementById('edit_transaction_code') && (document.getElementById('edit_transaction_code').value = loan.transactionCode || '');
-                            document.getElementById('edit_status') && (document.getElementById('edit_status').value = loan.transactionStatus || '');
+                            // Hidden loan ID
+                            const loanIdField = document.getElementById('edit_loan_id');
+                            if (loanIdField) loanIdField.value = normalizedLoan.transactionId;
+
+                            // Loan Type
+                            const loanTypeField = document.getElementById('edit_loan_type_id');
+                            if (loanTypeField && normalizedLoan.loanTypeId) {
+                                loanTypeField.value = normalizedLoan.loanTypeId;
+                                loanTypeField.dispatchEvent(new Event('change', { bubbles: true }));
+                            }
+
+                            // Amount
+                            const amountField = document.getElementById('edit_amount');
+                            if (amountField && normalizedLoan.transactionLoanAmount) {
+                                amountField.value = normalizedLoan.transactionLoanAmount;
+                            }
+
+                            // Payment Mode
+                            const paymentModeField = document.getElementById('edit_payment_mode');
+                            if (paymentModeField && normalizedLoan.transactionMode) {
+                                paymentModeField.value = normalizedLoan.transactionMode;
+                                paymentModeField.dispatchEvent(new Event('change', { bubbles: true }));
+                            }
+
+                            // Transaction Code
+                            const transactionCodeField = document.getElementById('edit_transaction_code');
+                            if (transactionCodeField && normalizedLoan.transactionCode) {
+                                transactionCodeField.value = normalizedLoan.transactionCode;
+                            }
+
+                            // Period
+                            const periodField = document.getElementById('edit_loan_period');
+                            if (periodField && normalizedLoan.loanPeriod) {
+                                periodField.value = normalizedLoan.loanPeriod;
+                                periodField.dispatchEvent(new Event('change', { bubbles: true }));
+                            }
+
+                            // Status
+                            const statusField = document.getElementById('edit_loan_status');
+                            if (statusField && normalizedLoan.transactionStatus) {
+                                statusField.value = normalizedLoan.transactionStatus;
+                            }
+
+                            // Start Date
+                            const startDateField = document.getElementById('edit_start_date');
+                            if (startDateField && normalizedLoan.startDate) {
+                                startDateField.value = this.formatDate(normalizedLoan.startDate);
+                            }
+
+                            // End Date
+                            const endDateField = document.getElementById('edit_end_date');
+                            if (endDateField) {
+                                if (normalizedLoan.endDate) {
+                                    endDateField.value = this.formatDate(normalizedLoan.endDate);
+                                } else if (normalizedLoan.startDate && normalizedLoan.loanPeriod) {
+                                    endDateField.value = this.calculateEndDate(normalizedLoan.startDate, normalizedLoan.loanPeriod);
+                                }
+                            }
+
+                            // Assigned Date
+                            const assignedDateField = document.getElementById('edit_assigned_date');
+                            if (assignedDateField) {
+                                if (normalizedLoan.transactionCreated) {
+                                    assignedDateField.value = this.formatDateTime(normalizedLoan.transactionCreated);
+                                    console.log('Setting assigned date to:', this.formatDateTime(normalizedLoan.transactionCreated));
+                                } else {
+                                    console.log('No transactionCreated found in normalized loan');
+                                }
+                            }
+
+                            // Interest Rate
+                            const interestRateField = document.getElementById('edit_interest_rate');
+                            if (interestRateField) {
+                                if (Alpine.store('loanData').currentLoanType) {
+                                    interestRateField.value = Alpine.store('loanData').currentLoanType.interest_rate + '%';
+                                } else if (normalizedLoan.interestRate) {
+                                    interestRateField.value = normalizedLoan.interestRate + '%';
+                                }
+                            }
                         }, 100);
                     });
                 },
 
-                // Add method to load member active loans count
+                // Load member active loans count
                 loadMemberActiveLoans() {
                     fetch('/bodaboda-member/{{ $memberId }}/loans/active/count')
                         .then(res => res.json())
@@ -7636,7 +6256,7 @@
                     }
                 },
 
-                handlePaymentModeChange(mode, prefix = '') {
+                handlePaymentModeChange(mode, prefix = 'edit_') {
                     const codeField = document.getElementById(prefix + 'transaction_code');
                     if (codeField) {
                         if (mode === 'Cash') {
@@ -7646,6 +6266,48 @@
                             codeField.readOnly = false;
                         }
                     }
+                },
+
+                validateEditForm() {
+                    this.errors = {};
+                    let isValid = true;
+
+                    const loanType = document.getElementById('edit_loan_type_id')?.value;
+                    const amount = document.getElementById('edit_amount')?.value;
+                    const period = document.getElementById('edit_loan_period')?.value;
+                    const paymentMode = document.getElementById('edit_payment_mode')?.value;
+                    const status = document.getElementById('edit_loan_status')?.value;
+
+                    if (!loanType || loanType === '') {
+                        this.errors.loan_type = 'Please select a loan type';
+                        isValid = false;
+                    }
+
+                    if (!this.validateField('amount', amount)) isValid = false;
+
+                    if (!period || period === '') {
+                        this.errors.loan_period = 'Please select repayment period';
+                        isValid = false;
+                    }
+
+                    if (!paymentMode || paymentMode === '') {
+                        this.errors.payment_mode = 'Please select payment mode';
+                        isValid = false;
+                    }
+
+                    if (!status || status === '') {
+                        this.errors.loan_status = 'Please select loan status';
+                        isValid = false;
+                    }
+
+                    // If payment mode is not Cash, transaction code is required
+                    const transactionCode = document.getElementById('edit_transaction_code')?.value;
+                    if (paymentMode !== 'Cash' && (!transactionCode || transactionCode === '')) {
+                        this.errors.transaction_code = 'Transaction code is required for non-cash payments';
+                        isValid = false;
+                    }
+
+                    return isValid;
                 },
 
                 validateAssignForm() {
@@ -7725,6 +6387,57 @@
                     return isValid;
                 },
 
+                editLoan() {
+                    if (!this.validateEditForm()) {
+                        alert('Please fix the errors in the form before submitting.');
+                        return;
+                    }
+
+                    Alpine.store('loanData').isUpdating = true;
+
+                    const formData = {
+                        loan_id: document.getElementById('edit_loan_id')?.value,
+                        loan_type_id: document.getElementById('edit_loan_type_id')?.value,
+                        amount: document.getElementById('edit_amount')?.value,
+                        period_months: document.getElementById('edit_loan_period')?.value,
+                        payment_mode: document.getElementById('edit_payment_mode')?.value,
+                        transaction_code: document.getElementById('edit_transaction_code')?.value || '',
+                        status: document.getElementById('edit_loan_status')?.value,
+                        _token: document.querySelector('input[name="_token"]')?.value
+                    };
+
+                    console.log('Submitting edit form:', formData);
+
+                    fetch('/bodaboda-member/{{ $memberId }}/loan/update', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        setTimeout(() => {
+                            Alpine.store('loanData').isUpdating = false;
+
+                            if (data.success) {
+                                alert(data.message);
+                                window.location.reload();
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        }, 750);
+                    })
+                    .catch(error => {
+                        setTimeout(() => {
+                            Alpine.store('loanData').isUpdating = false;
+                            alert('Error updating loan. Please try again.');
+                            console.error('Error:', error);
+                        }, 750);
+                    });
+                },
+
                 assignLoan() {
                     if (!this.validateAssignForm()) {
                         alert('Please fix the errors in the form before submitting.');
@@ -7733,15 +6446,27 @@
 
                     Alpine.store('loanData').isAssigning = true;
 
+                    // Parse total repayment to get numeric value
+                    let totalRepaymentValue = 0;
+                    if (this.totalRepayment) {
+                        const match = this.totalRepayment.match(/KES ([\d,]+\.\d{2})/);
+                        if (match) {
+                            totalRepaymentValue = parseFloat(match[1].replace(/,/g, ''));
+                        }
+                    }
+
                     const formData = {
                         loan_type_id: document.getElementById('loan_type_id')?.value,
-                        amount: document.getElementById('assign_amount')?.value,
-                        period_months: document.getElementById('loan_period')?.value,
-                        payment_mode: document.getElementById('assign_payment_mode')?.value,
-                        transaction_code: document.getElementById('assign_transaction_code')?.value || '',
-                        status: document.getElementById('assign_loan_status')?.value,
+                        amount: this.loanAmount,
+                        total_repayment: totalRepaymentValue,
+                        period_months: this.loanPeriod,
+                        payment_mode: this.paymentMode,
+                        transaction_code: this.transactionCode || '',
+                        status: this.loanStatus,
                         _token: document.querySelector('input[name="_token"]')?.value
                     };
+
+                    console.log('Submitting assign form:', formData);
 
                     fetch('/bodaboda-member/{{ $memberId }}/loan/assign', {
                         method: 'POST',
@@ -7761,6 +6486,9 @@
                                 window.location.reload();
                             } else {
                                 alert('Error: ' + data.message);
+                                if (data.errors) {
+                                    console.error('Validation errors:', data.errors);
+                                }
                             }
                         }, 750);
                     })
@@ -7820,6 +6548,56 @@
                     });
                 },
 
+                // Calculate and update total repayment
+                calculateAndUpdateTotal() {
+                    if (!this.loanAmount || !this.loanPeriod || !Alpine.store('loanData').currentLoanType) {
+                        this.totalRepayment = '';
+                        return;
+                    }
+
+                    const interestRate = Alpine.store('loanData').currentLoanType.interest_rate;
+                    const total = this.calculateTotalLoan(this.loanAmount, interestRate, this.loanPeriod);
+
+                    if (total > 0) {
+                        this.totalRepayment = 'KES ' + total.toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+                    } else {
+                        this.totalRepayment = '';
+                    }
+                },
+
+                // Generate transaction code based on payment mode
+                generateTransactionCode() {
+                    if (this.paymentMode === 'Cash') {
+                        // For cash, generate a cash receipt number
+                        const date = new Date();
+                        const year = date.getFullYear().toString().slice(-2);
+                        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                        const day = date.getDate().toString().padStart(2, '0');
+                        const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+                        this.transactionCode = `CASH-${year}${month}${day}-${random}`;
+                    } else {
+                        // For non-cash, make it editable and clear any auto-generated code
+                        this.transactionCode = '';
+                    }
+                },
+
+                // Override handlePaymentModeChange for assign form
+                handlePaymentModeChange(mode, prefix = 'assign_') {
+                    const codeField = document.getElementById(prefix + 'transaction_code');
+                    if (codeField) {
+                        if (mode === 'Cash') {
+                            codeField.readOnly = true;
+                            this.generateTransactionCode();
+                        } else {
+                            codeField.readOnly = false;
+                            this.transactionCode = '';
+                        }
+                    }
+                },
+
                 // Pagination methods
                 prevPage() {
                     if (this.page > 1) this.page--;
@@ -7850,9 +6628,10 @@
                 get endEntry() {
                     const end = this.page * this.itemsPerPage;
                     return end > this.loans.length ? this.loans.length : end;
-                }
+                },
             }));
         });
+
     </script>
 
     <!-- Member Fines -->

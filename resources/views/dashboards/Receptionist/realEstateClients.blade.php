@@ -5172,7 +5172,7 @@
                             button.textContent = originalText;
                             button.disabled = false;
                             if (data.success) {
-                                window.location.href = "{{ route('treasurer.bodaboda.overview') }}";
+                                window.location.href = "{{ route('treasurer.bodaboda.members') }}";
                             }
                         }, 750);
                     })
@@ -5452,7 +5452,7 @@
                         if (data && data.data) {
                             // Transform Laravel data for frontend display - ONLY Paid-In, Confirmed transactions
                             this.contributions = data.data.map(item => ({
-                                transactionCode: item.transactionCode || 'N/A',
+                                transactionCode: item.transactionCode || 'Loading ...',
                                 memberName: item.full_name || 'N/A',
                                 membership: item.membership || 'N/A',
                                 amount: 'KES ' + (parseFloat(item.transactionAmount || 0).toLocaleString()),
@@ -5838,7 +5838,7 @@
                             button.textContent = originalText;
                             button.disabled = false;
                             if (data.success) {
-                                window.location.href = "{{ route('treasurer.bodaboda.overview') }}";
+                                window.location.href = "{{ route('treasurer.bodaboda.members') }}";
                             }
                         }, 750);
                     })
@@ -5967,7 +5967,7 @@
                         .then(data => {
                             alert(data.message);
                             if (data.success) {
-                                window.location.href = '/treasurer/bodaboda';
+                                window.location.href = '/treasurer/members';
                             } else {
                                 if (updateBtn) {
                                     updateBtn.disabled = false;
@@ -6015,7 +6015,7 @@
                             .then(data => {
                                 if (data.success) {
                                     alert(data.message);
-                                    window.location.href = '/treasurer/bodaboda';
+                                    window.location.href = '/treasurer/members';
                                 } else {
                                     alert('Error: ' + data.message);
                                     // Reset button
@@ -6202,7 +6202,7 @@
                             button.textContent = originalText;
                             button.disabled = false;
                             if (data.success) {
-                                window.location.href = "{{ route('treasurer.bodaboda.overview') }}";
+                                window.location.href = "{{ route('treasurer.bodaboda.members') }}";
                             }
                         }, 750);
                     })
@@ -6382,7 +6382,7 @@
                             .then(data => {
                                 if (data.success) {
                                     alert(data.message);
-                                    window.location.href = '/treasurer/bodaboda';
+                                    window.location.href = '/treasurer/members';
                                 } else {
                                     alert('Error: ' + data.message);
                                     // Reset button
