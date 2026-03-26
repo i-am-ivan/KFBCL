@@ -259,6 +259,7 @@
                                             </div>
 
                                             <div class="pt-4 dark:border-gray-800">
+
                                                 <div x-show="activeTab === 'loans-type'">
                                                     <!-- Loan types table -->
                                                     <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
@@ -336,21 +337,21 @@
                                                                                     <th class="p-4 whitespace-nowrap">
                                                                                         <div class="flex items-center">
                                                                                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                LoanTypeID
+                                                                                                Code
                                                                                             </p>
                                                                                         </div>
                                                                                     </th>
                                                                                     <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                                         <div class="flex items-center">
                                                                                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Type
+                                                                                                Loan
                                                                                             </p>
                                                                                         </div>
                                                                                     </th>
                                                                                     <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                                         <div class="flex items-center">
                                                                                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Interest Rate
+                                                                                                Borrowable
                                                                                             </p>
                                                                                         </div>
                                                                                     </th>
@@ -364,7 +365,14 @@
                                                                                     <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                                         <div class="flex items-center">
                                                                                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Total Loaned
+                                                                                                Grace Period
+                                                                                            </p>
+                                                                                        </div>
+                                                                                    </th>
+                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                                        <div class="flex items-center">
+                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                                                                                Duration
                                                                                             </p>
                                                                                         </div>
                                                                                     </th>
@@ -379,13 +387,6 @@
                                                                                         <div class="flex items-center">
                                                                                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
                                                                                                 Created On
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </th>
-                                                                                    <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                                        <div class="flex items-center">
-                                                                                            <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Status
                                                                                             </p>
                                                                                         </div>
                                                                                     </th>
@@ -426,26 +427,29 @@
                                                                                 <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800">
                                                                                     <template x-for="loanType in paginatedLoans" :key="loanType.LoanTypeID">
                                                                                         <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-900">
-                                                                                            <!-- LoanTypeID -->
+                                                                                            <!-- LoanTypeID with LT prefix -->
                                                                                             <td class="p-4 whitespace-nowrap">
                                                                                                 <div class="flex items-center col-span-2">
                                                                                                     <div class="flex items-center gap-3">
                                                                                                         <div>
-                                                                                                            <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loanType.LoanTypeID"></p>
+                                                                                                            <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loanType.FormattedLoanTypeID"></p>
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </td>
-                                                                                            <!-- Type -->
+                                                                                            <!-- Loan -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loanType.Type"></p>
+                                                                                                <div>
+                                                                                                    <span class="text-xs font-medium text-gray-700 dark:text-gray-400" x-text="`${loanType.Type} (${loanType.InterestRate})`">Loan (interest rate)</span>
+                                                                                                    <p :class="loanType.Status === 'Active' ? 'bg-success-50 text-theme-xs text-success-700 dark:bg-success-500/15 dark:text-success-500' : 'bg-error-50 text-theme-xs text-error-600 dark:bg-error-500/15 dark:text-error-500'"
+                                                                                                    class="rounded-full px-2 py-0.5 font-medium" x-text="loanType.Status"></p>
                                                                                                 </div>
                                                                                             </td>
-                                                                                            <!-- Interest Rate -->
+                                                                                            <!-- Borrowable -->
                                                                                             <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loanType.InterestRate"></p>
+                                                                                                <div>
+                                                                                                    <span class="text-xs font-medium text-gray-700 dark:text-gray-400" x-text="loanType.MinBorrowable">Min Borrowable</span> to
+                                                                                                    <p class="rounded-full px-2 py-0.5 font-medium text-xs text-gray-700 dark:text-gray-400" x-text="loanType.MaxBorrowable"> Max Borrowable</p>
                                                                                                 </div>
                                                                                             </td>
                                                                                             <!-- Repayment Type -->
@@ -454,10 +458,17 @@
                                                                                                     <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loanType.Repayment"></p>
                                                                                                 </div>
                                                                                             </td>
-                                                                                            <!-- Total Loaned -->
+                                                                                            <!-- Grace Period -->
                                                                                             <td class="p-4 whitespace-nowrap">
                                                                                                 <div class="flex items-center col-span-2">
-                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loanType.TotalLoaned"></p>
+                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loanType.GracePeriod"></p>
+                                                                                                </div>
+                                                                                            </td>
+                                                                                            <!-- Duration -->
+                                                                                            <td class="p-4 whitespace-nowrap">
+                                                                                                <div>
+                                                                                                    <span class="text-xs font-medium text-gray-700 dark:text-gray-400" x-text="loanType.MinDuration">Min Duration</span> to
+                                                                                                    <p class="rounded-full px-2 py-0.5 font-medium text-xs text-gray-700 dark:text-gray-400" x-text="loanType.MaxDuration"> Max Duration</p>
                                                                                                 </div>
                                                                                             </td>
                                                                                             <!-- Active Loans -->
@@ -472,14 +483,7 @@
                                                                                                     <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="loanType.CreatedOn"></p>
                                                                                                 </div>
                                                                                             </td>
-                                                                                            <!-- Status -->
-                                                                                            <td class="p-4 whitespace-nowrap">
-                                                                                                <div class="flex items-center col-span-2">
-                                                                                                    <p :class="loanType.Status === 'Active' ? 'bg-success-50 text-theme-xs text-success-700 dark:bg-success-500/15 dark:text-success-500' : 'bg-error-50 text-theme-xs text-error-600 dark:bg-error-500/15 dark:text-error-500'"
-                                                                                                    class="rounded-full px-2 py-0.5 font-medium" x-text="loanType.Status"></p>
-                                                                                                </div>
-                                                                                            </td>
-                                                                                            <!-- Actions -->
+                                                                                            <!-- Action -->
                                                                                             <td class="p-4 whitespace-nowrap">
                                                                                                 <div class="flex items-center col-span-2">
                                                                                                     <button @click="editLoanTypeModal(loanType)"
@@ -2107,27 +2111,30 @@
             <form class="flex flex-col" action="" method="POST" @submit.prevent="Alpine.store('loanTypeData').validateLoanForm()">
                 @csrf
                 <div class="custom-scrollbar flex-1 overflow-y-auto px-6">
-                    <!-- Change Appointment Details Section -->
                     <div class="space-y-6 mt-8">
-                        <!-- Amount -->
+                        <!-- Loan Type Name -->
                         <div class="grid grid-cols-1 lg:grid-cols-1 gap-6 mb-6">
-                            <!-- Amount -->
                             <div>
                                 <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                    Loan Type
+                                    Loan Type Name
                                 </label>
                                 <div class="relative">
-                                    <input type="Text" placeholder="New Loan type name" id="newLoanType" name="newLoanType" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pl-[62px] text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                    <input type="text" placeholder="New Loan type name" id="newLoanType" name="newLoanType"
+                                        @input="Alpine.store('loanTypeData').clearError('newLoanType')"
+                                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pl-[62px] text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                     <span class="absolute top-1/2 left-0 flex h-11 w-[46px] -translate-y-1/2 items-center justify-center border-r border-gray-200 dark:border-gray-800">
                                         <svg class="w-[24px] h-[24px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                             <path stroke="currentColor" stroke-linecap="round" stroke-width="1.1" d="M8 7V6a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1M3 18v-7a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Zm8-3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
                                         </svg>
                                     </span>
                                 </div>
+                                <p x-show="Alpine.store('loanTypeData').formErrors.newLoanType"
+                                x-text="Alpine.store('loanTypeData').formErrors.newLoanType"
+                                class="mt-1 text-sm text-error-500 dark:text-error-400"></p>
                             </div>
                         </div>
 
-                        <!-- Max Amount and Percentage -->
+                        <!-- Interest Rates -->
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                             <!-- Interest Rate -->
                             <div>
@@ -2135,46 +2142,88 @@
                                     Interest Rate (%)
                                 </label>
                                 <div class="relative">
-                                    <input type="number"
-                                        id="loanInterestRate"
-                                        name="loanInterestRate"
-                                        placeholder="Interest Rate"
-                                        step="0.01"
+                                    <input type="number" id="loanInterestRate" name="loanInterestRate" placeholder="Interest Rate" step="0.01"
+                                        @input="Alpine.store('loanTypeData').clearError('loanInterestRate')"
                                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pl-[62px] text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                     <span class="absolute top-1/2 left-0 flex h-11 w-[46px] -translate-y-1/2 items-center justify-center border-r border-gray-200 dark:border-gray-800">
                                         <span class="text-gray-800 dark:text-white font-medium text-sm">%</span>
                                     </span>
                                 </div>
+                                <p x-show="Alpine.store('loanTypeData').formErrors.loanInterestRate"
+                                x-text="Alpine.store('loanTypeData').formErrors.loanInterestRate"
+                                class="mt-1 text-sm text-error-500 dark:text-error-400"></p>
                             </div>
+
+                            <!-- Lateness Interest Rate -->
+                            <div>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                                    Lateness Interest Rate (%)
+                                </label>
+                                <div class="relative">
+                                    <input type="number" id="loanLatenessInterestRate" name="loanLatenessInterestRate" placeholder="Lateness Interest Rate" step="0.01"
+                                        @input="Alpine.store('loanTypeData').clearError('loanLatenessInterestRate')"
+                                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pl-[62px] text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                    <span class="absolute top-1/2 left-0 flex h-11 w-[46px] -translate-y-1/2 items-center justify-center border-r border-gray-200 dark:border-gray-800">
+                                        <span class="text-gray-800 dark:text-white font-medium text-sm">%</span>
+                                    </span>
+                                </div>
+                                <p x-show="Alpine.store('loanTypeData').formErrors.loanLatenessInterestRate"
+                                x-text="Alpine.store('loanTypeData').formErrors.loanLatenessInterestRate"
+                                class="mt-1 text-sm text-error-500 dark:text-error-400"></p>
+                            </div>
+                        </div>
+
+                        <!-- Min and Max Amount -->
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                            <!-- Min Amount -->
+                            <div>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                                    Min Amount
+                                </label>
+                                <div class="relative">
+                                    <input type="number" id="loanMinAmount" name="loanMinAmount" placeholder="Minimum borrowable" step="0.01"
+                                        @input="Alpine.store('loanTypeData').clearError('loanMinAmount')"
+                                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pl-[62px] text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                    <span class="absolute top-1/2 left-0 flex h-11 w-[46px] -translate-y-1/2 items-center justify-center border-r border-gray-200 dark:border-gray-800">
+                                        <span class="text-gray-800 dark:text-white font-medium text-sm">KES</span>
+                                    </span>
+                                </div>
+                                <p x-show="Alpine.store('loanTypeData').formErrors.loanMinAmount"
+                                x-text="Alpine.store('loanTypeData').formErrors.loanMinAmount"
+                                class="mt-1 text-sm text-error-500 dark:text-error-400"></p>
+                            </div>
+
                             <!-- Max Amount -->
                             <div>
                                 <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                                     Max Amount
                                 </label>
                                 <div class="relative">
-                                    <input type="number"
-                                        id="loanMaxAmount"
-                                        name="loanMaxAmount"
-                                        placeholder="Max borrowable"
-                                        step="0.01"
+                                    <input type="number" id="loanMaxAmount" name="loanMaxAmount" placeholder="Maximum borrowable" step="0.01"
+                                        @input="Alpine.store('loanTypeData').clearError('loanMaxAmount')"
                                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pl-[62px] text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                     <span class="absolute top-1/2 left-0 flex h-11 w-[46px] -translate-y-1/2 items-center justify-center border-r border-gray-200 dark:border-gray-800">
                                         <span class="text-gray-800 dark:text-white font-medium text-sm">KES</span>
                                     </span>
                                 </div>
+                                <p x-show="Alpine.store('loanTypeData').formErrors.loanMaxAmount"
+                                x-text="Alpine.store('loanTypeData').formErrors.loanMaxAmount"
+                                class="mt-1 text-sm text-error-500 dark:text-error-400"></p>
                             </div>
                         </div>
 
-                        <!-- Status and Repayment Periods -->
+                        <!-- Repayment Period and Grace Period -->
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                            <!-- Interest Rate -->
+                            <!-- Repayment Period -->
                             <div>
                                 <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                                     Repayment Period
                                 </label>
                                 <div class="relative z-20 bg-transparent">
-                                    <select id="loanRepaymentPeriod" name="loanRepaymentPeriod" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" :class="isOptionSelected &amp;&amp; 'text-gray-800 dark:text-white/90'">
-                                        <option value="All" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">Repayment</option>
+                                    <select id="loanRepaymentPeriod" name="loanRepaymentPeriod"
+                                        @change="Alpine.store('loanTypeData').clearError('loanRepaymentPeriod')"
+                                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                        <option value="Repayment" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">Repayment</option>
                                         <option value="1" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">30 Days</option>
                                         <option value="12" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">12 Months</option>
                                         <option value="24" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">24 Months</option>
@@ -2184,43 +2233,135 @@
                                     </select>
                                     <span class="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-700 dark:text-gray-400">
                                         <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                    </svg>
+                                            <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
                                     </span>
                                 </div>
+                                <p x-show="Alpine.store('loanTypeData').formErrors.loanRepaymentPeriod"
+                                x-text="Alpine.store('loanTypeData').formErrors.loanRepaymentPeriod"
+                                class="mt-1 text-sm text-error-500 dark:text-error-400"></p>
                             </div>
-                            <!-- Status Type -->
+
+                            <!-- Grace Period -->
+                            <div>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                                    Grace Period
+                                </label>
+                                <div class="relative z-20 bg-transparent">
+                                    <select id="gracePeriodDays" name="gracePeriodDays"
+                                        @change="Alpine.store('loanTypeData').clearError('gracePeriodDays')"
+                                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                        <option value="Grace Period" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">Grace Period</option>
+                                        <option value="30" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">30 Days</option>
+                                        <option value="45" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">45 Days</option>
+                                        <option value="60" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">60 Days</option>
+                                    </select>
+                                    <span class="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-700 dark:text-gray-400">
+                                        <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                    </span>
+                                </div>
+                                <p x-show="Alpine.store('loanTypeData').formErrors.gracePeriodDays"
+                                x-text="Alpine.store('loanTypeData').formErrors.gracePeriodDays"
+                                class="mt-1 text-sm text-error-500 dark:text-error-400"></p>
+                            </div>
+                        </div>
+
+                        <!-- Min Duration and Max Duration -->
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                            <!-- Min Duration -->
+                            <div>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                                    Min Duration (Months)
+                                </label>
+                                <div class="relative z-20 bg-transparent">
+                                    <select id="minDuration" name="minDuration"
+                                        @change="Alpine.store('loanTypeData').clearError('minDuration')"
+                                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                        <option value="Min Duration" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">Min Duration</option>
+                                        <option value="1" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">1 Month</option>
+                                        <option value="3" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">3 Months</option>
+                                        <option value="6" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">6 Months</option>
+                                        <option value="12" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">12 Months</option>
+                                        <option value="24" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">24 Months</option>
+                                    </select>
+                                    <span class="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-700 dark:text-gray-400">
+                                        <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                    </span>
+                                </div>
+                                <p x-show="Alpine.store('loanTypeData').formErrors.minDuration"
+                                x-text="Alpine.store('loanTypeData').formErrors.minDuration"
+                                class="mt-1 text-sm text-error-500 dark:text-error-400"></p>
+                            </div>
+
+                            <!-- Max Duration -->
+                            <div>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                                    Max Duration (Months)
+                                </label>
+                                <div class="relative z-20 bg-transparent">
+                                    <select id="maxDuration" name="maxDuration"
+                                        @change="Alpine.store('loanTypeData').clearError('maxDuration')"
+                                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                        <option value="Max Duration" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">Max Duration</option>
+                                        <option value="12" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">12 Months</option>
+                                        <option value="24" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">24 Months</option>
+                                        <option value="36" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">36 Months</option>
+                                        <option value="48" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">48 Months</option>
+                                        <option value="60" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">60 Months</option>
+                                    </select>
+                                    <span class="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-700 dark:text-gray-400">
+                                        <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                    </span>
+                                </div>
+                                <p x-show="Alpine.store('loanTypeData').formErrors.maxDuration"
+                                x-text="Alpine.store('loanTypeData').formErrors.maxDuration"
+                                class="mt-1 text-sm text-error-500 dark:text-error-400"></p>
+                            </div>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="grid grid-cols-1 lg:grid-cols-1 gap-6 mb-6">
                             <div>
                                 <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                                     Status
                                 </label>
                                 <div class="relative z-20 bg-transparent">
-                                    <select id="newLoanStatus" name="newLoanStatus" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" :class="isOptionSelected &amp;&amp; 'text-gray-800 dark:text-white/90'">
-                                        <option class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">Status</option>
+                                    <select id="newLoanStatus" name="newLoanStatus"
+                                        @change="Alpine.store('loanTypeData').clearError('newLoanStatus')"
+                                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                        <option value="Status" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">Status</option>
                                         <option value="Active" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">Active</option>
                                         <option value="In-Active" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">In-Active</option>
                                         <option value="Under Review" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">Under Review</option>
                                     </select>
                                     <span class="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-700 dark:text-gray-400">
                                         <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                    </svg>
+                                            <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
                                     </span>
                                 </div>
+                                <p x-show="Alpine.store('loanTypeData').formErrors.newLoanStatus"
+                                x-text="Alpine.store('loanTypeData').formErrors.newLoanStatus"
+                                class="mt-1 text-sm text-error-500 dark:text-error-400"></p>
                             </div>
                         </div>
-
                     </div>
 
-                    <!-- Action Buttons - Bottom Right -->
+                    <!-- Action Buttons -->
                     <div class="flex justify-end items-center gap-3 pt-6 border-t border-gray-200 dark:border-gray-700 mt-8">
                         <button @click="loanTypeModal = false" type="button"
                             class="h-11 rounded-lg border border-gray-300 bg-transparent px-6 text-sm font-semibold text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-300">
                             Cancel
                         </button>
                         <button type="submit"
-                                @click="Alpine.store('loanTypeData').submitLoanForm($event)"
-                                class="h-11 rounded-lg border border-brand-500 bg-brand-500 px-6 text-sm font-semibold text-white shadow-theme-xs hover:bg-brand-600 disabled:pointer-events-none disabled:opacity-50">
+                            @click="Alpine.store('loanTypeData').submitLoanForm($event)"
+                            class="h-11 rounded-lg border border-brand-500 bg-brand-500 px-6 text-sm font-semibold text-white shadow-theme-xs hover:bg-brand-600 disabled:pointer-events-none disabled:opacity-50">
                             Create Loan Type
                         </button>
                     </div>
@@ -2265,42 +2406,33 @@
             <form class="flex flex-col" method="POST">
                 @csrf
                 <div class="custom-scrollbar flex-1 overflow-y-auto px-6">
-                    <!-- Change Appointment Details Section -->
                     <div class="space-y-6 mt-8">
-                        <!-- Loan Type ID (Display only, not editable) -->
-                        <input type="hidden"
-                            name="loan_type_id"
-                            x-model="$store.loanTypeData.currentLoanType?.LoanTypeID"
-                            id="loan_type_id_input" />
-
+                        <!-- Hidden field for loan_type_id -->
+                        <input type="hidden" name="loan_type_id" x-model="$store.loanTypeData.currentLoanType?.LoanTypeID" id="loan_type_id_input" />
 
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 border-b p-2">
                             <div>
-                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                Code
-                                </label>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Code</label>
                                 <div class="relative">
-                                <input type="text"
-                                        x-model="$store.loanTypeData.currentLoanType?.LoanTypeID"
+                                    <input type="text"
+                                        x-model="$store.loanTypeData.currentLoanType?.FormattedLoanTypeID"
                                         readonly
                                         disabled
-                                        id="loan_type_id" name="loan_type_id"
+                                        id="loan_type_id"
+                                        name="loan_type_id_display"
                                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-gray-100 bg-none px-4 py-2.5 pl-[62px] text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30">
-                                <span class="absolute top-1/2 left-0 flex h-11 w-[46px] -translate-y-1/2 items-center justify-center border-r border-gray-200 dark:border-gray-800">
-                                    <svg class="w-[24px] h-[24px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-width="1.1" d="M8 7V6a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1M3 18v-7a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Zm8-3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
-                                    </svg>
-                                </span>
+                                    <span class="absolute top-1/2 left-0 flex h-11 w-[46px] -translate-y-1/2 items-center justify-center border-r border-gray-200 dark:border-gray-800">
+                                        <svg class="w-[24px] h-[24px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-width="1.1" d="M8 7V6a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1M3 18v-7a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Zm8-3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
+                                        </svg>
+                                    </span>
                                 </div>
                             </div>
 
-                            <!-- Created On (Display only) -->
                             <div>
-                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                Created On
-                                </label>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Created On</label>
                                 <div class="relative">
-                                <input type="text"
+                                    <input type="text"
                                         x-model="$store.loanTypeData.currentLoanType?.CreatedOn"
                                         readonly
                                         disabled
@@ -2312,68 +2444,116 @@
                         <!-- Loan Type Name -->
                         <div class="grid grid-cols-1 lg:grid-cols-1 gap-6 mb-6">
                             <div>
-                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                Loan Type Name
-                                </label>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Loan Type Name</label>
                                 <div class="relative">
-                                <input type="text"
-                                        id="loan_type_name" name="loan_type_name"
+                                    <input type="text"
+                                        id="loan_type_name"
+                                        name="loan_type_name"
                                         x-model="$store.loanTypeData.currentLoanType?.Type"
                                         placeholder="Loan Type Name"
+                                        @input="$store.loanTypeData.clearError('loan_type_name')"
                                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pl-4 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                 </div>
+                                <p x-show="$store.loanTypeData.formErrors.loan_type_name"
+                                x-text="$store.loanTypeData.formErrors.loan_type_name"
+                                class="mt-1 text-sm error"></p>
                             </div>
                         </div>
 
-                        <!-- Interest Rate and Repayment Type -->
+                        <!-- Interest Rates -->
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                             <!-- Interest Rate -->
                             <div>
-                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                Interest Rate (%)
-                                </label>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Interest Rate (%)</label>
                                 <div class="relative">
                                     <input type="number"
-                                            x-model="$store.loanTypeData.currentLoanType?.InterestRateNumber"
-                                            placeholder="Interest Rate"
-                                            step="0.01"
-                                            min="0"
-                                            id="interest_rate"
-                                            name="interest_rate"
-                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pl-4 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                        x-model="$store.loanTypeData.currentLoanType?.InterestRateNumber"
+                                        placeholder="Interest Rate"
+                                        step="0.01"
+                                        min="0"
+                                        id="interest_rate"
+                                        name="interest_rate"
+                                        @input="$store.loanTypeData.clearError('interest_rate')"
+                                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pl-4 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                 </div>
+                                <p x-show="$store.loanTypeData.formErrors.interest_rate"
+                                x-text="$store.loanTypeData.formErrors.interest_rate"
+                                class="mt-1 text-sm error"></p>
                             </div>
 
-                            <!--Max Amount -->
+                            <!-- Lateness Interest Rate -->
                             <div>
-                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                Max Borrowable
-                                </label>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Lateness Interest Rate (%)</label>
                                 <div class="relative">
-                                <input type="number"
-                                            x-model="$store.loanTypeData.currentLoanType?.TotalLoanedNumber"
-                                            placeholder="Maximum Borrowable ..."
-                                            step="0.01"
-                                            min="0"
-                                            id="max_amount"
-                                            name="max_amount"
-                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pl-4 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                    <input type="number"
+                                        x-model="$store.loanTypeData.currentLoanType?.LatenessInterestRateNumber"
+                                        placeholder="Lateness Interest Rate"
+                                        step="0.01"
+                                        min="0"
+                                        id="lateness_interest_rate"
+                                        name="lateness_interest_rate"
+                                        @input="$store.loanTypeData.clearError('lateness_interest_rate')"
+                                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pl-4 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                 </div>
+                                <p x-show="$store.loanTypeData.formErrors.lateness_interest_rate"
+                                x-text="$store.loanTypeData.formErrors.lateness_interest_rate"
+                                class="mt-1 text-sm error"></p>
                             </div>
                         </div>
 
-                        <!-- Status -->
+                        <!-- Borrowable Amount -->
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-
-                            <!-- Repayment Type -->
+                            <!-- Min Amount -->
                             <div>
-                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                Repayment Scheme
-                                </label>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Min Borrowable</label>
+                                <div class="relative">
+                                    <input type="number"
+                                        x-model="$store.loanTypeData.currentLoanType?.MinBorrowableNumber"
+                                        placeholder="Minimum Borrowable ..."
+                                        step="0.01"
+                                        min="0"
+                                        id="min_amount"
+                                        name="min_amount"
+                                        @input="$store.loanTypeData.clearError('min_amount')"
+                                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pl-4 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                </div>
+                                <p x-show="$store.loanTypeData.formErrors.min_amount"
+                                x-text="$store.loanTypeData.formErrors.min_amount"
+                                class="mt-1 text-sm error"></p>
+                            </div>
+
+                            <!-- Max Amount -->
+                            <div>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Max Borrowable</label>
+                                <div class="relative">
+                                    <input type="number"
+                                        x-model="$store.loanTypeData.currentLoanType?.MaxBorrowableNumber"
+                                        placeholder="Maximum Borrowable ..."
+                                        step="0.01"
+                                        min="0"
+                                        id="max_amount"
+                                        name="max_amount"
+                                        @input="$store.loanTypeData.clearError('max_amount')"
+                                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pl-4 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                </div>
+                                <p x-show="$store.loanTypeData.formErrors.max_amount"
+                                x-text="$store.loanTypeData.formErrors.max_amount"
+                                class="mt-1 text-sm error"></p>
+                            </div>
+                        </div>
+
+                        <!-- Period -->
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                            <!-- Repayment Period -->
+                            <div>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Repayment Period</label>
                                 <div class="relative z-20 bg-transparent">
-                                    <select x-model="$store.loanTypeData.currentLoanType?.RepaymentNumber" id="repayment_period_months" name="repayment_period_months"
+                                    <select x-model="$store.loanTypeData.currentLoanType?.RepaymentNumber"
+                                            id="repayment_period_months"
+                                            name="repayment_period_months"
+                                            @change="$store.loanTypeData.clearError('repayment_period_months')"
                                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                        <option class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">Repayment</option>
+                                        <option value="" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">Repayment</option>
                                         <option value="1" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">30 Days</option>
                                         <option value="12" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">12 Months</option>
                                         <option value="24" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">24 Months</option>
@@ -2383,18 +2563,107 @@
                                     </select>
                                     <span class="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-700 dark:text-gray-400">
                                         <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                         </svg>
                                     </span>
                                 </div>
+                                <p x-show="$store.loanTypeData.formErrors.repayment_period_months"
+                                x-text="$store.loanTypeData.formErrors.repayment_period_months"
+                                class="mt-1 text-sm error"></p>
                             </div>
 
+                            <!-- Grace Period -->
                             <div>
-                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                Status
-                                </label>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Grace Period</label>
                                 <div class="relative z-20 bg-transparent">
-                                    <select x-model="$store.loanTypeData.currentLoanType?.Status" id="status" name="status"
+                                    <select x-model="$store.loanTypeData.currentLoanType?.GracePeriodNumber"
+                                            id="grace_period_days"
+                                            name="grace_period_days"
+                                            @change="$store.loanTypeData.clearError('grace_period_days')"
+                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                        <option value="" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">Grace Period</option>
+                                        <option value="30" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">30 Days</option>
+                                        <option value="45" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">45 Days</option>
+                                        <option value="60" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">60 Days</option>
+                                    </select>
+                                    <span class="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-700 dark:text-gray-400">
+                                        <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                    </span>
+                                </div>
+                                <p x-show="$store.loanTypeData.formErrors.grace_period_days"
+                                x-text="$store.loanTypeData.formErrors.grace_period_days"
+                                class="mt-1 text-sm error"></p>
+                            </div>
+                        </div>
+
+                        <!-- Min Duration and Max Duration -->
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                            <!-- Min Duration -->
+                            <div>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Min Duration (Months)</label>
+                                <div class="relative z-20 bg-transparent">
+                                    <select x-model="$store.loanTypeData.currentLoanType?.MinDurationNumber"
+                                            id="min_duration"
+                                            name="min_duration"
+                                            @change="$store.loanTypeData.clearError('min_duration')"
+                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                        <option value="" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">Min Duration</option>
+                                        <option value="1" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">1 Month</option>
+                                        <option value="3" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">3 Months</option>
+                                        <option value="6" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">6 Months</option>
+                                        <option value="12" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">12 Months</option>
+                                        <option value="24" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">24 Months</option>
+                                    </select>
+                                    <span class="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-700 dark:text-gray-400">
+                                        <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                    </span>
+                                </div>
+                                <p x-show="$store.loanTypeData.formErrors.min_duration"
+                                x-text="$store.loanTypeData.formErrors.min_duration"
+                                class="mt-1 text-sm error"></p>
+                            </div>
+
+                            <!-- Max Duration -->
+                            <div>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Max Duration (Months)</label>
+                                <div class="relative z-20 bg-transparent">
+                                    <select x-model="$store.loanTypeData.currentLoanType?.MaxDurationNumber"
+                                            id="max_duration"
+                                            name="max_duration"
+                                            @change="$store.loanTypeData.clearError('max_duration')"
+                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                        <option value="" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">Max Duration</option>
+                                        <option value="12" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">12 Months</option>
+                                        <option value="24" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">24 Months</option>
+                                        <option value="36" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">36 Months</option>
+                                        <option value="48" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">48 Months</option>
+                                        <option value="60" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">60 Months</option>
+                                    </select>
+                                    <span class="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-700 dark:text-gray-400">
+                                        <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                    </span>
+                                </div>
+                                <p x-show="$store.loanTypeData.formErrors.max_duration"
+                                x-text="$store.loanTypeData.formErrors.max_duration"
+                                class="mt-1 text-sm error"></p>
+                            </div>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="grid grid-cols-1 lg:grid-cols-1 gap-6 mb-6">
+                            <div>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Status</label>
+                                <div class="relative z-20 bg-transparent">
+                                    <select x-model="$store.loanTypeData.currentLoanType?.Status"
+                                            id="status"
+                                            name="status"
+                                            @change="$store.loanTypeData.clearError('status')"
                                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                         <option value="Active" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">Active</option>
                                         <option value="In-Active" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">In-Active</option>
@@ -2403,31 +2672,32 @@
                                     </select>
                                     <span class="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-700 dark:text-gray-400">
                                         <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                         </svg>
                                     </span>
                                 </div>
+                                <p x-show="$store.loanTypeData.formErrors.status"
+                                x-text="$store.loanTypeData.formErrors.status"
+                                class="mt-1 text-sm error"></p>
                             </div>
-
                         </div>
-
                     </div>
 
-                    <!-- Action Buttons - Bottom Right -->
+                    <!-- Action Buttons -->
                     <div class="flex justify-end items-center gap-3 pt-6 border-t border-gray-200 dark:border-gray-700 mt-8">
                         <button @click="$store.loanTypeData.editLoanTypeModal = false" type="button"
-                        class="h-11 rounded-lg border border-gray-300 bg-transparent px-6 text-sm font-semibold text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-300">
-                        Cancel
+                            class="h-11 rounded-lg border border-gray-300 bg-transparent px-6 text-sm font-semibold text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-300">
+                            Cancel
                         </button>
                         <button type="button" id="deleteLoanTypeBtn"
-                                @click="$store.loanTypeData.deleteLoanType($store.loanTypeData.currentLoanType?.LoanTypeID, $store.loanTypeData.currentLoanType?.Type)"
-                                class="rounded-lg border border-error-300 bg-white px-5 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
-                        Delete
+                            @click="$store.loanTypeData.deleteLoanType($store.loanTypeData.currentLoanType?.LoanTypeID, $store.loanTypeData.currentLoanType?.Type)"
+                            class="rounded-lg border border-error-300 bg-white px-5 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
+                            Delete
                         </button>
-                        <button type="button"id="updateLoanTypeBtn"
-                                @click="$store.loanTypeData.updateLoanType()"
-                                class="h-11 rounded-lg border border-brand-500 bg-brand-500 px-6 text-sm font-semibold text-white shadow-theme-xs hover:bg-brand-600 disabled:pointer-events-none disabled:opacity-50">
-                        Update Loan Type
+                        <button type="button" id="updateLoanTypeBtn"
+                            @click="$store.loanTypeData.updateLoanType()"
+                            class="h-11 rounded-lg border border-brand-500 bg-brand-500 px-6 text-sm font-semibold text-white shadow-theme-xs hover:bg-brand-600 disabled:pointer-events-none disabled:opacity-50">
+                            Update Loan Type
                         </button>
                     </div>
                 </div>
@@ -2441,7 +2711,6 @@
     <!-- ===== Custom JS ===== -->
     <script defer src="{{ asset('assets/bundle.js') }}"></script>
     <!-- ===== Data Tables ===== -->
-
 
     <!-- Loans Alpine -------------------------------------------------------------------------- -->
     <script>
@@ -2473,12 +2742,26 @@
                             // Transform Laravel data to match existing frontend structure
                             this.loanTypes = data.data.map(item => ({
                                 LoanTypeID: item.loanId || '',
+                                // Format LoanTypeID with prefix LT
+                                FormattedLoanTypeID: `LT${item.loanId || ''}`,
                                 Type: item.loan_type_name || '',
                                 InterestRate: `${item.interest_rate || 0} %`,
+                                InterestRateNumber: parseFloat(item.interest_rate || 0),
+                                LatenessInterestRateNumber: parseFloat(item.latenes_interest_rate || 0),
+                                MinBorrowable: `KES ${parseFloat(item.min_amount || 0).toLocaleString()}`,
+                                MinBorrowableNumber: parseFloat(item.min_amount || 0),
+                                MaxBorrowable: `KES ${parseFloat(item.max_amount || 0).toLocaleString()}`,
+                                MaxBorrowableNumber: parseFloat(item.max_amount || 0),
                                 Repayment: `${item.repayment_period_months || 0} months`,
-                                TotalLoaned: `Ksh ${parseFloat(item.total_loaned || 0).toLocaleString()}`,
+                                RepaymentNumber: parseInt(item.repayment_period_months || 0),
+                                GracePeriod: `${item.grace_period_days || 0} days`,
+                                GracePeriodNumber: parseInt(item.grace_period_days || 0),
+                                MinDuration: `${item.min_duration || 0} months`,
+                                MinDurationNumber: parseInt(item.min_duration || 0),
+                                MaxDuration: `${item.max_duration || 0} months`,
+                                MaxDurationNumber: parseInt(item.max_duration || 0),
+                                TotalLoaned: `KES ${parseFloat(item.total_loaned || 0).toLocaleString()}`,
                                 ActiveLoans: item.total_loans || 0,
-                                MaxAmount: item.max_amount,
                                 CreatedOn: new Date(item.created_on || Date.now()).toLocaleTimeString('en-GB', {
                                     hour: '2-digit',
                                     minute: '2-digit'
@@ -2494,7 +2777,6 @@
                         }
                     } catch (error) {
                         console.error('Error loading loan types:', error);
-                        // Keep empty array if error
                         this.loanTypes = [];
                     }
                 },
@@ -2675,48 +2957,50 @@
                     }
                 },
 
-                // Edit loan type modal function - UPDATED
+                // Edit loan type modal function - UPDATED with all fields
                 editLoanTypeModal(loanType) {
                     console.log('1. Raw loanType received:', loanType);
-                    console.log('2. MaxAmount value:', loanType.MaxAmount);
-                    // Create a copy of the loan type data for editing
+
+                    // Create a copy of the loan type data for editing with ALL fields
                     const loanTypeCopy = {
-                        // Keep original properties
+                        // Basic properties
                         LoanTypeID: loanType.LoanTypeID,
+                        FormattedLoanTypeID: loanType.FormattedLoanTypeID,
                         Type: loanType.Type,
-                        InterestRate: loanType.InterestRate,
-                        TotalLoaned: loanType.TotalLoaned,
-                        MaxAmount: loanType.MaxAmount,
-                        Repayment: loanType.Repayment,
                         Status: loanType.Status,
                         CreatedOn: loanType.CreatedOn,
 
-                        // Add numeric versions for form binding
-                        InterestRateNumber: 0,
-                        TotalLoanedNumber: 0,
-                        RepaymentNumber: 0
+                        // Interest Rate
+                        InterestRate: loanType.InterestRate,
+                        InterestRateNumber: loanType.InterestRateNumber || 0,
+
+                        // Lateness Interest Rate
+                        LatenessInterestRateNumber: loanType.LatenessInterestRateNumber || 0,
+
+                        // Borrowable amounts
+                        MinBorrowable: loanType.MinBorrowable,
+                        MinBorrowableNumber: loanType.MinBorrowableNumber || 0,
+                        MaxBorrowable: loanType.MaxBorrowable,
+                        MaxBorrowableNumber: loanType.MaxBorrowableNumber || 0,
+
+                        // Repayment
+                        Repayment: loanType.Repayment,
+                        RepaymentNumber: loanType.RepaymentNumber || 0,
+
+                        // Grace Period
+                        GracePeriod: loanType.GracePeriod,
+                        GracePeriodNumber: loanType.GracePeriodNumber || 0,
+
+                        // Duration
+                        MinDuration: loanType.MinDuration,
+                        MinDurationNumber: loanType.MinDurationNumber || 0,
+                        MaxDuration: loanType.MaxDuration,
+                        MaxDurationNumber: loanType.MaxDurationNumber || 0,
+
+                        // Other fields
+                        TotalLoaned: loanType.TotalLoaned,
+                        ActiveLoans: loanType.ActiveLoans
                     };
-
-                    // Extract just the number from InterestRate (remove " %")
-                    if (loanType.InterestRate && typeof loanType.InterestRate === 'string') {
-                        loanTypeCopy.InterestRateNumber = parseFloat(loanType.InterestRate.replace(' %', ''));
-                        console.log('InterestRate parsed:', loanType.InterestRate, '->', loanTypeCopy.InterestRateNumber);
-                    }
-
-                    // Extract just the number from TotalLoaned (remove "Ksh " and commas)
-                    if (loanType.TotalLoaned && typeof loanType.TotalLoaned === 'string') {
-                        const cleanAmount = loanType.TotalLoaned
-                            .replace('Ksh ', '')
-                            .replace(/,/g, '');
-                        loanTypeCopy.TotalLoanedNumber = Number(loanType.MaxAmount);
-                        console.log('TotalLoaned parsed:', loanType.TotalLoaned, '->', loanTypeCopy.TotalLoanedNumber);
-                    }
-
-                    // Extract just the number from Repayment (remove " months")
-                    if (loanType.Repayment && typeof loanType.Repayment === 'string') {
-                        loanTypeCopy.RepaymentNumber = parseInt(loanType.Repayment.replace(' months', '')) || 0;
-                        console.log('Repayment parsed:', loanType.Repayment, '->', loanTypeCopy.RepaymentNumber);
-                    }
 
                     console.log('Final loanTypeCopy:', loanTypeCopy);
 
@@ -2739,8 +3023,66 @@
                 // Current loan type for editing
                 currentLoanType: null,
 
+                // Form errors
+                formErrors: {
+                    newLoanType: '',
+                    loanInterestRate: '',
+                    loanLatenessInterestRate: '',
+                    loanMinAmount: '',
+                    loanMaxAmount: '',
+                    loanRepaymentPeriod: '',
+                    gracePeriodDays: '',
+                    minDuration: '',
+                    maxDuration: '',
+                    newLoanStatus: '',
+                    loan_type_name: '',
+                    interest_rate: '',
+                    lateness_interest_rate: '',
+                    min_amount: '',
+                    max_amount: '',
+                    repayment_period_months: '',
+                    grace_period_days: '',
+                    min_duration: '',
+                    max_duration: '',
+                    status: ''
+                },
+
+                // Clear all errors
+                clearErrors() {
+                    this.formErrors = {
+                        newLoanType: '',
+                        loanInterestRate: '',
+                        loanLatenessInterestRate: '',
+                        loanMinAmount: '',
+                        loanMaxAmount: '',
+                        loanRepaymentPeriod: '',
+                        gracePeriodDays: '',
+                        minDuration: '',
+                        maxDuration: '',
+                        newLoanStatus: '',
+                        loan_type_name: '',
+                        interest_rate: '',
+                        lateness_interest_rate: '',
+                        min_amount: '',
+                        max_amount: '',
+                        repayment_period_months: '',
+                        grace_period_days: '',
+                        min_duration: '',
+                        max_duration: '',
+                        status: ''
+                    };
+                },
+
+                // Clear a single error by field
+                clearError(field) {
+                    if (this.formErrors.hasOwnProperty(field)) {
+                        this.formErrors[field] = '';
+                    }
+                },
+
                 // Methods
                 openNewLoanTypeModal() {
+                    this.clearErrors();
                     this.loanTypeModal = true;
                 },
 
@@ -2749,36 +3091,321 @@
                     this.editLoanTypeModal = true;
                 },
 
-                // Update loans type
-                updateLoanType() {
-                    // Get current values directly from the form inputs
-                    const loanTypeId = document.querySelector('input[name="loan_type_id"]').value;
-                    const loanTypeName = document.querySelector('input[name="loan_type_name"]').value;
-                    const interestRate = document.querySelector('input[name="interest_rate"]').value;
-                    const maxAmount = document.querySelector('input[name="max_amount"]').value;
-                    const repaymentPeriod = document.querySelector('select[name="repayment_period_months"]').value;
-                    const status = document.querySelector('select[name="status"]').value;
+                // Form validation function - returns boolean and sets errors
+                validateLoanForm() {
+                    // Clear previous errors
+                    this.clearErrors();
 
-                    // Validate fields are not empty
-                    if (!loanTypeName || loanTypeName.trim() === '') {
-                        alert('Error: Loan Type Name cannot be empty');
-                        return;
+                    let isValid = true;
+
+                    // Get form values
+                    const newLoanType = document.getElementById('newLoanType')?.value.trim() || '';
+                    const loanInterestRate = document.getElementById('loanInterestRate')?.value.trim() || '';
+                    const loanLatenessInterestRate = document.getElementById('loanLatenessInterestRate')?.value.trim() || '';
+                    const loanMinAmount = document.getElementById('loanMinAmount')?.value.trim() || '';
+                    const loanMaxAmount = document.getElementById('loanMaxAmount')?.value.trim() || '';
+                    const loanRepaymentPeriod = document.getElementById('loanRepaymentPeriod')?.value || '';
+                    const gracePeriodDays = document.getElementById('gracePeriodDays')?.value || '';
+                    const minDuration = document.getElementById('minDuration')?.value || '';
+                    const maxDuration = document.getElementById('maxDuration')?.value || '';
+                    const newLoanStatus = document.getElementById('newLoanStatus')?.value || '';
+
+                    // Validate Loan Type Name
+                    if (!newLoanType) {
+                        this.formErrors.newLoanType = 'Loan Type Name is required';
+                        isValid = false;
+                        this.addErrorClass('newLoanType');
+                    } else {
+                        this.removeErrorClass('newLoanType');
                     }
-                    if (!interestRate && interestRate !== '0') {
-                        alert('Error: Interest Rate cannot be empty');
-                        return;
+
+                    // Validate Interest Rate
+                    if (!loanInterestRate) {
+                        this.formErrors.loanInterestRate = 'Interest Rate is required';
+                        isValid = false;
+                        this.addErrorClass('loanInterestRate');
+                    } else if (parseFloat(loanInterestRate) < 0) {
+                        this.formErrors.loanInterestRate = 'Interest Rate cannot be negative';
+                        isValid = false;
+                        this.addErrorClass('loanInterestRate');
+                    } else {
+                        this.removeErrorClass('loanInterestRate');
                     }
-                    if (!maxAmount && maxAmount !== '0') {
-                        alert('Error: Max Borrowable cannot be empty');
-                        return;
+
+                    // Validate Lateness Interest Rate
+                    if (!loanLatenessInterestRate) {
+                        this.formErrors.loanLatenessInterestRate = 'Lateness Interest Rate is required';
+                        isValid = false;
+                        this.addErrorClass('loanLatenessInterestRate');
+                    } else if (parseFloat(loanLatenessInterestRate) < 0) {
+                        this.formErrors.loanLatenessInterestRate = 'Lateness Interest Rate cannot be negative';
+                        isValid = false;
+                        this.addErrorClass('loanLatenessInterestRate');
+                    } else {
+                        this.removeErrorClass('loanLatenessInterestRate');
                     }
-                    if (!repaymentPeriod || repaymentPeriod === 'Repayment') {
-                        alert('Error: Please select a Repayment Scheme');
-                        return;
+
+                    // Validate Min Amount
+                    if (!loanMinAmount) {
+                        this.formErrors.loanMinAmount = 'Min Amount is required';
+                        isValid = false;
+                        this.addErrorClass('loanMinAmount');
+                    } else if (parseFloat(loanMinAmount) < 0) {
+                        this.formErrors.loanMinAmount = 'Min Amount cannot be negative';
+                        isValid = false;
+                        this.addErrorClass('loanMinAmount');
+                    } else {
+                        this.removeErrorClass('loanMinAmount');
                     }
-                    if (!status || status === 'Status') {
-                        alert('Error: Please select a Status');
-                        return;
+
+                    // Validate Max Amount
+                    if (!loanMaxAmount) {
+                        this.formErrors.loanMaxAmount = 'Max Amount is required';
+                        isValid = false;
+                        this.addErrorClass('loanMaxAmount');
+                    } else if (parseFloat(loanMaxAmount) < 0) {
+                        this.formErrors.loanMaxAmount = 'Max Amount cannot be negative';
+                        isValid = false;
+                        this.addErrorClass('loanMaxAmount');
+                    } else if (parseFloat(loanMinAmount) > parseFloat(loanMaxAmount) && loanMinAmount) {
+                        this.formErrors.loanMaxAmount = 'Max Amount must be greater than Min Amount';
+                        isValid = false;
+                        this.addErrorClass('loanMaxAmount');
+                    } else {
+                        this.removeErrorClass('loanMaxAmount');
+                    }
+
+                    // Validate Repayment Period
+                    if (!loanRepaymentPeriod || loanRepaymentPeriod === 'Repayment' || loanRepaymentPeriod === 'All') {
+                        this.formErrors.loanRepaymentPeriod = 'Repayment Period is required';
+                        isValid = false;
+                        this.addErrorClass('loanRepaymentPeriod');
+                    } else {
+                        this.removeErrorClass('loanRepaymentPeriod');
+                    }
+
+                    // Validate Grace Period Days
+                    if (!gracePeriodDays || gracePeriodDays === 'Grace Period') {
+                        this.formErrors.gracePeriodDays = 'Grace Period is required';
+                        isValid = false;
+                        this.addErrorClass('gracePeriodDays');
+                    } else if (parseInt(gracePeriodDays) < 0) {
+                        this.formErrors.gracePeriodDays = 'Grace Period cannot be negative';
+                        isValid = false;
+                        this.addErrorClass('gracePeriodDays');
+                    } else {
+                        this.removeErrorClass('gracePeriodDays');
+                    }
+
+                    // Validate Min Duration
+                    if (!minDuration || minDuration === 'Min Duration') {
+                        this.formErrors.minDuration = 'Min Duration is required';
+                        isValid = false;
+                        this.addErrorClass('minDuration');
+                    } else if (parseInt(minDuration) < 1) {
+                        this.formErrors.minDuration = 'Min Duration must be at least 1 month';
+                        isValid = false;
+                        this.addErrorClass('minDuration');
+                    } else {
+                        this.removeErrorClass('minDuration');
+                    }
+
+                    // Validate Max Duration
+                    if (!maxDuration || maxDuration === 'Max Duration') {
+                        this.formErrors.maxDuration = 'Max Duration is required';
+                        isValid = false;
+                        this.addErrorClass('maxDuration');
+                    } else if (parseInt(maxDuration) < 1) {
+                        this.formErrors.maxDuration = 'Max Duration must be at least 1 month';
+                        isValid = false;
+                        this.addErrorClass('maxDuration');
+                    } else if (parseInt(minDuration) > parseInt(maxDuration) && minDuration) {
+                        this.formErrors.maxDuration = 'Max Duration must be greater than Min Duration';
+                        isValid = false;
+                        this.addErrorClass('maxDuration');
+                    } else {
+                        this.removeErrorClass('maxDuration');
+                    }
+
+                    // Validate Status
+                    if (!newLoanStatus || newLoanStatus === 'Status') {
+                        this.formErrors.newLoanStatus = 'Status is required';
+                        isValid = false;
+                        this.addErrorClass('newLoanStatus');
+                    } else {
+                        this.removeErrorClass('newLoanStatus');
+                    }
+
+                    // If not valid, show alert
+                    if (!isValid) {
+                        alert('INVALID! Input Values');
+                    }
+
+                    return isValid;
+                },
+
+                // Add error class to input
+                addErrorClass(fieldId) {
+                    const element = document.getElementById(fieldId);
+                    if (element) {
+                        element.classList.add('error');
+                    }
+                },
+
+                // Remove error class from input
+                removeErrorClass(fieldId) {
+                    const element = document.getElementById(fieldId);
+                    if (element) {
+                        element.classList.remove('error');
+                    }
+                },
+
+                // Update loan type
+                updateLoanType() {
+                    // Clear previous errors
+                    this.clearErrors();
+
+                    let isValid = true;
+
+                    // Get values from form
+                    const loanTypeId = document.getElementById('loan_type_id_input')?.value || '';
+                    const loanTypeName = document.getElementById('loan_type_name')?.value.trim() || '';
+                    const interestRate = document.getElementById('interest_rate')?.value.trim() || '';
+                    const latenessInterestRate = document.getElementById('lateness_interest_rate')?.value.trim() || '';
+                    const minAmount = document.getElementById('min_amount')?.value.trim() || '';
+                    const maxAmount = document.getElementById('max_amount')?.value.trim() || '';
+                    const repaymentPeriod = document.getElementById('repayment_period_months')?.value || '';
+                    const gracePeriod = document.getElementById('grace_period_days')?.value || '';
+                    const minDuration = document.getElementById('min_duration')?.value || '';
+                    const maxDuration = document.getElementById('max_duration')?.value || '';
+                    const status = document.getElementById('status')?.value || '';
+
+                    // Validate Loan Type Name
+                    if (!loanTypeName) {
+                        this.formErrors.loan_type_name = 'Loan Type Name is required';
+                        isValid = false;
+                        this.addErrorClass('loan_type_name');
+                    } else {
+                        this.removeErrorClass('loan_type_name');
+                    }
+
+                    // Validate Interest Rate
+                    if (!interestRate) {
+                        this.formErrors.interest_rate = 'Interest Rate is required';
+                        isValid = false;
+                        this.addErrorClass('interest_rate');
+                    } else if (parseFloat(interestRate) < 0) {
+                        this.formErrors.interest_rate = 'Interest Rate cannot be negative';
+                        isValid = false;
+                        this.addErrorClass('interest_rate');
+                    } else {
+                        this.removeErrorClass('interest_rate');
+                    }
+
+                    // Validate Lateness Interest Rate
+                    if (!latenessInterestRate) {
+                        this.formErrors.lateness_interest_rate = 'Lateness Interest Rate is required';
+                        isValid = false;
+                        this.addErrorClass('lateness_interest_rate');
+                    } else if (parseFloat(latenessInterestRate) < 0) {
+                        this.formErrors.lateness_interest_rate = 'Lateness Interest Rate cannot be negative';
+                        isValid = false;
+                        this.addErrorClass('lateness_interest_rate');
+                    } else {
+                        this.removeErrorClass('lateness_interest_rate');
+                    }
+
+                    // Validate Min Amount
+                    if (!minAmount) {
+                        this.formErrors.min_amount = 'Min Amount is required';
+                        isValid = false;
+                        this.addErrorClass('min_amount');
+                    } else if (parseFloat(minAmount) < 0) {
+                        this.formErrors.min_amount = 'Min Amount cannot be negative';
+                        isValid = false;
+                        this.addErrorClass('min_amount');
+                    } else {
+                        this.removeErrorClass('min_amount');
+                    }
+
+                    // Validate Max Amount
+                    if (!maxAmount) {
+                        this.formErrors.max_amount = 'Max Amount is required';
+                        isValid = false;
+                        this.addErrorClass('max_amount');
+                    } else if (parseFloat(maxAmount) < 0) {
+                        this.formErrors.max_amount = 'Max Amount cannot be negative';
+                        isValid = false;
+                        this.addErrorClass('max_amount');
+                    } else if (parseFloat(minAmount) > parseFloat(maxAmount) && minAmount) {
+                        this.formErrors.max_amount = 'Max Amount must be greater than Min Amount';
+                        isValid = false;
+                        this.addErrorClass('max_amount');
+                    } else {
+                        this.removeErrorClass('max_amount');
+                    }
+
+                    // Validate Repayment Period
+                    if (!repaymentPeriod || repaymentPeriod === '') {
+                        this.formErrors.repayment_period_months = 'Repayment Period is required';
+                        isValid = false;
+                        this.addErrorClass('repayment_period_months');
+                    } else {
+                        this.removeErrorClass('repayment_period_months');
+                    }
+
+                    // Validate Grace Period
+                    if (!gracePeriod || gracePeriod === '') {
+                        this.formErrors.grace_period_days = 'Grace Period is required';
+                        isValid = false;
+                        this.addErrorClass('grace_period_days');
+                    } else {
+                        this.removeErrorClass('grace_period_days');
+                    }
+
+                    // Validate Min Duration
+                    if (!minDuration || minDuration === '') {
+                        this.formErrors.min_duration = 'Min Duration is required';
+                        isValid = false;
+                        this.addErrorClass('min_duration');
+                    } else if (parseInt(minDuration) < 1) {
+                        this.formErrors.min_duration = 'Min Duration must be at least 1 month';
+                        isValid = false;
+                        this.addErrorClass('min_duration');
+                    } else {
+                        this.removeErrorClass('min_duration');
+                    }
+
+                    // Validate Max Duration
+                    if (!maxDuration || maxDuration === '') {
+                        this.formErrors.max_duration = 'Max Duration is required';
+                        isValid = false;
+                        this.addErrorClass('max_duration');
+                    } else if (parseInt(maxDuration) < 1) {
+                        this.formErrors.max_duration = 'Max Duration must be at least 1 month';
+                        isValid = false;
+                        this.addErrorClass('max_duration');
+                    } else if (parseInt(minDuration) > parseInt(maxDuration) && minDuration) {
+                        this.formErrors.max_duration = 'Max Duration must be greater than Min Duration';
+                        isValid = false;
+                        this.addErrorClass('max_duration');
+                    } else {
+                        this.removeErrorClass('max_duration');
+                    }
+
+                    // Validate Status
+                    if (!status || status === '') {
+                        this.formErrors.status = 'Status is required';
+                        isValid = false;
+                        this.addErrorClass('status');
+                    } else {
+                        this.removeErrorClass('status');
+                    }
+
+                    // If not valid, show alert and return
+                    if (!isValid) {
+                        alert('INVALID! Input Values');
+                        return false;
                     }
 
                     // Change button text to Updating...
@@ -2788,78 +3415,66 @@
                         updateBtn.innerHTML = 'Updating...';
                     }
 
-                    // Wait 0.75 seconds
-                    setTimeout(() => {
-                        // Get CSRF token from meta tag
-                        const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                    // Get CSRF token
+                    const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-                        if (!token) {
-                            alert('Error: CSRF token not found');
-                            if (updateBtn) {
-                                updateBtn.disabled = false;
-                                updateBtn.innerHTML = 'Update Loan Type';
-                            }
-                            return;
+                    if (!token) {
+                        alert('Error: CSRF token not found');
+                        if (updateBtn) {
+                            updateBtn.disabled = false;
+                            updateBtn.innerHTML = 'Update Loan Type';
                         }
+                        return;
+                    }
 
-                        // Log what we're sending
-                        console.log('Sending to server:', {
-                            loan_type_id: loanTypeId,
-                            loan_type_name: loanTypeName,
-                            interest_rate: interestRate,
-                            max_amount: maxAmount,
-                            repayment_period_months: repaymentPeriod,
-                            status: status
-                        });
+                    // Prepare data to send
+                    const requestData = {
+                        loan_type_id: loanTypeId,
+                        loan_type_name: loanTypeName,
+                        interest_rate: interestRate,
+                        lateness_interest_rate: latenessInterestRate,
+                        min_amount: minAmount,
+                        max_amount: maxAmount,
+                        repayment_period_months: repaymentPeriod,
+                        grace_period_days: gracePeriod,
+                        min_duration: minDuration,
+                        max_duration: maxDuration,
+                        status: status
+                    };
 
-                        // Send as JSON
-                        fetch('/treasurer/bodaboda/loan-types/update', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': token,
-                                'Accept': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                loan_type_id: loanTypeId,
-                                loan_type_name: loanTypeName,
-                                interest_rate: interestRate,
-                                max_amount: maxAmount,
-                                repayment_period_months: repaymentPeriod,
-                                status: status
-                            })
-                        })
-                        .then(response => {
-                            if (!response.ok) {
-                                return response.json().then(err => {
-                                    throw new Error(err.message || `HTTP error ${response.status}`);
-                                });
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            alert(data.message);
-                            if (data.success) {
-                                window.location.href = '/treasurer/bodaboda';
-                            } else {
-                                if (updateBtn) {
-                                    updateBtn.disabled = false;
-                                    updateBtn.innerHTML = 'Update Loan Type';
-                                }
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Fetch error:', error);
-                            alert('Network error: ' + error.message);
+                    // Send to Laravel
+                    fetch('/treasurer/bodaboda/loan-types/update', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': token,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(requestData)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
                             if (updateBtn) {
                                 updateBtn.disabled = false;
                                 updateBtn.innerHTML = 'Update Loan Type';
                             }
-                        });
-                    }, 750);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Fetch error:', error);
+                        alert('Network error: ' + error.message);
+                        if (updateBtn) {
+                            updateBtn.disabled = false;
+                            updateBtn.innerHTML = 'Update Loan Type';
+                        }
+                    });
                 },
 
-                // Delete loans type
+                // Delete loan type
                 deleteLoanType(loanTypeId, loanTypeName) {
                     const deleteBtn = document.querySelector('#deleteLoanTypeBtn');
                     if (deleteBtn) {
@@ -2871,7 +3486,6 @@
                         if (confirm(`Are you sure you want to delete Loan Type: ${loanTypeId} - ${loanTypeName}?`)) {
                             const formData = new FormData();
 
-                            // FIXED: Get CSRF token from the form input
                             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
                             formData.append('_token', csrfToken);
                             formData.append('loan_type_id', loanTypeId);
@@ -2913,50 +3527,12 @@
                     }, 750);
                 },
 
-                // Form validation function
-                validateLoanForm(event) {
-                    // Prevent default form submission
-                    if (event) event.preventDefault();
-
-                    // Get form values
-                    const loanType = document.getElementById('newLoanType').value.trim();
-                    const interestRate = document.getElementById('loanInterestRate').value.trim();
-                    const maxAmount = document.getElementById('loanMaxAmount').value.trim();
-                    const repaymentPeriod = document.getElementById('loanRepaymentPeriod').value;
-                    const status = document.getElementById('newLoanStatus').value;
-
-                    // Check if required fields are empty
-                    if (!loanType) {
-                        alert('Loan Type is required');
-                        return false;
-                    }
-                    if (!interestRate) {
-                        alert('Interest Rate is required');
-                        return false;
-                    }
-                    if (!maxAmount) {
-                        alert('Max Amount is required');
-                        return false;
-                    }
-                    if (!repaymentPeriod || repaymentPeriod === 'All') {
-                        alert('Repayment Period is required');
-                        return false;
-                    }
-                    if (!status || status === 'Status') {
-                        alert('Status is required');
-                        return false;
-                    }
-
-                    // If all validations pass
-                    return true;
-                },
-
-                // Add to your existing loanTypeStore() function
+                // Submit loan form
                 submitLoanForm(event) {
                     if (event) event.preventDefault();
 
                     // First validate
-                    if (!this.validateLoanForm(event)) {
+                    if (!this.validateLoanForm()) {
                         return false;
                     }
 
@@ -2969,8 +3545,13 @@
                     const formData = new FormData();
                     formData.append('newLoanType', document.getElementById('newLoanType').value);
                     formData.append('loanInterestRate', document.getElementById('loanInterestRate').value);
+                    formData.append('loanLatenessInterestRate', document.getElementById('loanLatenessInterestRate').value);
+                    formData.append('loanMinAmount', document.getElementById('loanMinAmount').value);
                     formData.append('loanMaxAmount', document.getElementById('loanMaxAmount').value);
                     formData.append('loanRepaymentPeriod', document.getElementById('loanRepaymentPeriod').value);
+                    formData.append('gracePeriodDays', document.getElementById('gracePeriodDays').value);
+                    formData.append('minDuration', document.getElementById('minDuration').value);
+                    formData.append('maxDuration', document.getElementById('maxDuration').value);
                     formData.append('newLoanStatus', document.getElementById('newLoanStatus').value);
 
                     // Send to Laravel
@@ -2988,20 +3569,20 @@
                             button.textContent = originalText;
                             button.disabled = false;
                             if (data.success) {
-                                window.location.href = "{{ route('treasurer.bodaboda.members') }}";
+                                window.location.reload();
                             }
-                        }, 750);
+                        }, 500);
                     })
                     .catch(error => {
                         setTimeout(() => {
                             alert('Error: ' + error.message);
                             button.textContent = originalText;
                             button.disabled = false;
-                        }, 750);
+                        }, 500);
                     });
 
                     return false;
-                },
+                }
             };
         }
 

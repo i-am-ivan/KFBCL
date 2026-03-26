@@ -2104,7 +2104,7 @@ class BodabodaController extends Controller {
     }
 
     // Loans ------------------------------------------------------------------------------------------------------------
-    // All loan types statistics
+   // All loan types statistics
     public function getAllLoansSummary(Request $request): JsonResponse
     {
         $loansSummary = MemberLoanType::select([
@@ -2120,7 +2120,9 @@ class BodabodaController extends Controller {
             })
             ->groupBy('member_loan_types.loanId', 'member_loan_types.loan_type_name',
                     'member_loan_types.interest_rate', 'member_loan_types.repayment_period_months',
-                    'member_loan_types.max_amount', 'member_loan_types.created_on',
+                    'member_loan_types.max_amount', 'member_loan_types.min_amount',
+                    'member_loan_types.grace_period_days', 'member_loan_types.min_duration',
+                    'member_loan_types.max_duration', 'member_loan_types.created_on',
                     'member_loan_types.status')
             ->orderBy('member_loan_types.loan_type_name')
             ->get();
@@ -2145,8 +2147,13 @@ class BodabodaController extends Controller {
             $validated = $request->validate([
                 'newLoanType' => 'required|string|max:255',
                 'loanInterestRate' => 'required|numeric|min:0',
+                'loanLatenessInterestRate' => 'required|numeric|min:0',
+                'loanMinAmount' => 'required|numeric|min:0',
                 'loanMaxAmount' => 'required|numeric|min:0',
                 'loanRepaymentPeriod' => 'required|integer|min:1',
+                'gracePeriodDays' => 'required|integer|min:0',
+                'minDuration' => 'required|integer|min:1',
+                'maxDuration' => 'required|integer|min:1',
                 'newLoanStatus' => 'required|string'
             ]);
 
@@ -2154,8 +2161,13 @@ class BodabodaController extends Controller {
             $loanType = new MemberLoanType();
             $loanType->loan_type_name = $validated['newLoanType'];
             $loanType->interest_rate = $validated['loanInterestRate'];
+            $loanType->latenes_interest_rate = $validated['loanLatenessInterestRate'];
+            $loanType->min_amount = $validated['loanMinAmount'];
             $loanType->max_amount = $validated['loanMaxAmount'];
             $loanType->repayment_period_months = $validated['loanRepaymentPeriod'];
+            $loanType->grace_period_days = $validated['gracePeriodDays'];
+            $loanType->min_duration = $validated['minDuration'];
+            $loanType->max_duration = $validated['maxDuration'];
             $loanType->status = $validated['newLoanStatus'];
             $loanType->author = Auth::id();
             $loanType->created_on = now();
@@ -2187,8 +2199,13 @@ class BodabodaController extends Controller {
                 'loan_type_id' => 'required|integer|exists:member_loan_types,loanId',
                 'loan_type_name' => 'required|string|max:255',
                 'interest_rate' => 'required|numeric|min:0',
+                'lateness_interest_rate' => 'required|numeric|min:0',
+                'min_amount' => 'required|numeric|min:0',
                 'max_amount' => 'required|numeric|min:0',
                 'repayment_period_months' => 'required|integer|min:1',
+                'grace_period_days' => 'required|integer|min:0',
+                'min_duration' => 'required|integer|min:1',
+                'max_duration' => 'required|integer|min:1',
                 'status' => 'required|string'
             ]);
 
@@ -2210,8 +2227,13 @@ class BodabodaController extends Controller {
 
             $loanType->loan_type_name = $data['loan_type_name'];
             $loanType->interest_rate = $data['interest_rate'];
+            $loanType->latenes_interest_rate = $data['lateness_interest_rate'];
+            $loanType->min_amount = $data['min_amount'];
             $loanType->max_amount = $data['max_amount'];
             $loanType->repayment_period_months = $data['repayment_period_months'];
+            $loanType->grace_period_days = $data['grace_period_days'];
+            $loanType->min_duration = $data['min_duration'];
+            $loanType->max_duration = $data['max_duration'];
             $loanType->status = $data['status'];
             $loanType->author = Auth::id();
             $loanType->updated_on = now();
