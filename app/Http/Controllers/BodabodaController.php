@@ -2381,7 +2381,7 @@ class BodabodaController extends Controller {
         try {
             $loanTypes = DB::table('member_loan_types')
                 ->where('status', 'Active')
-                ->select('loanId', 'loan_type_name', 'interest_rate', 'max_amount', 'min_amount', 'repayment_period_months','fine_percentage')
+                ->select('loanId', 'loan_type_name', 'interest_rate', 'latenes_interest_rate', 'max_amount', 'min_amount', 'repayment_period_months', 'grace_period_days', 'min_duration', 'max_duration')
                 ->get();
 
             // Get all loans with related data

@@ -2627,9 +2627,8 @@
                                 :class="errors.loan_type ? 'border-red-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                             <option value="">Select Loan Type</option>
-                            <template x-for="loanType in $store.loanData.loanTypes" :key="loanType.loanId">
-                                <option :value="loanType.loanId"
-                                        x-text="loanType.loan_type_name + ' @ ' + loanType.interest_rate + '%'"></option>
+                            <template x-for="loanType in $store.loanData.loanTypesDropdown" :key="loanType.loanId">
+                                <option :value="loanType.loanId" x-text="loanType.display"></option>
                             </template>
                         </select>
                         <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
@@ -5915,6 +5914,7 @@
     <script>
 
         document.addEventListener('alpine:init', () => {
+
             // Store for loan data and modal states
             Alpine.store('loanData', {
                 currentLoan: null,
@@ -5924,6 +5924,7 @@
                 repayLoanModal: false,
                 assignLoanModal: false,
                 loanTypes: [],
+                loanTypesDropdown: [], // Add this for formatted dropdown
                 isAssigning: false,
                 isRepaying: false,
                 isUpdating: false,
@@ -5931,6 +5932,9 @@
                 // Auto-calculated fields
                 startDate: '',
                 endDate: '',
+
+                // Selected loan type ID for assign form
+                selectedLoanTypeId: '', // Add this
 
                 // Initialize loan types
                 init() {
@@ -5943,6 +5947,19 @@
                         .then(data => {
                             if (data.success) {
                                 this.loanTypes = data.loanTypes;
+                                // Create formatted dropdown items: LT{loanId}: {name} @ {interest}%
+                                this.loanTypesDropdown = data.loanTypes.map(lt => ({
+                                    loanId: lt.loanId,
+                                    display: `LT${lt.loanId}: ${lt.loan_type_name} @ ${lt.interest_rate}%`,
+                                    loan_type_name: lt.loan_type_name,
+                                    interest_rate: lt.interest_rate,
+                                    min_amount: lt.min_amount,
+                                    max_amount: lt.max_amount,
+                                    repayment_period_months: lt.repayment_period_months,
+                                    grace_period_days: lt.grace_period_days,
+                                    min_duration: lt.min_duration,
+                                    max_duration: lt.max_duration
+                                }));
                             }
                         });
                 },
@@ -5952,10 +5969,8 @@
                     if (selected) {
                         this.currentLoanType = selected;
 
-                        // Also update the current loan's loanTypeId if it exists
-                        if (this.currentLoan) {
-                            this.currentLoan.loanTypeId = loanTypeId;
-                        }
+                        // Trigger recalculation of total repayment if amount is already entered
+                        this.$dispatch('loan-type-changed');
                     }
                 },
 
