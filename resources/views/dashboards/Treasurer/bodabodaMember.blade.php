@@ -55,221 +55,221 @@
         <!-- ===== Main Content Start ===== -->
         <main>
 
-        <div class="mx-auto max-w-(--breakpoint-2xl) p-4 pb-20 md:p-6 md:pb-6">
-            <!-- Breadcrumb Start -->
-            <div x-data="{ pageName: `Bodaboda Member Profile`}">
-              <div class="flex flex-wrap items-center justify-between gap-3 pb-6">
-                <h2 class="text-xl font-semibold text-gray-800 dark:text-white/90" x-text="pageName"></h2>
-                <nav>
-                  <ol class="flex items-center gap-1.5">
-                    <li>
-                      <a class="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400" href="{{ route('treasurer.bodaboda.members') }}">Bodaboda List
-                        <svg
-                          class="stroke-current"
-                          width="17"
-                          height="16"
-                          viewBox="0 0 17 16"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M6.0765 12.667L10.2432 8.50033L6.0765 4.33366"
-                            stroke=""
-                            stroke-width="1.2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
-                        </svg>
-                      </a>
-                    </li>
-                    <li class="text-sm text-gray-800 dark:text-white/90" x-text="pageName"></li>
-                  </ol>
-                </nav>
-              </div>
-            </div>
-            <!-- Breadcrumb End -->
+            <div class="mx-auto max-w-(--breakpoint-2xl) p-4 pb-20 md:p-6 md:pb-6">
+                <!-- Breadcrumb Start -->
+                <div x-data="{ pageName: `Bodaboda Member Profile`}">
+                <div class="flex flex-wrap items-center justify-between gap-3 pb-6">
+                    <h2 class="text-xl font-semibold text-gray-800 dark:text-white/90" x-text="pageName"></h2>
+                    <nav>
+                    <ol class="flex items-center gap-1.5">
+                        <li>
+                        <a class="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400" href="{{ route('treasurer.bodaboda.members') }}">Bodaboda List
+                            <svg
+                            class="stroke-current"
+                            width="17"
+                            height="16"
+                            viewBox="0 0 17 16"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            >
+                            <path
+                                d="M6.0765 12.667L10.2432 8.50033L6.0765 4.33366"
+                                stroke=""
+                                stroke-width="1.2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+                            </svg>
+                        </a>
+                        </li>
+                        <li class="text-sm text-gray-800 dark:text-white/90" x-text="pageName"></li>
+                    </ol>
+                    </nav>
+                </div>
+                </div>
+                <!-- Breadcrumb End -->
 
-            <!-- Member Card -->
-            <div class="col-span-12 mb-4">
-                <!-- Metric Group Two -->
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-1 md:gap-6 xl:grid-cols-1">
-                    <!-- Metric Item Start -->
-                    <div class=" rounded-2xl border border-gray-200 bg-white p-5 lg:p-6 dark:border-gray-800 dark:bg-white/[0.03]">
-                        <div class="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between" x-data="memberInfo">
+                <!-- Member Card -->
+                <div class="col-span-12 mb-4">
+                    <!-- Metric Group Two -->
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-1 md:gap-6 xl:grid-cols-1">
+                        <!-- Metric Item Start -->
+                        <div class=" rounded-2xl border border-gray-200 bg-white p-5 lg:p-6 dark:border-gray-800 dark:bg-white/[0.03]">
+                            <div class="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between" x-data="memberInfo">
 
-                                <div class="flex w-full flex-col items-center gap-6 xl:flex-row">
-                                    <div class="h-[78px] w-[78px] overflow-hidden rounded-full border border-gray-200 bg-gray-100 flex items-center justify-center dark:border-gray-800 dark:bg-gray-800">
-                                        <svg class="h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                        </svg>
+                                    <div class="flex w-full flex-col items-center gap-6 xl:flex-row">
+                                        <div class="h-[78px] w-[78px] overflow-hidden rounded-full border border-gray-200 bg-gray-100 flex items-center justify-center dark:border-gray-800 dark:bg-gray-800">
+                                            <svg class="h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="order-3 xl:order-2">
+                                            <h4 class="mb-2 text-center text-lg font-semibold text-gray-800 xl:text-left dark:text-white/90" x-text="memberData?.member?.firstname + ' ' + memberData?.member?.lastname">
+                                                    James Mwangi
+                                            </h4>
+                                            <div class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
+                                                <p class="text-sm text-gray-500 dark:text-gray-400">Membership: <span x-text="memberData?.member?.membership">Member</span></p>
+                                                <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
+                                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                                    Member since <span x-text="formatDate(memberData?.member?.created_on)">December 09, 2025 15:24</span>
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="order-3 xl:order-2">
-                                        <h4 class="mb-2 text-center text-lg font-semibold text-gray-800 xl:text-left dark:text-white/90" x-text="memberData?.member?.firstname + ' ' + memberData?.member?.lastname">
-                                                James Mwangi
-                                        </h4>
-                                        <div class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
-                                            <p class="text-sm text-gray-500 dark:text-gray-400">Membership: <span x-text="memberData?.member?.membership">Member</span></p>
-                                            <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
-                                            <p class="text-sm text-gray-500 dark:text-gray-400">
-                                                Member since <span x-text="formatDate(memberData?.member?.created_on)">December 09, 2025 15:24</span>
+
+                                    <div class="flex flex-col gap-3 sm:flex-row">
+
+                                        <div>
+                                            <p class="text-xl text-gray-500 dark:text-gray-400">
+                                                <span class="bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500 rounded-full px-2 py-0.5 text-medium font-semibold">
+                                                    <span x-text="memberData?.member?.status">Active</span>
+                                                </span>
                                             </p>
                                         </div>
                                     </div>
-                                </div>
+                            </div>
+                        </div>
+                        <!-- Metric Item End -->
+                    </div>
+                </div>
 
-                                <div class="flex flex-col gap-3 sm:flex-row">
+                <!-- Common Stats -->
+                <div class="col-span-12 mb-4">
+                    <!-- Metric Group Two -->
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-1 md:gap-6 xl:grid-cols-4" x-data="memberInfo">
+                                <!-- Metric Item Start -->
+                                <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+                                    <p class="text-theme-sm text-gray-500 dark:text-gray-400">
+                                        Vehicles
+                                    </p>
 
-                                    <div>
-                                        <p class="text-xl text-gray-500 dark:text-gray-400">
-                                            <span class="bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500 rounded-full px-2 py-0.5 text-medium font-semibold">
-                                                <span x-text="memberData?.member?.status">Active</span>
-                                            </span>
-                                        </p>
+                                    <div class="mt-3 flex items-end justify-between">
+                                        <div>
+                                            <h4 class="text-xl font-bold text-gray-500 dark:text-white/90" >
+                                                <!-- Member Vehicles Count -->
+                                                <span x-data="{ memberCount: 0 }"
+                                                    x-show="memberData?.member?.membership === 'Member'"
+                                                    x-init="fetch('/bodaboda-member/{{ $memberId }}/vehicles/member/count')
+                                                        .then(res => res.json())
+                                                        .then(data => { if(data.success) memberCount = data.count })">
+                                                    <span x-text="memberCount"></span> Owned
+                                                </span>
+
+                                                <!-- Non-Member Vehicles Count -->
+                                                <span x-data="{ nonMemberCount: 0 }"
+                                                    x-show="memberData?.member?.membership === 'Non-Member'"
+                                                    x-init="fetch('/bodaboda-member/{{ $memberId }}/vehicles/nonmember/count')
+                                                        .then(res => res.json())
+                                                        .then(data => { if(data.success) nonMemberCount = data.count })">
+                                                    <span x-text="nonMemberCount"></span> Assigned
+                                                </span>
+                                            </h4>
+                                        </div>
                                     </div>
                                 </div>
-                        </div>
-                    </div>
-                    <!-- Metric Item End -->
-                </div>
-            </div>
+                                <!-- Metric Item End -->
 
-            <!-- Common Stats -->
-            <div class="col-span-12 mb-4">
-                <!-- Metric Group Two -->
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-1 md:gap-6 xl:grid-cols-4" x-data="memberInfo">
+                                <!-- Metric Item Start - Member's Contribution Balance -->
+                                <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]"
+                                    x-data x-init="$store.contributionData.memberBalanceFormatted">
+
+                                    <p class="text-theme-sm text-gray-500 dark:text-gray-400">
+                                        Contributions
+                                    </p>
+
+                                    <div class="mt-3 flex items-end justify-between">
+                                        <div>
+                                            <h4 class="text-xl font-bold text-gray-500 dark:text-white/90"
+                                                x-text="$store.contributionData.memberBalanceFormatted">
+                                                0
+                                            </h4>
+                                        </div>
+
+                                        <div class="flex items-center gap-1">
+                                            <span class="flex items-center gap-1 rounded-full bg-success-50 px-2 py-0.5 text-theme-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500">
+                                                0%
+                                            </span>
+
+                                            <span class="text-theme-xs text-gray-500 dark:text-gray-400">
+                                                Vs last month
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Metric Item End -->
+
                             <!-- Metric Item Start -->
-                            <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
-                                <p class="text-theme-sm text-gray-500 dark:text-gray-400">
-                                    Vehicles
-                                </p>
+                            <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]" x-data="savingsTable">
+                                <p class="text-theme-sm text-gray-500 dark:text-gray-400">Savings Wallet</p>
 
                                 <div class="mt-3 flex items-end justify-between">
                                     <div>
-                                        <h4 class="text-xl font-bold text-gray-500 dark:text-white/90" >
-                                            <!-- Member Vehicles Count -->
-                                            <span x-data="{ memberCount: 0 }"
-                                                x-show="memberData?.member?.membership === 'Member'"
-                                                x-init="fetch('/bodaboda-member/{{ $memberId }}/vehicles/member/count')
-                                                    .then(res => res.json())
-                                                    .then(data => { if(data.success) memberCount = data.count })">
-                                                <span x-text="memberCount"></span> Owned
-                                            </span>
+                                    <h4 class="text-xl font-semibold text-gray-500 dark:text-white/90" x-text="'KSh ' + savingsBalance.toFixed(2)">KES 0.00</h4>
+                                    </div>
 
-                                            <!-- Non-Member Vehicles Count -->
-                                            <span x-data="{ nonMemberCount: 0 }"
-                                                x-show="memberData?.member?.membership === 'Non-Member'"
-                                                x-init="fetch('/bodaboda-member/{{ $memberId }}/vehicles/nonmember/count')
-                                                    .then(res => res.json())
-                                                    .then(data => { if(data.success) nonMemberCount = data.count })">
-                                                <span x-text="nonMemberCount"></span> Assigned
-                                            </span>
-                                        </h4>
+                                    <div class="flex items-center gap-1">
+                                    <span class="flex items-center gap-1 rounded-full bg-error-50 px-2 py-0.5 text-theme-xs font-medium text-error-600 dark:bg-error-500/15 dark:text-error-500">
+                                        0 %
+                                    </span>
+
+                                    <span class="text-theme-xs text-gray-500 dark:text-gray-400">
+                                        Vs Last Month
+                                    </span>
                                     </div>
                                 </div>
                             </div>
                             <!-- Metric Item End -->
 
-                            <!-- Metric Item Start - Member's Contribution Balance -->
-                            <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]"
-                                x-data x-init="$store.contributionData.memberBalanceFormatted">
-
-                                <p class="text-theme-sm text-gray-500 dark:text-gray-400">
-                                    Contributions
-                                </p>
+                            <!-- Metric Item Start -->
+                            <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+                                <p class="text-theme-sm text-gray-500 dark:text-gray-400">Active Loans</p>
 
                                 <div class="mt-3 flex items-end justify-between">
-                                    <div>
-                                        <h4 class="text-xl font-bold text-gray-500 dark:text-white/90"
-                                            x-text="$store.contributionData.memberBalanceFormatted">
+                                    <div x-data="loansTable()">
+                                        <h4 class="text-xl font-semibold text-gray-500 dark:text-white/90" x-text="memberActiveLoans">
                                             0
                                         </h4>
                                     </div>
 
                                     <div class="flex items-center gap-1">
-                                        <span class="flex items-center gap-1 rounded-full bg-success-50 px-2 py-0.5 text-theme-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500">
-                                            0%
-                                        </span>
+                                    <span class="flex items-center gap-1 rounded-full bg-success-50 px-2 py-0.5 text-theme-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500">
+                                        0%
+                                    </span>
 
-                                        <span class="text-theme-xs text-gray-500 dark:text-gray-400">
-                                            Vs last month
-                                        </span>
+                                    <span class="text-theme-xs text-gray-500 dark:text-gray-400">
+                                        Vs last month
+                                    </span>
                                     </div>
                                 </div>
                             </div>
                             <!-- Metric Item End -->
-
-                        <!-- Metric Item Start -->
-                        <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]" x-data="savingsTable">
-                            <p class="text-theme-sm text-gray-500 dark:text-gray-400">Savings Wallet</p>
-
-                            <div class="mt-3 flex items-end justify-between">
-                                <div>
-                                <h4 class="text-xl font-semibold text-gray-500 dark:text-white/90" x-text="'KSh ' + savingsBalance.toFixed(2)">KES 0.00</h4>
-                                </div>
-
-                                <div class="flex items-center gap-1">
-                                <span class="flex items-center gap-1 rounded-full bg-error-50 px-2 py-0.5 text-theme-xs font-medium text-error-600 dark:bg-error-500/15 dark:text-error-500">
-                                    0 %
-                                </span>
-
-                                <span class="text-theme-xs text-gray-500 dark:text-gray-400">
-                                    Vs Last Month
-                                </span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Metric Item End -->
-
-                        <!-- Metric Item Start -->
-                        <div class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
-                            <p class="text-theme-sm text-gray-500 dark:text-gray-400">Active Loans</p>
-
-                            <div class="mt-3 flex items-end justify-between">
-                                <div x-data="loansTable()">
-                                    <h4 class="text-xl font-semibold text-gray-500 dark:text-white/90" x-text="memberActiveLoans">
-                                        0
-                                    </h4>
-                                </div>
-
-                                <div class="flex items-center gap-1">
-                                <span class="flex items-center gap-1 rounded-full bg-success-50 px-2 py-0.5 text-theme-xs font-medium text-success-600 dark:bg-success-500/15 dark:text-success-500">
-                                    0%
-                                </span>
-
-                                <span class="text-theme-xs text-gray-500 dark:text-gray-400">
-                                    Vs last month
-                                </span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Metric Item End -->
+                    </div>
+                    <!-- Metric Group Two -->
                 </div>
-                <!-- Metric Group Two -->
+
+
+                <!-- Tabbed Section -->
+                <div class="rounded-xl border border-gray-200 p-6 bg-white dark:border-gray-800 dark:bg-white/[0.03]" x-data="{ activeTab: 'personal' }">
+                    @php
+                        if(!isset($Member)) {
+                            $Member = new \App\Models\Member();
+                            $Member->status = 'Active'; // or whatever default
+                        }
+                    @endphp
+                    <!-- Content Area -->
+                    @if($Member->isProfileActive())
+                        <!-- Profile Active -->
+                        @include('Layouts.General.activeContent')
+                    @else
+                        <!-- Profile Not Active -->
+                        @include('Layouts.General.activateMember')
+                    @endif
+
+                </div>
+
             </div>
 
-
-            <!-- Tabbed Section -->
-            <div class="rounded-xl border border-gray-200 p-6 bg-white dark:border-gray-800 dark:bg-white/[0.03]" x-data="{ activeTab: 'personal' }">
-                @php
-                    if(!isset($Member)) {
-                        $Member = new \App\Models\Member();
-                        $Member->status = 'Active'; // or whatever default
-                    }
-                @endphp
-                <!-- Content Area -->
-                @if($Member->isProfileActive())
-                    <!-- Profile Active -->
-                    @include('Layouts.General.activeContent')
-                @else
-                    <!-- Profile Not Active -->
-                    @include('Layouts.General.activateMember')
-                @endif
-
             </div>
-
-        </div>
-
-          </div>
 
         </main>
         <!-- ===== Main Content End ===== -->
@@ -2277,8 +2277,24 @@
                     <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
-                <!-- Status -->
+                <!-- Transaction Date -->
                 <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Transaction Date
+                    </label>
+                    <input type="text"
+                        id="edit_transaction_date"
+                        name="transaction_date"
+                        :value="$store.contributionData.currentContribution?.transactionCode"
+                        @input="clearError('transaction_code')"
+                        @blur="validateField('transaction_code', $event.target.value)"
+                        :class="errors.transaction_date ? 'border-red-500' : ''"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    <span x-show="errors.transaction_date" x-text="errors.transaction_date" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <!-- Status -->
+                <div class="w-full px-2.5">
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                         Status
                     </label>
@@ -4776,6 +4792,19 @@
                             document.getElementById('edit_contribution_Amount') && (document.getElementById('edit_contribution_Amount').value = contribution.transactionAmount || '');
                             document.getElementById('edit_payment_mode') && (document.getElementById('edit_payment_mode').value = contribution.transactionMode || '');
                             document.getElementById('edit_transaction_code') && (document.getElementById('edit_transaction_code').value = contribution.transactionCode || '');
+
+                            // Format and set transaction date
+                            const transactionDateField = document.getElementById('edit_transaction_date');
+                            if (transactionDateField && contribution.transactionDate) {
+                                const date = new Date(contribution.transactionDate);
+                                const formattedDate = date.toLocaleDateString('en-GB', {
+                                    day: '2-digit',
+                                    month: 'short',
+                                    year: 'numeric',
+                                });
+                                transactionDateField.value = formattedDate;
+                            }
+
                             document.getElementById('edit_status') && (document.getElementById('edit_status').value = contribution.transactionStatus || '');
                         }, 100);
                     });
@@ -5290,6 +5319,7 @@
                     });
                 },
 
+                //Update Contribution Transaction
                 updateContribution() {
                     if (!this.validateUpdateForm()) {
                         alert('Please fix the errors in the form before submitting.');
@@ -5299,10 +5329,32 @@
                     Alpine.store('contributionData').isUpdating = true;
 
                     const transactionId = document.getElementById('edit_transaction_id')?.value;
+                    const transactionDateField = document.getElementById('edit_transaction_date')?.value;
+
+                    // Parse the formatted date from "27 Mar 2026 14:30" to "2026-03-27 14:30:00"
+                    let formattedDate = '';
+                    if (transactionDateField) {
+                        // Match pattern: "27 Mar 2026 14:30" or "27 Mar 2026"
+                        const parts = transactionDateField.match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})(?:\s+(\d{1,2}):(\d{2}))?/);
+                        if (parts) {
+                            const months = {
+                                'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
+                                'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
+                            };
+                            const day = parts[1].padStart(2, '0');
+                            const month = months[parts[2]];
+                            const year = parts[3];
+                            const hour = parts[4] ? parts[4].padStart(2, '0') : '00';
+                            const minute = parts[5] ? parts[5].padStart(2, '0') : '00';
+                            formattedDate = `${year}-${month}-${day} ${hour}:${minute}:00`;
+                        }
+                    }
+
                     const formData = {
                         amount: document.getElementById('edit_contribution_Amount')?.value,
                         payment_mode: document.getElementById('edit_payment_mode')?.value,
                         transaction_code: document.getElementById('edit_transaction_code')?.value || '',
+                        transaction_date: formattedDate,
                         status: document.getElementById('edit_status')?.value,
                         _token: document.querySelector('input[name="_token"]')?.value
                     };

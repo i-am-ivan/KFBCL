@@ -1752,6 +1752,7 @@ class BodabodaController extends Controller {
                 'amount' => 'required|numeric|min:0.01',
                 'payment_mode' => 'required|in:Cash,MPesa,Bank',
                 'transaction_code' => 'nullable|string|max:255',
+                'transaction_date' => 'required|date',
                 'status' => 'required|in:Confirmed,Pending,Cancelled'
             ]);
 
@@ -1772,6 +1773,7 @@ class BodabodaController extends Controller {
                 'transactionAmount' => $validated['amount'],
                 'transactionMode' => $validated['payment_mode'],
                 'transactionCode' => $validated['transaction_code'] ?? $original->transactionCode,
+                'transactionDate' => $validated['transaction_date'],
                 'transactionStatus' => $validated['status'],
                 'transactionUpdatedOn' => now()
             ];
