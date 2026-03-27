@@ -2981,6 +2981,7 @@ class BodabodaController extends Controller {
                 'savings_Amount' => 'required|numeric|min:0.01',
                 'payment_mode' => 'required|in:Cash,MPesa,Bank',
                 'transaction_code' => 'nullable|string|max:255',
+                'transaction_date' => 'required|date',
                 'Status' => 'required|in:Confirmed,Pending,Cancelled,Reversed'
             ]);
 
@@ -2998,7 +2999,7 @@ class BodabodaController extends Controller {
                 $paidOut = MemberSaving::where('memberId', $memberId)
                     ->where('transactionStatus', 'Confirmed')
                     ->where('transactionType', 'Paid-Out')
-                    ->where('transactionId', '!=', $transactionId) // Exclude current transaction
+                    ->where('transactionId', '!=', $transactionId)
                     ->sum('transactionAmount');
 
                 $availableBalance = $paidIn - $paidOut;
@@ -3015,6 +3016,7 @@ class BodabodaController extends Controller {
                 'transactionCode' => $validated['transaction_code'] ?? $saving->transactionCode,
                 'transactionAmount' => $validated['savings_Amount'],
                 'transactionMode' => $validated['payment_mode'],
+                'transactionDate' => $validated['transaction_date'],
                 'transactionStatus' => $validated['Status'],
                 'transactionUpdatedOn' => now()
             ]);

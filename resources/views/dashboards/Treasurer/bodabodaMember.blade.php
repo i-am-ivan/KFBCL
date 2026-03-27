@@ -2597,6 +2597,164 @@
         </div>
     </div>
 
+    <!-- editContributionModal -->
+    <div x-show="$store.savingData.editSavingModal" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999">
+        <div class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
+        <div @click.outside="$store.savingData.editSavingModal = false" class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+        <!-- close btn -->
+        <button @click="$store.savingData.editSavingModal = false" class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300">
+            <svg
+                    class="fill-current"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+            >
+            <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M6.04289 16.5418C5.65237 16.9323 5.65237 17.5655 6.04289 17.956C6.43342 18.3465 7.06658 18.3465 7.45711 17.956L11.9987 13.4144L16.5408 17.9565C16.9313 18.347 17.5645 18.347 17.955 17.9565C18.3455 17.566 18.3455 16.9328 17.955 16.5423L13.4129 12.0002L17.955 7.45808C18.3455 7.06756 18.3455 6.43439 17.955 6.04387C17.5645 5.65335 16.9313 5.65335 16.5408 6.04387L11.9987 10.586L7.45711 6.04439C7.06658 5.65386 6.43342 5.65386 6.04289 6.04439C5.65237 6.43491 5.65237 7.06808 6.04289 7.4586L10.5845 12.0002L6.04289 16.5418Z"
+                    fill=""
+            />
+            </svg>
+        </button>
+
+        <div class="px-2 pr-14">
+            <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Update Contribution</h4>
+            <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the details you wish to update.</p>
+        </div>
+
+        <form class="flex flex-col" x-data="savingsTable" @submit.prevent="updateSavings">
+            @csrf
+            <input type="hidden" name="_method" value="PUT">
+
+            <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
+                <!-- Hidden Transaction ID -->
+                <input type="hidden" id="edit_transaction_id" name="transaction_id" x-model="$store.savingData.currentSaving?.transactionId">
+
+                <!-- Amount -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Amount
+                    </label>
+                    <input type="number" step="0.01" min="0.01"
+                        id="edit_savings_Amount"
+                        name="savings_Amount"
+                        x-model="$store.savingData.currentSaving?.transactionAmount"
+                        @input="clearError('savings_Amount')"
+                        @blur="validateField('savings_Amount', $event.target.value)"
+                        :class="errors.savings_Amount ? 'border-red-500' : ''"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    <span x-show="errors.savings_Amount" x-text="errors.savings_Amount" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <!-- Payment Mode -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Payment Mode
+                    </label>
+                    <div class="relative z-20 bg-transparent">
+                        <select id="edit_payment_mode"
+                                name="payment_mode"
+                                x-model="$store.savingData.currentSaving?.transactionMode"
+                                @change="handlePaymentModeChange($event.target.value, 'edit'); clearError('payment_mode')"
+                                @blur="validateField('payment_mode', $event.target.value)"
+                                :class="errors.payment_mode ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value="">Select Payment Mode</option>
+                            <option value="Cash">Cash</option>
+                            <option value="MPesa">MPesa</option>
+                            <option value="Bank">Bank</option>
+                        </select>
+                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <!-- Transaction Code -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Transaction Code
+                    </label>
+                    <input type="text"
+                        id="edit_transaction_code"
+                        name="transaction_code"
+                        x-model="$store.savingData.currentSaving?.transactionCode"
+                        :readonly="$store.savingData.currentSaving?.transactionMode === 'Cash'"
+                        @input="clearError('transaction_code')"
+                        @blur="validateField('transaction_code', $event.target.value)"
+                        :class="errors.transaction_code ? 'border-red-500' : ''"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <!-- Transaction Date -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Transaction Date
+                    </label>
+                    <input type="text"
+                        id="edit_transaction_date"
+                        name="transaction_date"
+                        x-model="editTransactionDate"
+                        @input="clearError('transaction_date')"
+                        @blur="validateField('transaction_date', $event.target.value)"
+                        :class="errors.transaction_date ? 'border-red-500' : ''"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    <span x-show="errors.transaction_date" x-text="errors.transaction_date" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <!-- Status -->
+                <div class="w-full px-2.5">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Status
+                    </label>
+                    <div class="relative z-20 bg-transparent">
+                        <select id="edit_Status"
+                                name="Status"
+                                x-model="$store.savingData.currentSaving?.transactionStatus"
+                                @change="clearError('Status')"
+                                @blur="validateField('Status', $event.target.value)"
+                                :class="errors.Status ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value="">Select Status</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Cancelled">Cancelled</option>
+                            <option value="Reversed">Reversed</option>
+                        </select>
+                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <span x-show="errors.Status" x-text="errors.Status" class="text-xs text-error-500 mt-1"></span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+                <button @click="$store.savingData.editSavingModal = false" type="button"
+                        class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
+                    Cancel
+                </button>
+                <button type="submit"
+                        class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                        :disabled="$store.savingData.isUpdating">
+                    <span x-show="!$store.savingData.isUpdating">Update</span>
+                    <span x-show="$store.savingData.isUpdating">Updating ...</span>
+                </button>
+            </div>
+        </form>
+
+        </div>
+    </div>
+
     <!-- loansModal -->
     <div x-show="loansModal" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999">
         <div class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
@@ -5426,6 +5584,7 @@
 
     <!-- Member Savings -->
     <script>
+
         document.addEventListener('alpine:init', () => {
             // Initialize the store first
             Alpine.store('savingData', {
@@ -5444,11 +5603,18 @@
                 errors: {},
                 savingsModal: false,
                 withdrawSavingsModal: false,
+                editTransactionDate: '',
 
                 init() {
-                    console.log('Savings Table Initialized'); // Debug
+                    console.log('Savings Table Initialized');
                     this.loadSavings();
                     this.loadBalance();
+
+                    // Listen for edit event from table
+                    window.addEventListener('open-edit-savings-modal', (event) => {
+                        const saving = event.detail.saving;
+                        this.editSavingModal(saving);
+                    });
                 },
 
                 loadSavings() {
@@ -5470,13 +5636,18 @@
                 },
 
                 validateField(field, value) {
-                    if (!value || value === '') {
+                    if (!value || value === '' || value === null) {
                         this.errors[field] = 'This field is required';
-                    } else if (field === 'savings_Amount' && (value <= 0 || isNaN(value))) {
-                        this.errors[field] = 'Amount must be greater than 0';
-                    } else {
-                        delete this.errors[field];
+                        return false;
                     }
+
+                    if (field === 'savings_Amount' && (isNaN(value) || parseFloat(value) <= 0)) {
+                        this.errors[field] = 'Please enter a valid amount greater than 0';
+                        return false;
+                    }
+
+                    delete this.errors[field];
+                    return true;
                 },
 
                 clearError(field) {
@@ -5485,432 +5656,162 @@
                     }
                 },
 
-                validateForm(data) {
+                validateUpdateForm() {
                     this.errors = {};
+                    let isValid = true;
 
-                    if (!data.savings_Amount || data.savings_Amount <= 0) {
-                        this.errors.savings_Amount = 'Amount must be greater than 0';
-                    }
-                    if (!data.payment_mode) {
+                    const amount = document.getElementById('edit_savings_Amount')?.value;
+                    const paymentMode = document.getElementById('edit_payment_mode')?.value;
+                    const status = document.getElementById('edit_Status')?.value;
+                    const transactionDate = this.editTransactionDate;
+
+                    if (!this.validateField('savings_Amount', amount)) isValid = false;
+
+                    if (!paymentMode || paymentMode === '') {
                         this.errors.payment_mode = 'Please select payment mode';
+                        isValid = false;
                     }
-                    if (!data.Status) {
+
+                    if (!status || status === '') {
                         this.errors.Status = 'Please select status';
+                        isValid = false;
                     }
 
-                    // Validate transaction code for non-cash payments
-                    if (data.payment_mode !== 'Cash' && (!data.transaction_code || data.transaction_code === '')) {
+                    if (!transactionDate || transactionDate === '') {
+                        this.errors.transaction_date = 'Transaction date is required';
+                        isValid = false;
+                    }
+
+                    const transactionCode = document.getElementById('edit_transaction_code')?.value;
+                    if (paymentMode !== 'Cash' && (!transactionCode || transactionCode === '')) {
                         this.errors.transaction_code = 'Transaction code is required for non-cash payments';
+                        isValid = false;
                     }
 
-                    return Object.keys(this.errors).length === 0;
+                    return isValid;
                 },
 
-                // UPDATED addSavings() method with receipt printing
-                addSavings() {
-                    console.log('Add Savings clicked'); // Debug
-                    const form = document.getElementById('addSavingsForm');
-                    const formData = new FormData(form);
-                    const data = Object.fromEntries(formData.entries());
-
-                    if (!this.validateForm(data)) {
-                        return;
-                    }
-
-                    // Set loading state
-                    Alpine.store('savingData').isAdding = true;
-
-                    fetch('/bodaboda-member/{{ $memberId }}/savings/add', {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
-                            'Accept': 'application/json'
-                        },
-                        body: formData
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Store transaction data for receipt
-                            Alpine.store('savingData').lastTransaction = data.transaction;
-
-                            this.savingsModal = false;
-                            this.loadSavings();
-                            this.loadBalance();
-                            form.reset();
-                            this.errors = {};
-
-                            // Show success message with print prompt
-                            const printReceipt = confirm(
-                                '✅ Savings added successfully!\n\nTransaction Code: ' +
-                                (data.transaction?.transaction_code || 'N/A') +
-                                '\nAmount: KES ' + parseFloat(data.savings_Amount || 0).toFixed(2) +
-                                '\n\nWould you like to print the receipt?'
-                            );
-
-                            if (printReceipt) {
-                                // User wants to print - use hidden iframe approach
-                                this.printReceipt(data.transaction || {
-                                    amount: data.savings_Amount,
-                                    payment_mode: data.payment_mode,
-                                    transaction_code: data.transaction_code,
-                                    status: data.Status
-                                });
-                            } else {
-                                // User doesn't want to print, just reload
-                                window.location.reload();
-                            }
+                handlePaymentModeChange(mode, type) {
+                    const codeField = document.getElementById('edit_transaction_code');
+                    if (codeField) {
+                        if (mode === 'Cash') {
+                            codeField.readOnly = true;
+                            codeField.value = '';
                         } else {
-                            alert(data.message);
-                            Alpine.store('savingData').isAdding = false;
+                            codeField.readOnly = false;
                         }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Error adding savings: ' + error.message);
-                        Alpine.store('savingData').isAdding = false;
-                    });
-                },
-
-                // UPDATED withdrawSavings() method with receipt printing
-                withdrawSavings() {
-                    console.log('Withdraw Savings clicked'); // Debug
-                    const form = document.getElementById('withdrawSavingsForm');
-                    const formData = new FormData(form);
-                    const data = Object.fromEntries(formData.entries());
-
-                    if (!this.validateForm(data)) {
-                        return;
                     }
-
-                    Alpine.store('savingData').isAdding = true;
-
-                    fetch('/bodaboda-member/{{ $memberId }}/savings/withdraw', {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
-                            'Accept': 'application/json'
-                        },
-                        body: formData
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Store transaction data for receipt
-                            Alpine.store('savingData').lastTransaction = data.transaction;
-
-                            this.withdrawSavingsModal = false;
-                            this.loadSavings();
-                            this.loadBalance();
-                            form.reset();
-                            this.errors = {};
-
-                            // Show success message with print prompt
-                            const printReceipt = confirm(
-                                '✅ Withdrawal successful!\n\nTransaction Code: ' +
-                                (data.transaction?.transaction_code || 'N/A') +
-                                '\nAmount: KES ' + parseFloat(data.savings_Amount || 0).toFixed(2) +
-                                '\n\nWould you like to print the receipt?'
-                            );
-
-                            if (printReceipt) {
-                                // User wants to print - use hidden iframe approach
-                                this.printReceipt(data.transaction || {
-                                    amount: data.savings_Amount,
-                                    payment_mode: data.payment_mode,
-                                    transaction_code: data.transaction_code,
-                                    status: data.Status,
-                                    transaction_type: 'Withdrawal'
-                                });
-                            } else {
-                                // User doesn't want to print, just reload
-                                window.location.reload();
-                            }
-                        } else {
-                            alert(data.message);
-                            Alpine.store('savingData').isAdding = false;
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Error processing withdrawal: ' + error.message);
-                        Alpine.store('savingData').isAdding = false;
-                    });
-                },
-
-                // NEW: Print receipt method (adapted from contributions)
-                printReceipt(transaction) {
-                    // Determine transaction type for filename
-                    const transactionType = transaction.transaction_type === 'Withdrawal' ? 'Withdrawal' : 'Savings';
-
-                    // Create receipt HTML
-                    const receiptHTML = this.generateReceiptHTML(transaction, transactionType);
-
-                    // Create filename: HH_mm_ss_dd_mm_Savings_Receipt.pdf
-                    const now = new Date();
-                    const hours = String(now.getHours()).padStart(2, '0');
-                    const minutes = String(now.getMinutes()).padStart(2, '0');
-                    const seconds = String(now.getSeconds()).padStart(2, '0');
-                    const day = String(now.getDate()).padStart(2, '0');
-                    const month = String(now.getMonth() + 1).padStart(2, '0');
-                    const filename = `${hours}_${minutes}_${seconds}_${day}_${month}_${transactionType}_Receipt.pdf`;
-
-                    // Create hidden iframe
-                    const iframe = document.createElement('iframe');
-                    iframe.style.position = 'absolute';
-                    iframe.style.width = '0';
-                    iframe.style.height = '0';
-                    iframe.style.border = 'none';
-                    iframe.style.opacity = '0';
-                    iframe.style.pointerEvents = 'none';
-
-                    document.body.appendChild(iframe);
-
-                    // Write receipt to iframe with compact styling
-                    const iframeDoc = iframe.contentWindow.document;
-                    iframeDoc.open();
-                    iframeDoc.write(`
-                        <!DOCTYPE html>
-                        <html>
-                        <head>
-                            <title>${transactionType} Receipt</title>
-                            <style>
-                                @media print {
-                                    @page {
-                                        size: 80mm auto; /* 80mm ≈ 3.15 inches */
-                                        margin: 2mm;
-                                    }
-                                    body {
-                                        font-family: 'Courier New', monospace;
-                                        font-size: 10pt;
-                                        line-height: 1.2;
-                                        max-width: 72mm;
-                                        margin: 0 auto;
-                                        padding: 0;
-                                    }
-                                    .receipt {
-                                        white-space: pre-wrap;
-                                        padding: 2mm;
-                                    }
-                                    .receipt-header {
-                                        text-align: center;
-                                        margin-bottom: 1mm;
-                                    }
-                                    .receipt-header img {
-                                        max-width: 15mm;
-                                        margin: 0 auto;
-                                    }
-                                    .receipt-header h2 {
-                                        margin: 1mm 0;
-                                        font-size: 12pt;
-                                        font-weight: bold;
-                                    }
-                                    .receipt-header small {
-                                        font-size: 8pt;
-                                        display: block;
-                                    }
-                                    .receipt-line {
-                                        border-top: 1px dashed #000;
-                                        margin: 1mm 0;
-                                    }
-                                    .receipt-row {
-                                        margin: 1.5mm 0;
-                                        font-size: 9pt;
-                                    }
-                                    .receipt-footer {
-                                        text-align: center;
-                                        margin: 0.5mm 0;
-                                        font-size: 8pt;
-                                    }
-                                    .text-bold {
-                                        font-weight: bold;
-                                    }
-                                    .amount {
-                                        font-size: 11pt;
-                                        font-weight: bold;
-                                    }
-                                    table {
-                                        width: 100%;
-                                        border-collapse: collapse;
-                                    }
-                                    td {
-                                        padding: 0.5mm 0;
-                                        font-size: 9pt;
-                                    }
-                                    .label {
-                                        width: 40%;
-                                    }
-                                    .value {
-                                        width: 60%;
-                                        font-weight: bold;
-                                    }
-                                }
-                            </style>
-                        </head>
-                        <body>
-                            <div class="receipt">
-                                ${receiptHTML}
-                            </div>
-                            <script>
-                                window.onload = function() {
-                                    // Set PDF filename in print dialog if browser supports it
-                                    const style = document.createElement('style');
-                                    style.innerHTML = \`
-                                        @page {
-                                            size: 80mm auto;
-                                            margin: 2mm;
-                                            @bottom-center {
-                                                content: "Page " counter(page);
-                                                font-size: 7pt;
-                                            }
-                                        }
-                                    \`;
-                                    document.head.appendChild(style);
-
-                                    setTimeout(() => {
-                                        window.print();
-                                    }, 100);
-
-                                    window.onafterprint = function() {
-                                        window.parent.location.reload();
-                                    };
-
-                                    setTimeout(() => {
-                                        window.parent.location.reload();
-                                    }, 5000);
-                                }
-                            <\/script>
-                        </body>
-                        </html>
-                    `);
-                    iframeDoc.close();
-                },
-
-                // NEW: Generate compact receipt HTML for savings
-                generateReceiptHTML(transaction, transactionType = 'Savings') {
-                    // Format date: Mar 03, 2026 18:40
-                    const date = new Date();
-                    const formattedDate = date.toLocaleString('en-US', {
-                        month: 'short',
-                        day: '2-digit',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: false
-                    }).replace(',', '');
-
-                    const memberId = '{{ $memberId }}';
-                    const amount = parseFloat(transaction.amount || transaction.savings_Amount || 0).toFixed(2);
-                    const paymentMode = transaction.payment_mode || 'N/A';
-                    const transactionCode = transaction.transaction_code || 'N/A';
-                    const status = transaction.status || 'Completed';
-
-                    // Get auth ID from meta tag or use placeholder
-                    const authId = '{{ Auth::id() }}';
-
-                    return `
-                        <div class="receipt-header">
-                            <img src="{{ asset('company_logo.png') }}" alt="Logo" style="max-width: 15mm;" />
-                            <h2>KFBCL</h2>
-                            <small>Growing together</small>
-                        </div>
-
-                        <div class="receipt-line"></div>
-
-                        <table>
-                            <tr>
-                                <td class="label">Type:</td>
-                                <td class="value">${transactionType}</td>
-                            </tr>
-                            <tr>
-                                <td class="label">Member:</td>
-                                <td class="value">${memberId}</td>
-                            </tr>
-                            <tr>
-                                <td class="label">By:</td>
-                                <td class="value">${authId}</td>
-                            </tr>
-                        </table>
-
-                        <div class="receipt-line"></div>
-
-                        <table>
-                            <tr>
-                                <td class="label">Amount:</td>
-                                <td class="value amount">KES ${amount}</td>
-                            </tr>
-                            <tr>
-                                <td class="label">Mode:</td>
-                                <td class="value">${paymentMode}</td>
-                            </tr>
-                            <tr>
-                                <td class="label">Code:</td>
-                                <td class="value">${transactionCode}</td>
-                            </tr>
-                            <tr>
-                                <td class="label">Status:</td>
-                                <td class="value">${status}</td>
-                            </tr>
-                            <tr>
-                                <td class="label">Date:</td>
-                                <td class="value">${formattedDate}</td>
-                            </tr>
-                        </table>
-
-                        <div class="receipt-line"></div>
-
-                        <div class="receipt-footer">
-                            Thank you<br>
-                            &copy; KFBCL<br>
-                            Growing together
-                        </div>
-
-                        <div class="receipt-line"></div>
-                    `;
                 },
 
                 updateSavings() {
-                    console.log('Update Savings clicked'); // Debug
-                    const form = document.getElementById('editSavingsForm');
-                    const formData = new FormData(form);
-                    const data = Object.fromEntries(formData.entries());
-                    const transactionId = document.getElementById('edit_transaction_id').value;
-
-                    if (!this.validateForm(data)) {
+                    if (!this.validateUpdateForm()) {
+                        alert('Please fix the errors in the form before submitting.');
                         return;
                     }
 
                     Alpine.store('savingData').isUpdating = true;
 
+                    const transactionId = document.getElementById('edit_transaction_id')?.value;
+                    const transactionDateField = this.editTransactionDate;
+
+                    // Parse the formatted date from "27 Mar 2026" to "2026-03-27 00:00:00"
+                    let formattedDate = '';
+                    if (transactionDateField) {
+                        const parts = transactionDateField.match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/);
+                        if (parts) {
+                            const months = {
+                                'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
+                                'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
+                            };
+                            const day = parts[1].padStart(2, '0');
+                            const month = months[parts[2]];
+                            const year = parts[3];
+                            formattedDate = `${year}-${month}-${day} 00:00:00`;
+                        }
+                    }
+
+                    const formData = {
+                        savings_Amount: document.getElementById('edit_savings_Amount')?.value,
+                        payment_mode: document.getElementById('edit_payment_mode')?.value,
+                        transaction_code: document.getElementById('edit_transaction_code')?.value || '',
+                        transaction_date: formattedDate,
+                        Status: document.getElementById('edit_Status')?.value,
+                        _token: document.querySelector('input[name="_token"]')?.value
+                    };
+
                     fetch(`/bodaboda-member/{{ $memberId }}/savings/${transactionId}/edit`, {
-                        method: 'PUT',
+                        method: 'POST',
                         headers: {
-                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value,
+                            'Accept': 'application/json'
                         },
-                        body: JSON.stringify(data)
+                        body: JSON.stringify(formData)
                     })
                     .then(res => res.json())
                     .then(data => {
-                        if (data.success) {
-                            Alpine.store('savingData').editSavingModal = false;
-                            this.loadSavings();
-                            this.loadBalance();
-                            form.reset();
-                            this.errors = {};
-                            alert('Savings transaction updated successfully!');
-                            location.reload();
-                        } else {
-                            alert(data.message);
+                        setTimeout(() => {
                             Alpine.store('savingData').isUpdating = false;
-                        }
+
+                            if (data.success) {
+                                alert(data.message);
+                                window.location.reload();
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        }, 500);
                     })
                     .catch(error => {
-                        console.error('Error:', error);
-                        alert('Error updating savings: ' + error.message);
-                        Alpine.store('savingData').isUpdating = false;
+                        setTimeout(() => {
+                            Alpine.store('savingData').isUpdating = false;
+                            alert('Error updating savings transaction. Please try again.');
+                            console.error('Error:', error);
+                        }, 500);
                     });
+                },
+
+                editSavingModal(saving) {
+                    console.log('Editing saving:', saving);
+
+                    // Store the saving data
+                    Alpine.store('savingData').currentSaving = saving;
+                    Alpine.store('savingData').editSavingModal = true;
+
+                    // Clear previous errors
+                    this.errors = {};
+
+                    // Populate form fields after modal opens
+                    setTimeout(() => {
+                        document.getElementById('edit_transaction_id') && (document.getElementById('edit_transaction_id').value = saving.transactionId || '');
+                        document.getElementById('edit_savings_Amount') && (document.getElementById('edit_savings_Amount').value = saving.transactionAmount || '');
+                        document.getElementById('edit_payment_mode') && (document.getElementById('edit_payment_mode').value = saving.transactionMode || '');
+                        document.getElementById('edit_transaction_code') && (document.getElementById('edit_transaction_code').value = saving.transactionCode || '');
+                        document.getElementById('edit_Status') && (document.getElementById('edit_Status').value = saving.transactionStatus || '');
+
+                        // Format and set transaction date (DD MMM YYYY only, no time)
+                        if (saving.transactionDate) {
+                            const date = new Date(saving.transactionDate);
+                            const day = String(date.getDate()).padStart(2, '0');
+                            const month = date.toLocaleDateString('en-GB', { month: 'short' });
+                            const year = date.getFullYear();
+                            this.editTransactionDate = `${day} ${month} ${year}`;
+                        } else {
+                            // Default to current date if no transaction date
+                            const today = new Date();
+                            const day = String(today.getDate()).padStart(2, '0');
+                            const month = today.toLocaleDateString('en-GB', { month: 'short' });
+                            const year = today.getFullYear();
+                            this.editTransactionDate = `${day} ${month} ${year}`;
+                        }
+
+                        // Handle payment mode readonly state
+                        if (saving.transactionMode === 'Cash') {
+                            const codeField = document.getElementById('edit_transaction_code');
+                            if (codeField) {
+                                codeField.readOnly = true;
+                            }
+                        }
+                    }, 100);
                 },
 
                 // Pagination methods
@@ -5943,23 +5844,10 @@
 
                 goToPage(page) {
                     if (page >= 1 && page <= this.totalPages) this.page = page;
-                },
-
-                editSavingModal(saving) {
-                    Alpine.store('savingData').currentSaving = saving;
-                    Alpine.store('savingData').editSavingModal = true;
-
-                    // Populate the edit form
-                    setTimeout(() => {
-                        document.getElementById('edit_savings_Amount').value = saving.transactionAmount;
-                        document.getElementById('edit_payment_mode').value = saving.transactionMode;
-                        document.getElementById('edit_transaction_code').value = saving.transactionCode;
-                        document.getElementById('edit_Status').value = saving.transactionStatus;
-                        document.getElementById('edit_transaction_id').value = saving.transactionId;
-                    }, 100);
                 }
             }));
         });
+
     </script>
 
     <!-- Member Loans -->
