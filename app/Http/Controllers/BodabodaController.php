@@ -2639,20 +2639,26 @@ class BodabodaController extends Controller {
         try {
             $validated = $request->validate([
                 'amount' => 'required|numeric|min:1',
+                'total_amount' => 'required|numeric|min:1',
+                'period_months' => 'required|integer|min:1',
                 'payment_mode' => 'required|in:Cash,MPesa,Bank',
                 'transaction_code' => 'nullable|string|max:255',
-                'status' => 'required|in:Confirmed,Pending,Cancelled,Reversed'
+                'assigned_date' => 'required|date',
+                'status' => 'required|in:Active,Approved,Under Review,Pending,Repaid,Defaulted,Cancelled'
             ]);
 
             $data = [
-                'transactionAmount' => $validated['amount'],
+                'transactionLoanAmount' => $validated['amount'],
+                'transactionTotalLoan' => $validated['total_amount'],
+                'transactionLoanPeriod' => $validated['period_months'],
                 'transactionMode' => $validated['payment_mode'],
                 'transactionCode' => $validated['transaction_code'],
-                'transactionStatus' => $validated['status'],
+                'transactionCreated' => $validated['assigned_date'],
+                'transactionLoanStatus' => $validated['status'],
                 'transactionUpdatedOn' => now()
             ];
 
-            $updated = DB::table('member_loans_transactions')
+            $updated = DB::table('member_loans')
                 ->where('transactionId', $transactionId)
                 ->where('memberId', $memberId)
                 ->update($data);
@@ -2660,12 +2666,12 @@ class BodabodaController extends Controller {
             if ($updated) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Transaction updated successfully'
+                    'message' => 'Loan updated successfully'
                 ]);
             } else {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Transaction not found'
+                    'message' => 'Loan not found or no changes made'
                 ], 404);
             }
 
@@ -2678,7 +2684,7 @@ class BodabodaController extends Controller {
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error updating transaction: ' . $e->getMessage()
+                'message' => 'Error updating loan: ' . $e->getMessage()
             ], 500);
         }
     }
