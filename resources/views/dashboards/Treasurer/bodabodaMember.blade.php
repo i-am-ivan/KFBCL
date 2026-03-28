@@ -6045,15 +6045,22 @@
                     // Clear previous errors
                     this.errors = {};
 
-                    // Set current interest rate from loan type
-                    if (loan.interest_rate) {
-                        this.currentInterestRate = parseFloat(loan.interest_rate);
-                    } else if (Alpine.store('loanData').loanTypes.length > 0) {
-                        const loanType = Alpine.store('loanData').loanTypes.find(lt => lt.loanId == loan.loan_type_id);
+                    // Find and set the current loan type from loanTypes
+                    let loanType = null;
+                    if (loan.loan_type_id && Alpine.store('loanData').loanTypes.length > 0) {
+                        loanType = Alpine.store('loanData').loanTypes.find(lt => lt.loanId == loan.loan_type_id);
                         if (loanType) {
-                            this.currentInterestRate = parseFloat(loanType.interest_rate);
                             Alpine.store('loanData').currentLoanType = loanType;
                         }
+                    }
+
+                    // Set current interest rate
+                    if (loanType) {
+                        this.currentInterestRate = parseFloat(loanType.interest_rate);
+                    } else if (loan.interest_rate) {
+                        this.currentInterestRate = parseFloat(loan.interest_rate);
+                    } else {
+                        this.currentInterestRate = 0;
                     }
 
                     // Populate edit properties
@@ -6069,19 +6076,64 @@
                     // Calculate total amount
                     this.calculateTotalAmount();
 
-                    // Populate DOM elements
+                    // Populate DOM elements (fallback for any that don't bind properly)
                     setTimeout(() => {
-                        document.getElementById('edit_loan_id') && (document.getElementById('edit_loan_id').value = loan.transactionId || '');
-                        document.getElementById('edit_transaction_id') && (document.getElementById('edit_transaction_id').value = loan.transactionId || '');
-                        document.getElementById('edit_loan_type_name') && (document.getElementById('edit_loan_type_name').value = loan.loan_type_name || '');
-                        document.getElementById('edit_amount') && (document.getElementById('edit_amount').value = this.editAmount);
-                        document.getElementById('edit_loan_period') && (document.getElementById('edit_loan_period').value = this.editPeriodMonths);
-                        document.getElementById('edit_payment_mode') && (document.getElementById('edit_payment_mode').value = this.editPaymentMode);
-                        document.getElementById('edit_transaction_code') && (document.getElementById('edit_transaction_code').value = this.editTransactionCode);
-                        document.getElementById('edit_loan_status') && (document.getElementById('edit_loan_status').value = this.editLoanStatus);
-                        document.getElementById('edit_start_date') && (document.getElementById('edit_start_date').value = this.editStartDate);
-                        document.getElementById('edit_end_date') && (document.getElementById('edit_end_date').value = this.editEndDate);
-                        document.getElementById('edit_assigned_date') && (document.getElementById('edit_assigned_date').value = this.editAssignedDate);
+                        // Hidden fields
+                        const loanIdField = document.getElementById('edit_loan_id');
+                        if (loanIdField) loanIdField.value = loan.transactionId || '';
+
+                        const transactionIdField = document.getElementById('edit_transaction_id');
+                        if (transactionIdField) transactionIdField.value = loan.transactionId || '';
+
+                        // Loan Type Name
+                        const loanTypeNameField = document.getElementById('edit_loan_type_name');
+                        if (loanTypeNameField) loanTypeNameField.value = loan.loan_type_name || '';
+
+                        // Interest Rate
+                        const interestRateField = document.getElementById('edit_interest_rate');
+                        if (interestRateField) {
+                            if (loanType) {
+                                interestRateField.value = loanType.interest_rate + '%';
+                            } else if (loan.interest_rate) {
+                                interestRateField.value = loan.interest_rate + '%';
+                            }
+                        }
+
+                        // Total Amount
+                        const totalAmountField = document.getElementById('edit_total_amount');
+                        if (totalAmountField) totalAmountField.value = this.editTotalAmount;
+
+                        // Amount
+                        const amountField = document.getElementById('edit_amount');
+                        if (amountField) amountField.value = this.editAmount;
+
+                        // Period
+                        const periodField = document.getElementById('edit_loan_period');
+                        if (periodField) periodField.value = this.editPeriodMonths;
+
+                        // Payment Mode
+                        const paymentModeField = document.getElementById('edit_payment_mode');
+                        if (paymentModeField) paymentModeField.value = this.editPaymentMode;
+
+                        // Transaction Code
+                        const transactionCodeField = document.getElementById('edit_transaction_code');
+                        if (transactionCodeField) transactionCodeField.value = this.editTransactionCode;
+
+                        // Loan Status
+                        const statusField = document.getElementById('edit_loan_status');
+                        if (statusField) statusField.value = this.editLoanStatus;
+
+                        // Start Date
+                        const startDateField = document.getElementById('edit_start_date');
+                        if (startDateField) startDateField.value = this.editStartDate;
+
+                        // End Date
+                        const endDateField = document.getElementById('edit_end_date');
+                        if (endDateField) endDateField.value = this.editEndDate;
+
+                        // Assigned Date
+                        const assignedDateField = document.getElementById('edit_assigned_date');
+                        if (assignedDateField) assignedDateField.value = this.editAssignedDate;
 
                         // Handle payment mode readonly state
                         if (this.editPaymentMode === 'Cash') {
@@ -6163,117 +6215,11 @@
                     // Load member active loans count
                     this.loadMemberActiveLoans();
 
-                    // Listen for edit events
+                    // Listen for edit events - Simplified version
                     window.addEventListener('open-edit-loan-modal', (event) => {
                         const rawLoan = event.detail.loan;
-
-                        // Debug: Log the raw loan data
                         console.log('Raw loan data received:', rawLoan);
-
-                        // Normalize the loan data
-                        const normalizedLoan = this.normalizeLoanData(rawLoan);
-                        console.log('Normalized loan data:', normalizedLoan);
-                        console.log('Transaction Created:', normalizedLoan.transactionCreated);
-
-                        // Store the normalized loan data
-                        Alpine.store('loanData').currentLoan = normalizedLoan;
-
-                        // Open the modal
-                        Alpine.store('loanData').editLoanModal = true;
-
-                        // Clear any previous errors
-                        this.errors = {};
-
-                        // Find and set the current loan type
-                        if (normalizedLoan.loanTypeId && Alpine.store('loanData').loanTypes.length > 0) {
-                            const selectedType = Alpine.store('loanData').loanTypes.find(lt => lt.loanId == normalizedLoan.loanTypeId);
-                            if (selectedType) {
-                                Alpine.store('loanData').currentLoanType = selectedType;
-                            }
-                        }
-
-                        // Direct DOM manipulation as fallback
-                        setTimeout(() => {
-                            // Hidden loan ID
-                            const loanIdField = document.getElementById('edit_loan_id');
-                            if (loanIdField) loanIdField.value = normalizedLoan.transactionId;
-
-                            // Loan Type
-                            const loanTypeField = document.getElementById('edit_loan_type_id');
-                            if (loanTypeField && normalizedLoan.loanTypeId) {
-                                loanTypeField.value = normalizedLoan.loanTypeId;
-                                loanTypeField.dispatchEvent(new Event('change', { bubbles: true }));
-                            }
-
-                            // Amount
-                            const amountField = document.getElementById('edit_amount');
-                            if (amountField && normalizedLoan.transactionLoanAmount) {
-                                amountField.value = normalizedLoan.transactionLoanAmount;
-                            }
-
-                            // Payment Mode
-                            const paymentModeField = document.getElementById('edit_payment_mode');
-                            if (paymentModeField && normalizedLoan.transactionMode) {
-                                paymentModeField.value = normalizedLoan.transactionMode;
-                                paymentModeField.dispatchEvent(new Event('change', { bubbles: true }));
-                            }
-
-                            // Transaction Code
-                            const transactionCodeField = document.getElementById('edit_transaction_code');
-                            if (transactionCodeField && normalizedLoan.transactionCode) {
-                                transactionCodeField.value = normalizedLoan.transactionCode;
-                            }
-
-                            // Period
-                            const periodField = document.getElementById('edit_loan_period');
-                            if (periodField && normalizedLoan.loanPeriod) {
-                                periodField.value = normalizedLoan.loanPeriod;
-                                periodField.dispatchEvent(new Event('change', { bubbles: true }));
-                            }
-
-                            // Status
-                            const statusField = document.getElementById('edit_loan_status');
-                            if (statusField && normalizedLoan.transactionStatus) {
-                                statusField.value = normalizedLoan.transactionStatus;
-                            }
-
-                            // Start Date
-                            const startDateField = document.getElementById('edit_start_date');
-                            if (startDateField && normalizedLoan.startDate) {
-                                startDateField.value = this.formatDate(normalizedLoan.startDate);
-                            }
-
-                            // End Date
-                            const endDateField = document.getElementById('edit_end_date');
-                            if (endDateField) {
-                                if (normalizedLoan.endDate) {
-                                    endDateField.value = this.formatDate(normalizedLoan.endDate);
-                                } else if (normalizedLoan.startDate && normalizedLoan.loanPeriod) {
-                                    endDateField.value = this.calculateEndDate(normalizedLoan.startDate, normalizedLoan.loanPeriod);
-                                }
-                            }
-
-                            // Assigned Date
-                            const assignedDateField = document.getElementById('edit_assigned_date');
-                            if (assignedDateField) {
-                                if (normalizedLoan.transactionCreated) {
-                                    assignedDateField.value = this.formatDateTime(normalizedLoan.transactionCreated);
-                                    console.log('Setting assigned date to:', this.formatDateTime(normalizedLoan.transactionCreated));
-                                } else {
-                                    console.log('No transactionCreated found in normalized loan');
-                                }
-                            }
-
-                            // Interest Rate
-                            const interestRateField = document.getElementById('edit_interest_rate');
-                            if (interestRateField) {
-                                if (Alpine.store('loanData').currentLoanType) {
-                                    interestRateField.value = Alpine.store('loanData').currentLoanType.interest_rate + '%';
-                                } else if (normalizedLoan.interestRate) {
-                                    interestRateField.value = normalizedLoan.interestRate + '%';
-                                }
-                            }
-                        }, 100);
+                        this.editLoanModal(rawLoan);
                     });
                 },
 
