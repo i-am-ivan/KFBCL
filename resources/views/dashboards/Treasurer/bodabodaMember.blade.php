@@ -1177,6 +1177,8 @@
                             <option value="">Select Type</option>
                             <option value="Motocycle">Motocycle</option>
                             <option value="Tuk Tuk">Tuk Tuk</option>
+                            <option value="Mini-Van">Mini-Van</option>
+                            <option value="Van">Van</option>
                         </select>
                         <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                             <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1432,7 +1434,9 @@
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                             <option value="">Select Type</option>
                             <option value="Motorcycle">Motorcycle</option>
+                            <option value="Mini-Van">Mini-Van</option>
                             <option value="Tuk Tuk">Tuk Tuk</option>
+                            <option value="Van">Van</option>
                         </select>
                         <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                             <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -3048,8 +3052,8 @@
             </button>
 
             <div class="px-2 pr-14">
-                <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Assign Loan</h4>
-                <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the amount you wish to withdraw.</p>
+                <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Edit Assign Loan</h4>
+                <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">You can edit the assign loan detaild below.</p>
             </div>
 
             <form class="flex flex-col" method="POST" x-data="loansTable" @submit.prevent="editLoan">
@@ -3083,7 +3087,7 @@
                         <input readonly type="text"
                             id="edit_interest_rate"
                             name="interest_rate"
-                            x-model="$store.loanData.currentLoanType?.interest_rate ? $store.loanData.currentLoanType.interest_rate + '%' : ($store.loanData.currentLoan?.interestRate ? $store.loanData.currentLoan.interestRate + '%' : '')"
+                            x-model="editInterestRateDisplay"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30">
                     </div>
 
@@ -3128,7 +3132,7 @@
                             <select id="edit_loan_period"
                                     name="loan_period"
                                     x-model="editPeriodMonths"
-                                    @change="calculateTotalAmount(); clearError('loan_period')"
+                                    @change="calculateTotalAmount(); calculateEndDateFromStartDate(); clearError('loan_period')"
                                     @blur="validateField('loan_period', $event.target.value)"
                                     :class="errors.loan_period ? 'border-red-500' : ''"
                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
@@ -3149,34 +3153,21 @@
                         <span x-show="errors.loan_period" x-text="errors.loan_period" class="text-xs text-error-500 mt-1"></span>
                     </div>
 
-                    <!-- Payment Mode -->
+                    <!-- Payment Mode (Text input, readonly, disabled) -->
                     <div class="w-full px-2.5 xl:w-1/2">
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                             Payment Mode
                         </label>
-                        <div class="relative z-20 bg-transparent">
-                            <select id="edit_payment_mode"
-                                    name="payment_mode"
-                                    x-model="editPaymentMode"
-                                    @change="handlePaymentModeChange($event.target.value, 'edit_'); clearError('payment_mode')"
-                                    @blur="validateField('payment_mode', $event.target.value)"
-                                    :class="errors.payment_mode ? 'border-red-500' : ''"
-                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                <option value="">Select Payment Mode</option>
-                                <option value="Cash">Cash</option>
-                                <option value="MPesa">MPesa</option>
-                                <option value="Bank">Bank</option>
-                            </select>
-                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </span>
-                        </div>
-                        <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
+                        <input type="text"
+                            id="edit_payment_mode"
+                            name="payment_mode"
+                            x-model="editPaymentMode"
+                            readonly
+                            disabled
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30">
                     </div>
 
-                    <!-- Transaction Code -->
+                    <!-- Transaction Code (readonly, disabled) -->
                     <div class="w-full px-2.5 xl:w-1/2">
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                             Transaction Code
@@ -3186,16 +3177,13 @@
                                 id="edit_transaction_code"
                                 name="transaction_code"
                                 x-model="editTransactionCode"
-                                x-bind:readonly="editPaymentMode === 'Cash'"
-                                @input="clearError('transaction_code')"
-                                @blur="validateField('transaction_code', $event.target.value)"
-                                :class="errors.transaction_code ? 'border-red-500' : ''"
-                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                readonly
+                                disabled
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30">
                         </div>
-                        <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
                     </div>
 
-                    <!-- Start Date (Read-only) -->
+                    <!-- Start Date (Editable) -->
                     <div class="w-full px-2.5 xl:w-1/2">
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                             Start Date
@@ -3203,12 +3191,15 @@
                         <input type="text"
                             id="edit_start_date"
                             name="start_date"
-                            readonly
                             x-model="editStartDate"
-                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30">
+                            @input="clearError('start_date'); calculateEndDateFromStartDate()"
+                            @blur="validateField('start_date', $event.target.value)"
+                            :class="errors.start_date ? 'border-red-500' : ''"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.start_date" x-text="errors.start_date" class="text-xs text-error-500 mt-1"></span>
                     </div>
 
-                    <!-- End Date (Read-only) -->
+                    <!-- End Date (Read-only, auto-calculated) -->
                     <div class="w-full px-2.5 xl:w-1/2">
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                             End Date
@@ -3326,8 +3317,7 @@
                     <div class="relative z-20 bg-transparent">
                         <select id="repay_loan_id"
                                 name="loan_id"
-                                @change="clearError('repay_loan')"
-                                @blur="validateField('repay_loan', $event.target.value)"
+                                @change="loadLoanDetailsForRepayment($event.target.value)"
                                 :class="errors.repay_loan ? 'border-red-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                             <option value="">Select Loan</option>
@@ -3345,26 +3335,76 @@
                     <span x-show="errors.repay_loan" x-text="errors.repay_loan" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
-                <!-- Borrowed (Read-only) -->
+                <!-- Borrowed Amount (Read-only) -->
                 <div class="w-full px-2.5 xl:w-1/2">
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Borrowed
+                        Borrowed Amount
                     </label>
                     <input readonly type="text"
-                        id="borrowed_amount"
+                        id="repay_borrowed_amount"
                         name="borrowed_amount"
-                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                        x-model="repayBorrowedAmount"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30">
                 </div>
 
-                <!-- Period (Months) (Read-only) -->
+                <!-- Total Interest (Read-only) -->
                 <div class="w-full px-2.5 xl:w-1/2">
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Period (Months)
+                        Total Interest
                     </label>
                     <input readonly type="text"
-                        id="loan_period_display"
-                        name="loan_period_display"
-                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                        id="repay_total_interest"
+                        name="total_interest"
+                        x-model="repayTotalInterest"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30">
+                </div>
+
+                <!-- Total Loan (Read-only) -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Total Loan
+                    </label>
+                    <input readonly type="text"
+                        id="repay_total_loan"
+                        name="total_loan"
+                        x-model="repayTotalLoan"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30">
+                </div>
+
+                <!-- Balance Due (Read-only) -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Balance Due
+                    </label>
+                    <input readonly type="text"
+                        id="repay_balance_due"
+                        name="balance_due"
+                        x-model="repayBalanceDue"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30">
+                </div>
+
+                <!-- Assigned On (Read-only) -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Assigned On
+                    </label>
+                    <input readonly type="text"
+                        id="repay_assigned_date"
+                        name="assigned_date"
+                        x-model="repayAssignedDate"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30">
+                </div>
+
+                <!-- Loan Status (Read-only) -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Loan Status
+                    </label>
+                    <input readonly type="text"
+                        id="repay_loan_status"
+                        name="loan_status"
+                        x-model="repayLoanStatus"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30">
                 </div>
 
                 <!-- Start Date (Read-only) -->
@@ -3373,10 +3413,11 @@
                         Start Date
                     </label>
                     <input type="text"
-                        id="loan_start_date"
-                        name="loan_start_date"
+                        id="repay_start_date"
+                        name="start_date"
                         readonly
-                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                        x-model="repayStartDate"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30">
                 </div>
 
                 <!-- End Date (Read-only) -->
@@ -3385,10 +3426,11 @@
                         End Date
                     </label>
                     <input type="text"
-                        id="loan_end_date"
-                        name="loan_end_date"
+                        id="repay_end_date"
+                        name="end_date"
                         readonly
-                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                        x-model="repayEndDate"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30">
                 </div>
 
                 <div class="w-full px-2.5 border-b border-gray-200 dark:border-gray-700 my-2"></div>
@@ -3404,8 +3446,8 @@
                             name="amount"
                             step="0.01"
                             min="1"
-                            @input="clearError('amount')"
-                            @blur="validateField('amount', $event.target.value)"
+                            x-model="repayAmount"
+                            @input="validateRepayAmount()"
                             :class="errors.amount ? 'border-red-500' : ''"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     </div>
@@ -3420,8 +3462,8 @@
                     <div class="relative z-20 bg-transparent">
                         <select id="repay_payment_mode"
                                 name="payment_mode"
-                                @change="handlePaymentModeChange($event.target.value, 'repay_'); clearError('payment_mode')"
-                                @blur="validateField('payment_mode', $event.target.value)"
+                                x-model="repayPaymentMode"
+                                @change="handleRepayPaymentModeChange($event.target.value)"
                                 :class="errors.payment_mode ? 'border-red-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                             <option value="">Select Payment Mode</option>
@@ -3447,9 +3489,9 @@
                         <input type="text"
                             id="repay_transaction_code"
                             name="transaction_code"
-                            readonly
+                            x-model="repayTransactionCode"
+                            x-bind:readonly="repayPaymentMode === 'Cash'"
                             @input="clearError('transaction_code')"
-                            @blur="validateField('transaction_code', $event.target.value)"
                             :class="errors.transaction_code ? 'border-red-500' : ''"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     </div>
@@ -3464,8 +3506,8 @@
                     <div class="relative z-20 bg-transparent">
                         <select id="repay_status"
                                 name="status"
+                                x-model="repayStatus"
                                 @change="clearError('status')"
-                                @blur="validateField('status', $event.target.value)"
                                 :class="errors.status ? 'border-red-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                             <option value="">Select Status</option>
@@ -5934,6 +5976,7 @@
                 itemsPerPage: 10,
                 errors: {},
                 memberActiveLoans: 0,
+                editInterestRateDisplay: '',
 
                 // New properties for assign form
                 loanAmount: '',
@@ -5954,6 +5997,22 @@
                 editAssignedDate: '',
                 editTotalAmount: '',
                 currentInterestRate: 0,
+
+                // Repay form properties
+                repayLoanId: '',
+                repayBorrowedAmount: '',
+                repayTotalInterest: '',
+                repayTotalLoan: '',
+                repayBalanceDue: '',
+                repayAssignedDate: '',
+                repayLoanStatus: '',
+                repayStartDate: '',
+                repayEndDate: '',
+                repayAmount: '',
+                repayPaymentMode: '',
+                repayTransactionCode: '',
+                repayStatus: '',
+                selectedLoanData: null,
 
                 // Date formatting functions
                 formatDate(dateString) {
@@ -6034,7 +6093,7 @@
                     });
                 },
 
-                // Update the editSavingModal function
+                // Update editLoanModal to include interest rate display
                 editLoanModal(loan) {
                     console.log('Editing loan:', loan);
 
@@ -6047,8 +6106,8 @@
 
                     // Find and set the current loan type from loanTypes
                     let loanType = null;
-                    if (loan.loan_type_id && Alpine.store('loanData').loanTypes.length > 0) {
-                        loanType = Alpine.store('loanData').loanTypes.find(lt => lt.loanId == loan.loan_type_id);
+                    if (loan.transactionLoan && Alpine.store('loanData').loanTypes.length > 0) {
+                        loanType = Alpine.store('loanData').loanTypes.find(lt => lt.loanId == loan.transactionLoan);
                         if (loanType) {
                             Alpine.store('loanData').currentLoanType = loanType;
                         }
@@ -6057,26 +6116,33 @@
                     // Set current interest rate
                     if (loanType) {
                         this.currentInterestRate = parseFloat(loanType.interest_rate);
+                        this.editInterestRateDisplay = loanType.interest_rate + '%';
                     } else if (loan.interest_rate) {
                         this.currentInterestRate = parseFloat(loan.interest_rate);
+                        this.editInterestRateDisplay = loan.interest_rate + '%';
                     } else {
                         this.currentInterestRate = 0;
+                        this.editInterestRateDisplay = '0%';
                     }
 
-                    // Populate edit properties
-                    this.editAmount = loan.transactionLoanAmount || loan.amount || '';
-                    this.editPeriodMonths = loan.transactionLoanPeriod || loan.loanPeriod || '';
-                    this.editPaymentMode = loan.transactionMode || '';
+                    // Populate edit properties - from member_loans table
+                    this.editAmount = loan.transactionLoanAmount || '';
+                    this.editPeriodMonths = loan.transactionLoanPeriod || '';
+                    // Get payment mode from the joined transaction data
+                    this.editPaymentMode = loan.transactionMode || 'Not Specified';
                     this.editTransactionCode = loan.transactionCode || '';
                     this.editLoanStatus = loan.transactionLoanStatus || loan.transactionStatus || '';
-                    this.editStartDate = this.formatDateShort(loan.transactionLoanStartDate || loan.startDate);
-                    this.editEndDate = this.formatDateShort(loan.transactionLoanEndDate || loan.endDate);
-                    this.editAssignedDate = this.formatDateOnly(loan.transactionCreated || loan.created_at);
+                    this.editStartDate = this.formatDateShort(loan.transactionLoanStartDate);
+                    this.editEndDate = this.formatDateShort(loan.transactionLoanEndDate);
+                    this.editAssignedDate = this.formatDateOnly(loan.transactionCreated);
+
+                    console.log('editPaymentMode from DB:', this.editPaymentMode);
+                    console.log('editTransactionCode from DB:', this.editTransactionCode);
 
                     // Calculate total amount
                     this.calculateTotalAmount();
 
-                    // Populate DOM elements (fallback for any that don't bind properly)
+                    // Populate DOM elements
                     setTimeout(() => {
                         // Hidden fields
                         const loanIdField = document.getElementById('edit_loan_id');
@@ -6092,11 +6158,7 @@
                         // Interest Rate
                         const interestRateField = document.getElementById('edit_interest_rate');
                         if (interestRateField) {
-                            if (loanType) {
-                                interestRateField.value = loanType.interest_rate + '%';
-                            } else if (loan.interest_rate) {
-                                interestRateField.value = loan.interest_rate + '%';
-                            }
+                            interestRateField.value = this.editInterestRateDisplay;
                         }
 
                         // Total Amount
@@ -6113,11 +6175,15 @@
 
                         // Payment Mode
                         const paymentModeField = document.getElementById('edit_payment_mode');
-                        if (paymentModeField) paymentModeField.value = this.editPaymentMode;
+                        if (paymentModeField) {
+                            paymentModeField.value = this.editPaymentMode;
+                        }
 
                         // Transaction Code
                         const transactionCodeField = document.getElementById('edit_transaction_code');
-                        if (transactionCodeField) transactionCodeField.value = this.editTransactionCode;
+                        if (transactionCodeField) {
+                            transactionCodeField.value = this.editTransactionCode;
+                        }
 
                         // Loan Status
                         const statusField = document.getElementById('edit_loan_status');
@@ -6134,14 +6200,6 @@
                         // Assigned Date
                         const assignedDateField = document.getElementById('edit_assigned_date');
                         if (assignedDateField) assignedDateField.value = this.editAssignedDate;
-
-                        // Handle payment mode readonly state
-                        if (this.editPaymentMode === 'Cash') {
-                            const codeField = document.getElementById('edit_transaction_code');
-                            if (codeField) {
-                                codeField.readOnly = true;
-                            }
-                        }
                     }, 100);
                 },
 
@@ -6270,26 +6328,21 @@
                     }
                 },
 
-                // Update validateEditForm to include assigned_date
+                // Update validateEditForm to include start_date
                 validateEditForm() {
                     this.errors = {};
                     let isValid = true;
 
                     const amount = this.editAmount;
                     const period = this.editPeriodMonths;
-                    const paymentMode = this.editPaymentMode;
                     const status = this.editLoanStatus;
                     const assignedDate = this.editAssignedDate;
+                    const startDate = this.editStartDate;
 
                     if (!this.validateField('amount', amount)) isValid = false;
 
                     if (!period || period === '') {
                         this.errors.loan_period = 'Please select repayment period';
-                        isValid = false;
-                    }
-
-                    if (!paymentMode || paymentMode === '') {
-                        this.errors.payment_mode = 'Please select payment mode';
                         isValid = false;
                     }
 
@@ -6303,9 +6356,8 @@
                         isValid = false;
                     }
 
-                    // If payment mode is not Cash, transaction code is required
-                    if (paymentMode !== 'Cash' && (!this.editTransactionCode || this.editTransactionCode === '')) {
-                        this.errors.transaction_code = 'Transaction code is required for non-cash payments';
+                    if (!startDate || startDate === '') {
+                        this.errors.start_date = 'Start date is required';
                         isValid = false;
                     }
 
@@ -6398,6 +6450,38 @@
 
                     Alpine.store('loanData').isUpdating = true;
 
+                    // Parse start date from "DD MMM YYYY" to "YYYY-MM-DD"
+                    let formattedStartDate = '';
+                    if (this.editStartDate) {
+                        const parts = this.editStartDate.match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/);
+                        if (parts) {
+                            const months = {
+                                'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
+                                'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
+                            };
+                            const day = parts[1].padStart(2, '0');
+                            const month = months[parts[2]];
+                            const year = parts[3];
+                            formattedStartDate = `${year}-${month}-${day} 00:00:00`;
+                        }
+                    }
+
+                    // Parse end date from "DD MMM YYYY" to "YYYY-MM-DD"
+                    let formattedEndDate = '';
+                    if (this.editEndDate) {
+                        const parts = this.editEndDate.match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/);
+                        if (parts) {
+                            const months = {
+                                'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
+                                'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
+                            };
+                            const day = parts[1].padStart(2, '0');
+                            const month = months[parts[2]];
+                            const year = parts[3];
+                            formattedEndDate = `${year}-${month}-${day} 00:00:00`;
+                        }
+                    }
+
                     // Parse assigned date from "DD MMM YYYY" to "YYYY-MM-DD"
                     let formattedAssignedDate = '';
                     if (this.editAssignedDate) {
@@ -6423,13 +6507,15 @@
                         }
                     }
 
+                    const transactionId = document.getElementById('edit_loan_id')?.value;
+
                     const formData = {
-                        loan_id: document.getElementById('edit_loan_id')?.value,
+                        loan_id: transactionId,
                         amount: this.editAmount,
                         total_amount: totalAmountValue,
                         period_months: this.editPeriodMonths,
-                        payment_mode: this.editPaymentMode,
-                        transaction_code: this.editTransactionCode || '',
+                        start_date: formattedStartDate,
+                        end_date: formattedEndDate,
                         assigned_date: formattedAssignedDate,
                         status: this.editLoanStatus,
                         _token: document.querySelector('input[name="_token"]')?.value
@@ -6437,7 +6523,7 @@
 
                     console.log('Submitting edit form:', formData);
 
-                    fetch('/bodaboda-member/{{ $memberId }}/loan/update', {
+                    fetch(`/bodaboda-member/{{ $memberId }}/loan/update`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -6537,6 +6623,137 @@
                     });
                 },
 
+                // Load loan details when selected for repayment
+                loadLoanDetailsForRepayment(loanId) {
+                    if (!loanId) {
+                        this.repayLoanId = '';
+                        this.repayBorrowedAmount = '';
+                        this.repayTotalInterest = '';
+                        this.repayTotalLoan = '';
+                        this.repayBalanceDue = '';
+                        this.repayAssignedDate = '';
+                        this.repayLoanStatus = '';
+                        this.repayStartDate = '';
+                        this.repayEndDate = '';
+                        return;
+                    }
+
+                    // Find the selected loan
+                    const selectedLoan = this.loans.find(loan => loan.transactionId == loanId);
+                    if (selectedLoan) {
+                        this.selectedLoanData = selectedLoan;
+                        this.repayLoanId = selectedLoan.transactionId;
+                        this.repayBorrowedAmount = 'KES ' + Number(selectedLoan.transactionLoanAmount || 0).toLocaleString();
+                        this.repayTotalInterest = 'KES ' + Number(selectedLoan.transactionTotalInterest || 0).toLocaleString();
+                        this.repayTotalLoan = 'KES ' + Number(selectedLoan.transactionTotalLoan || 0).toLocaleString();
+                        this.repayAssignedDate = this.formatDateOnly(selectedLoan.transactionCreated);
+                        this.repayLoanStatus = selectedLoan.transactionLoanStatus || selectedLoan.transactionStatus || '';
+                        this.repayStartDate = this.formatDateShort(selectedLoan.transactionLoanStartDate);
+                        this.repayEndDate = this.formatDateShort(selectedLoan.transactionLoanEndDate);
+
+                        // Calculate balance due
+                        this.calculateBalanceDue(selectedLoan.transactionId);
+                    }
+                },
+
+                // Calculate balance due for a loan
+                calculateBalanceDue(loanId) {
+                    fetch(`/bodaboda-member/{{ $memberId }}/loan/${loanId}/balance`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                this.repayBalanceDue = 'KES ' + data.balance.toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                });
+                                this.currentBalanceDue = data.balance;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error calculating balance:', error);
+                            this.repayBalanceDue = 'KES 0.00';
+                            this.currentBalanceDue = 0;
+                        });
+                },
+
+                // Validate repay amount (cannot exceed balance due)
+                validateRepayAmount() {
+                    const amount = parseFloat(this.repayAmount);
+                    const balanceDue = this.currentBalanceDue || 0;
+
+                    if (amount > balanceDue) {
+                        this.errors.amount = `Amount cannot exceed balance due of ${this.repayBalanceDue}`;
+                        return false;
+                    }
+
+                    if (amount <= 0) {
+                        this.errors.amount = 'Please enter a valid amount greater than 0';
+                        return false;
+                    }
+
+                    delete this.errors.amount;
+                    return true;
+                },
+
+                // Handle payment mode change for repay form
+                handleRepayPaymentModeChange(mode) {
+                    if (mode === 'Cash') {
+                        // Generate cash transaction code
+                        const date = new Date();
+                        const year = date.getFullYear().toString().slice(-2);
+                        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                        const day = date.getDate().toString().padStart(2, '0');
+                        const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+                        this.repayTransactionCode = `CASH-${year}${month}${day}-${random}`;
+                    } else {
+                        this.repayTransactionCode = '';
+                    }
+                },
+
+                // Updated validateRepayForm
+                validateRepayForm() {
+                    this.errors = {};
+                    let isValid = true;
+
+                    const loanSelect = this.repayLoanId;
+                    const amount = this.repayAmount;
+                    const paymentMode = this.repayPaymentMode;
+                    const status = this.repayStatus;
+
+                    if (!loanSelect || loanSelect === '') {
+                        this.errors.repay_loan = 'Please select a loan to repay';
+                        isValid = false;
+                    }
+
+                    if (!this.validateField('amount', amount)) isValid = false;
+
+                    // Check if amount exceeds balance
+                    const balanceDue = this.currentBalanceDue || 0;
+                    if (amount && parseFloat(amount) > balanceDue) {
+                        this.errors.amount = `Amount cannot exceed balance due of ${this.repayBalanceDue}`;
+                        isValid = false;
+                    }
+
+                    if (!paymentMode || paymentMode === '') {
+                        this.errors.payment_mode = 'Please select payment mode';
+                        isValid = false;
+                    }
+
+                    if (!status || status === '') {
+                        this.errors.status = 'Please select status';
+                        isValid = false;
+                    }
+
+                    const transactionCode = this.repayTransactionCode;
+                    if (paymentMode !== 'Cash' && (!transactionCode || transactionCode === '')) {
+                        this.errors.transaction_code = 'Transaction code is required for non-cash payments';
+                        isValid = false;
+                    }
+
+                    return isValid;
+                },
+
+                // Updated repayLoan function
                 repayLoan() {
                     if (!this.validateRepayForm()) {
                         alert('Please fix the errors in the form before submitting.');
@@ -6546,13 +6763,15 @@
                     Alpine.store('loanData').isRepaying = true;
 
                     const formData = {
-                        loan_id: document.getElementById('repay_loan_id')?.value,
-                        amount: document.getElementById('repay_amount')?.value,
-                        payment_mode: document.getElementById('repay_payment_mode')?.value,
-                        transaction_code: document.getElementById('repay_transaction_code')?.value || '',
-                        status: document.getElementById('repay_status')?.value,
+                        loan_id: this.repayLoanId,
+                        amount: this.repayAmount,
+                        payment_mode: this.repayPaymentMode,
+                        transaction_code: this.repayTransactionCode || '',
+                        status: this.repayStatus,
                         _token: document.querySelector('input[name="_token"]')?.value
                     };
+
+                    console.log('Submitting repay form:', formData);
 
                     fetch('/bodaboda-member/{{ $memberId }}/loan/repay', {
                         method: 'POST',
@@ -6568,19 +6787,23 @@
                             Alpine.store('loanData').isRepaying = false;
 
                             if (data.success) {
-                                alert(data.message);
+                                if (data.fully_repaid) {
+                                    alert(data.message);
+                                } else {
+                                    alert(data.message);
+                                }
                                 window.location.reload();
                             } else {
                                 alert('Error: ' + data.message);
                             }
-                        }, 750);
+                        }, 500);
                     })
                     .catch(error => {
                         setTimeout(() => {
                             Alpine.store('loanData').isRepaying = false;
                             alert('Error processing repayment. Please try again.');
                             console.error('Error:', error);
-                        }, 750);
+                        }, 500);
                     });
                 },
 
@@ -6617,6 +6840,39 @@
                     } else {
                         // For non-cash, make it editable and clear any auto-generated code
                         this.transactionCode = '';
+                    }
+                },
+
+                // Add this method to calculate end date from start date and period
+                calculateEndDateFromStartDate() {
+                    if (!this.editStartDate || !this.editPeriodMonths) {
+                        return;
+                    }
+
+                    // Parse the start date from "DD MMM YYYY" format
+                    const parts = this.editStartDate.match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/);
+                    if (parts) {
+                        const months = {
+                            'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
+                            'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
+                        };
+                        const day = parts[1];
+                        const month = months[parts[2]];
+                        const year = parts[3];
+
+                        // Create date object
+                        const startDate = new Date(`${year}-${month}-${day}`);
+
+                        // Add months to get end date
+                        const endDate = new Date(startDate);
+                        endDate.setMonth(endDate.getMonth() + parseInt(this.editPeriodMonths));
+
+                        // Format end date as "DD MMM YYYY"
+                        const endDay = String(endDate.getDate()).padStart(2, '0');
+                        const endMonth = endDate.toLocaleDateString('en-GB', { month: 'short' });
+                        const endYear = endDate.getFullYear();
+
+                        this.editEndDate = `${endDay} ${endMonth} ${endYear}`;
                     }
                 },
 
@@ -6666,6 +6922,7 @@
                     return end > this.loans.length ? this.loans.length : end;
                 },
             }));
+
         });
 
     </script>

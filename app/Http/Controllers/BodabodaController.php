@@ -2570,17 +2570,41 @@ class BodabodaController extends Controller {
             $loan = DB::table('member_loans')
                 ->where('transactionId', $validated['loan_id'])
                 ->where('memberId', $memberId)
-                ->where('transactionLoanStatus', 'Active')
                 ->first();
 
             if (!$loan) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Active loan not found'
+                    'message' => 'Loan not found'
                 ], 404);
             }
 
-            // Generate transaction code
+            // Check if loan is already repaid
+            if ($loan->transactionLoanStatus === 'Repaid') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This loan has already been fully repaid'
+                ], 400);
+            }
+
+            // Calculate current balance
+            $totalRepaid = DB::table('member_loans_transactions')
+                ->where('transactionLoan', $validated['loan_id'])
+                ->where('transactionType', 'Paid-In')
+                ->where('transactionStatus', 'Confirmed')
+                ->sum('transactionAmount');
+
+            $currentBalance = $loan->transactionTotalLoan - $totalRepaid;
+
+            // Check if amount exceeds balance
+            if ($validated['amount'] > $currentBalance) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Payment amount cannot exceed the outstanding balance of ' . number_format($currentBalance, 2)
+                ], 400);
+            }
+
+            // Generate transaction code if not provided
             $transactionCode = $validated['transaction_code'] ?? 'REPAY-' . strtoupper(uniqid());
 
             // Insert repayment transaction
@@ -2590,6 +2614,7 @@ class BodabodaController extends Controller {
                 'transactionCode' => $transactionCode,
                 'transactionAmount' => $validated['amount'],
                 'transactionDate' => now(),
+                'transactionType' => 'Paid-In',
                 'transactionMode' => $validated['payment_mode'],
                 'transactionAuthor' => Auth::id(),
                 'transactionUpdatedOn' => now(),
@@ -2598,25 +2623,40 @@ class BodabodaController extends Controller {
 
             DB::table('member_loans_transactions')->insert($transactionData);
 
-            // Calculate total repaid
-            $totalRepaid = DB::table('member_loans_transactions')
+            // Recalculate total repaid after insert
+            $newTotalRepaid = DB::table('member_loans_transactions')
                 ->where('transactionLoan', $validated['loan_id'])
+                ->where('transactionType', 'Paid-In')
                 ->where('transactionStatus', 'Confirmed')
                 ->sum('transactionAmount');
 
+            $newBalance = $loan->transactionTotalLoan - $newTotalRepaid;
+            $isFullyRepaid = $newBalance <= 0;
+
             // If fully repaid, update loan status
-            if ($totalRepaid >= $loan->transactionLoanAmount) {
+            if ($isFullyRepaid) {
                 DB::table('member_loans')
                     ->where('transactionId', $validated['loan_id'])
                     ->update([
-                        //'transactionLoanStatus' => 'Repaid',
+                        'transactionLoanStatus' => 'Repaid',
                         'transactionUpdatedOn' => now()
                     ]);
+
+                $message = "Congratulations! Loan ({$loan->loan_type_name}) has been fully repaid! Total amount: KES " . number_format($loan->transactionTotalLoan, 2) . " on " . now()->format('d M Y');
+
+                return response()->json([
+                    'success' => true,
+                    'fully_repaid' => true,
+                    'message' => $message,
+                    'remaining_balance' => 0
+                ]);
             }
 
             return response()->json([
                 'success' => true,
-                'message' => 'Loan repayment processed successfully'
+                'fully_repaid' => false,
+                'message' => 'Loan repayment processed successfully. Amount paid: KES ' . number_format($validated['amount'], 2) . '. Remaining balance: KES ' . number_format($newBalance, 2),
+                'remaining_balance' => $newBalance
             ]);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -2634,15 +2674,16 @@ class BodabodaController extends Controller {
     }
 
     // Update loan transaction
-    public function updateMemberLoanTransaction(Request $request, $memberId, $transactionId)
+    public function updateMemberLoanTransaction(Request $request, $memberId)
     {
         try {
             $validated = $request->validate([
+                'loan_id' => 'required|integer',
                 'amount' => 'required|numeric|min:1',
                 'total_amount' => 'required|numeric|min:1',
                 'period_months' => 'required|integer|min:1',
-                'payment_mode' => 'required|in:Cash,MPesa,Bank',
-                'transaction_code' => 'nullable|string|max:255',
+                'start_date' => 'required|date',
+                'end_date' => 'required|date',
                 'assigned_date' => 'required|date',
                 'status' => 'required|in:Active,Approved,Under Review,Pending,Repaid,Defaulted,Cancelled'
             ]);
@@ -2651,15 +2692,15 @@ class BodabodaController extends Controller {
                 'transactionLoanAmount' => $validated['amount'],
                 'transactionTotalLoan' => $validated['total_amount'],
                 'transactionLoanPeriod' => $validated['period_months'],
-                'transactionMode' => $validated['payment_mode'],
-                'transactionCode' => $validated['transaction_code'],
+                'transactionLoanStartDate' => $validated['start_date'],
+                'transactionLoanEndDate' => $validated['end_date'],
                 'transactionCreated' => $validated['assigned_date'],
                 'transactionLoanStatus' => $validated['status'],
                 'transactionUpdatedOn' => now()
             ];
 
             $updated = DB::table('member_loans')
-                ->where('transactionId', $transactionId)
+                ->where('transactionId', $validated['loan_id'])
                 ->where('memberId', $memberId)
                 ->update($data);
 
@@ -2693,33 +2734,54 @@ class BodabodaController extends Controller {
     public function getCurrentMemberLoans($memberId)
     {
         try {
-            $loans = DB::table('member_loans as ml')
-                ->join('member_loan_types as mlt', 'ml.transactionLoan', '=', 'mlt.loanId')
-                ->leftJoin('member_loans_transactions as mlt2', 'ml.transactionId', '=', 'mlt2.transactionLoan')
-                ->where('ml.memberId', $memberId)
+            $loans = DB::table('member_loans')
+                ->join('member_loan_types', 'member_loans.transactionLoan', '=', 'member_loan_types.loanId')
+                ->leftJoin(DB::raw('(SELECT
+                    transactionLoan,
+                    transactionCode,
+                    transactionMode,
+                    transactionAmount,
+                    transactionDate,
+                    ROW_NUMBER() OVER (PARTITION BY transactionLoan ORDER BY transactionDate DESC) as rn
+                    FROM member_loans_transactions
+                    WHERE transactionType = "Paid-In") as latest_transaction'),
+                    function($join) {
+                        $join->on('member_loans.transactionId', '=', 'latest_transaction.transactionLoan')
+                            ->where('latest_transaction.rn', '=', 1);
+                    })
+                ->where('member_loans.memberId', $memberId)
                 ->select(
-                    'ml.*',
-                    'mlt.loan_type_name',
-                    'mlt.interest_rate',
-                    DB::raw('COALESCE(SUM(mlt2.transactionAmount), 0) as total_repaid'),
-                    DB::raw('ml.transactionLoanAmount - COALESCE(SUM(mlt2.transactionAmount), 0) as outstanding_balance')
+                    'member_loans.*',
+                    'member_loan_types.loan_type_name',
+                    'member_loan_types.interest_rate',
+                    'latest_transaction.transactionCode',
+                    'latest_transaction.transactionMode',
+                    'latest_transaction.transactionAmount as last_payment_amount',
+                    'latest_transaction.transactionDate as last_payment_date'
                 )
-                ->groupBy('ml.transactionId')
-                ->orderBy('ml.transactionCreated', 'desc')
+                ->orderBy('member_loans.transactionCreated', 'desc')
                 ->get();
 
-            // Add last repayment information for each loan
+            // Calculate total repaid and outstanding balance for each loan
             foreach ($loans as $loan) {
-                $lastRepayment = DB::table('member_loans_transactions')
+                $totalRepaid = DB::table('member_loans_transactions')
                     ->where('transactionLoan', $loan->transactionId)
+                    ->where('transactionType', 'Paid-In')
                     ->where('transactionStatus', 'Confirmed')
-                    ->orderBy('transactionDate', 'desc')
-                    ->first();
+                    ->sum('transactionAmount');
 
-                $loan->last_repayment = $lastRepayment ? [
-                    'amount' => $lastRepayment->transactionAmount,
-                    'date' => $lastRepayment->transactionDate
-                ] : null;
+                $loan->total_repaid = $totalRepaid;
+                $loan->outstanding_balance = max(0, $loan->transactionTotalLoan - $totalRepaid);
+
+                // Set last repayment
+                if ($loan->last_payment_amount) {
+                    $loan->last_repayment = [
+                        'amount' => $loan->last_payment_amount,
+                        'date' => $loan->last_payment_date
+                    ];
+                } else {
+                    $loan->last_repayment = null;
+                }
             }
 
             return response()->json([
@@ -2731,6 +2793,47 @@ class BodabodaController extends Controller {
             return response()->json([
                 'success' => false,
                 'message' => 'Error fetching member loans: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Get loan balance
+    public function getLoanBalance($memberId, $loanId)
+    {
+        try {
+            // Get loan details
+            $loan = DB::table('member_loans')
+                ->where('transactionId', $loanId)
+                ->where('memberId', $memberId)
+                ->first();
+
+            if (!$loan) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Loan not found'
+                ], 404);
+            }
+
+            // Calculate total repaid (Paid-In transactions with Confirmed status)
+            $totalRepaid = DB::table('member_loans_transactions')
+                ->where('transactionLoan', $loanId)
+                ->where('transactionType', 'Paid-In')
+                ->where('transactionStatus', 'Confirmed')
+                ->sum('transactionAmount');
+
+            $balance = max(0, $loan->transactionTotalLoan - $totalRepaid);
+
+            return response()->json([
+                'success' => true,
+                'balance' => $balance,
+                'total_loan' => $loan->transactionTotalLoan,
+                'total_repaid' => $totalRepaid
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error calculating balance: ' . $e->getMessage()
             ], 500);
         }
     }

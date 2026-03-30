@@ -324,7 +324,9 @@ Route::post('/bodaboda-member/{memberId}/loan/assign', [BodabodaController::clas
 
 Route::post('/bodaboda-member/{memberId}/loan/repay', [BodabodaController::class, 'repayMemberLoan']);
 
-Route::post('/bodaboda-member/{memberId}/loan/transaction/{transactionId}/update', [BodabodaController::class, 'updateMemberLoanTransaction']);
+Route::post('/bodaboda-member/{memberId}/loan/update', [BodabodaController::class, 'updateMemberLoanTransaction']);
+
+Route::get('/bodaboda-member/{memberId}/loan/{loanId}/balance', [BodabodaController::class, 'getLoanBalance']);
 
 Route::get('/bodaboda-member/{memberId}/loans/current', [BodabodaController::class, 'getCurrentMemberLoans']);
 
