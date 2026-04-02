@@ -99,7 +99,7 @@
                     </nav>
                 </div>
 
-<!-- Profile Active -->
+                <!-- Profile Active -->
                 <div class="pt-4 dark:border-gray-800 mb-8 gap-4 md:gap-6 p-6">
                     <!-- Personal Information -->
                     <div x-show="activeTab === 'personal'" class="border-b" x-data="memberInfo">
@@ -2037,7 +2037,7 @@
                                     <p class="text-sm text-gray-500 dark:text-gray-400">
                                     Manage Bodaboda member account.
                                     </p>
-                                    <div class="hidden flex-col gap-3 sm:flex sm:flex-row sm:items-center">
+                                    <div class="hidden flex-col gap-3 sm:flex sm:flex-row sm:items-center p-4">
 
                                         <div x-data="memberInfo" x-init="init()">
 

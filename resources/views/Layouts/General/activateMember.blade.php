@@ -1,5 +1,5 @@
 
-    {{-- Active Member Status Content --}}
+    {{-- Activate Member Status Content --}}
 
         <!-- Top Navigation Menu -->
                 <div class="border-b border-gray-200 dark:border-gray-800">
@@ -47,7 +47,7 @@
                     </nav>
                 </div>
 
-        <!-- Profile Active -->
+                 <!-- Profile Active -->
                 <div class="pt-4 dark:border-gray-800 mb-8 gap-4 md:gap-6 p-6" x-data="memberInfo">
                     <!-- Personal Information -->
                     <div x-show="activeTab === 'personal'" class="border-b">
@@ -423,36 +423,85 @@
 
                         <div class="grid grid-cols-1 gap-5 sm:grid-cols-1 xl:grid-cols-1">
                             <article class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/3">
-                            <div class="relative p-5 pb-9">
-                                <h3 class="mb-3 text-lg font-semibold text-gray-800 dark:text-white/90">
-                                Membership Settings
-                                </h3>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">
-                                Manage Bodaboda member account.
-                                </p>
-                            </div>
-                            <div class="flex items-center justify-between border-t border-gray-200 p-5 dark:border-gray-800">
-                                <div class="flex gap-3">
-                                <div class="order-3 xl:order-2">
-                                    <h4 class="mb-2 text-center text-medium font-semibold text-gray-600 xl:text-left dark:text-white/90">
-                                    Account Status
-                                    </h4>
-                                    <div class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">Member #KBSTK202601</p>
-                                    <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">Role: Rider</p>
-                                    <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400"><span class="bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500 rounded-full px-2 py-0.5 text-xs font-medium">Active</span> since December 09, 2025 15:24</p>
+                                <div class="relative p-5 pb-9">
+                                    <h3 class="mb-3 text-lg font-semibold text-gray-800 dark:text-white/90">
+                                    Membership Settings
+                                    </h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    Manage Bodaboda member account.
+                                    </p>
+                                    <div class="hidden flex-col gap-3 sm:flex sm:flex-row sm:items-center p-4">
+
+                                        <div x-data="memberInfo" x-init="init()">
+
+                                            <form @submit.prevent="updateMemberStatus" class="flex items-center gap-3">
+                                                @csrf
+
+                                                <input type="hidden" name="memberId" :value="memberData?.member?.memberId">
+
+                                                <!-- Status Dropdown -->
+                                                <div>
+                                                    <select x-model="memberStatus"
+                                                            @change="clearError('memberStatus')"
+                                                            :class="errors.memberStatus ? 'border-error-500' : ''"
+                                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-48 rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                        <option value="">-- Member Status --</option>
+                                                        <option value="Active">Active</option>
+                                                        <option value="In-Active">In-Active</option>
+                                                        <option value="Suspended">Suspended</option>
+                                                    </select>
+                                                    <span x-show="errors.memberStatus" x-text="errors.memberStatus" class="text-xs text-error-500 mt-1 block"></span>
+                                                </div>
+
+                                                <!-- Update Button -->
+                                                <div>
+                                                    <button type="submit"
+                                                            :disabled="isUpdating"
+                                                            class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed">
+                                                        <span x-show="!isUpdating">Update Status</span>
+                                                        <span x-show="isUpdating" class="flex items-center gap-2">
+                                                            <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                            </svg>
+                                                            Updating...
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                            </form>
+
+                                            <span x-show="errors.formError" x-text="errors.formError" class="text-xs text-error-500 mt-1 block"></span>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div class="flex items-center justify-between border-t border-gray-200 p-5 dark:border-gray-800" x-data="memberInfo">
+                                    <div class="flex gap-3">
+                                    <div class="order-3 xl:order-2">
+                                        <h4 class="mb-2 text-center text-medium font-semibold text-gray-600 xl:text-left dark:text-white/90">
+                                        Account Status
+                                        </h4>
+                                        <div class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
+                                            <p class="text-sm text-gray-500 dark:text-gray-400" x-text="memberData?.member?.memberId"></p>
+                                        <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">Membership: <span x-text="memberData?.member?.membership">Member</span></p>
+                                        <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                                <span class="bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500 rounded-full px-2 py-0.5 text-xs font-medium" x-text="memberData?.member?.status"></span>
+                                                since <span x-text="formatDate(memberData?.member?.created_on)">December 09, 2025 15:24</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    </div>
+                                    <div x-data="{ switcherToggle: false }">
+                                    <button @click="deleteMemberAccount = true"
+                                            class="shadow-theme-xs inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-medium text-while-700 ring-1 ring-gray-300 transition hover:bg-gray-50 dark:bg-error-700 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]">
+                                        De-Activate Account
+                                    </button>
                                     </div>
                                 </div>
-                                </div>
-                                <div x-data="{ switcherToggle: false }">
-                                <button @click="deleteMemberAccount = true"
-                                        class="shadow-theme-xs inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-medium text-while-700 ring-1 ring-gray-300 transition hover:bg-gray-50 dark:bg-error-700 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]">
-                                    De-Activate Account
-                                </button>
-                                </div>
-                            </div>
                             </article>
                         </div>
 

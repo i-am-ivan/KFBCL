@@ -24,7 +24,12 @@ class Member extends Model
 
     public function isProfileNotActive()
     {
-        return $this->status !== 'Active';
+        return $this->status === 'In-Active';
+    }
+
+    public function isSuspended()
+    {
+        return $this->status === 'Suspended';
     }
 
     public function identification()

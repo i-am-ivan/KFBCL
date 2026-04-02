@@ -247,24 +247,28 @@
                     <!-- Metric Group Two -->
                 </div>
 
-
                 <!-- Tabbed Section -->
-                <div class="rounded-xl border border-gray-200 p-6 bg-white dark:border-gray-800 dark:bg-white/[0.03]" x-data="{ activeTab: 'personal' }">
-                    @php
-                        if(!isset($Member)) {
-                            $Member = new \App\Models\Member();
-                            $Member->status = 'Active'; // or whatever default
-                        }
-                    @endphp
-                    <!-- Content Area -->
-                    @if($Member->isProfileActive())
-                        <!-- Profile Active -->
-                        @include('Layouts.General.activeContent')
-                    @else
-                        <!-- Profile Not Active -->
-                        @include('Layouts.General.activateMember')
-                    @endif
+                <div >
 
+                    <div class="rounded-xl border border-gray-200 p-6 bg-white dark:border-gray-800 dark:bg-white/[0.03]" x-data="{ activeTab: 'personal', ...memberInfo() }" x-init="init()">
+
+                        <!-- Content Area based on member status from Alpine -->
+                        <div x-show="memberData?.member?.status === 'Active' || memberData?.member?.status === 'Suspended'">
+                            @include('Layouts.General.activeContent')
+                        </div>
+
+                        <div  x-show="memberData?.member?.status === 'In-Active'">
+                            @include('Layouts.General.activateMember')
+                        </div>
+
+                        <!-- Optional: Show loading or default state -->
+                        <div x-show="!memberData?.member?.status">
+                            <div class="text-center py-8">
+                                <p class="text-gray-500">Loading member information...</p>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
 
             </div>
