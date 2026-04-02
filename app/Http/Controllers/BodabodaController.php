@@ -572,6 +572,41 @@ class BodabodaController extends Controller {
         return view('members.show', compact('member'));
     }
 
+    // Update member status
+    public function updateMemberStatus(Request $request)
+    {
+        // Validate the request
+        $validator = Validator::make($request->all(), [
+            'memberId' => 'required|exists:members,memberId',
+            'status' => 'required|in:Active,In-Active,Suspended'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $member = Member::findOrFail($request->memberId);
+            $member->status = $request->status;
+            $member->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Member status updated successfully!',
+                'status' => $member->status
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update member status: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     // Vehicles --------------------------------------------------------------------------------------
 
     public function addMemberVehicle(Request $request, $memberId)

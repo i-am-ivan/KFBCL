@@ -179,6 +179,8 @@ Route::get('/stats/members/member', [BodabodaController::class, 'countMembers'])
 
 Route::get('/stats/members/non-member', [BodabodaController::class, 'countNonMembers']);
 
+Route::post('/treasurer/bodaboda/member/update-status', [BodabodaController::class, 'updateMemberStatus'])->name('member.update.status');
+
 // Member status count routes
 Route::get('/members/count/active', [BodabodaController::class, 'getCountActiveMembers'])->name('members.count.active');
 

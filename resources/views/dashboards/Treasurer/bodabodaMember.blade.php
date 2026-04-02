@@ -3692,12 +3692,17 @@
                 memberData: null,
                 errors: {},
                 isUpdating: false,
+                memberStatus: '',
 
                 init() {
                     fetch('/treasurer/bodaboda-member/{{ $memberId }}/data')
                         .then(res => res.json())
                         .then(data => {
                             this.memberData = data;
+                            // Set the member status from the loaded data
+                            if (data.member && data.member.status) {
+                                this.memberStatus = data.member.status;
+                            }
                         });
                 },
 
@@ -3990,7 +3995,73 @@
                             console.error('Error:', error);
                         }, 750);
                     });
-                }
+                },
+                // Add status validation and update methods
+                validateStatusForm() {
+                    this.errors = {};
+                    let isValid = true;
+
+                    if (!this.memberStatus || this.memberStatus === '') {
+                        this.errors.memberStatus = 'Please select a member status';
+                        isValid = false;
+                    }
+
+                    return isValid;
+                },
+
+                async updateMemberStatus() {
+                    if (!this.validateStatusForm()) {
+                        const errorMessages = Object.values(this.errors).join('\n');
+                        alert('INVALID! Inputs:\n' + errorMessages);
+                        return;
+                    }
+
+                    this.isUpdating = true;
+
+                    try {
+                        const formData = {
+                            memberId: this.memberData?.member?.memberId,
+                            status: this.memberStatus,
+                            _token: document.querySelector('input[name="_token"]')?.value
+                        };
+
+                        const response = await fetch('/treasurer/bodaboda/member/update-status', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value
+                            },
+                            body: JSON.stringify(formData)
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            alert('Success: ' + data.message);
+                            window.location.reload();
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    } catch (error) {
+                        alert('Error: Failed to update member status');
+                        console.error('Error:', error);
+                    } finally {
+                        this.isUpdating = false;
+                    }
+                },
+
+                formatDate(dateString) {
+                    if (!dateString) return '';
+                    const date = new Date(dateString);
+                    return date.toLocaleDateString('en-US', {
+                        month: 'long',
+                        day: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                },
+
             }));
         });
     </script>
@@ -7138,7 +7209,102 @@
     </script>
 
     <!-- Member Settings -->
+    <script>
+        // Add to your existing Alpine component (e.g., memberInfo or create a new one)
+        Alpine.data('memberStatusManager', () => ({
+            memberId: null,
+            memberStatus: '',
+            errors: {},
+            isUpdating: false,
 
+            init() {
+                // Get member ID from URL
+                this.memberId = window.location.pathname.split('/').pop();
+                // Load current member status
+                this.loadCurrentMemberStatus();
+            },
+
+            loadCurrentMemberStatus() {
+                // Fetch current member data to get status
+                fetch(`/treasurer/bodaboda-member/${this.memberId}/data`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.member && data.member.status) {
+                            this.memberStatus = data.member.status;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error loading member status:', error);
+                    });
+            },
+
+            validateForm() {
+                this.errors = {};
+                let isValid = true;
+
+                if (!this.memberStatus || this.memberStatus === '') {
+                    this.errors.memberStatus = 'Please select a member status';
+                    isValid = false;
+                }
+
+                return isValid;
+            },
+
+            clearError(field) {
+                if (this.errors[field]) {
+                    delete this.errors[field];
+                }
+            },
+
+            async updateMemberStatus() {
+                // Validate form
+                if (!this.validateForm()) {
+                    const errorMessages = Object.values(this.errors).join('\n');
+                    alert('INVALID! Inputs:\n' + errorMessages);
+                    return;
+                }
+
+                this.isUpdating = true;
+                this.errors.formError = '';
+
+                try {
+                    const formData = {
+                        memberId: this.memberId,
+                        status: this.memberStatus,
+                        _token: document.querySelector('input[name="_token"]')?.value
+                    };
+
+                    const response = await fetch('/treasurer/bodaboda/member/update-status', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        alert('Success: ' + data.message);
+                        // Reload the page to reflect changes
+                        window.location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                        if (data.errors) {
+                            this.errors.formError = Object.values(data.errors).flat()[0];
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error: Failed to update member status. Please try again.');
+                } finally {
+                    this.isUpdating = false;
+                }
+            }
+        }));
+
+    </script>
 
 </body>
 
