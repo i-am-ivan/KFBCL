@@ -1113,11 +1113,43 @@
                     <!-- Loans Table -->
                     <div x-show="activeTab === 'loans'" x-data="loansTable()">
 
-                        <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+                        <div class="relative ">
+                                        <!-- Tabbed content -->
+                                        <div class="rounded-xl p-6 dark:border-gray-800 border" x-data="{ activeTab: 'memberLoans' }">
+                                            <div class="border-b border-gray-200 dark:border-gray-800">
+                                                <nav class="-mb-px flex space-x-2 overflow-x-auto [&amp;::-webkit-scrollbar-thumb]:rounded-full [&amp;::-webkit-scrollbar-thumb]:bg-gray-200 dark:[&amp;::-webkit-scrollbar-thumb]:bg-gray-600 dark:[&amp;::-webkit-scrollbar-track]:bg-transparent [&amp;::-webkit-scrollbar]:h-1.5">
+                                                    <button class="inline-flex items-center gap-2 border-b-2 px-2.5 py-2 text-sm font-medium transition-colors duration-200 ease-in-out focus:outline-hidden focus:ring-2 focus:ring-offset-1 focus:ring-brand-500/20 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-700" :class="activeTab === 'loans-type'
+                                                        ? 'border-brand-500 text-brand-500 dark:border-brand-400 dark:text-brand-400'
+                                                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-700'" @click="activeTab = 'memberLoans'">
+                                                        <!-- Bar Chart Icon -->
+                                                        <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                                        </svg>
+                                                        Loans
+                                                    </button>
+
+                                                    <button class="inline-flex items-center gap-2 border-b-2 px-2.5 py-2 text-sm font-medium transition-colors duration-200 ease-in-out focus:outline-hidden focus:ring-2 focus:ring-offset-1 focus:ring-brand-500/20 border-brand-500 text-brand-500 dark:border-brand-400 dark:text-brand-400" :class="activeTab === 'transactions'
+                                                        ? 'border-brand-500 text-brand-500 dark:border-brand-400 dark:text-brand-400'
+                                                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-700'" @click="activeTab = 'loanTransactions'">
+                                                        <!-- transactions Icon -->
+                                                        <svg class="size-5" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 2C3.34315 2 2 3.34315 2 5V15C2 16.6569 3.34315 18 5 18H15C16.6569 18 18 16.6569 18 15V5C18 3.34315 16.6569 2 15 2H5ZM4 6V5C4 4.44772 4.44772 4 5 4H15C15.5523 4 16 4.44772 16 5V15C16 15.5523 15.5523 16 15 16H5C4.44772 16 4 15.5523 4 15V6ZM6 7C5.44772 7 5 7.44772 5 8V13C5 13.5523 5.44772 14 6 14H14C14.5523 14 15 13.5523 15 13V8C15 7.44772 14.5523 7 14 7H6ZM7 9H9V11H7V9ZM11 9H13V11H11V9ZM7 12H9V13H7V12ZM11 12H13V13H11V12Z" fill="currentColor"></path>
+                                                        </svg>
+                                                        Loan Transactions
+                                                    </button>
+
+                                                </nav>
+                                            </div>
+
+                                            <div class="pt-4 dark:border-gray-800">
+
+                                                <div x-show="activeTab === 'memberLoans'">
+
+                                                    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
                                                         <div class="flex flex-col justify-between gap-5 border-b border-gray-200 px-5 py-4 sm:flex-row lg:items-center dark:border-gray-800">
                                                             <div>
                                                                     <h3 class="text-lg font-semibold text-gray-600 dark:text-white/90">
-                                                                        Loan
+                                                                        Loans
                                                                     </h3>
                                                                     <p class="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
                                                                         Manage member loans
@@ -1424,7 +1456,357 @@
                                                             </div>
 
                                                         </div>
-                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                                <div x-show="activeTab === 'loanTransactions'">
+                                                    <!-- Loan transactions table -->
+                                                    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+
+                                                        <div class="flex flex-col justify-between gap-5 border-b border-gray-200 px-5 py-4 sm:flex-row lg:items-center dark:border-gray-800">
+                                                            <div>
+                                                                <h3 class="text-lg font-semibold text-gray-600 dark:text-white/90">
+                                                                    Loan Transactions
+                                                                </h3>
+                                                                <p class="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
+                                                                    Review all bodaboda member loans here.
+                                                                </p>
+                                                            </div>
+
+                                                            <div class="hidden flex-col gap-3 sm:flex sm:flex-row sm:items-center">
+                                                                <!-- Filter by Frequency -->
+                                                                <div class="hidden lg:block">
+                                                                    <select x-model="frequencyFilter" @change="performFilter()" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                                        <option value="All">All Time</option>
+                                                                        <option value="Daily">Daily</option>
+                                                                        <option value="Weekly">Weekly</option>
+                                                                        <option value="Monthly">Monthly</option>
+                                                                    </select>
+                                                                </div>
+
+                                                                <!-- Filter by Status -->
+                                                                <div class="hidden lg:block">
+                                                                    <select x-model="statusFilter" @change="performFilter()" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                                        <option value="All">All Status</option>
+                                                                        <option value="Active">Active</option>
+                                                                        <option value="Defaulted">Defaulted</option>
+                                                                        <option value="Repaid">Repaid</option>
+                                                                        <option value="Stopped">Stopped</option>
+                                                                    </select>
+                                                                </div>
+
+                                                                <!-- Print Button -->
+                                                                <div>
+                                                                    <button @click="printLoansReport()" class="hover:text-dark-900 shadow-theme-xs relative flex h-11 items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                                            <path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2"></path>
+                                                                            <path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4"></path>
+                                                                            <rect x="7" y="13" width="10" height="8" rx="2"></rect>
+                                                                        </svg>
+                                                                        Print
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Loan Transactions Table -->
+                                                        <div x-data="loanTransactionsTable" x-init="init()">
+                                                            <div class="custom-scrollbar overflow-x-auto">
+                                                                <table class="w-full">
+                                                                    <!-- table header start -->
+                                                                    <thead>
+                                                                        <tr class="border-b border-gray-200 dark:divide-gray-800 dark:border-gray-800">
+                                                                            <th class="p-4 whitespace-nowrap">
+                                                                                <div class="flex items-center">
+                                                                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                                                                        #TransactionID
+                                                                                    </p>
+                                                                                </div>
+                                                                            </th>
+                                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                                <div class="flex items-center">
+                                                                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                                                                        Loan
+                                                                                    </p>
+                                                                                </div>
+                                                                            </th>
+                                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                                <div class="flex items-center">
+                                                                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                                                                        Borrowed
+                                                                                    </p>
+                                                                                </div>
+                                                                            </th>
+                                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                                <div class="flex items-center">
+                                                                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                                                                        Interest
+                                                                                    </p>
+                                                                                </div>
+                                                                            </th>
+                                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                                <div class="flex items-center">
+                                                                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                                                                        Total
+                                                                                    </p>
+                                                                                </div>
+                                                                            </th>
+                                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                                <div class="flex items-center">
+                                                                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                                                                        Repaid
+                                                                                    </p>
+                                                                                </div>
+                                                                            </th>
+                                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                                <div class="flex items-center">
+                                                                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                                                                        Start Date
+                                                                                    </p>
+                                                                                </div>
+                                                                            </th>
+                                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                                <div class="flex items-center">
+                                                                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                                                                        End Date
+                                                                                    </p>
+                                                                                </div>
+                                                                            </th>
+                                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                                <div class="flex items-center">
+                                                                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                                                                        Status
+                                                                                    </p>
+                                                                                </div>
+                                                                            </th>
+                                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                                <div class="flex items-center">
+                                                                                    <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
+                                                                                        Actions
+                                                                                    </p>
+                                                                                </div>
+                                                                            </th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <!-- table header end -->
+
+                                                                    <!-- Loading State -->
+                                                                    <template x-if="isLoading">
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td colspan="10" class="px-4 py-12 text-center">
+                                                                                    <div class="inline-flex flex-col items-center justify-center space-y-4 p-4">
+                                                                                        <svg class="w-12 h-12 text-gray-300 dark:text-gray-600 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                                                        </svg>
+                                                                                        <div class="space-y-2">
+                                                                                            <h2 class="text-xl font-semibold text-gray-700">Loading member loan transactions...</h2>
+                                                                                            <p class="text-gray-500">Please wait while we fetch the data.</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </template>
+
+                                                                    <!-- Message if no transactions data found -->
+                                                                    <template x-if="!isLoading && transactions.length === 0">
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td colspan="10" class="px-4 py-12 text-center">
+                                                                                    <div class="inline-flex flex-col items-center justify-center space-y-4 p-4">
+                                                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.801 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.801 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"></path>
+                                                                                        </svg>
+                                                                                        <div class="space-y-2">
+                                                                                            <h2 class="text-xl font-semibold text-gray-700">No loan records found</h2>
+                                                                                            <p class="text-gray-500">Do some transactions to view loan performance</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </template>
+
+                                                                    <!-- Message if no filtered results -->
+                                                                    <template x-if="!isLoading && transactions.length > 0 && filteredTransactions.length === 0">
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td colspan="10" class="px-4 py-12 text-center">
+                                                                                    <div class="inline-flex flex-col items-center justify-center space-y-4 p-4">
+                                                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+                                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h8M12 8v8"></path>
+                                                                                        </svg>
+                                                                                        <div class="space-y-2">
+                                                                                            <h2 class="text-xl font-semibold text-gray-700">No matching loans found.</h2>
+                                                                                            <p class="text-gray-500">Try adjusting your filters to see more results.</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </template>
+
+                                                                    <!-- If there is data display the table -->
+                                                                    <template x-if="!isLoading && filteredTransactions.length > 0">
+                                                                        <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800">
+                                                                            <template x-for="transaction in paginatedTransactions" :key="transaction.transactionId">
+                                                                                <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-900">
+                                                                                    <!-- TransactionID -->
+                                                                                    <td class="p-4 whitespace-nowrap">
+                                                                                        <div class="flex items-center col-span-2">
+                                                                                            <div class="flex items-center gap-3">
+                                                                                                <div>
+                                                                                                    <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="transaction.transactionId"></p>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </td>
+
+                                                                                    <!-- Loan -->
+                                                                                    <td class="p-4 whitespace-nowrap">
+                                                                                        <div class="flex items-center col-span-2">
+                                                                                            <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="transaction.loanType + ' (' + transaction.interestRate + ')'"></p>
+                                                                                        </div>
+                                                                                    </td>
+
+                                                                                    <!-- Borrowed -->
+                                                                                    <td class="p-4 whitespace-nowrap">
+                                                                                        <div class="flex items-center col-span-2">
+                                                                                            <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="transaction.borrowed"></p>
+                                                                                        </div>
+                                                                                    </td>
+
+                                                                                    <!-- Interest -->
+                                                                                    <td class="p-4 whitespace-nowrap">
+                                                                                        <div class="flex items-center col-span-2">
+                                                                                            <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="transaction.interest"></p>
+                                                                                        </div>
+                                                                                    </td>
+
+                                                                                    <!-- Total -->
+                                                                                    <td class="p-4 whitespace-nowrap">
+                                                                                        <div class="flex items-center col-span-2">
+                                                                                            <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="transaction.total"></p>
+                                                                                        </div>
+                                                                                    </td>
+
+                                                                                    <!-- Repaid -->
+                                                                                    <td class="p-4 whitespace-nowrap">
+                                                                                        <div class="flex items-center col-span-2">
+                                                                                            <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="transaction.repaid"></p>
+                                                                                        </div>
+                                                                                    </td>
+
+                                                                                    <!-- Start Date -->
+                                                                                    <td class="p-4 whitespace-nowrap">
+                                                                                        <div class="flex items-center col-span-2">
+                                                                                            <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="transaction.startDate"></p>
+                                                                                        </div>
+                                                                                    </td>
+
+                                                                                    <!-- End Date -->
+                                                                                    <td class="p-4 whitespace-nowrap">
+                                                                                        <div class="flex items-center col-span-2">
+                                                                                            <p class="text-xs font-sm text-gray-700 dark:text-gray-400" x-text="transaction.endDate"></p>
+                                                                                        </div>
+                                                                                    </td>
+
+                                                                                    <!-- Status -->
+                                                                                    <td class="p-4 whitespace-nowrap">
+                                                                                        <div class="flex items-center col-span-2">
+                                                                                            <span :class="getStatusClass(transaction.status)" class="rounded-full px-2 py-0.5 text-xs font-medium" x-text="transaction.status"></span>
+                                                                                        </div>
+                                                                                    </td>
+
+                                                                                    <!-- Actions - Edit Button -->
+                                                                                    <td class="p-4 whitespace-nowrap">
+                                                                                        <div class="flex items-center col-span-2">
+                                                                                            <button @click="editLoanTransaction(transaction)"
+                                                                                                class="shadow-theme-xs inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+                                                                                                <svg class="w-[22px] h-[22px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                                                                    <path stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.1" d="M7 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h1m4-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm7.441 1.559a1.907 1.907 0 0 1 0 2.698l-6.069 6.069L10 19l.674-3.372 6.07-6.07a1.907 1.907 0 0 1 2.697 0Z"></path>
+                                                                                                </svg>
+                                                                                            </button>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </template>
+                                                                        </tbody>
+                                                                    </template>
+                                                                </table>
+                                                            </div>
+
+                                                            <!-- Table Navigations -->
+                                                            <div class="border-t border-gray-200 px-5 py-4 dark:border-gray-800" x-show="filteredTransactions.length > 0">
+                                                                <div class="flex justify-center pb-4 sm:hidden">
+                                                                    <span class="block text-sm font-medium text-gray-500 dark:text-gray-400">
+                                                                        Showing
+                                                                        <span class="text-gray-800 dark:text-white/90" x-text="startEntry"></span>
+                                                                        to
+                                                                        <span class="text-gray-800 dark:text-white/90" x-text="endEntry"></span>
+                                                                        of
+                                                                        <span class="text-gray-800 dark:text-white/90" x-text="filteredTransactions.length"></span>
+                                                                    </span>
+                                                                </div>
+
+                                                                <div class="flex items-center justify-between">
+                                                                    <div class="hidden sm:block">
+                                                                        <span class="block text-sm font-medium text-gray-500 dark:text-gray-400">
+                                                                            Showing
+                                                                            <span class="text-gray-800 dark:text-white/90" x-text="startEntry"></span>
+                                                                            to
+                                                                            <span class="text-gray-800 dark:text-white/90" x-text="endEntry"></span>
+                                                                            of
+                                                                            <span class="text-gray-800 dark:text-white/90" x-text="filteredTransactions.length"></span>
+                                                                        </span>
+                                                                    </div>
+                                                                    <div class="flex w-full items-center justify-between gap-2 rounded-lg bg-gray-50 p-4 sm:w-auto sm:justify-normal sm:rounded-none sm:bg-transparent sm:p-0 dark:bg-gray-900 dark:sm:bg-transparent">
+                                                                        <button class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" :disabled="page === 1" @click="prevPage()">
+                                                                            <span>
+                                                                                <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M2.58203 9.99868C2.58174 10.1909 2.6549 10.3833 2.80152 10.53L7.79818 15.5301C8.09097 15.8231 8.56584 15.8233 8.85883 15.5305C9.15183 15.2377 9.152 14.7629 8.85921 14.4699L5.13911 10.7472L16.6665 10.7472C17.0807 10.7472 17.4165 10.4114 17.4165 9.99715C17.4165 9.58294 17.0807 9.24715 16.6665 9.24715L5.14456 9.24715L8.85919 5.53016C9.15199 5.23717 9.15184 4.7623 8.85885 4.4695C8.56587 4.1767 8.09099 4.17685 7.79819 4.46984L2.84069 9.43049C2.68224 9.568 2.58203 9.77087 2.58203 9.99715C2.58203 9.99766 2.58203 9.99817 2.58203 9.99868Z" fill=""></path>
+                                                                                </svg>
+                                                                            </span>
+                                                                        </button>
+
+                                                                        <span class="block text-sm font-medium text-gray-700 sm:hidden dark:text-gray-400">
+                                                                            Page <span x-text="page"></span> of <span x-text="totalPages"></span>
+                                                                        </span>
+
+                                                                        <ul class="hidden items-center gap-0.5 sm:flex">
+                                                                            <template x-for="n in totalPages" :key="n">
+                                                                                <li>
+                                                                                    <a href="#" @click.prevent="goToPage(n)" :class="page === n ? 'bg-brand-500 text-white' : 'hover:bg-brand-500 text-gray-700 dark:text-gray-400 hover:text-white dark:hover:text-white'" class="flex h-10 w-10 items-center justify-center rounded-lg text-sm font-medium">
+                                                                                        <span x-text="n"></span>
+                                                                                    </a>
+                                                                                </li>
+                                                                            </template>
+                                                                        </ul>
+
+                                                                        <button class="shadow-theme-xs flex items-center gap-2 rounded-lg border border-gray-300 bg-white p-2 text-gray-700 hover:bg-gray-50 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2.5 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200" :disabled="page === totalPages" @click="nextPage()">
+                                                                            <span>
+                                                                                <svg class="fill-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M17.4165 9.9986C17.4168 10.1909 17.3437 10.3832 17.197 10.53L12.2004 15.5301C11.9076 15.8231 11.4327 15.8233 11.1397 15.5305C10.8467 15.2377 10.8465 14.7629 11.1393 14.4699L14.8594 10.7472L3.33203 10.7472C2.91782 10.7472 2.58203 10.4114 2.58203 9.99715C2.58203 9.58294 2.91782 9.24715 3.33203 9.24715L14.854 9.24715L11.1393 5.53016C10.8465 5.23717 10.8467 4.7623 11.1397 4.4695C11.4327 4.1767 11.9075 4.17685 12.2003 4.46984L17.1578 9.43049C17.3163 9.568 17.4165 9.77087 17.4165 9.99715C17.4165 9.99763 17.4165 9.99812 17.4165 9.9986Z" fill=""></path>
+                                                                                </svg>
+                                                                            </span>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
 
                     </div>
 

@@ -6923,6 +6923,154 @@
                 },
             }));
 
+            // Loan Transactions Table Component
+            Alpine.data('loanTransactionsTable', () => ({
+                transactions: [],
+                page: 1,
+                itemsPerPage: 10,
+                isLoading: true,
+
+                // Filter properties
+                frequencyFilter: 'All',
+                statusFilter: 'All',
+
+                init() {
+                    this.loadTransactions();
+                },
+
+                loadTransactions() {
+                    this.isLoading = true;
+                    fetch('/bodaboda-member/{{ $memberId }}/loan-transactions')
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                this.transactions = data.transactions.map(item => ({
+                                    transactionId: item.transactionId || '',
+                                    loanType: item.loan_type_name || 'N/A',
+                                    interestRate: item.interest_rate ? item.interest_rate + '%' : '0%',
+                                    borrowed: 'KES ' + Number(item.transactionLoanAmount || 0).toLocaleString(),
+                                    interest: 'KES ' + Number(item.calculated_interest || 0).toLocaleString(),
+                                    total: 'KES ' + Number(item.transactionTotalLoan || 0).toLocaleString(),
+                                    repaid: 'KES ' + Number(item.total_repaid || 0).toLocaleString(),
+                                    startDate: item.transactionLoanStartDate ? new Date(item.transactionLoanStartDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A',
+                                    endDate: item.transactionLoanEndDate ? new Date(item.transactionLoanEndDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A',
+                                    status: item.dynamic_status || item.transactionLoanStatus || 'N/A',
+                                    rawDate: item.transactionCreated ? new Date(item.transactionCreated) : new Date()
+                                }));
+                            } else {
+                                this.transactions = [];
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error loading loan transactions:', error);
+                            this.transactions = [];
+                        })
+                        .finally(() => {
+                            this.isLoading = false;
+                        });
+                },
+
+                // Filtered transactions
+                get filteredTransactions() {
+                    let filtered = this.transactions;
+
+                    // Apply status filter
+                    if (this.statusFilter !== 'All') {
+                        filtered = filtered.filter(t => t.status === this.statusFilter);
+                    }
+
+                    // Apply frequency filter
+                    if (this.frequencyFilter !== 'All') {
+                        const now = new Date();
+                        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+                        filtered = filtered.filter(t => {
+                            const transDate = new Date(t.rawDate);
+
+                            switch(this.frequencyFilter) {
+                                case 'Daily':
+                                    const txDate = new Date(transDate.getFullYear(), transDate.getMonth(), transDate.getDate());
+                                    return txDate.getTime() === today.getTime();
+                                case 'Weekly':
+                                    const weekAgo = new Date(today);
+                                    weekAgo.setDate(weekAgo.getDate() - 7);
+                                    return transDate >= weekAgo;
+                                case 'Monthly':
+                                    const monthAgo = new Date(today);
+                                    monthAgo.setDate(monthAgo.getDate() - 30);
+                                    return transDate >= monthAgo;
+                                default:
+                                    return true;
+                            }
+                        });
+                    }
+
+                    return filtered;
+                },
+
+                // Pagination getters
+                get totalPages() {
+                    return Math.ceil(this.filteredTransactions.length / this.itemsPerPage);
+                },
+
+                get paginatedTransactions() {
+                    const start = (this.page - 1) * this.itemsPerPage;
+                    const end = start + this.itemsPerPage;
+                    return this.filteredTransactions.slice(start, end);
+                },
+
+                get startEntry() {
+                    return (this.page - 1) * this.itemsPerPage + 1;
+                },
+
+                get endEntry() {
+                    const end = this.page * this.itemsPerPage;
+                    return end > this.filteredTransactions.length ? this.filteredTransactions.length : end;
+                },
+
+                // Pagination methods
+                prevPage() {
+                    if (this.page > 1) this.page--;
+                },
+
+                nextPage() {
+                    if (this.page < this.totalPages) this.page++;
+                },
+
+                goToPage(page) {
+                    if (page >= 1 && page <= this.totalPages) this.page = page;
+                },
+
+                // Filter method
+                performFilter() {
+                    this.page = 1;
+                },
+
+                // Get status class
+                getStatusClass(status) {
+                    const statusMap = {
+                        'Active': 'bg-success-100 text-success-600 dark:bg-success-900/30 dark:text-success-400',
+                        'Approved': 'bg-success-100 text-success-600 dark:bg-success-900/30 dark:text-success-400',
+                        'Under Review': 'bg-warning-100 text-warning-600 dark:bg-warning-900/30 dark:text-warning-400',
+                        'Pending': 'bg-warning-100 text-warning-600 dark:bg-warning-900/30 dark:text-warning-400',
+                        'Late': 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400',
+                        'Repaid': 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400',
+                        'Defaulted': 'bg-error-100 text-error-600 dark:bg-error-900/30 dark:text-error-400',
+                        'Stopped': 'bg-error-100 text-error-600 dark:bg-error-900/30 dark:text-error-400',
+                        'Cancelled': 'bg-error-100 text-error-600 dark:bg-error-900/30 dark:text-error-400'
+                    };
+                    return statusMap[status] || 'bg-gray-100 text-gray-600 dark:bg-gray-900/30 dark:text-gray-400';
+                },
+
+                // Edit loan transaction - dispatch event to open edit modal
+                editLoanTransaction(transaction) {
+                    // Dispatch event to open edit modal with the transaction data
+                    window.dispatchEvent(new CustomEvent('open-edit-loan-transaction-modal', {
+                        detail: { transaction: transaction }
+                    }));
+                }
+            }));
+
         });
 
     </script>

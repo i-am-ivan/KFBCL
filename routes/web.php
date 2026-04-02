@@ -333,6 +333,8 @@ Route::get('/bodaboda-member/{memberId}/loans/current', [BodabodaController::cla
 // Loan transactions route
 Route::get('/loans/transactions/all', [BodabodaController::class, 'getAllLoanTransactions'])->name('loans.transactions.all');
 
+Route::get('/bodaboda-member/{memberId}/loan-transactions', [BodabodaController::class, 'getMemberLoanTransactions']);
+
 // Contributions ------------------------------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/contributions/all', [BodabodaController::class, 'getAllContributions']);
 
