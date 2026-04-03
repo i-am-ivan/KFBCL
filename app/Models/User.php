@@ -47,4 +47,9 @@ class User extends Authenticatable  // Change from Users to User, and extend Aut
 
         return $roleAside[$this->role] ?? 'Layouts.Default.aside';
     }
+
+    public function canDeactivateAccount()
+    {
+        return in_array($this->role, ['Admin', 'SuperAdmin', 'Treasurer']);
+    }
 }

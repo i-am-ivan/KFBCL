@@ -1415,6 +1415,7 @@ class BodabodaController extends Controller {
         ], 200);
     }
 
+
     public function getNonMemberVehiclesWithDetails($memberId)
     {
         $vehicles = DB::table('member_assign_vehicles')
@@ -1424,9 +1425,16 @@ class BodabodaController extends Controller {
             ->select(
                 'member_assign_vehicles.assignedId',
                 'member_assign_vehicles.rider',
-                'member_assign_vehicles.vehicle',
+                'member_assign_vehicles.vehicle as vehicle_id',  // This is the numeric ID (foreign key)
                 DB::raw("CONCAT('VHLC', members_vehicles.vehicleId) as vehicle_code"),
-                DB::raw("CONCAT(members_vehicles.type, ': ', members_vehicles.brand, ' ', members_vehicles.yom, ' , ', members_vehicles.make, ' ', members_vehicles.model, ' ', members_vehicles.CC, ' - CC ') as vehicle"),
+                DB::raw("CONCAT(members_vehicles.type, ': ', members_vehicles.brand, ' ', members_vehicles.yom, ' , ', members_vehicles.make, ' ', members_vehicles.model, ' ', members_vehicles.CC, ' - CC ') as vehicle_display"),
+                'members_vehicles.type',
+                'members_vehicles.brand',
+                'members_vehicles.model',
+                'members_vehicles.make',
+                'members_vehicles.CC',
+                'members_vehicles.plate_number',
+                'members_vehicles.yom',
                 DB::raw("CONCAT(members.firstname, ' ', members.lastname) as owner"),
                 'members_vehicles.availability',
                 DB::raw("DATE_FORMAT(member_assign_vehicles.assignedDate, '%M, %e %Y') as assigned_date"),
@@ -1434,7 +1442,7 @@ class BodabodaController extends Controller {
                 DB::raw("DATEDIFF(member_assign_vehicles.updated_on, member_assign_vehicles.assignedDate) as duration_days"),
                 'member_assign_vehicles.status'
             )
-            ->orderBy('member_assign_vehicles.rider', 'ASC')
+            ->orderBy('member_assign_vehicles.assignedId', 'ASC')
             ->get();
 
         return response()->json([

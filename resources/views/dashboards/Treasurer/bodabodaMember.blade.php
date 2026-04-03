@@ -120,12 +120,18 @@
                                     <div class="flex flex-col gap-3 sm:flex-row">
 
                                         <div>
-                                            <p class="text-xl text-gray-500 dark:text-gray-400">
-                                                <span class="bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500 rounded-full px-2 py-0.5 text-medium font-semibold">
-                                                    <span x-text="memberData?.member?.status">Active</span>
-                                                </span>
-                                            </p>
+                                            <p class="text-medium text-gray-500 dark:text-gray-400">
+                                                    <span :class="{
+                                                        'bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500': memberData?.member?.status === 'Active',
+                                                        'bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-500': memberData?.member?.status === 'In-Active',
+                                                        'bg-error-50 text-error-600 dark:bg-error-500/15 dark:text-error-500': memberData?.member?.status === 'Suspended',
+                                                        'bg-warning-50 text-warning-600 dark:bg-warning-500/15 dark:text-warning-500': memberData?.member?.status && !['Active', 'In-Active', 'Suspended'].includes(memberData?.member?.status)
+                                                    }" class="rounded-full px-2 py-0.5 text-medium font-semibold">
+                                                        <span x-text="memberData?.member?.status || 'Loading...'"></span>
+                                                    </span>
+                                                </p>
                                         </div>
+
                                     </div>
                             </div>
                         </div>
@@ -1156,7 +1162,7 @@
         </div>
 
 
-        <form class="flex flex-col" method="POST" x-data="vehiclesTable" @submit.prevent="addVehicle">
+        <form class="flex flex-col" method="POST" x-data="vehiclesTable"  @submit.prevent="addVehicle">
             @csrf
 
             <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
@@ -1176,7 +1182,7 @@
                                 name="type"
                                 @change="clearError('vehicle_type')"
                                 @blur="validateField('vehicle_type', $event.target.value)"
-                                :class="errors.vehicle_type ? 'border-red-500' : ''"
+                                :class="errors.vehicle_type ? 'border-error-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                             <option value="">Select Type</option>
                             <option value="Motocycle">Motocycle</option>
@@ -1190,7 +1196,7 @@
                             </svg>
                         </span>
                     </div>
-                    <span x-show="errors.vehicle_type" x-text="errors.vehicle_type" class="text-xs text-red-500 mt-1"></span>
+                    <span x-show="errors.vehicle_type" x-text="errors.vehicle_type" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
                 <!-- Plate Number -->
@@ -1203,9 +1209,9 @@
                         name="plate_number"
                         @input="clearError('plate_number')"
                         @blur="validateField('plate_number', $event.target.value)"
-                        :class="errors.plate_number ? 'border-red-500' : ''"
+                        :class="errors.plate_number ? 'border-error-500' : ''"
                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                    <span x-show="errors.plate_number" x-text="errors.plate_number" class="text-xs text-red-500 mt-1"></span>
+                    <span x-show="errors.plate_number" x-text="errors.plate_number" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
                 <!-- Brand -->
@@ -1218,9 +1224,9 @@
                         name="brand"
                         @input="clearError('brand')"
                         @blur="validateField('brand', $event.target.value)"
-                        :class="errors.brand ? 'border-red-500' : ''"
+                        :class="errors.brand ? 'border-error-500' : ''"
                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                    <span x-show="errors.brand" x-text="errors.brand" class="text-xs text-red-500 mt-1"></span>
+                    <span x-show="errors.brand" x-text="errors.brand" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
                 <!-- Model -->
@@ -1233,9 +1239,9 @@
                         name="model"
                         @input="clearError('model')"
                         @blur="validateField('model', $event.target.value)"
-                        :class="errors.model ? 'border-red-500' : ''"
+                        :class="errors.model ? 'border-error-500' : ''"
                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                    <span x-show="errors.model" x-text="errors.model" class="text-xs text-red-500 mt-1"></span>
+                    <span x-show="errors.model" x-text="errors.model" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
                 <!-- Make -->
@@ -1249,10 +1255,10 @@
                             name="make"
                             @input="clearError('make')"
                             @blur="validateField('make', $event.target.value)"
-                            :class="errors.make ? 'border-red-500' : ''"
+                            :class="errors.make ? 'border-error-500' : ''"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     </div>
-                    <span x-show="errors.make" x-text="errors.make" class="text-xs text-red-500 mt-1"></span>
+                    <span x-show="errors.make" x-text="errors.make" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
                 <!-- CC -->
@@ -1266,10 +1272,10 @@
                             name="cc"
                             @input="clearError('cc')"
                             @blur="validateField('cc', $event.target.value)"
-                            :class="errors.cc ? 'border-red-500' : ''"
+                            :class="errors.cc ? 'border-error-500' : ''"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     </div>
-                    <span x-show="errors.cc" x-text="errors.cc" class="text-xs text-red-500 mt-1"></span>
+                    <span x-show="errors.cc" x-text="errors.cc" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
                 <!-- Insurance -->
@@ -1282,7 +1288,7 @@
                                 name="insurance"
                                 @change="clearError('insurance')"
                                 @blur="validateField('insurance', $event.target.value)"
-                                :class="errors.insurance ? 'border-red-500' : ''"
+                                :class="errors.insurance ? 'border-error-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                             <option value="">Select Insurance Type</option>
                             <option value="Comprehesive">Comprehensive</option>
@@ -1294,7 +1300,7 @@
                             </svg>
                         </span>
                     </div>
-                    <span x-show="errors.insurance" x-text="errors.insurance" class="text-xs text-red-500 mt-1"></span>
+                    <span x-show="errors.insurance" x-text="errors.insurance" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
                 <!-- Year of Manufacture -->
@@ -1310,9 +1316,9 @@
                         step="1"
                         @input="clearError('yom')"
                         @blur="validateField('yom', $event.target.value)"
-                        :class="errors.yom ? 'border-red-500' : ''"
+                        :class="errors.yom ? 'border-error-500' : ''"
                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                    <span x-show="errors.yom" x-text="errors.yom" class="text-xs text-red-500 mt-1"></span>
+                    <span x-show="errors.yom" x-text="errors.yom" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
                 <!-- NTSA Compliant -->
@@ -1325,7 +1331,7 @@
                                 name="ntsa_compliant"
                                 @change="clearError('ntsa_compliant')"
                                 @blur="validateField('ntsa_compliant', $event.target.value)"
-                                :class="errors.ntsa_compliant ? 'border-red-500' : ''"
+                                :class="errors.ntsa_compliant ? 'border-error-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                             <option value="">NTSA Compliant</option>
                             <option value="Approved">Approved</option>
@@ -1337,7 +1343,7 @@
                             </svg>
                         </span>
                     </div>
-                    <span x-show="errors.ntsa_compliant" x-text="errors.ntsa_compliant" class="text-xs text-red-500 mt-1"></span>
+                    <span x-show="errors.ntsa_compliant" x-text="errors.ntsa_compliant" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
                 <!-- Status -->
@@ -1350,7 +1356,7 @@
                                 name="status"
                                 @change="clearError('vehicle_status')"
                                 @blur="validateField('vehicle_status', $event.target.value)"
-                                :class="errors.vehicle_status ? 'border-red-500' : ''"
+                                :class="errors.vehicle_status ? 'border-error-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                             <option value="">Select Status</option>
                             <option value="Approved">Approved</option>
@@ -1363,7 +1369,7 @@
                             </svg>
                         </span>
                     </div>
-                    <span x-show="errors.vehicle_status" x-text="errors.vehicle_status" class="text-xs text-red-500 mt-1"></span>
+                    <span x-show="errors.vehicle_status" x-text="errors.vehicle_status" class="text-xs text-error-500 mt-1"></span>
                 </div>
             </div>
 
@@ -1693,6 +1699,7 @@
                                 x-model="vehicleSearchTerm"
                                 @input.debounce.300ms="searchVehicles()"
                                 @focus="loadInitialVehicles()"
+                                :class="errors.assign_vehicle ? 'border-error-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent py-3 pr-[84px] text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
                                 placeholder="Search Number Plate or Vehicle Code"
                                 autocomplete="off">
@@ -1727,6 +1734,8 @@
                                 </svg>
                             </div>
                         </div>
+                        <!-- Error message for vehicle selection -->
+                        <span x-show="errors.assign_vehicle" x-text="errors.assign_vehicle" class="text-xs text-error-500 mt-1"></span>
                     </div>
 
                     <!-- Vehicle Details Section - Shows when vehicle is selected -->
@@ -1838,7 +1847,6 @@
         </div>
 
             <form class="flex flex-col" @submit.prevent="reassignVehicle">
-
                 @csrf
 
                 <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
@@ -1846,22 +1854,17 @@
                     <input type="hidden"
                         id="reassign_vehicle_id"
                         name="vehicle_id"
-                        :value="$store.vehicleData.currentVehicle?.vehicleId || ''"
-                        readonly>
+                        velue=""/>
 
-                    <!-- Vehicle Type - Plate Number (Availability) -->
+                    <!-- Vehicle Type - Plate Number -->
                     <div class="w-full px-2.5">
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                             Vehicle Type
                         </label>
                         <input type="text"
-                            id="vehicle_type"
-                            name="vehicle_type"
+                            id="vehicle_type_display"
                             readonly
-                            :value="$store.vehicleData.currentVehicle ?
-                                    `${$store.vehicleData.currentVehicle.type || 'Loading ... '} - ${$store.vehicleData.currentVehicle.plate_number || 'Loading ... '}` :
-                                    ''"
-                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30">
                     </div>
 
                     <!-- Brand: Make Model YoM - CC -->
@@ -1870,13 +1873,10 @@
                             Brand: Make Model YoM - CC
                         </label>
                         <input type="text"
-                            id="brand"
-                            name="brand"
+                            id="brand_display"
+                            name="brand_display"
                             readonly
-                            :value="$store.vehicleData.currentVehicle ?
-                                    `${$store.vehicleData.currentVehicle.brand || 'N/A'}: ${$store.vehicleData.currentVehicle.make || 'N/A'} ${$store.vehicleData.currentVehicle.model || 'N/A'} ${$store.vehicleData.currentVehicle.yom || 'N/A'} - ${$store.vehicleData.currentVehicle.CC || 'N/A'}` :
-                                    ''"
-                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30">
                     </div>
 
                     <!-- Date Assigned -->
@@ -1886,12 +1886,8 @@
                         </label>
                         <input type="text"
                             id="assignedDate"
-                            name="assignedDate"
                             readonly
-                            :value="$store.vehicleData.currentVehicle?.assignedDate ?
-                                    new Date($store.vehicleData.currentVehicle.assignedDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) :
-                                    'N/A'"
-                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30">
                     </div>
 
                     <!-- Status -->
@@ -1900,11 +1896,9 @@
                             Status
                         </label>
                         <input type="text"
-                            id="status"
-                            name="status"
+                            id="status_display"
                             readonly
-                            :value="$store.vehicleData.currentVehicle?.status || 'N/A'"
-                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30">
                     </div>
                 </div>
 
@@ -1920,7 +1914,6 @@
                         <span x-show="$store.vehicleData.isReassigning">Re-Assigning ...</span>
                     </button>
                 </div>
-
             </form>
 
         </div>
@@ -4392,33 +4385,27 @@
 
     <!-- Member Vehicle -->
     <script>
-
         document.addEventListener('alpine:init', () => {
-            // Create the vehicleData store
             Alpine.store('vehicleData', {
                 currentVehicle: null,
                 reAssignMemberVehicleModal: false,
-                isReassigning: false
+                isReassigning: false,
+                isAdding: false,
+                isUpdating: false,
+                isDeleting: false
             });
 
             Alpine.data('vehiclesTable', () => ({
-                // Member vehicles
                 memberVehicles: [],
                 memberCount: 0,
                 pageMember: 1,
-
-                // Non-member vehicles
                 nonMemberVehicles: [],
                 nonMemberCount: 0,
                 pageNonMember: 1,
-
-                // Shared properties
                 itemsPerPage: 10,
                 errors: {},
                 searchDropdown: null,
                 isLoading: true,
-
-                // Search Assign Vehicle
                 vehicleSearchTerm: '',
                 searchResults: [],
                 isSearching: false,
@@ -4426,78 +4413,27 @@
                 selectedVehicleId: null,
                 assignStatus: '',
                 isSubmitting: false,
+                assignedVehicle: null,
+                currentVehicle: null,
 
                 init() {
-                    console.log('vehiclesTable initializing...');
                     let memberId = window.location.pathname.split('/').pop();
                     this.memberId = memberId;
                     this.loadMemberVehicleData();
                     this.loadNonMemberVehicleData();
                     this.setupEventListeners();
-                },
-
-                loadMemberVehicleData() {
-                    console.log('Loading member vehicle data...');
-                    let url = '/bodaboda-member/' + this.memberId + '/vehicles/member/all';
-                    console.log('Fetching:', url);
-
-                    fetch(url)
-                        .then(res => res.json())
-                        .then(data => {
-                            console.log('Member vehicles response:', data);
-                            if (data.success) {
-                                this.memberVehicles = data.vehicles || [];
-                                console.log('Member vehicles set:', this.memberVehicles);
-                            }
-                        })
-                        .catch(error => console.error('Error loading member vehicles:', error));
-
-                    // Get member count
-                    fetch('/bodaboda-member/' + this.memberId + '/vehicles/member/count')
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.success) {
-                                this.memberCount = data.count || 0;
-                            }
-                        })
-                        .catch(error => console.error('Error loading member count:', error));
-                },
-
-                loadNonMemberVehicleData() {
-                    console.log('Loading non-member vehicle data...');
-                    // Get the member ID from the URL path
-                    let memberId = window.location.pathname.split('/').pop();
-                    let url = '/treasurer/bodaboda-member/' + memberId + '/vehicles/nonmember/details';
-                    console.log('Fetching:', url);
-
-                    fetch(url)
-                        .then(res => res.json())
-                        .then(data => {
-                            console.log('Non-member vehicles response:', data);
-                            if (data.success) {
-                                this.nonMemberVehicles = [...(data.vehicles || [])];
-                                console.log('Non-member vehicles set:', this.nonMemberVehicles);
-
-                                // Find the currently assigned vehicle (availability = 'Assigned')
-                                const currentVehicle = this.nonMemberVehicles.find(v => v.availability === 'Assigned');
-                                if (currentVehicle) {
-                                    Alpine.store('vehicleData').currentVehicle = currentVehicle;
-                                } else {
-                                    Alpine.store('vehicleData').currentVehicle = null;
-                                }
-
-                                this.pageNonMember = 1;
-                            }
-                        })
-                        .catch(error => console.error('Error loading non-member vehicles:', error));
+                    // Watch for changes to assignedVehicle
+                    this.$watch('assignedVehicle', (value) => {
+                        console.log('assignedVehicle changed:', value);
+                    });
                 },
 
                 setupEventListeners() {
+
                     window.addEventListener('open-edit-vehicle-modal', (event) => {
                         const vehicle = event.detail.vehicle;
                         Alpine.store('vehicleData').currentVehicle = vehicle;
                         Alpine.store('vehicleData').editMemberVehiclesModal = true;
-
                         setTimeout(() => {
                             document.getElementById('edit_vehicle_id') && (document.getElementById('edit_vehicle_id').value = vehicle.vehicleId || '');
                             document.getElementById('edit_vehicle_type') && (document.getElementById('edit_vehicle_type').value = vehicle.type || '');
@@ -4516,66 +4452,117 @@
 
                     window.addEventListener('open-reassign-vehicle-modal', (event) => {
                         const vehicle = event.detail.vehicle;
+                        console.log('Vehicle for reassign:', vehicle);
+
                         Alpine.store('vehicleData').currentVehicle = vehicle;
                         Alpine.store('vehicleData').reAssignMemberVehicleModal = true;
 
                         setTimeout(() => {
-                            document.getElementById('reassign_vehicle_id') && (document.getElementById('reassign_vehicle_id').value = vehicle.vehicleId || '');
-                            const vehicleDisplay = `${vehicle.type}: ${vehicle.brand} ${vehicle.model} - ${vehicle.plate_number}`;
-                            document.getElementById('reassign_vehicle_display') && (document.getElementById('reassign_vehicle_display').value = vehicleDisplay);
+                            // Hidden vehicle ID - now vehicle.vehicleId is the numeric ID
+                            const vehicleIdField = document.getElementById('reassign_vehicle_id');
+                            if (vehicleIdField) {
+                                vehicleIdField.value = vehicle.vehicleId;
+                                console.log('Setting vehicle_id to:', vehicle.vehicleId);
+                            }
+
+                            // Vehicle Type display
+                            const vehicleTypeField = document.getElementById('vehicle_type_display');
+                            if (vehicleTypeField) {
+                                vehicleTypeField.value = `${vehicle.type || 'N/A'} - ${vehicle.plate_number || 'N/A'}`;
+                            }
+
+                            // Brand display - use the vehicle display string
+                            const brandField = document.getElementById('brand_display');
+                            if (brandField) {
+                                brandField.value = vehicle.vehicle || 'N/A';
+                            }
+
+                            // Date Assigned
+                            const assignedDateField = document.getElementById('assignedDate');
+                            if (assignedDateField && vehicle.assigned_date) {
+                                assignedDateField.value = vehicle.assigned_date;
+                            }
+
+                            // Status display
+                            const statusField = document.getElementById('status_display');
+                            if (statusField) {
+                                statusField.value = vehicle.status || 'Assigned';
+                            }
                         }, 100);
                     });
+
                 },
 
-                // Pagination methods for member vehicles
-                prevPageMember() {
-                    if (this.pageMember > 1) this.pageMember--;
+                loadMemberVehicleData() {
+                    let url = '/bodaboda-member/' + this.memberId + '/vehicles/member/all';
+                    fetch(url)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                this.memberVehicles = data.vehicles || [];
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                    fetch('/bodaboda-member/' + this.memberId + '/vehicles/member/count')
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) this.memberCount = data.count || 0;
+                        })
+                        .catch(error => console.error('Error:', error));
                 },
 
-                nextPageMember() {
-                    if (this.pageMember < this.totalPagesMember) this.pageMember++;
+                loadNonMemberVehicleData() {
+                    let memberId = window.location.pathname.split('/').pop();
+                    let url = '/treasurer/bodaboda-member/' + memberId + '/vehicles/nonmember/details';
+                    fetch(url)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                this.nonMemberVehicles = [...(data.vehicles || [])];
+                                const currentVehicle = this.nonMemberVehicles.find(v => v.availability === 'Assigned');
+                                if (currentVehicle) {
+                                    // vehicle_id is now the numeric ID from the join
+                                    const vehicleData = {
+                                        ...currentVehicle,
+                                        vehicleId: currentVehicle.vehicle_id  // Numeric ID like 102
+                                    };
+                                    Alpine.store('vehicleData').currentVehicle = vehicleData;
+                                    this.assignedVehicle = vehicleData;
+                                    console.log('Assigned vehicle set with ID:', vehicleData.vehicleId);
+                                } else {
+                                    Alpine.store('vehicleData').currentVehicle = null;
+                                    this.assignedVehicle = null;
+                                }
+                                this.pageNonMember = 1;
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
                 },
 
-                goToPageMember(page) {
-                    if (page >= 1 && page <= this.totalPagesMember) this.pageMember = page;
-                },
+                prevPageMember() { if (this.pageMember > 1) this.pageMember--; },
+                nextPageMember() { if (this.pageMember < this.totalPagesMember) this.pageMember++; },
+                goToPageMember(page) { if (page >= 1 && page <= this.totalPagesMember) this.pageMember = page; },
+                get totalPagesMember() { return Math.ceil(this.memberVehicles.length / this.itemsPerPage); },
+                get paginatedMemberVehicles() { const start = (this.pageMember - 1) * this.itemsPerPage; return this.memberVehicles.slice(start, start + this.itemsPerPage); },
 
-                get totalPagesMember() {
-                    return Math.ceil(this.memberVehicles.length / this.itemsPerPage);
-                },
+                prevPageNonMember() { if (this.pageNonMember > 1) this.pageNonMember--; },
+                nextPageNonMember() { if (this.pageNonMember < this.totalPagesNonMember) this.pageNonMember++; },
+                goToPageNonMember(page) { if (page >= 1 && page <= this.totalPagesNonMember) this.pageNonMember = page; },
+                get totalPagesNonMember() { return Math.ceil(this.nonMemberVehicles.length / this.itemsPerPage); },
+                get paginatedNonMemberVehicles() { const start = (this.pageNonMember - 1) * this.itemsPerPage; return this.nonMemberVehicles.slice(start, start + this.itemsPerPage); },
 
-                get paginatedMemberVehicles() {
-                    const start = (this.pageMember - 1) * this.itemsPerPage;
-                    return this.memberVehicles.slice(start, start + this.itemsPerPage);
-                },
-
-                // Pagination methods for non-member vehicles
-                prevPageNonMember() {
-                    if (this.pageNonMember > 1) this.pageNonMember--;
-                },
-
-                nextPageNonMember() {
-                    if (this.pageNonMember < this.totalPagesNonMember) this.pageNonMember++;
-                },
-
-                goToPageNonMember(page) {
-                    if (page >= 1 && page <= this.totalPagesNonMember) this.pageNonMember = page;
-                },
-
-                get totalPagesNonMember() {
-                    return Math.ceil(this.nonMemberVehicles.length / this.itemsPerPage);
-                },
-
-                get paginatedNonMemberVehicles() {
-                    const start = (this.pageNonMember - 1) * this.itemsPerPage;
-                    return this.nonMemberVehicles.slice(start, start + this.itemsPerPage);
-                },
-
-                // Keep all your existing validation and CRUD methods exactly as they were
                 validateField(field, value) {
+                    delete this.errors[field];
                     if (!value || value === '') {
                         this.errors[field] = 'This field is required';
                         return false;
+                    }
+                    if (field === 'cc') {
+                        const cc = parseInt(value);
+                        if (isNaN(cc) || cc < 50 || cc > 5000) {
+                            this.errors[field] = 'CC must be between 50 and 5000';
+                            return false;
+                        }
                     }
                     if (field === 'yom') {
                         const year = parseInt(value);
@@ -4585,35 +4572,36 @@
                             return false;
                         }
                     }
-                    delete this.errors[field];
+                    if (field === 'plate_number') {
+                        const plateRegex = /^[A-Z0-9\s]{3,15}$/i;
+                        if (!plateRegex.test(value)) {
+                            this.errors[field] = 'Please enter a valid plate number';
+                            return false;
+                        }
+                    }
                     return true;
                 },
 
                 clearError(field) {
-                    if (this.errors[field]) {
-                        delete this.errors[field];
-                    }
+                    if (this.errors[field]) delete this.errors[field];
                 },
 
                 validateAssignForm() {
                     this.errors = {};
                     let isValid = true;
-                    const vehicleType = document.getElementById('assign_vehicle_type')?.value;
-                    const vehicleSelect = document.getElementById('assign_vehicle_select')?.value;
-                    const status = document.getElementById('assign_status')?.value;
 
-                    if (!vehicleType || vehicleType === '') {
-                        this.errors.assign_vehicle_type = 'Please select vehicle type';
+                    // Check if a vehicle is selected (selectedVehicleId should not be empty)
+                    if (!this.selectedVehicleId || this.selectedVehicleId === '') {
+                        this.errors.assign_vehicle = 'Please search and select a vehicle';
                         isValid = false;
                     }
-                    if (!vehicleSelect || vehicleSelect === '') {
-                        this.errors.assign_vehicle = 'Please select a vehicle';
+
+                    // Check if status is selected
+                    if (!this.assignStatus || this.assignStatus === '') {
+                        this.errors.assign_status = 'Please select a status';
                         isValid = false;
                     }
-                    if (!status || status === '') {
-                        this.errors.assign_status = 'Please select status';
-                        isValid = false;
-                    }
+
                     return isValid;
                 },
 
@@ -4634,11 +4622,9 @@
                         try {
                             const response = await fetch(`/vehicles/search?limit=5`);
                             const data = await response.json();
-                            if (data.success) {
-                                this.searchResults = data.vehicles;
-                            }
+                            if (data.success) this.searchResults = data.vehicles;
                         } catch (error) {
-                            console.error('Error loading vehicles:', error);
+                            console.error('Error:', error);
                         } finally {
                             this.isSearching = false;
                         }
@@ -4650,16 +4636,11 @@
                         this.searchResults = [];
                         return;
                     }
-
                     this.isSearching = true;
-
                     try {
                         const response = await fetch(`/vehicles/search?q=${encodeURIComponent(this.vehicleSearchTerm)}`);
                         const data = await response.json();
-
-                        if (data.success) {
-                            this.searchResults = data.vehicles;
-                        }
+                        if (data.success) this.searchResults = data.vehicles;
                     } catch (error) {
                         console.error('Search error:', error);
                     } finally {
@@ -4674,52 +4655,6 @@
                     this.searchResults = [];
                 },
 
-                async assignVehicle() {
-                    if (!this.selectedVehicle) {
-                        alert('Please select a vehicle first');
-                        return;
-                    }
-
-                    if (!this.assignStatus) {
-                        alert('Please select a status');
-                        return;
-                    }
-
-                    this.isSubmitting = true;
-
-                    try {
-                        const formData = {
-                            vehicle_id: this.selectedVehicleId,
-                            status: this.assignStatus,
-                            _token: document.querySelector('input[name="_token"]')?.value
-                        };
-
-                        const response = await fetch('/bodaboda-member/' + this.memberId + '/vehicle/assign', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value
-                            },
-                            body: JSON.stringify(formData)
-                        });
-
-                        const data = await response.json();
-
-                        if (data.success) {
-                            alert(data.message);
-                            window.location.reload();
-                        } else {
-                            alert('Error: ' + data.message);
-                        }
-                    } catch (error) {
-                        alert('Error assigning vehicle. Please try again.');
-                        console.error('Error:', error);
-                    } finally {
-                        this.isSubmitting = false;
-                        this.assignMemberVehicle = false;
-                    }
-                },
-
                 assignVehicle() {
                     if (!this.validateAssignForm()) {
                         alert('Please fix the errors in the form before submitting.');
@@ -4727,13 +4662,14 @@
                     }
 
                     Alpine.store('vehicleData').isAssigning = true;
-                    const vehicleSelect = document.getElementById('assign_vehicle_select')?.value;
-                    const vehicleId = vehicleSelect ? vehicleSelect.split('|')[0] : '';
+
                     const formData = {
-                        vehicle_id: vehicleId,
-                        status: document.getElementById('assign_status')?.value,
+                        vehicle_id: this.selectedVehicleId,
+                        status: this.assignStatus,
                         _token: document.querySelector('input[name="_token"]')?.value
                     };
+
+                    console.log('Submitting assign form:', formData);
 
                     fetch('/bodaboda-member/' + this.memberId + '/vehicle/assign', {
                         method: 'POST',
@@ -4765,12 +4701,21 @@
                 },
 
                 reassignVehicle() {
-                    Alpine.store('vehicleData').isReassigning = true;
                     const vehicleId = document.getElementById('reassign_vehicle_id')?.value;
+
+                    if (!vehicleId || vehicleId === '') {
+                        alert('No vehicle selected for reassignment');
+                        return;
+                    }
+
+                    Alpine.store('vehicleData').isReassigning = true;
+
                     const formData = {
                         vehicle_id: vehicleId,
                         _token: document.querySelector('input[name="_token"]')?.value
                     };
+
+                    console.log('Submitting reassign form:', formData);
 
                     fetch('/bodaboda-member/' + this.memberId + '/vehicle/reassign', {
                         method: 'POST',
@@ -4790,23 +4735,23 @@
                             } else {
                                 alert('Error: ' + data.message);
                             }
-                        }, 750);
+                        }, 500);
                     })
                     .catch(error => {
                         setTimeout(() => {
                             Alpine.store('vehicleData').isReassigning = false;
                             alert('Error reassigning vehicle. Please try again.');
                             console.error('Error:', error);
-                        }, 750);
+                        }, 500);
                     });
                 },
 
                 addVehicle() {
                     if (!this.validateAddForm()) {
                         alert('Please fix the errors in the form before submitting.');
+                        Alpine.store('vehicleData').isAdding = false;
                         return;
                     }
-
                     Alpine.store('vehicleData').isAdding = true;
                     const formData = {
                         type: document.getElementById('vehicle_type')?.value,
@@ -4821,7 +4766,6 @@
                         status: document.getElementById('vehicle_status')?.value,
                         _token: document.querySelector('input[name="_token"]')?.value
                     };
-
                     fetch('/bodaboda-member/' + this.memberId + '/vehicle/add', {
                         method: 'POST',
                         headers: {
@@ -4854,9 +4798,9 @@
                 updateVehicle() {
                     if (!this.validateEditForm()) {
                         alert('Please fix the errors in the form before submitting.');
+                        Alpine.store('vehicleData').isUpdating = false;
                         return;
                     }
-
                     Alpine.store('vehicleData').isUpdating = true;
                     const vehicleId = document.getElementById('edit_vehicle_id')?.value;
                     const formData = {
@@ -4872,8 +4816,7 @@
                         status: document.getElementById('edit_vehicle_status')?.value,
                         _token: document.querySelector('input[name="_token"]')?.value
                     };
-
-                    fetch(`/bodaboda-member/` + this.memberId + `/vehicle/${vehicleId}/update`, {
+                    fetch('/bodaboda-member/' + this.memberId + '/vehicle/' + vehicleId + '/update', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -4905,16 +4848,11 @@
                 deleteVehicle() {
                     const vehicle = Alpine.store('vehicleData').currentVehicle;
                     if (!vehicle) return;
-
                     const vehicleDetails = `${vehicle.model || ''} ${vehicle.make || ''} ${vehicle.plate_number || ''}`.trim();
-                    if (!confirm(`Do you want to remove ${vehicleDetails || 'this vehicle'} from the list?`)) {
-                        return;
-                    }
-
+                    if (!confirm(`Do you want to remove ${vehicleDetails || 'this vehicle'} from the list?`)) return;
                     Alpine.store('vehicleData').isDeleting = true;
                     const vehicleId = vehicle.vehicleId;
-
-                    fetch(`/bodaboda-member/` + this.memberId + `/vehicle/${vehicleId}/delete`, {
+                    fetch('/bodaboda-member/' + this.memberId + '/vehicle/' + vehicleId + '/delete', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -4946,24 +4884,63 @@
                 validateAddForm() {
                     this.errors = {};
                     let isValid = true;
-                    const fields = [
-                        'vehicle_type', 'plate_number', 'brand', 'model', 'make',
-                        'cc', 'insurance', 'yom', 'ntsa_compliant', 'vehicle_status'
-                    ];
-                    fields.forEach(field => {
-                        const value = document.getElementById(field)?.value;
-                        if (!this.validateField(field, value)) isValid = false;
-                    });
+                    const type = document.getElementById('vehicle_type')?.value;
+                    if (!type || type === '') {
+                        this.errors.vehicle_type = 'This field is required';
+                        isValid = false;
+                    }
+                    const plateNumber = document.getElementById('plate_number')?.value;
+                    if (!plateNumber || plateNumber === '') {
+                        this.errors.plate_number = 'This field is required';
+                        isValid = false;
+                    }
+                    const brand = document.getElementById('brand')?.value;
+                    if (!brand || brand === '') {
+                        this.errors.brand = 'This field is required';
+                        isValid = false;
+                    }
+                    const model = document.getElementById('model')?.value;
+                    if (!model || model === '') {
+                        this.errors.model = 'This field is required';
+                        isValid = false;
+                    }
+                    const make = document.getElementById('make')?.value;
+                    if (!make || make === '') {
+                        this.errors.make = 'This field is required';
+                        isValid = false;
+                    }
+                    const cc = document.getElementById('cc')?.value;
+                    if (!cc || cc === '') {
+                        this.errors.cc = 'This field is required';
+                        isValid = false;
+                    }
+                    const insurance = document.getElementById('insurance')?.value;
+                    if (!insurance || insurance === '') {
+                        this.errors.insurance = 'This field is required';
+                        isValid = false;
+                    }
+                    const yom = document.getElementById('yom')?.value;
+                    if (!yom || yom === '') {
+                        this.errors.yom = 'This field is required';
+                        isValid = false;
+                    }
+                    const ntsa = document.getElementById('ntsa_compliant')?.value;
+                    if (!ntsa || ntsa === '') {
+                        this.errors.ntsa_compliant = 'This field is required';
+                        isValid = false;
+                    }
+                    const status = document.getElementById('vehicle_status')?.value;
+                    if (!status || status === '') {
+                        this.errors.vehicle_status = 'This field is required';
+                        isValid = false;
+                    }
                     return isValid;
                 },
 
                 validateEditForm() {
                     this.errors = {};
                     let isValid = true;
-                    const fields = [
-                        'edit_vehicle_type', 'edit_plate_number', 'edit_brand', 'edit_model', 'edit_make',
-                        'edit_cc', 'edit_insurance', 'edit_yom', 'edit_ntsa_compliant', 'edit_vehicle_status'
-                    ];
+                    const fields = ['edit_vehicle_type', 'edit_plate_number', 'edit_brand', 'edit_model', 'edit_make', 'edit_cc', 'edit_insurance', 'edit_yom', 'edit_ntsa_compliant', 'edit_vehicle_status'];
                     fields.forEach(field => {
                         const value = document.getElementById(field)?.value;
                         const errorField = field.replace('edit_', '');
@@ -4972,27 +4949,12 @@
                     return isValid;
                 },
 
-                // Pagination getters
-                get startEntryMember() {
-                    return (this.pageMember - 1) * this.itemsPerPage + 1;
-                },
-
-                get endEntryMember() {
-                    const end = this.pageMember * this.itemsPerPage;
-                    return end > this.memberVehicles.length ? this.memberVehicles.length : end;
-                },
-
-                get startEntryNonMember() {
-                    return (this.pageNonMember - 1) * this.itemsPerPage + 1;
-                },
-
-                get endEntryNonMember() {
-                    const end = this.pageNonMember * this.itemsPerPage;
-                    return end > this.nonMemberVehicles.length ? this.nonMemberVehicles.length : end;
-                }
+                get startEntryMember() { return (this.pageMember - 1) * this.itemsPerPage + 1; },
+                get endEntryMember() { const end = this.pageMember * this.itemsPerPage; return end > this.memberVehicles.length ? this.memberVehicles.length : end; },
+                get startEntryNonMember() { return (this.pageNonMember - 1) * this.itemsPerPage + 1; },
+                get endEntryNonMember() { const end = this.pageNonMember * this.itemsPerPage; return end > this.nonMemberVehicles.length ? this.nonMemberVehicles.length : end; }
             }));
         });
-
     </script>
 
     <!-- Member Contributions -->

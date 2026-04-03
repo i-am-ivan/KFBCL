@@ -165,7 +165,7 @@
                     <!-- Addresses -->
                     <div x-show="activeTab === 'documents'" x-data="memberInfo">
                         <!-- Header: Title Left + Edit Button Right -->
-                        <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+                        <div class="mb-8 flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                             <h3 class="text-2xl font-semibold text-gray-800 dark:text-white/90">
                             Identification & Documents
                             </h3>
@@ -179,35 +179,40 @@
                         </div>
 
                         <!-- Details Grid Below -->
-                        <div class="grid grid-cols-1 gap-6 lg:grid-cols-1">
+                        <div class="grid grid-cols-1 gap-4 lg:grid-cols-1">
                             <div class="w-full" x-data="memberInfo">
-                                <div class="flex justify-between items-start border-b border-gray-200 dark:border-gray-800 pb-3">
-                                                                            <h4 class="text-base font-medium text-gray-800 dark:text-white/90">
-                                                                                Identification
-                                                                            </h4>
-                                </div>
 
-                                                                        <!-- Driving License -->
-                                <div class="mt-4 space-y-4 p-6">
-                                                                            <!-- Driving License and Type -->
+                                <!-- Driving License -->
+                                <div class="mt-4 space-y-4 p-4">
+                                    <!-- Driving License and Type -->
                                     <div>
-                                        <div class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left p-4">
-                                            <p class="text-sm text-gray-500 dark:text-gray-400"  x-text="memberData?.identification?.national_id || 'Not provided'">[ National ID number ]</p>
-
+                                        <div class="flex flex-col items-center gap-2 text-center xl:flex-row xl:gap-3 xl:text-left p-2">
+                                            <div>
+                                                <span class="mb-1 text-xs text-gray-500 dark:text-gray-400">National Id/ Passport:</span>
+                                                <p class="text-sm font-medium text-gray-700 dark:text-white/90" x-text="memberData?.identification?.national_id || 'Loading ...'">[ National ID number ]</p>
+                                            </div>
+                                            <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
+                                            <div>
+                                                <span class="mb-1 text-xs text-gray-500 dark:text-gray-400">Driving License:</span>
+                                                <p class="text-sm font-medium text-gray-700 dark:text-white/90" x-text="memberData?.identification?.driver_license || 'Loading ...'">[ Driving License ]</p>
+                                            </div>
+                                            <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
+                                            <div>
+                                                <span class="mb-1 text-xs text-gray-500 dark:text-gray-400">Driving License Type:</span>
+                                                <p class="text-sm font-medium text-gray-700 dark:text-white/90" x-text="memberData?.identification?.driving_license_type || 'Loading ...'">[ Driving License Type]</p>
+                                            </div>
+                                            <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
+                                            <div>
+                                                <span class="mb-1 text-xs text-gray-500 dark:text-gray-400">NTSA Compliance:</span>
+                                                <p class="text-sm font-medium text-gray-700 dark:text-white/90" x-text="memberData?.identification?.ntsa_compliance || 'Loading ...'">[ NTSA Compliance ]</p>
+                                            </div>
                                         </div>
 
-                                        <div class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left p-4">
-                                            <p class="text-sm text-gray-500 dark:text-gray-400" x-text="memberData?.identification?.driver_license || 'Not provided'">[Driving License]</p>
-                                            <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
-                                            <p class="text-sm text-gray-500 dark:text-gray-400" x-text="memberData?.identification?.driving_license_type || 'Not provided'">[DL Type]</p>
-                                            <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
-                                            <p class="text-sm text-gray-500 dark:text-gray-400" x-text="memberData?.identification?.ntsa_compliance || 'Not provided'">[NTSA Compliance]</p>
-                                        </div>
                                     </div>
                                 </div>
 
-                                                                        <!-- National ID -->
-                                <div class="mt-4 p-6">
+                                <!-- National ID -->
+                                <div class="mt-4 p-4">
                                                                             <!-- National ID front back -->
                                                                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-2">
                                                                                 <div class="border border-gray-200 dark:border-gray-700 rounded p-4">
@@ -757,7 +762,7 @@
 
                                 </div>
 
-                                <div x-show="memberData?.member?.membership === 'Non-Member'">
+                                <div x-show="memberData?.member?.membership === 'Non-Member'" x-data="vehiclesTable" x-init="init()">
 
                                     <div class="col-span-12 mb-4">
                                         <!-- Show the current vehicle assigned or if not assinged details -->
@@ -808,7 +813,7 @@
                                                         </div>
 
                                                         <!-- If Vehicle is assigned -->
-                                                        <div x-show="$store.vehicleData?.currentVehicle" class="flex w-full items-center justify-between">
+                                                        <div x-show="assignedVehicle" class="flex w-full items-center justify-between">
                                                             <div class="flex w-full flex-col items-center gap-6 xl:flex-row">
                                                                 <div class="h-[78px] w-[78px] overflow-hidden rounded-full border border-gray-200 bg-gray-100 flex items-center justify-center dark:border-gray-800 dark:bg-gray-800">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="size-5">
@@ -820,18 +825,19 @@
                                                                     </svg>
                                                                 </div>
                                                                 <div class="order-3 xl:order-2">
-                                                                    <h4 class="mb-2 text-center text-lg font-semibold text-gray-800 xl:text-left dark:text-white/90" x-text="$store.vehicleData?.currentVehicle?.plate_number || 'Loading ...'">
+                                                                    <h4 class="mb-2 text-center text-lg font-semibold text-gray-800 xl:text-left dark:text-white/90"
+                                                                        x-text="assignedVehicle?.vehicle_code || 'Loading ...'">
                                                                         Vehicle
                                                                     </h4>
                                                                     <div class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
                                                                         <p class="text-sm text-gray-500 dark:text-gray-400">
-                                                                            <span x-text="$store.vehicleData?.currentVehicle?.type + ': ' + $store.vehicleData?.currentVehicle?.make + ' ' + $store.vehicleData?.currentVehicle?.brand + ' ' + $store.vehicleData?.currentVehicle?.model + ' - ' + $store.vehicleData?.currentVehicle?.CC + ' CC'">
+                                                                            <span x-text="assignedVehicle?.vehicle'">
                                                                                 Motorcycle: Cruse Boxer Bajaj - 150 CC
                                                                             </span>
                                                                         </p>
                                                                         <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
                                                                         <p class="text-sm text-gray-500 dark:text-gray-400">
-                                                                            <span x-text="$store.vehicleData?.currentVehicle?.plate_number || 'Loading ...'">Number Plate</span>
+                                                                            <span x-text="assignedVehicle?.plate_number || 'Loading ...'">Number Plate</span>
                                                                         </p>
                                                                     </div>
                                                                 </div>
@@ -839,7 +845,9 @@
 
                                                             <div class="flex flex-col gap-3 sm:flex-row">
                                                                 <div>
-                                                                    <button @click="$dispatch('open-reassign-vehicle-modal', { vehicle: $store.vehicleData.currentVehicle })" class="shadow-theme-xs inline-flex flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">
+                                                                    <button
+                                                                        @click="$dispatch('open-reassign-vehicle-modal', { vehicle: assignedVehicle })"
+                                                                        class="shadow-theme-xs inline-flex flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">
                                                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
                                                                             <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                                                         </svg>

@@ -130,18 +130,19 @@
                         <div class="grid grid-cols-1 gap-6 lg:grid-cols-1">
                             <div class="w-full" x-data="memberInfo">
                                 <div class="flex justify-between items-start border-b border-gray-200 dark:border-gray-800 pb-3">
-                                                                            <h4 class="text-base font-medium text-gray-800 dark:text-white/90">
-                                                                                Identification
-                                                                            </h4>
+                                    <h4 class="text-base font-medium text-gray-800 dark:text-white/90">
+                                        Identification
+                                    </h4>
                                 </div>
 
                                                                         <!-- Driving License -->
-                                <div class="mt-4 space-y-4 p-6">
+                                <div class="mt-4 space-y-4 p-2">
                                                                             <!-- Driving License and Type -->
                                     <div>
                                         <div class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left p-4">
-                                            <p class="text-sm text-gray-500 dark:text-gray-400"  x-text="memberData?.identification?.national_id || 'Not provided'">[ National ID number ]</p>
-
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                                National Id/ Passport: <span x-text="memberData?.identification?.national_id || 'Loading ...'">[ National ID number ]></span>
+                                            </p>
                                         </div>
 
                                         <div class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left p-4">
@@ -430,7 +431,7 @@
                                     <p class="text-sm text-gray-500 dark:text-gray-400">
                                     Manage Bodaboda member account.
                                     </p>
-                                    <div class="hidden flex-col gap-3 sm:flex sm:flex-row sm:items-center p-4">
+                                    <div class="hidden flex-col gap-3 sm:flex sm:flex-row sm:items-center p-2">
 
                                         <div x-data="memberInfo" x-init="init()">
 
@@ -496,10 +497,12 @@
                                     </div>
                                     </div>
                                     <div x-data="{ switcherToggle: false }">
-                                    <button @click="deleteMemberAccount = true"
-                                            class="shadow-theme-xs inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-medium text-while-700 ring-1 ring-gray-300 transition hover:bg-gray-50 dark:bg-error-700 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]">
-                                        De-Activate Account
-                                    </button>
+                                        @if(Auth::user()->canDeactivateAccount())
+                                            <button @click="deleteMemberAccount = true"
+                                                    class="shadow-theme-xs inline-flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-medium text-while-700 ring-1 ring-gray-300 transition hover:bg-gray-50 dark:bg-error-700 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]">
+                                                De-Activate Account
+                                            </button>
+                                        @endif
                                     </div>
                                 </div>
                             </article>

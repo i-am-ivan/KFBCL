@@ -56,7 +56,7 @@ class UsersController extends Controller
      */
     public function getAllUsers(): JsonResponse
     {
-        $users = User::where('role', '!=', 'IT')->get();
+        $users = User::where('role', '!=', 'SuperAdmin')->get();
 
         return response()->json([
             'users' => $users
