@@ -1951,16 +1951,18 @@
 
             <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
                 <!-- Amount -->
-                <div class="w-full px-2.5 xl:w-1/2">
+                <div class="w-full px-2.5">
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Amount
+                        Amount (KES)
                     </label>
                     <input type="number" step="0.01" min="0.01"
                         id="contribute_amount"
                         name="amount"
+                        x-model="contributeFormData.amount"
                         @input="clearError('amount')"
-                        @blur="validateField('amount', $event.target.value)"
+                        @blur="validateContributeField('amount', contributeFormData.amount)"
                         :class="errors.amount ? 'border-red-500' : ''"
+                        placeholder="Enter amount (minimum KES 10.00)"
                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     <span x-show="errors.amount" x-text="errors.amount" class="text-xs text-error-500 mt-1"></span>
                 </div>
@@ -1973,8 +1975,9 @@
                     <div class="relative z-20 bg-transparent">
                         <select id="contribute_payment_mode"
                                 name="payment_mode"
-                                @change="handlePaymentModeChange($event.target.value, 'contribute'); clearError('payment_mode')"
-                                @blur="validateField('payment_mode', $event.target.value)"
+                                x-model="contributeFormData.payment_mode"
+                                @change="handleContributePaymentModeChange(contributeFormData.payment_mode); clearError('payment_mode')"
+                                @blur="validateContributeField('payment_mode', contributeFormData.payment_mode)"
                                 :class="errors.payment_mode ? 'border-red-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                             <option value="">Select Payment Mode</option>
@@ -1999,12 +2002,31 @@
                     <input type="text"
                         id="contribute_transaction_code"
                         name="transaction_code"
-                        readonly
+                        x-model="contributeFormData.transaction_code"
+                        :readonly="contributeTransactionCodeReadonly"
                         @input="clearError('transaction_code')"
-                        @blur="validateField('transaction_code', $event.target.value)"
+                        @blur="validateContributeField('transaction_code', contributeFormData.transaction_code)"
                         :class="errors.transaction_code ? 'border-red-500' : ''"
+                        :placeholder="contributeTransactionCodePlaceholder"
                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <!-- Transaction Date -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Transaction Date
+                    </label>
+                    <input type="text"
+                        id="contribute_transaction_date"
+                        name="transaction_date"
+                        x-model="contributeFormData.transaction_date"
+                        @input="clearError('transaction_date')"
+                        @blur="validateContributeField('transaction_date', contributeFormData.transaction_date)"
+                        :class="errors.transaction_date ? 'border-red-500' : ''"
+                        placeholder="DD MMM YYYY (e.g., 05 Apr 2026)"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    <span x-show="errors.transaction_date" x-text="errors.transaction_date" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
                 <!-- Status -->
@@ -2015,8 +2037,9 @@
                     <div class="relative z-20 bg-transparent">
                         <select id="contribute_status"
                                 name="status"
+                                x-model="contributeFormData.status"
                                 @change="clearError('status')"
-                                @blur="validateField('status', $event.target.value)"
+                                @blur="validateContributeField('status', contributeFormData.status)"
                                 :class="errors.status ? 'border-red-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                             <option value="">Select Status</option>
@@ -2080,106 +2103,129 @@
         </div>
 
             <form class="flex flex-col" x-data="contributionsTable" @submit.prevent="withdraw">
-            @csrf
+                @csrf
 
-            <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
-                <!-- Amount -->
-                <div class="w-full px-2.5 xl:w-1/2">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Amount
-                    </label>
-                    <input type="number" step="0.01" min="0.01"
-                        id="withdraw_amount"
-                        name="amount"
-                        @input="clearError('amount')"
-                        @blur="validateField('amount', $event.target.value)"
-                        :class="errors.amount ? 'border-red-500' : ''"
-                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                    <span x-show="errors.amount" x-text="errors.amount" class="text-xs text-error-500 mt-1"></span>
-                </div>
-
-                <!-- Payment Mode -->
-                <div class="w-full px-2.5 xl:w-1/2">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Payment Mode
-                    </label>
-                    <div class="relative z-20 bg-transparent">
-                        <select id="withdraw_payment_mode"
-                                name="payment_mode"
-                                @change="handlePaymentModeChange($event.target.value, 'withdraw'); clearError('payment_mode')"
-                                @blur="validateField('payment_mode', $event.target.value)"
-                                :class="errors.payment_mode ? 'border-red-500' : ''"
-                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                            <option value="">Select Payment Mode</option>
-                            <option value="Cash">Cash</option>
-                            <option value="MPesa">MPesa</option>
-                            <option value="Bank">Bank</option>
-                        </select>
-                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </span>
+                <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
+                    <!-- Amount -->
+                    <div class="w-full px-2.5">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Amount (KES)
+                        </label>
+                        <input type="number" step="0.01" min="100.00"
+                            id="withdraw_amount"
+                            name="amount"
+                            x-model="withdrawFormData.amount"
+                            @input="clearError('amount')"
+                            @blur="validateWithdrawField('amount', withdrawFormData.amount)"
+                            :class="errors.amount ? 'border-red-500' : ''"
+                            placeholder="Enter amount to withdraw (minimum KES 100.00)"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.amount" x-text="errors.amount" class="text-xs text-error-500 mt-1"></span>
                     </div>
-                    <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
-                </div>
 
-                <!-- Transaction Code -->
-                <div class="w-full px-2.5 xl:w-1/2">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Transaction Code
-                    </label>
-                    <input type="text"
-                        id="withdraw_transaction_code"
-                        name="transaction_code"
-                        readonly
-                        @input="clearError('transaction_code')"
-                        @blur="validateField('transaction_code', $event.target.value)"
-                        :class="errors.transaction_code ? 'border-red-500' : ''"
-                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                    <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
-                </div>
-
-                <!-- Status -->
-                <div class="w-full px-2.5 xl:w-1/2">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Status
-                    </label>
-                    <div class="relative z-20 bg-transparent">
-                        <select id="withdraw_status"
-                                name="status"
-                                @change="clearError('status')"
-                                @blur="validateField('status', $event.target.value)"
-                                :class="errors.status ? 'border-red-500' : ''"
-                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                            <option value="">Select Status</option>
-                            <option value="Confirmed">Confirmed</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Cancelled">Cancelled</option>
-                        </select>
-                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </span>
+                    <!-- Payment Mode -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Payment Mode
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="withdraw_payment_mode"
+                                    name="payment_mode"
+                                    x-model="withdrawFormData.payment_mode"
+                                    @change="handleWithdrawPaymentModeChange(withdrawFormData.payment_mode); clearError('payment_mode')"
+                                    @blur="validateWithdrawField('payment_mode', withdrawFormData.payment_mode)"
+                                    :class="errors.payment_mode ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Select Payment Mode</option>
+                                <option value="Cash">Cash</option>
+                                <option value="MPesa">MPesa</option>
+                                <option value="Bank">Bank</option>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
                     </div>
-                    <span x-show="errors.status" x-text="errors.status" class="text-xs text-error-500 mt-1"></span>
-                </div>
-            </div>
 
-            <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-                <button @click="withdrawContributionModal = false" type="button"
-                        class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
-                    Cancel
-                </button>
-                <button type="submit"
-                        class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
-                        :disabled="$store.contributionData.isWithdrawing">
-                    <span x-show="!$store.contributionData.isWithdrawing">Withdraw</span>
-                    <span x-show="$store.contributionData.isWithdrawing">Withdrawing ...</span>
-                </button>
-            </div>
-        </form>
+                    <!-- Transaction Code -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Transaction Code
+                        </label>
+                        <input type="text"
+                            id="withdraw_transaction_code"
+                            name="transaction_code"
+                            x-model="withdrawFormData.transaction_code"
+                            :readonly="withdrawTransactionCodeReadonly"
+                            @input="clearError('transaction_code')"
+                            @blur="validateWithdrawField('transaction_code', withdrawFormData.transaction_code)"
+                            :class="errors.transaction_code ? 'border-red-500' : ''"
+                            :placeholder="withdrawTransactionCodePlaceholder"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Transaction Date -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Transaction Date
+                        </label>
+                        <input type="text"
+                            id="withdraw_transaction_date"
+                            name="transaction_date"
+                            x-model="withdrawFormData.transaction_date"
+                            @input="clearError('transaction_date')"
+                            @blur="validateWithdrawField('transaction_date', withdrawFormData.transaction_date)"
+                            :class="errors.transaction_date ? 'border-red-500' : ''"
+                            placeholder="DD MMM YYYY (e.g., 05 Apr 2026)"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.transaction_date" x-text="errors.transaction_date" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Status
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="withdraw_status"
+                                    name="status"
+                                    x-model="withdrawFormData.status"
+                                    @change="clearError('status')"
+                                    @blur="validateWithdrawField('status', withdrawFormData.status)"
+                                    :class="errors.status ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Select Status</option>
+                                <option value="Confirmed">Confirmed</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.status" x-text="errors.status" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+                    <button @click="withdrawContributionModal = false" type="button"
+                            class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                            :disabled="$store.contributionData.isWithdrawing">
+                        <span x-show="!$store.contributionData.isWithdrawing">Withdraw</span>
+                        <span x-show="$store.contributionData.isWithdrawing">Withdrawing ...</span>
+                    </button>
+                </div>
+            </form>
 
         </div>
     </div>
@@ -2220,7 +2266,7 @@
                 <input type="hidden" id="edit_transaction_id" name="transaction_id" :value="$store.contributionData.currentContribution?.transactionId">
 
                 <!-- Amount -->
-                <div class="w-full px-2.5 xl:w-1/2">
+                <div class="w-full px-2.5">
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                         Amount
                     </label>
@@ -2278,6 +2324,7 @@
                     <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
+
                 <!-- Transaction Date -->
                 <div class="w-full px-2.5 xl:w-1/2">
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
@@ -2295,7 +2342,7 @@
                 </div>
 
                 <!-- Status -->
-                <div class="w-full px-2.5">
+                <div class="w-full px-2.5 xl:w-1/2">
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                         Status
                     </label>
@@ -5009,698 +5056,817 @@
     </script>
 
     <!-- Member Contributions -->
-    <script>
-        document.addEventListener('alpine:init', () => {
-            // Store for contribution data and modal states
-            Alpine.store('contributionData', {
-                currentContribution: null,
-                editContributionModal: false,
-                isContributing: false,
-                isWithdrawing: false,
-                isUpdating: false,
-                memberBalance: 0,
-                memberBalanceFormatted: 'KES 0.00',
-                lastTransaction: null // Add this to store the last transaction for printing
-            });
-
-            Alpine.data('contributionsTable', () => ({
-                // Original data
-                allContributions: [],
-                // Filtered data (what gets displayed)
-                contributions: [],
-                // Filter states
-                frequencyFilter: 'Daily',
-                transactionFilter: 'All',
-                paymentFilter: 'All',
-                page: 1,
-                itemsPerPage: 10,
-                errors: {},
-
-                init() {
-                    // Load all contributions
-                    fetch('/bodaboda-member/{{ $memberId }}/contributions')
-                        .then(res => res.json())
-                        .then(data => {
-                            this.allContributions = data;
-                            this.applyFilters();
-                        });
-
-                    // Load member contribution balance
-                    fetch('/contributions/balance/member/{{ $memberId }}')
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.success) {
-                                Alpine.store('contributionData').memberBalance = data.balance;
-                                Alpine.store('contributionData').memberBalanceFormatted = data.formatted;
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error loading member balance:', error);
-                        });
-
-                    // Listen for edit event from table
-                    window.addEventListener('open-edit-contribution-modal', (event) => {
-                        const contribution = event.detail.contribution;
-                        Alpine.store('contributionData').currentContribution = contribution;
-                        Alpine.store('contributionData').editContributionModal = true;
-
-                        // Populate form fields after modal opens
-                        setTimeout(() => {
-                            document.getElementById('edit_transaction_id') && (document.getElementById('edit_transaction_id').value = contribution.transactionId || '');
-                            document.getElementById('edit_contribution_Amount') && (document.getElementById('edit_contribution_Amount').value = contribution.transactionAmount || '');
-                            document.getElementById('edit_payment_mode') && (document.getElementById('edit_payment_mode').value = contribution.transactionMode || '');
-                            document.getElementById('edit_transaction_code') && (document.getElementById('edit_transaction_code').value = contribution.transactionCode || '');
-
-                            // Format and set transaction date
-                            const transactionDateField = document.getElementById('edit_transaction_date');
-                            if (transactionDateField && contribution.transactionDate) {
-                                const date = new Date(contribution.transactionDate);
-                                const formattedDate = date.toLocaleDateString('en-GB', {
-                                    day: '2-digit',
-                                    month: 'short',
-                                    year: 'numeric',
-                                });
-                                transactionDateField.value = formattedDate;
-                            }
-
-                            document.getElementById('edit_status') && (document.getElementById('edit_status').value = contribution.transactionStatus || '');
-                        }, 100);
-                    });
-                },
-
-                // Filter methods
-                applyFilters() {
-                    let filtered = [...this.allContributions];
-
-                    // Apply transaction type filter (Paid-In/Paid-Out)
-                    if (this.transactionFilter !== 'All') {
-                        filtered = filtered.filter(c => c.transactionType === this.transactionFilter);
-                    }
-
-                    // Apply payment mode filter (Cash/MPesa/Bank)
-                    if (this.paymentFilter !== 'All') {
-                        filtered = filtered.filter(c => c.transactionMode === this.paymentFilter);
-                    }
-
-                    // Apply frequency filter based on transaction date
-                    if (this.frequencyFilter !== 'Daily') {
-                        const now = new Date();
-                        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-                        filtered = filtered.filter(c => {
-                            if (!c.transactionDate) return false;
-                            const transDate = new Date(c.transactionDate);
-
-                            switch(this.frequencyFilter) {
-                                case 'Daily':
-                                    return transDate >= today;
-                                case 'Weekly':
-                                    const weekAgo = new Date(today);
-                                    weekAgo.setDate(weekAgo.getDate() - 7);
-                                    return transDate >= weekAgo;
-                                case 'Monthly':
-                                    const monthAgo = new Date(today);
-                                    monthAgo.setDate(monthAgo.getDate() - 30);
-                                    return transDate >= monthAgo;
-                                case 'Yearly':
-                                    const yearAgo = new Date(today);
-                                    yearAgo.setDate(yearAgo.getDate() - 365);
-                                    return transDate >= yearAgo;
-                                default:
-                                    return true;
-                            }
-                        });
-                    }
-
-                    this.contributions = filtered;
-                    this.page = 1;
-                },
-
-                performFilter() {
-                    this.applyFilters();
-                },
-
-                // Validation methods (keep all existing validation methods)
-                validateField(field, value) {
-                    if (!value || value === '' || value === null) {
-                        this.errors[field] = 'This field is required';
-                        return false;
-                    }
-
-                    if (field === 'amount' && (isNaN(value) || parseFloat(value) <= 0)) {
-                        this.errors[field] = 'Please enter a valid amount greater than 0';
-                        return false;
-                    }
-
-                    delete this.errors[field];
-                    return true;
-                },
-
-                clearError(field) {
-                    if (this.errors[field]) {
-                        delete this.errors[field];
-                    }
-                },
-
-                validateContributeForm() {
-                    this.errors = {};
-                    let isValid = true;
-
-                    const amount = document.getElementById('contribute_amount')?.value;
-                    const paymentMode = document.getElementById('contribute_payment_mode')?.value;
-                    const status = document.getElementById('contribute_status')?.value;
-
-                    if (!this.validateField('amount', amount)) isValid = false;
-                    if (!paymentMode || paymentMode === '') {
-                        this.errors.payment_mode = 'Please select payment mode';
-                        isValid = false;
-                    }
-                    if (!status || status === '') {
-                        this.errors.status = 'Please select status';
-                        isValid = false;
-                    }
-
-                    const transactionCode = document.getElementById('contribute_transaction_code')?.value;
-                    if (paymentMode !== 'Cash' && (!transactionCode || transactionCode === '')) {
-                        this.errors.transaction_code = 'Transaction code is required for non-cash payments';
-                        isValid = false;
-                    }
-
-                    return isValid;
-                },
-
-                validateWithdrawForm() {
-                    this.errors = {};
-                    let isValid = true;
-
-                    const amount = document.getElementById('withdraw_amount')?.value;
-                    const paymentMode = document.getElementById('withdraw_payment_mode')?.value;
-                    const status = document.getElementById('withdraw_status')?.value;
-
-                    if (!this.validateField('amount', amount)) isValid = false;
-                    if (!paymentMode || paymentMode === '') {
-                        this.errors.payment_mode = 'Please select payment mode';
-                        isValid = false;
-                    }
-                    if (!status || status === '') {
-                        this.errors.status = 'Please select status';
-                        isValid = false;
-                    }
-
-                    const transactionCode = document.getElementById('withdraw_transaction_code')?.value;
-                    if (paymentMode !== 'Cash' && (!transactionCode || transactionCode === '')) {
-                        this.errors.transaction_code = 'Transaction code is required for non-cash payments';
-                        isValid = false;
-                    }
-
-                    return isValid;
-                },
-
-                validateUpdateForm() {
-                    this.errors = {};
-                    let isValid = true;
-
-                    const amount = document.getElementById('edit_contribution_Amount')?.value;
-                    const paymentMode = document.getElementById('edit_payment_mode')?.value;
-                    const status = document.getElementById('edit_status')?.value;
-
-                    if (!this.validateField('amount', amount)) isValid = false;
-                    if (!paymentMode || paymentMode === '') {
-                        this.errors.payment_mode = 'Please select payment mode';
-                        isValid = false;
-                    }
-                    if (!status || status === '') {
-                        this.errors.status = 'Please select status';
-                        isValid = false;
-                    }
-
-                    const transactionCode = document.getElementById('edit_transaction_code')?.value;
-                    if (paymentMode !== 'Cash' && (!transactionCode || transactionCode === '')) {
-                        this.errors.transaction_code = 'Transaction code is required for non-cash payments';
-                        isValid = false;
-                    }
-
-                    return isValid;
-                },
-
-                handlePaymentModeChange(mode, type) {
-                    const codeField = type === 'contribute' ? document.getElementById('contribute_transaction_code') :
-                                    type === 'withdraw' ? document.getElementById('withdraw_transaction_code') :
-                                    document.getElementById('edit_transaction_code');
-
-                    if (codeField) {
-                        if (mode === 'Cash') {
-                            codeField.readOnly = true;
-                            codeField.value = '';
-                        } else {
-                            codeField.readOnly = false;
-                        }
-                    }
-                },
-
-                // UPDATED contribute() method with receipt printing
-                contribute() {
-                    if (!this.validateContributeForm()) {
-                        alert('Please fix the errors in the form before submitting.');
-                        return;
-                    }
-
-                    Alpine.store('contributionData').isContributing = true;
-
-                    const formData = {
-                        amount: document.getElementById('contribute_amount')?.value,
-                        payment_mode: document.getElementById('contribute_payment_mode')?.value,
-                        transaction_code: document.getElementById('contribute_transaction_code')?.value || '',
-                        status: document.getElementById('contribute_status')?.value,
-                        _token: document.querySelector('input[name="_token"]')?.value
-                    };
-
-                    fetch('/bodaboda-member/{{ $memberId }}/contribute', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value
-                        },
-                        body: JSON.stringify(formData)
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        setTimeout(() => {
-                            Alpine.store('contributionData').isContributing = false;
-
-                            if (data.success) {
-                                // Store the transaction data for receipt
-                                Alpine.store('contributionData').lastTransaction = data.transaction;
-
-                                // Show success message with print prompt
-                                const printReceipt = confirm(
-                                    '✅ Contribution saved successfully!\n\nTransaction Code: ' +
-                                    (data.transaction?.transaction_code || 'N/A') +
-                                    '\nAmount: KES ' + parseFloat(formData.amount).toFixed(2) +
-                                    '\n\nWould you like to print the receipt?'
-                                );
-
-                                if (printReceipt) {
-                                    // User wants to print - use hidden iframe approach
-                                    this.printReceipt(data.transaction || formData);
-                                } else {
-                                    // User doesn't want to print, just reload
-                                    window.location.reload();
-                                }
-                            } else {
-                                alert('Error: ' + data.message);
-                                window.location.reload();
-                            }
-                        }, 750);
-                    })
-                    .catch(error => {
-                        setTimeout(() => {
-                            Alpine.store('contributionData').isContributing = false;
-                            alert('Error processing contribution. Please try again.');
-                            console.error('Error:', error);
-                        }, 750);
-                    });
-                },
-
-                // NEW: Print receipt method
-                printReceipt(transaction) {
-                    // Create receipt HTML
-                    const receiptHTML = this.generateReceiptHTML(transaction);
-
-                    // Create filename: HH_mm_ss_dd_mm_Contribution_Receipt.pdf
-                    const now = new Date();
-                    const hours = String(now.getHours()).padStart(2, '0');
-                    const minutes = String(now.getMinutes()).padStart(2, '0');
-                    const seconds = String(now.getSeconds()).padStart(2, '0');
-                    const day = String(now.getDate()).padStart(2, '0');
-                    const month = String(now.getMonth() + 1).padStart(2, '0');
-                    const filename = `${hours}_${minutes}_${seconds}_${day}_${month}_Contribution_Receipt.pdf`;
-
-                    // Create hidden iframe
-                    const iframe = document.createElement('iframe');
-                    iframe.style.position = 'absolute';
-                    iframe.style.width = '0';
-                    iframe.style.height = '0';
-                    iframe.style.border = 'none';
-                    iframe.style.opacity = '0';
-                    iframe.style.pointerEvents = 'none';
-
-                    document.body.appendChild(iframe);
-
-                    // Write receipt to iframe with compact styling
-                    const iframeDoc = iframe.contentWindow.document;
-                    iframeDoc.open();
-                    iframeDoc.write(`
-                        <!DOCTYPE html>
-                        <html>
-                        <head>
-                            <title>Contribution Receipt</title>
-                            <style>
-                                @media print {
-                                    @page {
-                                        size: 80mm auto; /* 80mm ≈ 3.15 inches */
-                                        margin: 2mm;
-                                    }
-                                    body {
-                                        font-family: 'Courier New', monospace;
-                                        font-size: 10pt;
-                                        line-height: 1.2;
-                                        max-width: 72mm;
-                                        margin: 0 auto;
-                                        padding: 0;
-                                    }
-                                    .receipt {
-                                        white-space: pre-wrap;
-                                        padding: 2mm;
-                                    }
-                                    .receipt-header {
-                                        text-align: center;
-                                        margin-bottom: 1mm;
-                                    }
-                                    .receipt-header img {
-                                        max-width: 15mm;
-                                        margin: 0 auto;
-                                    }
-                                    .receipt-header h2 {
-                                        margin: 1mm 0;
-                                        font-size: 12pt;
-                                        font-weight: bold;
-                                    }
-                                    .receipt-header small {
-                                        font-size: 8pt;
-                                        display: block;
-                                    }
-                                    .receipt-line {
-                                        border-top: 1px dashed #000;
-                                        margin: 1mm 0;
-                                    }
-                                    .receipt-row {
-                                        margin: 1.5mm 0;
-                                        font-size: 9pt;
-                                    }
-                                    .receipt-footer {
-                                        text-align: center;
-                                        margin: 0.5mm 0;
-                                        font-size: 8pt;
-                                    }
-                                    .text-bold {
-                                        font-weight: bold;
-                                    }
-                                    .amount {
-                                        font-size: 11pt;
-                                        font-weight: bold;
-                                    }
-                                    table {
-                                        width: 100%;
-                                        border-collapse: collapse;
-                                    }
-                                    td {
-                                        padding: 0.5mm 0;
-                                        font-size: 9pt;
-                                    }
-                                    .label {
-                                        width: 40%;
-                                    }
-                                    .value {
-                                        width: 60%;
-                                        font-weight: bold;
-                                    }
-                                }
-                            </style>
-                        </head>
-                        <body>
-                            <div class="receipt">
-                                ${receiptHTML}
-                            </div>
-                            <script>
-                                window.onload = function() {
-                                    // Set PDF filename in print dialog if browser supports it
-                                    const style = document.createElement('style');
-                                    style.innerHTML = \`
-                                        @page {
-                                            size: 80mm auto;
-                                            margin: 2mm;
-                                            @bottom-center {
-                                                content: "Page " counter(page);
-                                                font-size: 7pt;
-                                            }
-                                        }
-                                    \`;
-                                    document.head.appendChild(style);
-
-                                    setTimeout(() => {
-                                        window.print();
-                                    }, 100);
-
-                                    window.onafterprint = function() {
-                                        window.parent.location.reload();
-                                    };
-
-                                    setTimeout(() => {
-                                        window.parent.location.reload();
-                                    }, 5000);
-                                }
-                            <\/script>
-                        </body>
-                        </html>
-                    `);
-                    iframeDoc.close();
-                },
-
-                // NEW: Generate compact receipt HTML
-                generateReceiptHTML(transaction) {
-                    // Format date: Mar 03, 2026 18:40
-                    const date = new Date();
-                    const formattedDate = date.toLocaleString('en-US', {
-                        month: 'short',
-                        day: '2-digit',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: false
-                    }).replace(',', '');
-
-                    const memberId = '{{ $memberId }}';
-                    const amount = parseFloat(transaction.amount || 0).toFixed(2);
-                    const paymentMode = transaction.payment_mode || 'N/A';
-                    const transactionCode = transaction.transaction_code || 'N/A';
-                    const status = transaction.status || 'Completed';
-
-                    // Get auth ID from meta tag or use placeholder
-                    const authId = '{{ Auth::id() }}';
-
-                    return `
-                        <div class="receipt-header">
-                            <img src="{{ asset('company_logo.png') }}" alt="Logo" style="max-width: 15mm;" />
-                            <h2>KFBCL</h2>
-                            <small>Growing together</small>
-                        </div>
-
-                        <div class="receipt-line"></div>
-
-                        <table>
-                            <tr>
-                                <td class="label">Type:</td>
-                                <td class="value">Contribution</td>
-                            </tr>
-                            <tr>
-                                <td class="label">Member:</td>
-                                <td class="value">${memberId}</td>
-                            </tr>
-                            <tr>
-                                <td class="label">By:</td>
-                                <td class="value">${authId}</td>
-                            </tr>
-                        </table>
-
-                        <div class="receipt-line"></div>
-
-                        <table>
-                            <tr>
-                                <td class="label">Amount:</td>
-                                <td class="value amount">KES ${amount}</td>
-                            </tr>
-                            <tr>
-                                <td class="label">Mode:</td>
-                                <td class="value">${paymentMode}</td>
-                            </tr>
-                            <tr>
-                                <td class="label">Code:</td>
-                                <td class="value">${transactionCode}</td>
-                            </tr>
-                            <tr>
-                                <td class="label">Status:</td>
-                                <td class="value">${status}</td>
-                            </tr>
-                            <tr>
-                                <td class="label">Date:</td>
-                                <td class="value">${formattedDate}</td>
-                            </tr>
-                        </table>
-
-                        <div class="receipt-line"></div>
-
-                        <div class="receipt-footer">
-                            Thank you<br>
-                            &copy; KFBCL<br>
-                            Growing together
-                        </div>
-
-                        <div class="receipt-line"></div>
-
-                    `;
-                },
-
-                withdraw() {
-                    if (!this.validateWithdrawForm()) {
-                        alert('Please fix the errors in the form before submitting.');
-                        return;
-                    }
-
-                    Alpine.store('contributionData').isWithdrawing = true;
-
-                    const formData = {
-                        amount: document.getElementById('withdraw_amount')?.value,
-                        payment_mode: document.getElementById('withdraw_payment_mode')?.value,
-                        transaction_code: document.getElementById('withdraw_transaction_code')?.value || '',
-                        status: document.getElementById('withdraw_status')?.value,
-                        _token: document.querySelector('input[name="_token"]')?.value
-                    };
-
-                    fetch('/bodaboda-member/{{ $memberId }}/withdraw', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value
-                        },
-                        body: JSON.stringify(formData)
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        setTimeout(() => {
-                            Alpine.store('contributionData').isWithdrawing = false;
-
-                            if (data.success) {
-                                alert(data.message);
-                                window.location.reload();
-                            } else {
-                                alert('Error: ' + data.message);
-                            }
-                        }, 750);
-                    })
-                    .catch(error => {
-                        setTimeout(() => {
-                            Alpine.store('contributionData').isWithdrawing = false;
-                            alert('Error processing withdrawal. Please try again.');
-                            console.error('Error:', error);
-                        }, 750);
-                    });
-                },
-
-                //Update Contribution Transaction
-                updateContribution() {
-                    if (!this.validateUpdateForm()) {
-                        alert('Please fix the errors in the form before submitting.');
-                        return;
-                    }
-
-                    Alpine.store('contributionData').isUpdating = true;
-
-                    const transactionId = document.getElementById('edit_transaction_id')?.value;
-                    const transactionDateField = document.getElementById('edit_transaction_date')?.value;
-
-                    // Parse the formatted date from "27 Mar 2026 14:30" to "2026-03-27 14:30:00"
-                    let formattedDate = '';
-                    if (transactionDateField) {
-                        // Match pattern: "27 Mar 2026 14:30" or "27 Mar 2026"
-                        const parts = transactionDateField.match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})(?:\s+(\d{1,2}):(\d{2}))?/);
-                        if (parts) {
-                            const months = {
-                                'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
-                                'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
-                            };
-                            const day = parts[1].padStart(2, '0');
-                            const month = months[parts[2]];
-                            const year = parts[3];
-                            const hour = parts[4] ? parts[4].padStart(2, '0') : '00';
-                            const minute = parts[5] ? parts[5].padStart(2, '0') : '00';
-                            formattedDate = `${year}-${month}-${day} ${hour}:${minute}:00`;
-                        }
-                    }
-
-                    const formData = {
-                        amount: document.getElementById('edit_contribution_Amount')?.value,
-                        payment_mode: document.getElementById('edit_payment_mode')?.value,
-                        transaction_code: document.getElementById('edit_transaction_code')?.value || '',
-                        transaction_date: formattedDate,
-                        status: document.getElementById('edit_status')?.value,
-                        _token: document.querySelector('input[name="_token"]')?.value
-                    };
-
-                    fetch(`/bodaboda-member/{{ $memberId }}/contribution/${transactionId}/update`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value
-                        },
-                        body: JSON.stringify(formData)
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        setTimeout(() => {
-                            Alpine.store('contributionData').isUpdating = false;
-
-                            if (data.success) {
-                                alert(data.message);
-                                window.location.reload();
-                            } else {
-                                alert('Error: ' + data.message);
-                            }
-                        }, 750);
-                    })
-                    .catch(error => {
-                        setTimeout(() => {
-                            Alpine.store('contributionData').isUpdating = false;
-                            alert('Error updating transaction. Please try again.');
-                            console.error('Error:', error);
-                        }, 750);
-                    });
-                },
-
-                // Pagination methods
-                prevPage() {
-                    if (this.page > 1) this.page--;
-                },
-
-                nextPage() {
-                    if (this.page < this.totalPages) this.page++;
-                },
-
-                goToPage(page) {
-                    if (page >= 1 && page <= this.totalPages) this.page = page;
-                },
-
-                get totalPages() {
-                    return Math.ceil(this.contributions.length / this.itemsPerPage);
-                },
-
-                get paginatedContributions() {
-                    const start = (this.page - 1) * this.itemsPerPage;
-                    const end = start + this.itemsPerPage;
-                    return this.contributions.slice(start, end);
-                },
-
-                get startEntry() {
-                    return (this.page - 1) * this.itemsPerPage + 1;
-                },
-
-                get endEntry() {
-                    const end = this.page * this.itemsPerPage;
-                    return end > this.contributions.length ? this.contributions.length : end;
-                }
-            }));
+<script>
+    document.addEventListener('alpine:init', () => {
+        // Store for contribution data and modal states
+        Alpine.store('contributionData', {
+            currentContribution: null,
+            editContributionModal: false,
+            isContributing: false,
+            isWithdrawing: false,
+            isUpdating: false,
+            memberBalance: 0,
+            memberBalanceFormatted: 'KES 0.00',
+            lastTransaction: null
         });
-    </script>
+
+        Alpine.data('contributionsTable', () => ({
+            // Original data
+            allContributions: [],
+            // Filtered data (what gets displayed)
+            contributions: [],
+            // Filter states
+            frequencyFilter: 'Daily',
+            transactionFilter: 'All',
+            paymentFilter: 'All',
+            page: 1,
+            itemsPerPage: 10,
+            errors: {},
+
+            // Contribute form data
+            contributeFormData: {
+                amount: '',
+                payment_mode: '',
+                transaction_code: '',
+                transaction_date: '',
+                status: ''
+            },
+            contributeTransactionCodeReadonly: false,
+            contributeTransactionCodePlaceholder: 'Enter transaction code',
+
+            // Withdraw form data
+            withdrawFormData: {
+                amount: '',
+                payment_mode: '',
+                transaction_code: '',
+                transaction_date: '',
+                status: ''
+            },
+            withdrawTransactionCodeReadonly: false,
+            withdrawTransactionCodePlaceholder: 'Enter transaction code',
+
+            // Edit form data
+            editFormData: {
+                transactionId: '',
+                amount: '',
+                payment_mode: '',
+                transaction_code: '',
+                transaction_date: '',
+                status: ''
+            },
+
+            init() {
+                // Load all contributions
+                fetch('/bodaboda-member/{{ $memberId }}/contributions')
+                    .then(res => res.json())
+                    .then(data => {
+                        this.allContributions = data;
+                        this.applyFilters();
+                    });
+
+                // Load member contribution balance
+                fetch('/contributions/balance/member/{{ $memberId }}')
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            Alpine.store('contributionData').memberBalance = data.balance;
+                            Alpine.store('contributionData').memberBalanceFormatted = data.formatted;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error loading member balance:', error);
+                    });
+
+                // Set current dates
+                this.setContributeCurrentDate();
+                this.setWithdrawCurrentDate();
+
+                // Listen for edit event from table
+                window.addEventListener('open-edit-contribution-modal', (event) => {
+                    const contribution = event.detail.contribution;
+                    this.editContributionModal(contribution);
+                });
+            },
+
+            // Date helper methods
+            setContributeCurrentDate() {
+                const today = new Date();
+                const day = String(today.getDate()).padStart(2, '0');
+                const month = today.toLocaleDateString('en-GB', { month: 'short' });
+                const year = today.getFullYear();
+                this.contributeFormData.transaction_date = `${day} ${month} ${year}`;
+            },
+
+            setWithdrawCurrentDate() {
+                const today = new Date();
+                const day = String(today.getDate()).padStart(2, '0');
+                const month = today.toLocaleDateString('en-GB', { month: 'short' });
+                const year = today.getFullYear();
+                this.withdrawFormData.transaction_date = `${day} ${month} ${year}`;
+            },
+
+            formatDateForDatabase(dateStr) {
+                const parts = dateStr.match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/);
+                if (parts) {
+                    const months = {
+                        'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
+                        'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
+                    };
+                    const day = parts[1].padStart(2, '0');
+                    const month = months[parts[2]];
+                    const year = parts[3];
+                    return `${year}-${month}-${day} 00:00:00`;
+                }
+                return null;
+            },
+
+            // Filter methods
+            applyFilters() {
+                let filtered = [...this.allContributions];
+
+                if (this.transactionFilter !== 'All') {
+                    filtered = filtered.filter(c => c.transactionType === this.transactionFilter);
+                }
+
+                if (this.paymentFilter !== 'All') {
+                    filtered = filtered.filter(c => c.transactionMode === this.paymentFilter);
+                }
+
+                if (this.frequencyFilter !== 'Daily') {
+                    const now = new Date();
+                    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+                    filtered = filtered.filter(c => {
+                        if (!c.transactionDate) return false;
+                        const transDate = new Date(c.transactionDate);
+
+                        switch(this.frequencyFilter) {
+                            case 'Daily':
+                                return transDate >= today;
+                            case 'Weekly':
+                                const weekAgo = new Date(today);
+                                weekAgo.setDate(weekAgo.getDate() - 7);
+                                return transDate >= weekAgo;
+                            case 'Monthly':
+                                const monthAgo = new Date(today);
+                                monthAgo.setDate(monthAgo.getDate() - 30);
+                                return transDate >= monthAgo;
+                            case 'Yearly':
+                                const yearAgo = new Date(today);
+                                yearAgo.setDate(yearAgo.getDate() - 365);
+                                return transDate >= yearAgo;
+                            default:
+                                return true;
+                        }
+                    });
+                }
+
+                this.contributions = filtered;
+                this.page = 1;
+            },
+
+            performFilter() {
+                this.applyFilters();
+            },
+
+            // Clear error method
+            clearError(field) {
+                if (this.errors[field]) {
+                    delete this.errors[field];
+                }
+            },
+
+            // Contribute form validation
+            validateContributeField(field, value) {
+                if (!value || value === '' || value === null) {
+                    this.errors[field] = 'This field is required';
+                    return false;
+                }
+
+                switch(field) {
+                    case 'amount':
+                        const amount = parseFloat(value);
+                        if (isNaN(amount) || amount < 10.01) {
+                            this.errors[field] = 'Amount must be greater than KES 10.00';
+                            return false;
+                        }
+                        break;
+
+                    case 'transaction_date':
+                        const datePattern = /^\d{1,2}\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{4}$/;
+                        if (!datePattern.test(value)) {
+                            this.errors[field] = 'Date must be in format: DD MMM YYYY (e.g., 05 Apr 2026)';
+                            return false;
+                        }
+                        break;
+
+                    case 'transaction_code':
+                        if (this.contributeFormData.payment_mode !== 'Cash' && (!value || value.trim() === '')) {
+                            this.errors[field] = 'Transaction code is required for ' + this.contributeFormData.payment_mode;
+                            return false;
+                        }
+                        break;
+                }
+
+                delete this.errors[field];
+                return true;
+            },
+
+            validateContributeForm() {
+                this.errors = {};
+                let isValid = true;
+
+                const fields = ['amount', 'payment_mode', 'transaction_date', 'status'];
+
+                for (const field of fields) {
+                    if (!this.validateContributeField(field, this.contributeFormData[field])) {
+                        isValid = false;
+                    }
+                }
+
+                if (this.contributeFormData.payment_mode !== 'Cash') {
+                    if (!this.validateContributeField('transaction_code', this.contributeFormData.transaction_code)) {
+                        isValid = false;
+                    }
+                }
+
+                return isValid;
+            },
+
+            handleContributePaymentModeChange(mode) {
+                if (mode === 'Cash') {
+                    this.contributeTransactionCodeReadonly = true;
+                    this.contributeTransactionCodePlaceholder = 'Auto-generated on submit';
+                    this.contributeFormData.transaction_code = '';
+                } else {
+                    this.contributeTransactionCodeReadonly = false;
+                    this.contributeTransactionCodePlaceholder = 'Enter transaction code';
+                }
+                this.clearError('transaction_code');
+            },
+
+            // Withdraw form validation
+            validateWithdrawField(field, value) {
+                if (!value || value === '' || value === null) {
+                    this.errors[field] = 'This field is required';
+                    return false;
+                }
+
+                switch(field) {
+                    case 'amount':
+                        const amount = parseFloat(value);
+                        if (isNaN(amount)) {
+                            this.errors[field] = 'Please enter a valid amount';
+                            return false;
+                        }
+                        if (amount < 100.00) {
+                            this.errors[field] = 'Withdrawal amount must be at least KES 100.00';
+                            return false;
+                        }
+                        if (amount > Alpine.store('contributionData').memberBalance) {
+                            this.errors[field] = `Amount cannot exceed available balance of KES ${Alpine.store('contributionData').memberBalance.toFixed(2)}`;
+                            return false;
+                        }
+                        break;
+
+                    case 'transaction_date':
+                        const datePattern = /^\d{1,2}\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{4}$/;
+                        if (!datePattern.test(value)) {
+                            this.errors[field] = 'Date must be in format: DD MMM YYYY (e.g., 05 Apr 2026)';
+                            return false;
+                        }
+                        break;
+
+                    case 'transaction_code':
+                        if (this.withdrawFormData.payment_mode !== 'Cash' && (!value || value.trim() === '')) {
+                            this.errors[field] = 'Transaction code is required for ' + this.withdrawFormData.payment_mode;
+                            return false;
+                        }
+                        break;
+                }
+
+                delete this.errors[field];
+                return true;
+            },
+
+            validateWithdrawForm() {
+                this.errors = {};
+                let isValid = true;
+
+                const fields = ['amount', 'payment_mode', 'transaction_date', 'status'];
+
+                for (const field of fields) {
+                    if (!this.validateWithdrawField(field, this.withdrawFormData[field])) {
+                        isValid = false;
+                    }
+                }
+
+                if (this.withdrawFormData.payment_mode !== 'Cash') {
+                    if (!this.validateWithdrawField('transaction_code', this.withdrawFormData.transaction_code)) {
+                        isValid = false;
+                    }
+                }
+
+                return isValid;
+            },
+
+            handleWithdrawPaymentModeChange(mode) {
+                if (mode === 'Cash') {
+                    this.withdrawTransactionCodeReadonly = true;
+                    this.withdrawTransactionCodePlaceholder = 'Auto-generated on submit';
+                    this.withdrawFormData.transaction_code = '';
+                } else {
+                    this.withdrawTransactionCodeReadonly = false;
+                    this.withdrawTransactionCodePlaceholder = 'Enter transaction code';
+                }
+                this.clearError('transaction_code');
+            },
+
+            resetContributeForm() {
+                this.contributeFormData = {
+                    amount: '',
+                    payment_mode: '',
+                    transaction_code: '',
+                    transaction_date: '',
+                    status: ''
+                };
+                this.contributeTransactionCodeReadonly = false;
+                this.setContributeCurrentDate();
+                this.errors = {};
+            },
+
+            resetWithdrawForm() {
+                this.withdrawFormData = {
+                    amount: '',
+                    payment_mode: '',
+                    transaction_code: '',
+                    transaction_date: '',
+                    status: ''
+                };
+                this.withdrawTransactionCodeReadonly = false;
+                this.setWithdrawCurrentDate();
+                this.errors = {};
+            },
+
+            // Contribute method with print receipt
+            contribute() {
+                if (!this.validateContributeForm()) {
+                    alert('INVALID INPUTS! Fix errors to continue');
+                    return;
+                }
+
+                Alpine.store('contributionData').isContributing = true;
+
+                const formattedDate = this.formatDateForDatabase(this.contributeFormData.transaction_date);
+
+                const formData = {
+                    amount: this.contributeFormData.amount,
+                    payment_mode: this.contributeFormData.payment_mode,
+                    transaction_code: this.contributeFormData.transaction_code || '',
+                    transaction_date: formattedDate,
+                    status: this.contributeFormData.status,
+                    _token: document.querySelector('input[name="_token"]')?.value
+                };
+
+                fetch('/bodaboda-member/{{ $memberId }}/contribute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    setTimeout(() => {
+                        Alpine.store('contributionData').isContributing = false;
+
+                        if (data.success) {
+                            // Store the transaction data for receipt
+                            Alpine.store('contributionData').lastTransaction = data.transaction;
+
+                            // Show success message with print prompt
+                            const printReceipt = confirm(
+                                '✅ Contribution saved successfully!\n\nTransaction Code: ' +
+                                (data.transaction?.transactionCode || 'N/A') +
+                                '\nAmount: KES ' + parseFloat(formData.amount).toFixed(2) +
+                                '\n\nWould you like to print the receipt?'
+                            );
+
+                            if (printReceipt) {
+                                // User wants to print
+                                this.printReceipt(data.transaction || formData);
+                            } else {
+                                // User doesn't want to print, just reload
+                                window.location.reload();
+                            }
+                        } else {
+                            if (data.errors) {
+                                for (const [field, messages] of Object.entries(data.errors)) {
+                                    const fieldMap = {
+                                        'amount': 'amount',
+                                        'payment_mode': 'payment_mode',
+                                        'transaction_code': 'transaction_code',
+                                        'transaction_date': 'transaction_date',
+                                        'status': 'status'
+                                    };
+                                    const mappedField = fieldMap[field] || field;
+                                    this.errors[mappedField] = messages[0];
+                                }
+                                alert('INVALID INPUTS! Fix errors to continue');
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        }
+                    }, 750);
+                })
+                .catch(error => {
+                    setTimeout(() => {
+                        Alpine.store('contributionData').isContributing = false;
+                        alert('Error processing contribution. Please try again.');
+                        console.error('Error:', error);
+                    }, 750);
+                });
+            },
+
+            // Withdraw method with print receipt
+            withdraw() {
+                if (!this.validateWithdrawForm()) {
+                    alert('INVALID INPUTS! Fix errors to continue');
+                    return;
+                }
+
+                Alpine.store('contributionData').isWithdrawing = true;
+
+                const formattedDate = this.formatDateForDatabase(this.withdrawFormData.transaction_date);
+
+                const formData = {
+                    amount: this.withdrawFormData.amount,
+                    payment_mode: this.withdrawFormData.payment_mode,
+                    transaction_code: this.withdrawFormData.transaction_code || '',
+                    transaction_date: formattedDate,
+                    status: this.withdrawFormData.status,
+                    _token: document.querySelector('input[name="_token"]')?.value
+                };
+
+                fetch('/bodaboda-member/{{ $memberId }}/withdraw', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    setTimeout(() => {
+                        Alpine.store('contributionData').isWithdrawing = false;
+
+                        if (data.success) {
+                            // Store the transaction data for receipt
+                            Alpine.store('contributionData').lastTransaction = data.transaction;
+
+                            // Show success message with print prompt
+                            const printReceipt = confirm(
+                                '✅ Withdrawal processed successfully!\n\nTransaction Code: ' +
+                                (data.transaction?.transactionCode || 'N/A') +
+                                '\nAmount: KES ' + parseFloat(formData.amount).toFixed(2) +
+                                '\n\nWould you like to print the receipt?'
+                            );
+
+                            if (printReceipt) {
+                                // User wants to print
+                                this.printReceipt(data.transaction || formData);
+                            } else {
+                                // User doesn't want to print, just reload
+                                window.location.reload();
+                            }
+                        } else {
+                            if (data.errors) {
+                                for (const [field, messages] of Object.entries(data.errors)) {
+                                    const fieldMap = {
+                                        'amount': 'amount',
+                                        'payment_mode': 'payment_mode',
+                                        'transaction_code': 'transaction_code',
+                                        'transaction_date': 'transaction_date',
+                                        'status': 'status'
+                                    };
+                                    const mappedField = fieldMap[field] || field;
+                                    this.errors[mappedField] = messages[0];
+                                }
+                                alert('INVALID INPUTS! Fix errors to continue');
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        }
+                    }, 750);
+                })
+                .catch(error => {
+                    setTimeout(() => {
+                        Alpine.store('contributionData').isWithdrawing = false;
+                        alert('Error processing withdrawal. Please try again.');
+                        console.error('Error:', error);
+                    }, 750);
+                });
+            },
+
+            // Edit contribution modal
+            editContributionModal(contribution) {
+                Alpine.store('contributionData').currentContribution = contribution;
+                Alpine.store('contributionData').editContributionModal = true;
+
+                this.editFormData.transactionId = contribution.transactionId || '';
+                this.editFormData.amount = contribution.transactionAmount || '';
+                this.editFormData.payment_mode = contribution.transactionMode || '';
+                this.editFormData.transaction_code = contribution.transactionCode || '';
+                this.editFormData.status = contribution.transactionStatus || '';
+
+                if (contribution.transactionDate) {
+                    const date = new Date(contribution.transactionDate);
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = date.toLocaleDateString('en-GB', { month: 'short' });
+                    const year = date.getFullYear();
+                    this.editFormData.transaction_date = `${day} ${month} ${year}`;
+                } else {
+                    const today = new Date();
+                    const day = String(today.getDate()).padStart(2, '0');
+                    const month = today.toLocaleDateString('en-GB', { month: 'short' });
+                    const year = today.getFullYear();
+                    this.editFormData.transaction_date = `${day} ${month} ${year}`;
+                }
+            },
+
+            // Update Contribution Transaction
+            updateContribution() {
+                // Validation for edit form would go here
+                alert('Update functionality - implement similar validation');
+            },
+
+            // Print receipt method
+            printReceipt(transaction) {
+                // Create receipt HTML
+                const receiptHTML = this.generateReceiptHTML(transaction);
+
+                // Create filename: HH_mm_ss_dd_mm_Contribution_Receipt.pdf
+                const now = new Date();
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const filename = `${hours}_${minutes}_${seconds}_${day}_${month}_Contribution_Receipt.pdf`;
+
+                // Create hidden iframe
+                const iframe = document.createElement('iframe');
+                iframe.style.position = 'absolute';
+                iframe.style.width = '0';
+                iframe.style.height = '0';
+                iframe.style.border = 'none';
+                iframe.style.opacity = '0';
+                iframe.style.pointerEvents = 'none';
+
+                document.body.appendChild(iframe);
+
+                // Write receipt to iframe with compact styling
+                const iframeDoc = iframe.contentWindow.document;
+                iframeDoc.open();
+                iframeDoc.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Contribution Receipt</title>
+                        <style>
+                            @media print {
+                                @page {
+                                    size: 80mm auto;
+                                    margin: 2mm;
+                                }
+                                body {
+                                    font-family: 'Courier New', monospace;
+                                    font-size: 10pt;
+                                    line-height: 1.2;
+                                    max-width: 72mm;
+                                    margin: 0 auto;
+                                    padding: 0;
+                                }
+                                .receipt {
+                                    white-space: pre-wrap;
+                                    padding: 2mm;
+                                }
+                                .receipt-header {
+                                    text-align: center;
+                                    margin-bottom: 1mm;
+                                }
+                                .receipt-header img {
+                                    max-width: 15mm;
+                                    margin: 0 auto;
+                                }
+                                .receipt-header h2 {
+                                    margin: 1mm 0;
+                                    font-size: 12pt;
+                                    font-weight: bold;
+                                }
+                                .receipt-header small {
+                                    font-size: 8pt;
+                                    display: block;
+                                }
+                                .receipt-line {
+                                    border-top: 1px dashed #000;
+                                    margin: 1mm 0;
+                                }
+                                .receipt-row {
+                                    margin: 1.5mm 0;
+                                    font-size: 9pt;
+                                }
+                                .receipt-footer {
+                                    text-align: center;
+                                    margin: 0.5mm 0;
+                                    font-size: 8pt;
+                                }
+                                .text-bold {
+                                    font-weight: bold;
+                                }
+                                .amount {
+                                    font-size: 11pt;
+                                    font-weight: bold;
+                                }
+                                table {
+                                    width: 100%;
+                                    border-collapse: collapse;
+                                }
+                                td {
+                                    padding: 0.5mm 0;
+                                    font-size: 9pt;
+                                }
+                                .label {
+                                    width: 40%;
+                                }
+                                .value {
+                                    width: 60%;
+                                    font-weight: bold;
+                                }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="receipt">
+                            ${receiptHTML}
+                        </div>
+                        <script>
+                            window.onload = function() {
+                                const style = document.createElement('style');
+                                style.innerHTML = \`
+                                    @page {
+                                        size: 80mm auto;
+                                        margin: 2mm;
+                                        @bottom-center {
+                                            content: "Page " counter(page);
+                                            font-size: 7pt;
+                                        }
+                                    }
+                                \`;
+                                document.head.appendChild(style);
+
+                                setTimeout(() => {
+                                    window.print();
+                                }, 100);
+
+                                window.onafterprint = function() {
+                                    window.parent.location.reload();
+                                };
+
+                                setTimeout(() => {
+                                    window.parent.location.reload();
+                                }, 5000);
+                            }
+                        <\/script>
+                    </body>
+                    </html>
+                `);
+                iframeDoc.close();
+            },
+
+            // Generate compact receipt HTML
+            generateReceiptHTML(transaction) {
+                // Format date
+                const date = new Date();
+                const formattedDate = date.toLocaleString('en-US', {
+                    month: 'short',
+                    day: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                }).replace(',', '');
+
+                const memberId = '{{ $memberId }}';
+                const amount = parseFloat(transaction.amount || 0).toFixed(2);
+                const paymentMode = transaction.payment_mode || 'N/A';
+                const transactionCode = transaction.transactionCode || transaction.transaction_code || 'N/A';
+                const status = transaction.status || transaction.transactionStatus || 'Completed';
+                const transactionType = transaction.transactionType ||
+                                    (this.contributeFormData.amount ? 'Paid-In' : 'Paid-Out');
+
+                // Get auth ID from meta tag or use placeholder
+                const authId = '{{ Auth::id() }}';
+
+                return `
+                    <div class="receipt-header">
+                        <img src="{{ asset('company_logo.png') }}" alt="Logo" style="max-width: 15mm;" onerror="this.style.display='none'" />
+                        <h2>KFBCL</h2>
+                        <small>Growing together</small>
+                    </div>
+
+                    <div class="receipt-line"></div>
+
+                    <table>
+                        <tr>
+                            <td class="label">Type:</td>
+                            <td class="value">${transactionType === 'Paid-In' ? 'Contribution' : 'Withdrawal'}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Member:</td>
+                            <td class="value">${memberId}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">By:</td>
+                            <td class="value">${authId}</td>
+                        </tr>
+                    </table>
+
+                    <div class="receipt-line"></div>
+
+                    <table>
+                        <tr>
+                            <td class="label">Amount:</td>
+                            <td class="value amount">KES ${amount}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Mode:</td>
+                            <td class="value">${paymentMode}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Code:</td>
+                            <td class="value">${transactionCode}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Status:</td>
+                            <td class="value">${status}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Date:</td>
+                            <td class="value">${formattedDate}</td>
+                        </tr>
+                    </table>
+
+                    <div class="receipt-line"></div>
+
+                    <div class="receipt-footer">
+                        Thank you<br>
+                        &copy; KFBCL<br>
+                        Growing together
+                    </div>
+
+                    <div class="receipt-line"></div>
+                `;
+            },
+
+            // Pagination methods
+            prevPage() {
+                if (this.page > 1) this.page--;
+            },
+
+            nextPage() {
+                if (this.page < this.totalPages) this.page++;
+            },
+
+            goToPage(page) {
+                if (page >= 1 && page <= this.totalPages) this.page = page;
+            },
+
+            get totalPages() {
+                return Math.ceil(this.contributions.length / this.itemsPerPage);
+            },
+
+            get paginatedContributions() {
+                const start = (this.page - 1) * this.itemsPerPage;
+                const end = start + this.itemsPerPage;
+                return this.contributions.slice(start, end);
+            },
+
+            get startEntry() {
+                return (this.page - 1) * this.itemsPerPage + 1;
+            },
+
+            get endEntry() {
+                const end = this.page * this.itemsPerPage;
+                return end > this.contributions.length ? this.contributions.length : end;
+            }
+        }));
+    });
+</script>
 
     <!-- Member Savings -->
     <script>

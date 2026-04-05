@@ -1662,20 +1662,26 @@ class BodabodaController extends Controller {
     {
         try {
             $validated = $request->validate([
-                'amount' => 'required|numeric|min:0.01',
+                'amount' => 'required|numeric|min:10.01',
                 'payment_mode' => 'required|in:Cash,MPesa,Bank',
                 'transaction_code' => 'nullable|string|max:255',
+                'transaction_date' => 'required|date',
                 'status' => 'required|in:Confirmed,Pending,Cancelled'
             ]);
 
-            // Generate transaction code if not provided
-            $transactionCode = $validated['transaction_code'] ?? 'CONT-' . strtoupper(uniqid());
+            // Generate transaction code if not provided or if Cash payment
+            $transactionCode = $validated['transaction_code'];
+            if ($validated['payment_mode'] === 'Cash' && empty($transactionCode)) {
+                $transactionCode = 'CSH' . rand(1000, 9999) . chr(rand(65, 90)) . chr(rand(65, 90)) . chr(rand(65, 90));
+            } elseif (empty($transactionCode)) {
+                $transactionCode = 'CONT-' . strtoupper(uniqid());
+            }
 
             $data = [
                 'memberId' => $memberId,
                 'transactionCode' => $transactionCode,
                 'transactionAmount' => $validated['amount'],
-                'transactionDate' => now(),
+                'transactionDate' => date('Y-m-d H:i:s', strtotime($validated['transaction_date'])),
                 'transactionMode' => $validated['payment_mode'],
                 'transactionType' => 'Paid-In',
                 'transactionStatus' => $validated['status'],
@@ -1683,12 +1689,14 @@ class BodabodaController extends Controller {
                 'transactionUpdatedOn' => now()
             ];
 
-            $inserted = DB::table('member_contributions')->insert($data);
+            $transactionId = DB::table('member_contributions')->insertGetId($data);
 
-            if ($inserted) {
+            if ($transactionId) {
+                $data['transactionId'] = $transactionId;
                 return response()->json([
                     'success' => true,
-                    'message' => 'Contribution added successfully'
+                    'message' => 'Contribution added successfully',
+                    'transaction' => $data
                 ]);
             } else {
                 return response()->json([
@@ -1716,9 +1724,10 @@ class BodabodaController extends Controller {
     {
         try {
             $validated = $request->validate([
-                'amount' => 'required|numeric|min:0.01',
+                'amount' => 'required|numeric|min:100.00',
                 'payment_mode' => 'required|in:Cash,MPesa,Bank',
                 'transaction_code' => 'nullable|string|max:255',
+                'transaction_date' => 'required|date',
                 'status' => 'required|in:Confirmed,Pending,Cancelled'
             ]);
 
@@ -1726,13 +1735,13 @@ class BodabodaController extends Controller {
             $totalIn = DB::table('member_contributions')
                 ->where('memberId', $memberId)
                 ->where('transactionType', 'Paid-In')
-                ->whereIn('transactionStatus', ['Confirmed', 'Approved'])
+                ->where('transactionStatus', 'Confirmed')
                 ->sum('transactionAmount');
 
             $totalOut = DB::table('member_contributions')
                 ->where('memberId', $memberId)
                 ->where('transactionType', 'Paid-Out')
-                ->whereIn('transactionStatus', ['Confirmed', 'Approved'])
+                ->where('transactionStatus', 'Confirmed')
                 ->sum('transactionAmount');
 
             $balance = $totalIn - $totalOut;
@@ -1740,18 +1749,23 @@ class BodabodaController extends Controller {
             if ($balance < $validated['amount']) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Insufficient balance. Available: ' . number_format($balance, 2)
+                    'message' => 'Insufficient balance. Available: KES ' . number_format($balance, 2)
                 ], 400);
             }
 
-            // Generate transaction code if not provided
-            $transactionCode = $validated['transaction_code'] ?? 'WITH-' . strtoupper(uniqid());
+            // Generate transaction code if not provided or if Cash payment
+            $transactionCode = $validated['transaction_code'];
+            if ($validated['payment_mode'] === 'Cash' && empty($transactionCode)) {
+                $transactionCode = 'CSH' . rand(1000, 9999) . chr(rand(65, 90)) . chr(rand(65, 90)) . chr(rand(65, 90));
+            } elseif (empty($transactionCode)) {
+                $transactionCode = 'WITH-' . strtoupper(uniqid());
+            }
 
             $data = [
                 'memberId' => $memberId,
                 'transactionCode' => $transactionCode,
                 'transactionAmount' => $validated['amount'],
-                'transactionDate' => now(),
+                'transactionDate' => date('Y-m-d H:i:s', strtotime($validated['transaction_date'])),
                 'transactionMode' => $validated['payment_mode'],
                 'transactionType' => 'Paid-Out',
                 'transactionStatus' => $validated['status'],
@@ -1759,12 +1773,14 @@ class BodabodaController extends Controller {
                 'transactionUpdatedOn' => now()
             ];
 
-            $inserted = DB::table('member_contributions')->insert($data);
+            $transactionId = DB::table('member_contributions')->insertGetId($data);
 
-            if ($inserted) {
+            if ($transactionId) {
+                $data['transactionId'] = $transactionId;
                 return response()->json([
                     'success' => true,
-                    'message' => 'Withdrawal processed successfully'
+                    'message' => 'Withdrawal processed successfully',
+                    'transaction' => $data
                 ]);
             } else {
                 return response()->json([
