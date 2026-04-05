@@ -3109,17 +3109,24 @@ class BodabodaController extends Controller {
             DB::beginTransaction();
 
             $validated = $request->validate([
-                'savings_Amount' => 'required|numeric|min:0.01',
+                'savings_Amount' => 'required|numeric|min:10.01',
                 'payment_mode' => 'required|in:Cash,MPesa,Bank',
                 'transaction_code' => 'nullable|string|max:255',
+                'transaction_date' => 'required|date',
                 'Status' => 'required|in:Confirmed,Pending,Cancelled'
             ]);
 
+            // Generate transaction code if needed
+            $transactionCode = $validated['transaction_code'];
+            if ($validated['payment_mode'] === 'Cash' && empty($transactionCode)) {
+                $transactionCode = 'CSH' . rand(1000, 9999) . chr(rand(65, 90)) . chr(rand(65, 90)) . chr(rand(65, 90));
+            }
+
             $saving = MemberSaving::create([
                 'memberId' => $memberId,
-                'transactionCode' => $validated['transaction_code'] ?? 'SAV-' . uniqid(),
+                'transactionCode' => $transactionCode,
                 'transactionAmount' => $validated['savings_Amount'],
-                'transactionDate' => now(),
+                'transactionDate' => date('Y-m-d H:i:s', strtotime($validated['transaction_date'])),
                 'transactionMode' => $validated['payment_mode'],
                 'transactionType' => 'Paid-In',
                 'transactionAuthor' => Auth::id(),
@@ -3135,6 +3142,13 @@ class BodabodaController extends Controller {
                 'saving' => $saving
             ]);
 
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -3151,9 +3165,10 @@ class BodabodaController extends Controller {
             DB::beginTransaction();
 
             $validated = $request->validate([
-                'savings_Amount' => 'required|numeric|min:0.01',
+                'savings_Amount' => 'required|numeric|min:100.00',
                 'payment_mode' => 'required|in:Cash,MPesa,Bank',
                 'transaction_code' => 'nullable|string|max:255',
+                'transaction_date' => 'required|date',
                 'Status' => 'required|in:Confirmed,Pending,Cancelled'
             ]);
 
@@ -3177,11 +3192,17 @@ class BodabodaController extends Controller {
                 ], 400);
             }
 
+            // Generate transaction code if needed for Cash
+            $transactionCode = $validated['transaction_code'];
+            if ($validated['payment_mode'] === 'Cash' && empty($transactionCode)) {
+                $transactionCode = 'CSH' . rand(1000, 9999) . chr(rand(65, 90)) . chr(rand(65, 90)) . chr(rand(65, 90));
+            }
+
             $withdrawal = MemberSaving::create([
                 'memberId' => $memberId,
-                'transactionCode' => $validated['transaction_code'] ?? 'WTD-' . uniqid(),
+                'transactionCode' => $transactionCode,
                 'transactionAmount' => $validated['savings_Amount'],
-                'transactionDate' => now(),
+                'transactionDate' => date('Y-m-d H:i:s', strtotime($validated['transaction_date'])),
                 'transactionMode' => $validated['payment_mode'],
                 'transactionType' => 'Paid-Out',
                 'transactionAuthor' => Auth::id(),
@@ -3197,6 +3218,13 @@ class BodabodaController extends Controller {
                 'withdrawal' => $withdrawal
             ]);
 
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([

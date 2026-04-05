@@ -2369,16 +2369,18 @@
                 @csrf
                 <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
                     <!-- Amount -->
-                    <div class="w-full px-2.5 xl:w-1/2">
+                    <div class="w-full px-2.5">
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Amount
+                            Amount (KES)
                         </label>
                         <input type="number" step="0.01"
                             id="savings_Amount"
                             name="savings_Amount"
+                            x-model="formData.savings_Amount"
                             @input="clearError('savings_Amount')"
-                            @blur="validateField('savings_Amount', $event.target.value)"
+                            @blur="validateField('savings_Amount', formData.savings_Amount)"
                             :class="errors.savings_Amount ? 'border-red-500' : ''"
+                            placeholder="Enter amount (minimum KES 10.00)"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                         <span x-show="errors.savings_Amount" x-text="errors.savings_Amount" class="text-xs text-error-500 mt-1"></span>
                     </div>
@@ -2391,11 +2393,12 @@
                         <div class="relative z-20 bg-transparent">
                             <select id="payment_mode"
                                     name="payment_mode"
-                                    @change="clearError('payment_mode')"
-                                    @blur="validateField('payment_mode', $event.target.value)"
+                                    x-model="formData.payment_mode"
+                                    @change="handlePaymentModeChange(formData.payment_mode)"
+                                    @blur="validateField('payment_mode', formData.payment_mode)"
                                     :class="errors.payment_mode ? 'border-red-500' : ''"
                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                <option value="">Payment Mode</option>
+                                <option value="">Select Payment Mode</option>
                                 <option value="Cash">Cash</option>
                                 <option value="MPesa">MPesa</option>
                                 <option value="Bank">Bank</option>
@@ -2417,11 +2420,31 @@
                         <input type="text"
                             id="transaction_code"
                             name="transaction_code"
+                            x-model="formData.transaction_code"
+                            :readonly="transactionCodeReadonly"
                             @input="clearError('transaction_code')"
-                            @blur="validateField('transaction_code', $event.target.value)"
+                            @blur="validateField('transaction_code', formData.transaction_code)"
                             :class="errors.transaction_code ? 'border-red-500' : ''"
+                            :placeholder="transactionCodePlaceholder"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                         <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Transaction Date -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Transaction Date
+                        </label>
+                        <input type="text"
+                            id="savings_transaction_date"
+                            name="savings_transaction_date"
+                            x-model="formData.transaction_date"
+                            @input="clearError('savings_transaction_date')"
+                            @blur="validateField('savings_transaction_date', formData.transaction_date)"
+                            :class="errors.savings_transaction_date ? 'border-red-500' : ''"
+                            placeholder="DD MMM YYYY (e.g., 05 Apr 2026)"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.savings_transaction_date" x-text="errors.savings_transaction_date" class="text-xs text-error-500 mt-1"></span>
                     </div>
 
                     <!-- Status -->
@@ -2432,11 +2455,12 @@
                         <div class="relative z-20 bg-transparent">
                             <select id="Status"
                                     name="Status"
+                                    x-model="formData.Status"
                                     @change="clearError('Status')"
-                                    @blur="validateField('Status', $event.target.value)"
+                                    @blur="validateField('Status', formData.Status)"
                                     :class="errors.Status ? 'border-red-500' : ''"
                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                <option value="">Status</option>
+                                <option value="">Select Status</option>
                                 <option value="Confirmed">Confirmed</option>
                                 <option value="Pending">Pending</option>
                                 <option value="Cancelled">Cancelled</option>
@@ -2452,7 +2476,7 @@
                 </div>
 
                 <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-                    <button @click="savingsModal = false" type="button"
+                    <button @click="closeModal" type="button"
                             class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
                         Cancel
                     </button>
@@ -2499,16 +2523,18 @@
                 @csrf
                 <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
                     <!-- Amount -->
-                    <div class="w-full px-2.5 xl:w-1/2">
+                    <div class="w-full px-2.5">
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Amount
+                            Amount (KES)
                         </label>
                         <input type="number" step="0.01"
-                            id="savings_Amount"
+                            id="withdraw_savings_Amount"
                             name="savings_Amount"
+                            x-model="withdrawFormData.savings_Amount"
                             @input="clearError('savings_Amount')"
-                            @blur="validateField('savings_Amount', $event.target.value)"
+                            @blur="validateWithdrawField('savings_Amount', withdrawFormData.savings_Amount)"
                             :class="errors.savings_Amount ? 'border-red-500' : ''"
+                            placeholder="Enter amount to withdraw (minimum KES 100.00)"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                         <span x-show="errors.savings_Amount" x-text="errors.savings_Amount" class="text-xs text-error-500 mt-1"></span>
                     </div>
@@ -2519,13 +2545,14 @@
                             Payment Mode
                         </label>
                         <div class="relative z-20 bg-transparent">
-                            <select id="payment_mode"
+                            <select id="withdraw_payment_mode"
                                     name="payment_mode"
-                                    @change="clearError('payment_mode')"
-                                    @blur="validateField('payment_mode', $event.target.value)"
+                                    x-model="withdrawFormData.payment_mode"
+                                    @change="handleWithdrawPaymentModeChange(withdrawFormData.payment_mode); clearError('payment_mode')"
+                                    @blur="validateWithdrawField('payment_mode', withdrawFormData.payment_mode)"
                                     :class="errors.payment_mode ? 'border-red-500' : ''"
                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                <option value="">Payment Mode</option>
+                                <option value="">Select Payment Mode</option>
                                 <option value="Cash">Cash</option>
                                 <option value="MPesa">MPesa</option>
                                 <option value="Bank">Bank</option>
@@ -2545,13 +2572,33 @@
                             Transaction Code
                         </label>
                         <input type="text"
-                            id="transaction_code"
+                            id="withdraw_transaction_code"
                             name="transaction_code"
+                            x-model="withdrawFormData.transaction_code"
+                            :readonly="withdrawTransactionCodeReadonly"
                             @input="clearError('transaction_code')"
-                            @blur="validateField('transaction_code', $event.target.value)"
+                            @blur="validateWithdrawField('transaction_code', withdrawFormData.transaction_code)"
                             :class="errors.transaction_code ? 'border-red-500' : ''"
+                            :placeholder="withdrawTransactionCodePlaceholder"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                         <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Transaction Date -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Transaction Date
+                        </label>
+                        <input type="text"
+                            id="withdraw_transaction_date"
+                            name="transaction_date"
+                            x-model="withdrawFormData.transaction_date"
+                            @input="clearError('transaction_date')"
+                            @blur="validateWithdrawField('transaction_date', withdrawFormData.transaction_date)"
+                            :class="errors.transaction_date ? 'border-red-500' : ''"
+                            placeholder="DD MMM YYYY (e.g., 05 Apr 2026)"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.transaction_date" x-text="errors.transaction_date" class="text-xs text-error-500 mt-1"></span>
                     </div>
 
                     <!-- Status -->
@@ -2560,13 +2607,14 @@
                             Status
                         </label>
                         <div class="relative z-20 bg-transparent">
-                            <select id="Status"
+                            <select id="withdraw_Status"
                                     name="Status"
+                                    x-model="withdrawFormData.Status"
                                     @change="clearError('Status')"
-                                    @blur="validateField('Status', $event.target.value)"
+                                    @blur="validateWithdrawField('Status', withdrawFormData.Status)"
                                     :class="errors.Status ? 'border-red-500' : ''"
                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                <option value="">Status</option>
+                                <option value="">Select Status</option>
                                 <option value="Confirmed">Confirmed</option>
                                 <option value="Pending">Pending</option>
                                 <option value="Cancelled">Cancelled</option>
@@ -2626,132 +2674,135 @@
             <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the details you wish to update.</p>
         </div>
 
-        <form class="flex flex-col" x-data="savingsTable" @submit.prevent="updateSavings">
-            @csrf
-            <input type="hidden" name="_method" value="PUT">
+            <form class="flex flex-col" x-data="savingsTable" @submit.prevent="updateSavings">
+                @csrf
+                <input type="hidden" name="_method" value="PUT">
 
-            <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
-                <!-- Hidden Transaction ID -->
-                <input type="hidden" id="edit_transaction_id" name="transaction_id" x-model="$store.savingData.currentSaving?.transactionId">
+                <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
+                    <!-- Hidden Transaction ID -->
+                    <input type="hidden" id="edit_transaction_id" name="transaction_id" x-model="editTransactionId">
 
-                <!-- Amount -->
-                <div class="w-full px-2.5 xl:w-1/2">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Amount
-                    </label>
-                    <input type="number" step="0.01" min="0.01"
-                        id="edit_savings_Amount"
-                        name="savings_Amount"
-                        x-model="$store.savingData.currentSaving?.transactionAmount"
-                        @input="clearError('savings_Amount')"
-                        @blur="validateField('savings_Amount', $event.target.value)"
-                        :class="errors.savings_Amount ? 'border-red-500' : ''"
-                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                    <span x-show="errors.savings_Amount" x-text="errors.savings_Amount" class="text-xs text-error-500 mt-1"></span>
-                </div>
-
-                <!-- Payment Mode -->
-                <div class="w-full px-2.5 xl:w-1/2">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Payment Mode
-                    </label>
-                    <div class="relative z-20 bg-transparent">
-                        <select id="edit_payment_mode"
-                                name="payment_mode"
-                                x-model="$store.savingData.currentSaving?.transactionMode"
-                                @change="handlePaymentModeChange($event.target.value, 'edit'); clearError('payment_mode')"
-                                @blur="validateField('payment_mode', $event.target.value)"
-                                :class="errors.payment_mode ? 'border-red-500' : ''"
-                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                            <option value="">Select Payment Mode</option>
-                            <option value="Cash">Cash</option>
-                            <option value="MPesa">MPesa</option>
-                            <option value="Bank">Bank</option>
-                        </select>
-                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </span>
+                    <!-- Amount -->
+                    <div class="w-full px-2.5">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Amount (KES)
+                        </label>
+                        <input type="number" step="0.01"
+                            id="edit_savings_Amount"
+                            name="savings_Amount"
+                            x-model="editFormData.savings_Amount"
+                            @input="clearError('savings_Amount')"
+                            @blur="validateEditField('savings_Amount', editFormData.savings_Amount)"
+                            :class="errors.savings_Amount ? 'border-red-500' : ''"
+                            placeholder="Enter amount (minimum KES 10.00)"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.savings_Amount" x-text="errors.savings_Amount" class="text-xs text-error-500 mt-1"></span>
                     </div>
-                    <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
-                </div>
 
-                <!-- Transaction Code -->
-                <div class="w-full px-2.5 xl:w-1/2">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Transaction Code
-                    </label>
-                    <input type="text"
-                        id="edit_transaction_code"
-                        name="transaction_code"
-                        x-model="$store.savingData.currentSaving?.transactionCode"
-                        :readonly="$store.savingData.currentSaving?.transactionMode === 'Cash'"
-                        @input="clearError('transaction_code')"
-                        @blur="validateField('transaction_code', $event.target.value)"
-                        :class="errors.transaction_code ? 'border-red-500' : ''"
-                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                    <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
-                </div>
-
-                <!-- Transaction Date -->
-                <div class="w-full px-2.5 xl:w-1/2">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Transaction Date
-                    </label>
-                    <input type="text"
-                        id="edit_transaction_date"
-                        name="transaction_date"
-                        x-model="editTransactionDate"
-                        @input="clearError('transaction_date')"
-                        @blur="validateField('transaction_date', $event.target.value)"
-                        :class="errors.transaction_date ? 'border-red-500' : ''"
-                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                    <span x-show="errors.transaction_date" x-text="errors.transaction_date" class="text-xs text-error-500 mt-1"></span>
-                </div>
-
-                <!-- Status -->
-                <div class="w-full px-2.5">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Status
-                    </label>
-                    <div class="relative z-20 bg-transparent">
-                        <select id="edit_Status"
-                                name="Status"
-                                x-model="$store.savingData.currentSaving?.transactionStatus"
-                                @change="clearError('Status')"
-                                @blur="validateField('Status', $event.target.value)"
-                                :class="errors.Status ? 'border-red-500' : ''"
-                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                            <option value="">Select Status</option>
-                            <option value="Confirmed">Confirmed</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Cancelled">Cancelled</option>
-                            <option value="Reversed">Reversed</option>
-                        </select>
-                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </span>
+                    <!-- Payment Mode -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Payment Mode
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="edit_payment_mode"
+                                    name="payment_mode"
+                                    x-model="editFormData.payment_mode"
+                                    @change="handleEditPaymentModeChange(editFormData.payment_mode); clearError('payment_mode')"
+                                    @blur="validateEditField('payment_mode', editFormData.payment_mode)"
+                                    :class="errors.payment_mode ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Select Payment Mode</option>
+                                <option value="Cash">Cash</option>
+                                <option value="MPesa">MPesa</option>
+                                <option value="Bank">Bank</option>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
                     </div>
-                    <span x-show="errors.Status" x-text="errors.Status" class="text-xs text-error-500 mt-1"></span>
-                </div>
-            </div>
 
-            <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-                <button @click="$store.savingData.editSavingModal = false" type="button"
-                        class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
-                    Cancel
-                </button>
-                <button type="submit"
-                        class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
-                        :disabled="$store.savingData.isUpdating">
-                    <span x-show="!$store.savingData.isUpdating">Update</span>
-                    <span x-show="$store.savingData.isUpdating">Updating ...</span>
-                </button>
-            </div>
-        </form>
+                    <!-- Transaction Code -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Transaction Code
+                        </label>
+                        <input type="text"
+                            id="edit_transaction_code"
+                            name="transaction_code"
+                            x-model="editFormData.transaction_code"
+                            :readonly="editTransactionCodeReadonly"
+                            @input="clearError('transaction_code')"
+                            @blur="validateEditField('transaction_code', editFormData.transaction_code)"
+                            :class="errors.transaction_code ? 'border-red-500' : ''"
+                            :placeholder="editTransactionCodePlaceholder"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Transaction Date -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Transaction Date
+                        </label>
+                        <input type="text"
+                            id="edit_transaction_date"
+                            name="transaction_date"
+                            x-model="editFormData.transaction_date"
+                            @input="clearError('transaction_date')"
+                            @blur="validateEditField('transaction_date', editFormData.transaction_date)"
+                            :class="errors.transaction_date ? 'border-red-500' : ''"
+                            placeholder="DD MMM YYYY (e.g., 05 Apr 2026)"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.transaction_date" x-text="errors.transaction_date" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Status
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="edit_Status"
+                                    name="Status"
+                                    x-model="editFormData.Status"
+                                    @change="clearError('Status')"
+                                    @blur="validateEditField('Status', editFormData.Status)"
+                                    :class="errors.Status ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Select Status</option>
+                                <option value="Confirmed">Confirmed</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Cancelled">Cancelled</option>
+                                <option value="Reversed">Reversed</option>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.Status" x-text="errors.Status" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+                    <button @click="$store.savingData.editSavingModal = false" type="button"
+                            class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                            :disabled="$store.savingData.isUpdating">
+                        <span x-show="!$store.savingData.isUpdating">Update</span>
+                        <span x-show="$store.savingData.isUpdating">Updating ...</span>
+                    </button>
+                </div>
+            </form>
 
         </div>
     </div>
@@ -5653,7 +5704,6 @@
 
     <!-- Member Savings -->
     <script>
-
         document.addEventListener('alpine:init', () => {
             // Initialize the store first
             Alpine.store('savingData', {
@@ -5661,7 +5711,7 @@
                 currentSaving: null,
                 isAdding: false,
                 isUpdating: false,
-                lastTransaction: null // Add this to store the last transaction for printing
+                lastTransaction: null
             });
 
             Alpine.data('savingsTable', () => ({
@@ -5673,17 +5723,373 @@
                 savingsModal: false,
                 withdrawSavingsModal: false,
                 editTransactionDate: '',
+                transactionCodeReadonly: false,
+                transactionCodePlaceholder: 'Enter transaction code',
+
+                // Filter properties
+                typeFilter: 'All',
+                statusFilter: 'All',
+                filteredPage: 1,
+
+                formData: {
+                    savings_Amount: '',
+                    payment_mode: '',
+                    transaction_code: '',
+                    transaction_date: '',
+                    Status: ''
+                },
+
+                // Edit form properties
+                editTransactionId: '',
+                editFormData: {
+                    savings_Amount: '',
+                    payment_mode: '',
+                    transaction_code: '',
+                    transaction_date: '',
+                    Status: ''
+                },
+                editTransactionCodeReadonly: false,
+                editTransactionCodePlaceholder: 'Enter transaction code',
+
+                // Withdraw form properties
+                withdrawFormData: {
+                    savings_Amount: '',
+                    payment_mode: '',
+                    transaction_code: '',
+                    transaction_date: '',
+                    Status: ''
+                },
+                withdrawTransactionCodeReadonly: false,
+                withdrawTransactionCodePlaceholder: 'Enter transaction code',
+
+                // Filter the savings based on selected filters
+                get filteredSavings() {
+                    let filtered = [...this.savings];
+
+                    // Filter by Type (Paid-In/Paid-Out)
+                    if (this.typeFilter !== 'All') {
+                        filtered = filtered.filter(s => s.transactionType === this.typeFilter);
+                    }
+
+                    // Filter by Status
+                    if (this.statusFilter !== 'All') {
+                        filtered = filtered.filter(s => s.transactionStatus === this.statusFilter);
+                    }
+
+                    return filtered;
+                },
+
+                // Pagination for filtered savings
+                get filteredTotalPages() {
+                    return Math.ceil(this.filteredSavings.length / this.itemsPerPage);
+                },
+
+                get paginatedFilteredSavings() {
+                    const start = (this.filteredPage - 1) * this.itemsPerPage;
+                    const end = start + this.itemsPerPage;
+                    return this.filteredSavings.slice(start, end);
+                },
+
+                get filteredStartEntry() {
+                    if (this.filteredSavings.length === 0) return 0;
+                    return (this.filteredPage - 1) * this.itemsPerPage + 1;
+                },
+
+                get filteredEndEntry() {
+                    const end = this.filteredPage * this.itemsPerPage;
+                    return end > this.filteredSavings.length ? this.filteredSavings.length : end;
+                },
 
                 init() {
                     console.log('Savings Table Initialized');
                     this.loadSavings();
                     this.loadBalance();
+                    this.setCurrentDate();
+                    this.setCurrentWithdrawDate();
+
+                    // Reset filters when loading new data
+                    this.typeFilter = 'All';
+                    this.statusFilter = 'All';
+                    this.filteredPage = 1;
 
                     // Listen for edit event from table
                     window.addEventListener('open-edit-savings-modal', (event) => {
                         const saving = event.detail.saving;
                         this.editSavingModal(saving);
                     });
+                },
+
+                // Filter methods
+                performFilter() {
+                    this.filteredPage = 1; // Reset to first page when filters change
+                },
+
+                goToFilteredPage(page) {
+                    if (page >= 1 && page <= this.filteredTotalPages) {
+                        this.filteredPage = page;
+                    }
+                },
+
+                setCurrentDate() {
+                    const today = new Date();
+                    const day = String(today.getDate()).padStart(2, '0');
+                    const month = today.toLocaleDateString('en-GB', { month: 'short' });
+                    const year = today.getFullYear();
+                    this.formData.transaction_date = `${day} ${month} ${year}`;
+                },
+
+                setCurrentEditDate() {
+                    const today = new Date();
+                    const day = String(today.getDate()).padStart(2, '0');
+                    const month = today.toLocaleDateString('en-GB', { month: 'short' });
+                    const year = today.getFullYear();
+                    this.editFormData.transaction_date = `${day} ${month} ${year}`;
+                },
+
+                setCurrentWithdrawDate() {
+                    const today = new Date();
+                    const day = String(today.getDate()).padStart(2, '0');
+                    const month = today.toLocaleDateString('en-GB', { month: 'short' });
+                    const year = today.getFullYear();
+                    this.withdrawFormData.transaction_date = `${day} ${month} ${year}`;
+                },
+
+                formatDateForDatabase(dateStr) {
+                    const parts = dateStr.match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/);
+                    if (parts) {
+                        const months = {
+                            'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
+                            'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
+                        };
+                        const day = parts[1].padStart(2, '0');
+                        const month = months[parts[2]];
+                        const year = parts[3];
+                        return `${year}-${month}-${day} 00:00:00`;
+                    }
+                    return null;
+                },
+
+                handlePaymentModeChange(mode) {
+                    if (mode === 'Cash') {
+                        this.transactionCodeReadonly = true;
+                        this.transactionCodePlaceholder = 'Auto-generated on submit';
+                        this.formData.transaction_code = '';
+                    } else {
+                        this.transactionCodeReadonly = false;
+                        this.transactionCodePlaceholder = 'Enter transaction code';
+                    }
+                    this.clearError('transaction_code');
+                },
+
+                validateField(field, value) {
+                    if (!value || value === '' || value === null) {
+                        this.errors[field] = 'This field is required';
+                        return false;
+                    }
+
+                    switch(field) {
+                        case 'savings_Amount':
+                            const amount = parseFloat(value);
+                            if (isNaN(amount) || amount <= 10.00) {
+                                this.errors[field] = 'Amount must be greater than KES 10.00';
+                                return false;
+                            }
+                            break;
+
+                        case 'transaction_date':
+                            const datePattern = /^\d{1,2}\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{4}$/;
+                            if (!datePattern.test(value)) {
+                                this.errors[field] = 'Date must be in format: DD MMM YYYY (e.g., 05 Apr 2026)';
+                                return false;
+                            }
+                            break;
+
+                        case 'transaction_code':
+                            if (this.formData.payment_mode !== 'Cash' && (!value || value.trim() === '')) {
+                                this.errors[field] = 'Transaction code is required for ' + this.formData.payment_mode;
+                                return false;
+                            }
+                            break;
+                    }
+
+                    delete this.errors[field];
+                    return true;
+                },
+
+                clearError(field) {
+                    if (this.errors[field]) {
+                        delete this.errors[field];
+                    }
+                },
+
+                validateForm() {
+                    this.errors = {};
+                    let isValid = true;
+
+                    const fields = ['savings_Amount', 'payment_mode', 'transaction_date', 'Status'];
+
+                    for (const field of fields) {
+                        if (!this.validateField(field, this.formData[field])) {
+                            isValid = false;
+                        }
+                    }
+
+                    if (this.formData.payment_mode !== 'Cash') {
+                        if (!this.validateField('transaction_code', this.formData.transaction_code)) {
+                            isValid = false;
+                        }
+                    }
+
+                    return isValid;
+                },
+
+                validateEditField(field, value) {
+                    if (!value || value === '' || value === null) {
+                        this.errors[field] = 'This field is required';
+                        return false;
+                    }
+
+                    switch(field) {
+                        case 'savings_Amount':
+                            const amount = parseFloat(value);
+                            if (isNaN(amount) || amount <= 10.00) {
+                                this.errors[field] = 'Amount must be greater than KES 10.00';
+                                return false;
+                            }
+                            break;
+
+                        case 'transaction_date':
+                            const datePattern = /^\d{1,2}\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{4}$/;
+                            if (!datePattern.test(value)) {
+                                this.errors[field] = 'Date must be in format: DD MMM YYYY (e.g., 05 Apr 2026)';
+                                return false;
+                            }
+                            break;
+
+                        case 'transaction_code':
+                            if (this.editFormData.payment_mode !== 'Cash' && (!value || value.trim() === '')) {
+                                this.errors[field] = 'Transaction code is required for ' + this.editFormData.payment_mode;
+                                return false;
+                            }
+                            break;
+                    }
+
+                    delete this.errors[field];
+                    return true;
+                },
+
+                validateEditForm() {
+                    this.errors = {};
+                    let isValid = true;
+
+                    const fields = ['savings_Amount', 'payment_mode', 'transaction_date', 'Status'];
+
+                    for (const field of fields) {
+                        if (!this.validateEditField(field, this.editFormData[field])) {
+                            isValid = false;
+                        }
+                    }
+
+                    if (this.editFormData.payment_mode !== 'Cash') {
+                        if (!this.validateEditField('transaction_code', this.editFormData.transaction_code)) {
+                            isValid = false;
+                        }
+                    }
+
+                    return isValid;
+                },
+
+                handleEditPaymentModeChange(mode) {
+                    if (mode === 'Cash') {
+                        this.editTransactionCodeReadonly = true;
+                        this.editTransactionCodePlaceholder = 'Auto-generated on submit';
+                        this.editFormData.transaction_code = '';
+                    } else {
+                        this.editTransactionCodeReadonly = false;
+                        this.editTransactionCodePlaceholder = 'Enter transaction code';
+                    }
+                    this.clearError('transaction_code');
+                },
+
+                addSavings() {
+                    this.errors = {};
+
+                    if (!this.validateForm()) {
+                        alert('INVALID INPUTS! Fix errors to continue');
+                        return;
+                    }
+
+                    Alpine.store('savingData').isAdding = true;
+
+                    const formattedDate = this.formatDateForDatabase(this.formData.transaction_date);
+
+                    const submitData = {
+                        savings_Amount: this.formData.savings_Amount,
+                        payment_mode: this.formData.payment_mode,
+                        transaction_code: this.formData.transaction_code,
+                        transaction_date: formattedDate,
+                        Status: this.formData.Status,
+                        _token: document.querySelector('input[name="_token"]')?.value
+                    };
+
+                    fetch(`/bodaboda-member/{{ $memberId }}/savings/add`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(submitData)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        Alpine.store('savingData').isAdding = false;
+
+                        if (data.success) {
+                            alert(data.message);
+                            window.location.reload();
+                        } else {
+                            if (data.errors) {
+                                for (const [field, messages] of Object.entries(data.errors)) {
+                                    const fieldMap = {
+                                        'savings_Amount': 'savings_Amount',
+                                        'payment_mode': 'payment_mode',
+                                        'transaction_code': 'transaction_code',
+                                        'transaction_date': 'savings_transaction_date',
+                                        'Status': 'Status'
+                                    };
+                                    const mappedField = fieldMap[field] || field;
+                                    this.errors[mappedField] = messages[0];
+                                }
+                                alert('INVALID INPUTS! Fix errors to continue');
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        Alpine.store('savingData').isAdding = false;
+                        alert('Error adding savings transaction. Please try again.');
+                        console.error('Error:', error);
+                    });
+                },
+
+                closeModal() {
+                    this.savingsModal = false;
+                    this.resetForm();
+                },
+
+                resetForm() {
+                    this.formData = {
+                        savings_Amount: '',
+                        payment_mode: '',
+                        transaction_code: '',
+                        transaction_date: '',
+                        Status: ''
+                    };
+                    this.errors = {};
+                    this.transactionCodeReadonly = false;
+                    this.setCurrentDate();
                 },
 
                 loadSavings() {
@@ -5704,107 +6110,23 @@
                         .catch(error => console.error('Error loading balance:', error));
                 },
 
-                validateField(field, value) {
-                    if (!value || value === '' || value === null) {
-                        this.errors[field] = 'This field is required';
-                        return false;
-                    }
-
-                    if (field === 'savings_Amount' && (isNaN(value) || parseFloat(value) <= 0)) {
-                        this.errors[field] = 'Please enter a valid amount greater than 0';
-                        return false;
-                    }
-
-                    delete this.errors[field];
-                    return true;
-                },
-
-                clearError(field) {
-                    if (this.errors[field]) {
-                        delete this.errors[field];
-                    }
-                },
-
-                validateUpdateForm() {
-                    this.errors = {};
-                    let isValid = true;
-
-                    const amount = document.getElementById('edit_savings_Amount')?.value;
-                    const paymentMode = document.getElementById('edit_payment_mode')?.value;
-                    const status = document.getElementById('edit_Status')?.value;
-                    const transactionDate = this.editTransactionDate;
-
-                    if (!this.validateField('savings_Amount', amount)) isValid = false;
-
-                    if (!paymentMode || paymentMode === '') {
-                        this.errors.payment_mode = 'Please select payment mode';
-                        isValid = false;
-                    }
-
-                    if (!status || status === '') {
-                        this.errors.Status = 'Please select status';
-                        isValid = false;
-                    }
-
-                    if (!transactionDate || transactionDate === '') {
-                        this.errors.transaction_date = 'Transaction date is required';
-                        isValid = false;
-                    }
-
-                    const transactionCode = document.getElementById('edit_transaction_code')?.value;
-                    if (paymentMode !== 'Cash' && (!transactionCode || transactionCode === '')) {
-                        this.errors.transaction_code = 'Transaction code is required for non-cash payments';
-                        isValid = false;
-                    }
-
-                    return isValid;
-                },
-
-                handlePaymentModeChange(mode, type) {
-                    const codeField = document.getElementById('edit_transaction_code');
-                    if (codeField) {
-                        if (mode === 'Cash') {
-                            codeField.readOnly = true;
-                            codeField.value = '';
-                        } else {
-                            codeField.readOnly = false;
-                        }
-                    }
-                },
-
                 updateSavings() {
-                    if (!this.validateUpdateForm()) {
-                        alert('Please fix the errors in the form before submitting.');
+                    if (!this.validateEditForm()) {
+                        alert('INVALID INPUTS! Fix errors to continue');
                         return;
                     }
 
                     Alpine.store('savingData').isUpdating = true;
 
-                    const transactionId = document.getElementById('edit_transaction_id')?.value;
-                    const transactionDateField = this.editTransactionDate;
+                    const transactionId = this.editTransactionId;
+                    const formattedDate = this.formatDateForDatabase(this.editFormData.transaction_date);
 
-                    // Parse the formatted date from "27 Mar 2026" to "2026-03-27 00:00:00"
-                    let formattedDate = '';
-                    if (transactionDateField) {
-                        const parts = transactionDateField.match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/);
-                        if (parts) {
-                            const months = {
-                                'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
-                                'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
-                            };
-                            const day = parts[1].padStart(2, '0');
-                            const month = months[parts[2]];
-                            const year = parts[3];
-                            formattedDate = `${year}-${month}-${day} 00:00:00`;
-                        }
-                    }
-
-                    const formData = {
-                        savings_Amount: document.getElementById('edit_savings_Amount')?.value,
-                        payment_mode: document.getElementById('edit_payment_mode')?.value,
-                        transaction_code: document.getElementById('edit_transaction_code')?.value || '',
+                    const submitData = {
+                        savings_Amount: this.editFormData.savings_Amount,
+                        payment_mode: this.editFormData.payment_mode,
+                        transaction_code: this.editFormData.transaction_code,
                         transaction_date: formattedDate,
-                        Status: document.getElementById('edit_Status')?.value,
+                        Status: this.editFormData.Status,
                         _token: document.querySelector('input[name="_token"]')?.value
                     };
 
@@ -5815,75 +6137,220 @@
                             'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value,
                             'Accept': 'application/json'
                         },
-                        body: JSON.stringify(formData)
+                        body: JSON.stringify(submitData)
                     })
                     .then(res => res.json())
                     .then(data => {
-                        setTimeout(() => {
-                            Alpine.store('savingData').isUpdating = false;
+                        Alpine.store('savingData').isUpdating = false;
 
-                            if (data.success) {
-                                alert(data.message);
-                                window.location.reload();
+                        if (data.success) {
+                            alert(data.message);
+                            window.location.reload();
+                        } else {
+                            if (data.errors) {
+                                for (const [field, messages] of Object.entries(data.errors)) {
+                                    const fieldMap = {
+                                        'savings_Amount': 'savings_Amount',
+                                        'payment_mode': 'payment_mode',
+                                        'transaction_code': 'transaction_code',
+                                        'transaction_date': 'transaction_date',
+                                        'Status': 'Status'
+                                    };
+                                    const mappedField = fieldMap[field] || field;
+                                    this.errors[mappedField] = messages[0];
+                                }
+                                alert('INVALID INPUTS! Fix errors to continue');
                             } else {
                                 alert('Error: ' + data.message);
                             }
-                        }, 500);
+                        }
                     })
                     .catch(error => {
-                        setTimeout(() => {
-                            Alpine.store('savingData').isUpdating = false;
-                            alert('Error updating savings transaction. Please try again.');
-                            console.error('Error:', error);
-                        }, 500);
+                        Alpine.store('savingData').isUpdating = false;
+                        alert('Error updating savings transaction. Please try again.');
+                        console.error('Error:', error);
                     });
                 },
 
                 editSavingModal(saving) {
                     console.log('Editing saving:', saving);
 
-                    // Store the saving data
                     Alpine.store('savingData').currentSaving = saving;
                     Alpine.store('savingData').editSavingModal = true;
 
-                    // Clear previous errors
                     this.errors = {};
 
-                    // Populate form fields after modal opens
-                    setTimeout(() => {
-                        document.getElementById('edit_transaction_id') && (document.getElementById('edit_transaction_id').value = saving.transactionId || '');
-                        document.getElementById('edit_savings_Amount') && (document.getElementById('edit_savings_Amount').value = saving.transactionAmount || '');
-                        document.getElementById('edit_payment_mode') && (document.getElementById('edit_payment_mode').value = saving.transactionMode || '');
-                        document.getElementById('edit_transaction_code') && (document.getElementById('edit_transaction_code').value = saving.transactionCode || '');
-                        document.getElementById('edit_Status') && (document.getElementById('edit_Status').value = saving.transactionStatus || '');
+                    this.editTransactionId = saving.transactionId || '';
+                    this.editFormData.savings_Amount = saving.transactionAmount || '';
+                    this.editFormData.payment_mode = saving.transactionMode || '';
+                    this.editFormData.transaction_code = saving.transactionCode || '';
+                    this.editFormData.Status = saving.transactionStatus || '';
 
-                        // Format and set transaction date (DD MMM YYYY only, no time)
-                        if (saving.transactionDate) {
-                            const date = new Date(saving.transactionDate);
-                            const day = String(date.getDate()).padStart(2, '0');
-                            const month = date.toLocaleDateString('en-GB', { month: 'short' });
-                            const year = date.getFullYear();
-                            this.editTransactionDate = `${day} ${month} ${year}`;
-                        } else {
-                            // Default to current date if no transaction date
-                            const today = new Date();
-                            const day = String(today.getDate()).padStart(2, '0');
-                            const month = today.toLocaleDateString('en-GB', { month: 'short' });
-                            const year = today.getFullYear();
-                            this.editTransactionDate = `${day} ${month} ${year}`;
-                        }
+                    if (saving.transactionDate) {
+                        const date = new Date(saving.transactionDate);
+                        const day = String(date.getDate()).padStart(2, '0');
+                        const month = date.toLocaleDateString('en-GB', { month: 'short' });
+                        const year = date.getFullYear();
+                        this.editFormData.transaction_date = `${day} ${month} ${year}`;
+                    } else {
+                        this.setCurrentEditDate();
+                    }
 
-                        // Handle payment mode readonly state
-                        if (saving.transactionMode === 'Cash') {
-                            const codeField = document.getElementById('edit_transaction_code');
-                            if (codeField) {
-                                codeField.readOnly = true;
-                            }
-                        }
-                    }, 100);
+                    this.handleEditPaymentModeChange(saving.transactionMode);
                 },
 
-                // Pagination methods
+                validateWithdrawField(field, value) {
+                    if (!value || value === '' || value === null) {
+                        this.errors[field] = 'This field is required';
+                        return false;
+                    }
+
+                    switch(field) {
+                        case 'savings_Amount':
+                            const amount = parseFloat(value);
+                            if (isNaN(amount)) {
+                                this.errors[field] = 'Please enter a valid amount';
+                                return false;
+                            }
+                            if (amount < 100.00) {
+                                this.errors[field] = 'Withdrawal amount must be at least KES 100.00';
+                                return false;
+                            }
+                            if (amount > this.savingsBalance) {
+                                this.errors[field] = `Amount cannot exceed available balance of KES ${this.savingsBalance.toFixed(2)}`;
+                                return false;
+                            }
+                            break;
+
+                        case 'transaction_date':
+                            const datePattern = /^\d{1,2}\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{4}$/;
+                            if (!datePattern.test(value)) {
+                                this.errors[field] = 'Date must be in format: DD MMM YYYY (e.g., 05 Apr 2026)';
+                                return false;
+                            }
+                            break;
+
+                        case 'transaction_code':
+                            if (this.withdrawFormData.payment_mode !== 'Cash' && (!value || value.trim() === '')) {
+                                this.errors[field] = 'Transaction code is required for ' + this.withdrawFormData.payment_mode;
+                                return false;
+                            }
+                            break;
+                    }
+
+                    delete this.errors[field];
+                    return true;
+                },
+
+                validateWithdrawForm() {
+                    this.errors = {};
+                    let isValid = true;
+
+                    const fields = ['savings_Amount', 'payment_mode', 'transaction_date', 'Status'];
+
+                    for (const field of fields) {
+                        if (!this.validateWithdrawField(field, this.withdrawFormData[field])) {
+                            isValid = false;
+                        }
+                    }
+
+                    if (this.withdrawFormData.payment_mode !== 'Cash') {
+                        if (!this.validateWithdrawField('transaction_code', this.withdrawFormData.transaction_code)) {
+                            isValid = false;
+                        }
+                    }
+
+                    return isValid;
+                },
+
+                handleWithdrawPaymentModeChange(mode) {
+                    if (mode === 'Cash') {
+                        this.withdrawTransactionCodeReadonly = true;
+                        this.withdrawTransactionCodePlaceholder = 'Auto-generated on submit';
+                        this.withdrawFormData.transaction_code = '';
+                    } else {
+                        this.withdrawTransactionCodeReadonly = false;
+                        this.withdrawTransactionCodePlaceholder = 'Enter transaction code';
+                    }
+                    this.clearError('transaction_code');
+                },
+
+                resetWithdrawForm() {
+                    this.withdrawFormData = {
+                        savings_Amount: '',
+                        payment_mode: '',
+                        transaction_code: '',
+                        transaction_date: '',
+                        Status: ''
+                    };
+                    this.withdrawTransactionCodeReadonly = false;
+                    this.setCurrentWithdrawDate();
+                    this.errors = {};
+                },
+
+                withdrawSavings() {
+                    this.errors = {};
+
+                    if (!this.validateWithdrawForm()) {
+                        alert('INVALID INPUTS! Fix errors to continue');
+                        return;
+                    }
+
+                    Alpine.store('savingData').isAdding = true;
+
+                    const formattedDate = this.formatDateForDatabase(this.withdrawFormData.transaction_date);
+
+                    const submitData = {
+                        savings_Amount: this.withdrawFormData.savings_Amount,
+                        payment_mode: this.withdrawFormData.payment_mode,
+                        transaction_code: this.withdrawFormData.transaction_code,
+                        transaction_date: formattedDate,
+                        Status: this.withdrawFormData.Status,
+                        _token: document.querySelector('input[name="_token"]')?.value
+                    };
+
+                    fetch(`/bodaboda-member/{{ $memberId }}/savings/withdraw`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(submitData)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        Alpine.store('savingData').isAdding = false;
+
+                        if (data.success) {
+                            alert(data.message);
+                            window.location.reload();
+                        } else {
+                            if (data.errors) {
+                                for (const [field, messages] of Object.entries(data.errors)) {
+                                    const fieldMap = {
+                                        'savings_Amount': 'savings_Amount',
+                                        'payment_mode': 'payment_mode',
+                                        'transaction_code': 'transaction_code',
+                                        'transaction_date': 'transaction_date',
+                                        'Status': 'Status'
+                                    };
+                                    const mappedField = fieldMap[field] || field;
+                                    this.errors[mappedField] = messages[0];
+                                }
+                                alert('INVALID INPUTS! Fix errors to continue');
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        Alpine.store('savingData').isAdding = false;
+                        alert('Error processing withdrawal. Please try again.');
+                        console.error('Error:', error);
+                    });
+                },
+
                 get totalPages() {
                     return Math.ceil(this.savings.length / this.itemsPerPage);
                 },
@@ -5916,7 +6383,6 @@
                 }
             }));
         });
-
     </script>
 
     <!-- Member Loans -->
