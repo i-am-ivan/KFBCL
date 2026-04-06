@@ -2507,14 +2507,39 @@ class BodabodaController extends Controller {
     public function assignMemberLoan(Request $request, $memberId)
     {
         try {
+            // First check for defaulted loans
+            $loans = DB::table('member_loans')
+                ->where('memberId', $memberId)
+                ->whereNotIn('transactionLoanStatus', ['Repaid', 'Cancelled'])
+                ->get();
+
+            $today = Carbon::now();
+            foreach ($loans as $loan) {
+                $endDate = Carbon::parse($loan->transactionLoanEndDate);
+                $gracePeriod = $loan->transactionGracePeriod ?? 45;
+                $defaultDate = $endDate->copy()->addDays($gracePeriod);
+
+                if ($defaultDate->lt($today)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Transaction Error!\\nSorry, you cannot assign a new loan, member has a defaulted loan.'
+                    ], 400);
+                }
+            }
+
             $validated = $request->validate([
                 'loan_type_id' => 'required|integer|exists:member_loan_types,loanId',
                 'amount' => 'required|numeric|min:1',
                 'total_repayment' => 'required|numeric|min:0',
+                'total_interest' => 'nullable|numeric|min:0',
                 'period_months' => 'required|integer|min:1',
                 'payment_mode' => 'required|in:Cash,MPesa,Bank',
                 'transaction_code' => 'nullable|string|max:255',
-                'status' => 'required|in:Approved,Under Review,Cancelled'
+                'status' => 'required|in:Approved,Under Review,Cancelled',
+                'assigned_date' => 'required|date',
+                'start_date' => 'required|date',
+                'end_date' => 'required|date',
+                'grace_period' => 'nullable|integer'
             ]);
 
             // Get loan type details
@@ -2544,9 +2569,10 @@ class BodabodaController extends Controller {
                 ], 400);
             }
 
-            // Calculate dates
-            $startDate = Carbon::now()->addDays(30);
-            $endDate = Carbon::now()->addDays(30 + ($validated['period_months'] * 30));
+            // Use provided dates or calculate if not provided
+            $startDate = Carbon::parse($validated['start_date']);
+            $endDate = Carbon::parse($validated['end_date']);
+            $assignedDate = Carbon::parse($validated['assigned_date']);
 
             // Generate transaction code if not provided
             $transactionCode = $validated['transaction_code'];
@@ -2556,18 +2582,23 @@ class BodabodaController extends Controller {
 
             DB::beginTransaction();
 
+            // Calculate total interest if not provided
+            $totalInterest = $validated['total_interest'] ?? ($validated['total_repayment'] - $validated['amount']);
+
             // Insert into member_loans
             $loanData = [
                 'memberId' => $memberId,
                 'transactionLoan' => $validated['loan_type_id'],
                 'transactionLoanAmount' => $validated['amount'],
                 'transactionTotalLoan' => $validated['total_repayment'],
+                'transactionTotalInterest' => $totalInterest,
                 'transactionLoanPeriod' => $validated['period_months'],
+                'transactionGracePeriod' => $validated['grace_period'] ?? 45,
                 'transactionLoanStartDate' => $startDate,
                 'transactionLoanEndDate' => $endDate,
-                'transactionLoanRepaymentMode' => 1, // Default repayment mode
+                'transactionLoanRepaymentMode' => 1,
                 'transactionAuthor' => Auth::id(),
-                'transactionCreated' => now(),
+                'transactionCreated' => $assignedDate,
                 'transactionUpdatedOn' => now(),
                 'transactionLoanStatus' => 'Active',
                 'transactionStatus' => $validated['status']
@@ -2581,8 +2612,8 @@ class BodabodaController extends Controller {
                 'transactionLoan' => $loanId,
                 'transactionCode' => $transactionCode,
                 'transactionAmount' => $validated['amount'],
-                'transactionDate' => now(),
-                'transactionType' => 'Paid-Out', // Money going out to member
+                'transactionDate' => $assignedDate,
+                'transactionType' => 'Paid-Out',
                 'transactionMode' => $validated['payment_mode'],
                 'transactionAuthor' => Auth::id(),
                 'transactionUpdatedOn' => now(),
@@ -2740,6 +2771,7 @@ class BodabodaController extends Controller {
                 'loan_id' => 'required|integer',
                 'amount' => 'required|numeric|min:1',
                 'total_amount' => 'required|numeric|min:1',
+                'total_interest' => 'nullable|numeric|min:0',
                 'period_months' => 'required|integer|min:1',
                 'start_date' => 'required|date',
                 'end_date' => 'required|date',
@@ -2747,9 +2779,50 @@ class BodabodaController extends Controller {
                 'status' => 'required|in:Active,Approved,Under Review,Pending,Repaid,Defaulted,Cancelled'
             ]);
 
+            // Get the loan to check if it exists
+            $loan = DB::table('member_loans')
+                ->where('transactionId', $validated['loan_id'])
+                ->where('memberId', $memberId)
+                ->first();
+
+            if (!$loan) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Loan not found'
+                ], 404);
+            }
+
+            // Get loan type to validate amount range
+            $loanType = DB::table('member_loan_types')
+                ->where('loanId', $loan->transactionLoan)
+                ->first();
+
+            if ($loanType) {
+                // Validate amount range
+                if ($validated['amount'] < $loanType->min_amount) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Amount is below minimum borrowable of ' . number_format($loanType->min_amount, 2),
+                        'errors' => ['amount' => ['Amount is below minimum borrowable of ' . number_format($loanType->min_amount, 2)]]
+                    ], 400);
+                }
+
+                if ($validated['amount'] > $loanType->max_amount) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Amount exceeds maximum borrowable of ' . number_format($loanType->max_amount, 2),
+                        'errors' => ['amount' => ['Amount exceeds maximum borrowable of ' . number_format($loanType->max_amount, 2)]]
+                    ], 400);
+                }
+            }
+
+            // Calculate total interest if not provided
+            $totalInterest = $validated['total_interest'] ?? ($validated['total_amount'] - $validated['amount']);
+
             $data = [
                 'transactionLoanAmount' => $validated['amount'],
                 'transactionTotalLoan' => $validated['total_amount'],
+                'transactionTotalInterest' => $totalInterest,
                 'transactionLoanPeriod' => $validated['period_months'],
                 'transactionLoanStartDate' => $validated['start_date'],
                 'transactionLoanEndDate' => $validated['end_date'],
@@ -2762,6 +2835,16 @@ class BodabodaController extends Controller {
                 ->where('transactionId', $validated['loan_id'])
                 ->where('memberId', $memberId)
                 ->update($data);
+
+            // Also update the transaction record's date if needed
+            DB::table('member_loans_transactions')
+                ->where('transactionLoan', $validated['loan_id'])
+                ->where('memberId', $memberId)
+                ->where('transactionType', 'Paid-Out')
+                ->update([
+                    'transactionDate' => $validated['assigned_date'],
+                    'transactionUpdatedOn' => now()
+                ]);
 
             if ($updated) {
                 return response()->json([
@@ -3070,6 +3153,57 @@ class BodabodaController extends Controller {
             return response()->json([
                 'success' => false,
                 'message' => 'Error fetching loan transactions: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Add this method to your BodabodaController
+    public function checkDefaultedLoans($memberId)
+    {
+        try {
+            // Get all loans for this member that are not repaid
+            $loans = DB::table('member_loans')
+                ->where('memberId', $memberId)
+                ->whereNotIn('transactionLoanStatus', ['Repaid', 'Cancelled'])
+                ->get();
+
+            $today = Carbon::now();
+            $hasDefaulted = false;
+            $defaultedLoans = [];
+
+            foreach ($loans as $loan) {
+                // Check if loan has defaulted (end_date + grace_period < today)
+                $endDate = Carbon::parse($loan->transactionLoanEndDate);
+                $gracePeriod = $loan->transactionGracePeriod ?? 45; // Default 45 days
+                $defaultDate = $endDate->copy()->addDays($gracePeriod);
+
+                if ($defaultDate->lt($today)) {
+                    $hasDefaulted = true;
+                    $defaultedLoans[] = [
+                        'loanId' => $loan->transactionId,
+                        'endDate' => $endDate->format('Y-m-d'),
+                        'defaultDate' => $defaultDate->format('Y-m-d')
+                    ];
+                }
+            }
+
+            if ($hasDefaulted) {
+                return response()->json([
+                    'hasDefaulted' => true,
+                    'message' => 'Sorry, you cannot assign a new loan, member has a defaulted loan.',
+                    'defaultedLoans' => $defaultedLoans
+                ]);
+            }
+
+            return response()->json([
+                'hasDefaulted' => false,
+                'message' => 'No defaulted loans found.'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'hasDefaulted' => false,
+                'message' => 'Error checking defaulted loans: ' . $e->getMessage()
             ], 500);
         }
     }

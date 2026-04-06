@@ -2885,17 +2885,17 @@
         <form class="flex flex-col" method="POST" x-data="loansTable" @submit.prevent="assignLoan">
             @csrf
 
-            <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
+            <div class="-mx-2.5 flex flex-wrap gap-y-5 p-2">
                 <!-- Loan Type Dropdown -->
                 <div class="w-full px-2.5">
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Loan Type
+                        Loan Type <span class="text-error-500">*</span>
                     </label>
                     <div class="relative z-20 bg-transparent">
                         <select id="loan_type_id"
                                 name="loan_type_id"
                                 x-model="$store.loanData.selectedLoanTypeId"
-                                @change="Alpine.store('loanData').updateLoanDetails($event.target.value); clearError('loan_type')"
+                                @change="handleLoanTypeChange($event.target.value); clearError('loan_type')"
                                 @blur="validateField('loan_type', $event.target.value)"
                                 :class="errors.loan_type ? 'border-red-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
@@ -2913,34 +2913,15 @@
                     <span x-show="errors.loan_type" x-text="errors.loan_type" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
-                <!-- Min Borrowable (Read-only) -->
-                <div class="w-full px-2.5 xl:w-1/2">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Min Borrowable
-                    </label>
-                    <input readonly type="text"
-                        id="min_borrowable"
-                        name="min_borrowable"
-                        :value="$store.loanData.currentLoanType ? 'KES ' + Number($store.loanData.currentLoanType.min_amount).toLocaleString() : ''"
-                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
-                </div>
-
-                <!-- Max Borrowable (Read-only) -->
-                <div class="w-full px-2.5 xl:w-1/2">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Max Borrowable
-                    </label>
-                    <input readonly type="text"
-                        id="max_borrowable"
-                        name="max_borrowable"
-                        :value="$store.loanData.currentLoanType ? 'KES ' + Number($store.loanData.currentLoanType.max_amount).toLocaleString() : ''"
-                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
-                </div>
+                <!-- Hidden fields for min/max borrowable -->
+                <input type="hidden" id="min_borrowable_hidden" :value="$store.loanData.currentLoanType ? $store.loanData.currentLoanType.min_amount : ''">
+                <input type="hidden" id="max_borrowable_hidden" :value="$store.loanData.currentLoanType ? $store.loanData.currentLoanType.max_amount : ''">
+                <input type="hidden" id="interest_rate_hidden" :value="$store.loanData.currentLoanType ? $store.loanData.currentLoanType.interest_rate : ''">
 
                 <!-- Amount -->
                 <div class="w-full px-2.5 xl:w-1/2">
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Loan Amount
+                        Loan Amount <span class="text-error-500">*</span>
                     </label>
                     <div class="relative">
                         <input type="number"
@@ -2950,24 +2931,25 @@
                             min="1"
                             placeholder="Amount to Borrow"
                             x-model="loanAmount"
-                            @input="clearError('amount'); calculateAndUpdateTotal()"
-                            @blur="validateField('amount', $event.target.value)"
+                            @input="validateAmountRange(); clearError('amount'); calculateAndUpdateTotal()"
+                            @blur="validateField('amount', $event.target.value); validateAmountRange()"
                             :class="errors.amount ? 'border-red-500' : ''"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     </div>
                     <span x-show="errors.amount" x-text="errors.amount" class="text-xs text-error-500 mt-1"></span>
+                    <span x-show="amountRangeError" x-text="amountRangeError" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
                 <!-- Period (Months) -->
                 <div class="w-full px-2.5 xl:w-1/2">
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Period (Months)
+                        Period (Months) <span class="text-error-500">*</span>
                     </label>
                     <div class="relative z-20 bg-transparent">
                         <select id="loan_period"
                                 name="loan_period"
                                 x-model="loanPeriod"
-                                @change="$store.loanData.calculateDates($event.target.value); clearError('loan_period'); calculateAndUpdateTotal()"
+                                @change="$store.loanData.calculateDates($event.target.value, editAssignedDate); clearError('loan_period'); calculateAndUpdateTotal()"
                                 @blur="validateField('loan_period', $event.target.value)"
                                 :class="errors.loan_period ? 'border-red-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
@@ -2990,36 +2972,79 @@
                     <span x-show="errors.loan_period" x-text="errors.loan_period" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
-                <!-- Start Date (Read-only) -->
+                <!-- Total Repayment Amount -->
                 <div class="w-full px-2.5 xl:w-1/2">
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Start Date
+                        Total Repayment
+                    </label>
+                    <div class="relative">
+                        <input type="text"
+                            id="total_repayment"
+                            name="total_repayment"
+                            readonly
+                            x-model="totalRepayment"
+                            placeholder="Total Payable"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                    </div>
+                </div>
+
+                <!-- Total Interest (Hidden) -->
+                <input type="hidden" id="total_interest" name="total_interest" x-model="totalInterest">
+
+                <!-- Assigned Date (Editable) -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Assigned On <span class="text-error-500">*</span>
+                    </label>
+                    <input type="text"
+                        id="edit_assigned_date"
+                        name="assigned_date"
+                        x-model="editAssignedDate"
+                        @input="handleAssignedDateChange($event.target.value); clearError('assigned_date')"
+                        @blur="validateAssignedDate($event.target.value)"
+                        :class="errors.assigned_date ? 'border-red-500' : ''"
+                        placeholder="DD MMM YYYY"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    <span x-show="errors.assigned_date" x-text="errors.assigned_date" class="text-xs text-error-500 mt-1"></span>
+                    <span class="text-xs text-gray-500 mt-1">Format: 06 Apr 2026</span>
+                </div>
+
+                <!-- Start Date (Editable) -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Start Date <span class="text-error-500">*</span>
                     </label>
                     <input type="text"
                         id="start_date"
                         name="start_date"
-                        readonly
-                        :value="$store.loanData.startDate"
-                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                        x-model="$store.loanData.startDate"
+                        @input="clearError('start_date')"
+                        @blur="validateField('start_date', $event.target.value)"
+                        :class="errors.start_date ? 'border-red-500' : ''"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    <span x-show="errors.start_date" x-text="errors.start_date" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
-                <!-- End Date (Read-only) -->
+                <!-- End Date (Editable) -->
                 <div class="w-full px-2.5 xl:w-1/2">
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        End Date
+                        End Date <span class="text-error-500">*</span>
                     </label>
                     <input type="text"
                         id="end_date"
                         name="end_date"
-                        readonly
-                        :value="$store.loanData.endDate"
-                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
+                        x-model="$store.loanData.endDate"
+                        @input="clearError('end_date')"
+                        @blur="validateField('end_date', $event.target.value)"
+                        :class="errors.end_date ? 'border-red-500' : ''"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    <span x-show="errors.end_date" x-text="errors.end_date" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
                 <!-- Payment Mode -->
                 <div class="w-full px-2.5 xl:w-1/2">
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Payment Mode
+                        Payment Mode <span class="text-error-500">*</span>
                     </label>
                     <div class="relative z-20 bg-transparent">
                         <select id="assign_payment_mode"
@@ -3062,26 +3087,10 @@
                     <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
-                <!-- Total Repayment Amount -->
-                <div class="w-full px-2.5 xl:w-1/2">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Total Repayment
-                    </label>
-                    <div class="relative">
-                        <input type="text"
-                            id="total_repayment"
-                            name="total_repayment"
-                            readonly
-                            x-model="totalRepayment"
-                            placeholder="Total Payable"
-                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
-                    </div>
-                </div>
-
                 <!-- Loan Status -->
-                <div class="w-full px-2.5 xl:w-1/2">
+                <div class="w-full px-2.5">
                     <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Loan Status
+                        Loan Status <span class="text-error-500">*</span>
                     </label>
                     <div class="relative z-20 bg-transparent">
                         <select id="assign_loan_status"
@@ -3160,6 +3169,12 @@
                     <input type="hidden" id="edit_loan_id" name="loan_id" x-model="$store.loanData.currentLoan?.transactionId">
                     <input type="hidden" id="edit_transaction_id" name="transaction_id" x-model="$store.loanData.currentLoan?.transactionId">
 
+                    <!-- Hidden fields for min/max borrowable and interest rate -->
+                    <input type="hidden" id="edit_min_borrowable" name="min_borrowable" x-model="editMinBorrowable">
+                    <input type="hidden" id="edit_max_borrowable" name="max_borrowable" x-model="editMaxBorrowable">
+                    <input type="hidden" id="edit_interest_rate_hidden" name="interest_rate" x-model="currentInterestRate">
+                    <input type="hidden" id="edit_total_interest" name="total_interest" x-model="editTotalInterest">
+
                     <!-- Loan Type Name (Text input, not dropdown) -->
                     <div class="w-full px-2.5">
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
@@ -3174,34 +3189,10 @@
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30">
                     </div>
 
-                    <!-- Interest Rate (Read-only) -->
-                    <div class="w-full px-2.5 xl:w-1/2">
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Interest Rate
-                        </label>
-                        <input readonly type="text"
-                            id="edit_interest_rate"
-                            name="interest_rate"
-                            x-model="editInterestRateDisplay"
-                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30">
-                    </div>
-
-                    <!-- Total Amount (compounded with interest) -->
-                    <div class="w-full px-2.5 xl:w-1/2">
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Total Amount
-                        </label>
-                        <input readonly type="text"
-                            id="edit_total_amount"
-                            name="total_amount"
-                            x-model="editTotalAmount"
-                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30">
-                    </div>
-
                     <!-- Amount (Borrowed) -->
                     <div class="w-full px-2.5 xl:w-1/2">
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Borrowed Amount
+                            Borrowed Amount <span class="text-error-500">*</span>
                         </label>
                         <div class="relative">
                             <input type="number"
@@ -3210,24 +3201,39 @@
                                 step="0.01"
                                 min="1"
                                 x-model="editAmount"
-                                @input="clearError('amount'); calculateTotalAmount()"
-                                @blur="validateField('amount', $event.target.value)"
+                                @input="validateEditAmountRange(); clearError('amount'); calculateTotalAmount()"
+                                @blur="validateField('amount', $event.target.value); validateEditAmountRange()"
                                 :class="errors.amount ? 'border-red-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                         </div>
                         <span x-show="errors.amount" x-text="errors.amount" class="text-xs text-error-500 mt-1"></span>
+                        <span x-show="editAmountRangeError" x-text="editAmountRangeError" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Total Amount (compounded with interest) -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Total Amount <span class="text-error-500">*</span>
+                        </label>
+                        <input type="text"
+                            id="edit_total_amount"
+                            name="total_amount"
+                            x-model="editTotalAmount"
+                            @input="calculateInterestFromTotal()"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.total_amount" x-text="errors.total_amount" class="text-xs text-error-500 mt-1"></span>
                     </div>
 
                     <!-- Period (Months) -->
                     <div class="w-full px-2.5 xl:w-1/2">
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Period (Months)
+                            Period (Months) <span class="text-error-500">*</span>
                         </label>
                         <div class="relative z-20 bg-transparent">
                             <select id="edit_loan_period"
                                     name="loan_period"
                                     x-model="editPeriodMonths"
-                                    @change="calculateTotalAmount(); calculateEndDateFromStartDate(); clearError('loan_period')"
+                                    @change="handleEditPeriodChange(); clearError('loan_period')"
                                     @blur="validateField('loan_period', $event.target.value)"
                                     :class="errors.loan_period ? 'border-red-500' : ''"
                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
@@ -3238,6 +3244,8 @@
                                 <option value="12">12 Months</option>
                                 <option value="24">24 Months</option>
                                 <option value="36">36 Months</option>
+                                <option value="48">48 Months</option>
+                                <option value="60">60 Months</option>
                             </select>
                             <span class="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-700 dark:text-gray-400">
                                 <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -3246,6 +3254,58 @@
                             </span>
                         </div>
                         <span x-show="errors.loan_period" x-text="errors.loan_period" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Assigned Date (Editable) -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Assigned On <span class="text-error-500">*</span>
+                        </label>
+                        <input type="text"
+                            id="edit_assigned_date"
+                            name="assigned_date"
+                            x-model="editAssignedDate"
+                            @input="handleEditAssignedDateChange($event.target.value); clearError('assigned_date')"
+                            @blur="validateEditDate('assigned_date', $event.target.value)"
+                            :class="errors.assigned_date ? 'border-red-500' : ''"
+                            placeholder="DD MMM YYYY"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.assigned_date" x-text="errors.assigned_date" class="text-xs text-error-500 mt-1"></span>
+                        <span class="text-xs text-gray-500 mt-1">Format: 06 Apr 2026</span>
+                    </div>
+
+                    <!-- Start Date (Editable) -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Start Date <span class="text-error-500">*</span>
+                        </label>
+                        <input type="text"
+                            id="edit_start_date"
+                            name="start_date"
+                            x-model="editStartDate"
+                            @input="handleEditStartDateChange($event.target.value); clearError('start_date')"
+                            @blur="validateEditDate('start_date', $event.target.value)"
+                            :class="errors.start_date ? 'border-red-500' : ''"
+                            placeholder="DD MMM YYYY"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.start_date" x-text="errors.start_date" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- End Date (Auto-calculated but editable) -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            End Date <span class="text-error-500">*</span>
+                        </label>
+                        <input type="text"
+                            id="edit_end_date"
+                            name="end_date"
+                            x-model="editEndDate"
+                            @input="clearError('end_date')"
+                            @blur="validateEditDate('end_date', $event.target.value)"
+                            :class="errors.end_date ? 'border-red-500' : ''"
+                            placeholder="DD MMM YYYY"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.end_date" x-text="errors.end_date" class="text-xs text-error-500 mt-1"></span>
                     </div>
 
                     <!-- Payment Mode (Text input, readonly, disabled) -->
@@ -3278,55 +3338,22 @@
                         </div>
                     </div>
 
-                    <!-- Start Date (Editable) -->
+                    <!-- Interest Rate Display -->
                     <div class="w-full px-2.5 xl:w-1/2">
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Start Date
+                            Interest Rate
                         </label>
-                        <input type="text"
-                            id="edit_start_date"
-                            name="start_date"
-                            x-model="editStartDate"
-                            @input="clearError('start_date'); calculateEndDateFromStartDate()"
-                            @blur="validateField('start_date', $event.target.value)"
-                            :class="errors.start_date ? 'border-red-500' : ''"
-                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                        <span x-show="errors.start_date" x-text="errors.start_date" class="text-xs text-error-500 mt-1"></span>
-                    </div>
-
-                    <!-- End Date (Read-only, auto-calculated) -->
-                    <div class="w-full px-2.5 xl:w-1/2">
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            End Date
-                        </label>
-                        <input type="text"
-                            id="edit_end_date"
-                            name="end_date"
-                            readonly
-                            x-model="editEndDate"
+                        <input readonly type="text"
+                            id="edit_interest_rate_display"
+                            name="interest_rate_display"
+                            x-model="editInterestRateDisplay"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30">
-                    </div>
-
-                    <!-- Assigned Date (Editable) -->
-                    <div class="w-full px-2.5 xl:w-1/2">
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Assigned On
-                        </label>
-                        <input type="text"
-                            id="edit_assigned_date"
-                            name="assigned_date"
-                            x-model="editAssignedDate"
-                            @input="clearError('assigned_date')"
-                            @blur="validateField('assigned_date', $event.target.value)"
-                            :class="errors.assigned_date ? 'border-red-500' : ''"
-                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                        <span x-show="errors.assigned_date" x-text="errors.assigned_date" class="text-xs text-error-500 mt-1"></span>
                     </div>
 
                     <!-- Loan Status -->
                     <div class="w-full px-2.5 xl:w-1/2">
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Loan Status
+                            Loan Status <span class="text-error-500">*</span>
                         </label>
                         <div class="relative z-20 bg-transparent">
                             <select id="edit_loan_status"
@@ -5056,817 +5083,817 @@
     </script>
 
     <!-- Member Contributions -->
-<script>
-    document.addEventListener('alpine:init', () => {
-        // Store for contribution data and modal states
-        Alpine.store('contributionData', {
-            currentContribution: null,
-            editContributionModal: false,
-            isContributing: false,
-            isWithdrawing: false,
-            isUpdating: false,
-            memberBalance: 0,
-            memberBalanceFormatted: 'KES 0.00',
-            lastTransaction: null
-        });
+    <script>
+        document.addEventListener('alpine:init', () => {
+            // Store for contribution data and modal states
+            Alpine.store('contributionData', {
+                currentContribution: null,
+                editContributionModal: false,
+                isContributing: false,
+                isWithdrawing: false,
+                isUpdating: false,
+                memberBalance: 0,
+                memberBalanceFormatted: 'KES 0.00',
+                lastTransaction: null
+            });
 
-        Alpine.data('contributionsTable', () => ({
-            // Original data
-            allContributions: [],
-            // Filtered data (what gets displayed)
-            contributions: [],
-            // Filter states
-            frequencyFilter: 'Daily',
-            transactionFilter: 'All',
-            paymentFilter: 'All',
-            page: 1,
-            itemsPerPage: 10,
-            errors: {},
+            Alpine.data('contributionsTable', () => ({
+                // Original data
+                allContributions: [],
+                // Filtered data (what gets displayed)
+                contributions: [],
+                // Filter states
+                frequencyFilter: 'Daily',
+                transactionFilter: 'All',
+                paymentFilter: 'All',
+                page: 1,
+                itemsPerPage: 10,
+                errors: {},
 
-            // Contribute form data
-            contributeFormData: {
-                amount: '',
-                payment_mode: '',
-                transaction_code: '',
-                transaction_date: '',
-                status: ''
-            },
-            contributeTransactionCodeReadonly: false,
-            contributeTransactionCodePlaceholder: 'Enter transaction code',
-
-            // Withdraw form data
-            withdrawFormData: {
-                amount: '',
-                payment_mode: '',
-                transaction_code: '',
-                transaction_date: '',
-                status: ''
-            },
-            withdrawTransactionCodeReadonly: false,
-            withdrawTransactionCodePlaceholder: 'Enter transaction code',
-
-            // Edit form data
-            editFormData: {
-                transactionId: '',
-                amount: '',
-                payment_mode: '',
-                transaction_code: '',
-                transaction_date: '',
-                status: ''
-            },
-
-            init() {
-                // Load all contributions
-                fetch('/bodaboda-member/{{ $memberId }}/contributions')
-                    .then(res => res.json())
-                    .then(data => {
-                        this.allContributions = data;
-                        this.applyFilters();
-                    });
-
-                // Load member contribution balance
-                fetch('/contributions/balance/member/{{ $memberId }}')
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            Alpine.store('contributionData').memberBalance = data.balance;
-                            Alpine.store('contributionData').memberBalanceFormatted = data.formatted;
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error loading member balance:', error);
-                    });
-
-                // Set current dates
-                this.setContributeCurrentDate();
-                this.setWithdrawCurrentDate();
-
-                // Listen for edit event from table
-                window.addEventListener('open-edit-contribution-modal', (event) => {
-                    const contribution = event.detail.contribution;
-                    this.editContributionModal(contribution);
-                });
-            },
-
-            // Date helper methods
-            setContributeCurrentDate() {
-                const today = new Date();
-                const day = String(today.getDate()).padStart(2, '0');
-                const month = today.toLocaleDateString('en-GB', { month: 'short' });
-                const year = today.getFullYear();
-                this.contributeFormData.transaction_date = `${day} ${month} ${year}`;
-            },
-
-            setWithdrawCurrentDate() {
-                const today = new Date();
-                const day = String(today.getDate()).padStart(2, '0');
-                const month = today.toLocaleDateString('en-GB', { month: 'short' });
-                const year = today.getFullYear();
-                this.withdrawFormData.transaction_date = `${day} ${month} ${year}`;
-            },
-
-            formatDateForDatabase(dateStr) {
-                const parts = dateStr.match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/);
-                if (parts) {
-                    const months = {
-                        'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
-                        'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
-                    };
-                    const day = parts[1].padStart(2, '0');
-                    const month = months[parts[2]];
-                    const year = parts[3];
-                    return `${year}-${month}-${day} 00:00:00`;
-                }
-                return null;
-            },
-
-            // Filter methods
-            applyFilters() {
-                let filtered = [...this.allContributions];
-
-                if (this.transactionFilter !== 'All') {
-                    filtered = filtered.filter(c => c.transactionType === this.transactionFilter);
-                }
-
-                if (this.paymentFilter !== 'All') {
-                    filtered = filtered.filter(c => c.transactionMode === this.paymentFilter);
-                }
-
-                if (this.frequencyFilter !== 'Daily') {
-                    const now = new Date();
-                    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-                    filtered = filtered.filter(c => {
-                        if (!c.transactionDate) return false;
-                        const transDate = new Date(c.transactionDate);
-
-                        switch(this.frequencyFilter) {
-                            case 'Daily':
-                                return transDate >= today;
-                            case 'Weekly':
-                                const weekAgo = new Date(today);
-                                weekAgo.setDate(weekAgo.getDate() - 7);
-                                return transDate >= weekAgo;
-                            case 'Monthly':
-                                const monthAgo = new Date(today);
-                                monthAgo.setDate(monthAgo.getDate() - 30);
-                                return transDate >= monthAgo;
-                            case 'Yearly':
-                                const yearAgo = new Date(today);
-                                yearAgo.setDate(yearAgo.getDate() - 365);
-                                return transDate >= yearAgo;
-                            default:
-                                return true;
-                        }
-                    });
-                }
-
-                this.contributions = filtered;
-                this.page = 1;
-            },
-
-            performFilter() {
-                this.applyFilters();
-            },
-
-            // Clear error method
-            clearError(field) {
-                if (this.errors[field]) {
-                    delete this.errors[field];
-                }
-            },
-
-            // Contribute form validation
-            validateContributeField(field, value) {
-                if (!value || value === '' || value === null) {
-                    this.errors[field] = 'This field is required';
-                    return false;
-                }
-
-                switch(field) {
-                    case 'amount':
-                        const amount = parseFloat(value);
-                        if (isNaN(amount) || amount < 10.01) {
-                            this.errors[field] = 'Amount must be greater than KES 10.00';
-                            return false;
-                        }
-                        break;
-
-                    case 'transaction_date':
-                        const datePattern = /^\d{1,2}\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{4}$/;
-                        if (!datePattern.test(value)) {
-                            this.errors[field] = 'Date must be in format: DD MMM YYYY (e.g., 05 Apr 2026)';
-                            return false;
-                        }
-                        break;
-
-                    case 'transaction_code':
-                        if (this.contributeFormData.payment_mode !== 'Cash' && (!value || value.trim() === '')) {
-                            this.errors[field] = 'Transaction code is required for ' + this.contributeFormData.payment_mode;
-                            return false;
-                        }
-                        break;
-                }
-
-                delete this.errors[field];
-                return true;
-            },
-
-            validateContributeForm() {
-                this.errors = {};
-                let isValid = true;
-
-                const fields = ['amount', 'payment_mode', 'transaction_date', 'status'];
-
-                for (const field of fields) {
-                    if (!this.validateContributeField(field, this.contributeFormData[field])) {
-                        isValid = false;
-                    }
-                }
-
-                if (this.contributeFormData.payment_mode !== 'Cash') {
-                    if (!this.validateContributeField('transaction_code', this.contributeFormData.transaction_code)) {
-                        isValid = false;
-                    }
-                }
-
-                return isValid;
-            },
-
-            handleContributePaymentModeChange(mode) {
-                if (mode === 'Cash') {
-                    this.contributeTransactionCodeReadonly = true;
-                    this.contributeTransactionCodePlaceholder = 'Auto-generated on submit';
-                    this.contributeFormData.transaction_code = '';
-                } else {
-                    this.contributeTransactionCodeReadonly = false;
-                    this.contributeTransactionCodePlaceholder = 'Enter transaction code';
-                }
-                this.clearError('transaction_code');
-            },
-
-            // Withdraw form validation
-            validateWithdrawField(field, value) {
-                if (!value || value === '' || value === null) {
-                    this.errors[field] = 'This field is required';
-                    return false;
-                }
-
-                switch(field) {
-                    case 'amount':
-                        const amount = parseFloat(value);
-                        if (isNaN(amount)) {
-                            this.errors[field] = 'Please enter a valid amount';
-                            return false;
-                        }
-                        if (amount < 100.00) {
-                            this.errors[field] = 'Withdrawal amount must be at least KES 100.00';
-                            return false;
-                        }
-                        if (amount > Alpine.store('contributionData').memberBalance) {
-                            this.errors[field] = `Amount cannot exceed available balance of KES ${Alpine.store('contributionData').memberBalance.toFixed(2)}`;
-                            return false;
-                        }
-                        break;
-
-                    case 'transaction_date':
-                        const datePattern = /^\d{1,2}\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{4}$/;
-                        if (!datePattern.test(value)) {
-                            this.errors[field] = 'Date must be in format: DD MMM YYYY (e.g., 05 Apr 2026)';
-                            return false;
-                        }
-                        break;
-
-                    case 'transaction_code':
-                        if (this.withdrawFormData.payment_mode !== 'Cash' && (!value || value.trim() === '')) {
-                            this.errors[field] = 'Transaction code is required for ' + this.withdrawFormData.payment_mode;
-                            return false;
-                        }
-                        break;
-                }
-
-                delete this.errors[field];
-                return true;
-            },
-
-            validateWithdrawForm() {
-                this.errors = {};
-                let isValid = true;
-
-                const fields = ['amount', 'payment_mode', 'transaction_date', 'status'];
-
-                for (const field of fields) {
-                    if (!this.validateWithdrawField(field, this.withdrawFormData[field])) {
-                        isValid = false;
-                    }
-                }
-
-                if (this.withdrawFormData.payment_mode !== 'Cash') {
-                    if (!this.validateWithdrawField('transaction_code', this.withdrawFormData.transaction_code)) {
-                        isValid = false;
-                    }
-                }
-
-                return isValid;
-            },
-
-            handleWithdrawPaymentModeChange(mode) {
-                if (mode === 'Cash') {
-                    this.withdrawTransactionCodeReadonly = true;
-                    this.withdrawTransactionCodePlaceholder = 'Auto-generated on submit';
-                    this.withdrawFormData.transaction_code = '';
-                } else {
-                    this.withdrawTransactionCodeReadonly = false;
-                    this.withdrawTransactionCodePlaceholder = 'Enter transaction code';
-                }
-                this.clearError('transaction_code');
-            },
-
-            resetContributeForm() {
-                this.contributeFormData = {
+                // Contribute form data
+                contributeFormData: {
                     amount: '',
                     payment_mode: '',
                     transaction_code: '',
                     transaction_date: '',
                     status: ''
-                };
-                this.contributeTransactionCodeReadonly = false;
-                this.setContributeCurrentDate();
-                this.errors = {};
-            },
+                },
+                contributeTransactionCodeReadonly: false,
+                contributeTransactionCodePlaceholder: 'Enter transaction code',
 
-            resetWithdrawForm() {
-                this.withdrawFormData = {
+                // Withdraw form data
+                withdrawFormData: {
                     amount: '',
                     payment_mode: '',
                     transaction_code: '',
                     transaction_date: '',
                     status: ''
-                };
-                this.withdrawTransactionCodeReadonly = false;
-                this.setWithdrawCurrentDate();
-                this.errors = {};
-            },
+                },
+                withdrawTransactionCodeReadonly: false,
+                withdrawTransactionCodePlaceholder: 'Enter transaction code',
 
-            // Contribute method with print receipt
-            contribute() {
-                if (!this.validateContributeForm()) {
-                    alert('INVALID INPUTS! Fix errors to continue');
-                    return;
-                }
+                // Edit form data
+                editFormData: {
+                    transactionId: '',
+                    amount: '',
+                    payment_mode: '',
+                    transaction_code: '',
+                    transaction_date: '',
+                    status: ''
+                },
 
-                Alpine.store('contributionData').isContributing = true;
+                init() {
+                    // Load all contributions
+                    fetch('/bodaboda-member/{{ $memberId }}/contributions')
+                        .then(res => res.json())
+                        .then(data => {
+                            this.allContributions = data;
+                            this.applyFilters();
+                        });
 
-                const formattedDate = this.formatDateForDatabase(this.contributeFormData.transaction_date);
-
-                const formData = {
-                    amount: this.contributeFormData.amount,
-                    payment_mode: this.contributeFormData.payment_mode,
-                    transaction_code: this.contributeFormData.transaction_code || '',
-                    transaction_date: formattedDate,
-                    status: this.contributeFormData.status,
-                    _token: document.querySelector('input[name="_token"]')?.value
-                };
-
-                fetch('/bodaboda-member/{{ $memberId }}/contribute', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value,
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                })
-                .then(res => res.json())
-                .then(data => {
-                    setTimeout(() => {
-                        Alpine.store('contributionData').isContributing = false;
-
-                        if (data.success) {
-                            // Store the transaction data for receipt
-                            Alpine.store('contributionData').lastTransaction = data.transaction;
-
-                            // Show success message with print prompt
-                            const printReceipt = confirm(
-                                '✅ Contribution saved successfully!\n\nTransaction Code: ' +
-                                (data.transaction?.transactionCode || 'N/A') +
-                                '\nAmount: KES ' + parseFloat(formData.amount).toFixed(2) +
-                                '\n\nWould you like to print the receipt?'
-                            );
-
-                            if (printReceipt) {
-                                // User wants to print
-                                this.printReceipt(data.transaction || formData);
-                            } else {
-                                // User doesn't want to print, just reload
-                                window.location.reload();
+                    // Load member contribution balance
+                    fetch('/contributions/balance/member/{{ $memberId }}')
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                Alpine.store('contributionData').memberBalance = data.balance;
+                                Alpine.store('contributionData').memberBalanceFormatted = data.formatted;
                             }
-                        } else {
-                            if (data.errors) {
-                                for (const [field, messages] of Object.entries(data.errors)) {
-                                    const fieldMap = {
-                                        'amount': 'amount',
-                                        'payment_mode': 'payment_mode',
-                                        'transaction_code': 'transaction_code',
-                                        'transaction_date': 'transaction_date',
-                                        'status': 'status'
-                                    };
-                                    const mappedField = fieldMap[field] || field;
-                                    this.errors[mappedField] = messages[0];
-                                }
-                                alert('INVALID INPUTS! Fix errors to continue');
-                            } else {
-                                alert('Error: ' + data.message);
-                            }
-                        }
-                    }, 750);
-                })
-                .catch(error => {
-                    setTimeout(() => {
-                        Alpine.store('contributionData').isContributing = false;
-                        alert('Error processing contribution. Please try again.');
-                        console.error('Error:', error);
-                    }, 750);
-                });
-            },
+                        })
+                        .catch(error => {
+                            console.error('Error loading member balance:', error);
+                        });
 
-            // Withdraw method with print receipt
-            withdraw() {
-                if (!this.validateWithdrawForm()) {
-                    alert('INVALID INPUTS! Fix errors to continue');
-                    return;
-                }
+                    // Set current dates
+                    this.setContributeCurrentDate();
+                    this.setWithdrawCurrentDate();
 
-                Alpine.store('contributionData').isWithdrawing = true;
+                    // Listen for edit event from table
+                    window.addEventListener('open-edit-contribution-modal', (event) => {
+                        const contribution = event.detail.contribution;
+                        this.editContributionModal(contribution);
+                    });
+                },
 
-                const formattedDate = this.formatDateForDatabase(this.withdrawFormData.transaction_date);
-
-                const formData = {
-                    amount: this.withdrawFormData.amount,
-                    payment_mode: this.withdrawFormData.payment_mode,
-                    transaction_code: this.withdrawFormData.transaction_code || '',
-                    transaction_date: formattedDate,
-                    status: this.withdrawFormData.status,
-                    _token: document.querySelector('input[name="_token"]')?.value
-                };
-
-                fetch('/bodaboda-member/{{ $memberId }}/withdraw', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value,
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                })
-                .then(res => res.json())
-                .then(data => {
-                    setTimeout(() => {
-                        Alpine.store('contributionData').isWithdrawing = false;
-
-                        if (data.success) {
-                            // Store the transaction data for receipt
-                            Alpine.store('contributionData').lastTransaction = data.transaction;
-
-                            // Show success message with print prompt
-                            const printReceipt = confirm(
-                                '✅ Withdrawal processed successfully!\n\nTransaction Code: ' +
-                                (data.transaction?.transactionCode || 'N/A') +
-                                '\nAmount: KES ' + parseFloat(formData.amount).toFixed(2) +
-                                '\n\nWould you like to print the receipt?'
-                            );
-
-                            if (printReceipt) {
-                                // User wants to print
-                                this.printReceipt(data.transaction || formData);
-                            } else {
-                                // User doesn't want to print, just reload
-                                window.location.reload();
-                            }
-                        } else {
-                            if (data.errors) {
-                                for (const [field, messages] of Object.entries(data.errors)) {
-                                    const fieldMap = {
-                                        'amount': 'amount',
-                                        'payment_mode': 'payment_mode',
-                                        'transaction_code': 'transaction_code',
-                                        'transaction_date': 'transaction_date',
-                                        'status': 'status'
-                                    };
-                                    const mappedField = fieldMap[field] || field;
-                                    this.errors[mappedField] = messages[0];
-                                }
-                                alert('INVALID INPUTS! Fix errors to continue');
-                            } else {
-                                alert('Error: ' + data.message);
-                            }
-                        }
-                    }, 750);
-                })
-                .catch(error => {
-                    setTimeout(() => {
-                        Alpine.store('contributionData').isWithdrawing = false;
-                        alert('Error processing withdrawal. Please try again.');
-                        console.error('Error:', error);
-                    }, 750);
-                });
-            },
-
-            // Edit contribution modal
-            editContributionModal(contribution) {
-                Alpine.store('contributionData').currentContribution = contribution;
-                Alpine.store('contributionData').editContributionModal = true;
-
-                this.editFormData.transactionId = contribution.transactionId || '';
-                this.editFormData.amount = contribution.transactionAmount || '';
-                this.editFormData.payment_mode = contribution.transactionMode || '';
-                this.editFormData.transaction_code = contribution.transactionCode || '';
-                this.editFormData.status = contribution.transactionStatus || '';
-
-                if (contribution.transactionDate) {
-                    const date = new Date(contribution.transactionDate);
-                    const day = String(date.getDate()).padStart(2, '0');
-                    const month = date.toLocaleDateString('en-GB', { month: 'short' });
-                    const year = date.getFullYear();
-                    this.editFormData.transaction_date = `${day} ${month} ${year}`;
-                } else {
+                // Date helper methods
+                setContributeCurrentDate() {
                     const today = new Date();
                     const day = String(today.getDate()).padStart(2, '0');
                     const month = today.toLocaleDateString('en-GB', { month: 'short' });
                     const year = today.getFullYear();
-                    this.editFormData.transaction_date = `${day} ${month} ${year}`;
-                }
-            },
+                    this.contributeFormData.transaction_date = `${day} ${month} ${year}`;
+                },
 
-            // Update Contribution Transaction
-            updateContribution() {
-                // Validation for edit form would go here
-                alert('Update functionality - implement similar validation');
-            },
+                setWithdrawCurrentDate() {
+                    const today = new Date();
+                    const day = String(today.getDate()).padStart(2, '0');
+                    const month = today.toLocaleDateString('en-GB', { month: 'short' });
+                    const year = today.getFullYear();
+                    this.withdrawFormData.transaction_date = `${day} ${month} ${year}`;
+                },
 
-            // Print receipt method
-            printReceipt(transaction) {
-                // Create receipt HTML
-                const receiptHTML = this.generateReceiptHTML(transaction);
+                formatDateForDatabase(dateStr) {
+                    const parts = dateStr.match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/);
+                    if (parts) {
+                        const months = {
+                            'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
+                            'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
+                        };
+                        const day = parts[1].padStart(2, '0');
+                        const month = months[parts[2]];
+                        const year = parts[3];
+                        return `${year}-${month}-${day} 00:00:00`;
+                    }
+                    return null;
+                },
 
-                // Create filename: HH_mm_ss_dd_mm_Contribution_Receipt.pdf
-                const now = new Date();
-                const hours = String(now.getHours()).padStart(2, '0');
-                const minutes = String(now.getMinutes()).padStart(2, '0');
-                const seconds = String(now.getSeconds()).padStart(2, '0');
-                const day = String(now.getDate()).padStart(2, '0');
-                const month = String(now.getMonth() + 1).padStart(2, '0');
-                const filename = `${hours}_${minutes}_${seconds}_${day}_${month}_Contribution_Receipt.pdf`;
+                // Filter methods
+                applyFilters() {
+                    let filtered = [...this.allContributions];
 
-                // Create hidden iframe
-                const iframe = document.createElement('iframe');
-                iframe.style.position = 'absolute';
-                iframe.style.width = '0';
-                iframe.style.height = '0';
-                iframe.style.border = 'none';
-                iframe.style.opacity = '0';
-                iframe.style.pointerEvents = 'none';
+                    if (this.transactionFilter !== 'All') {
+                        filtered = filtered.filter(c => c.transactionType === this.transactionFilter);
+                    }
 
-                document.body.appendChild(iframe);
+                    if (this.paymentFilter !== 'All') {
+                        filtered = filtered.filter(c => c.transactionMode === this.paymentFilter);
+                    }
 
-                // Write receipt to iframe with compact styling
-                const iframeDoc = iframe.contentWindow.document;
-                iframeDoc.open();
-                iframeDoc.write(`
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>Contribution Receipt</title>
-                        <style>
-                            @media print {
-                                @page {
-                                    size: 80mm auto;
-                                    margin: 2mm;
+                    if (this.frequencyFilter !== 'Daily') {
+                        const now = new Date();
+                        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+                        filtered = filtered.filter(c => {
+                            if (!c.transactionDate) return false;
+                            const transDate = new Date(c.transactionDate);
+
+                            switch(this.frequencyFilter) {
+                                case 'Daily':
+                                    return transDate >= today;
+                                case 'Weekly':
+                                    const weekAgo = new Date(today);
+                                    weekAgo.setDate(weekAgo.getDate() - 7);
+                                    return transDate >= weekAgo;
+                                case 'Monthly':
+                                    const monthAgo = new Date(today);
+                                    monthAgo.setDate(monthAgo.getDate() - 30);
+                                    return transDate >= monthAgo;
+                                case 'Yearly':
+                                    const yearAgo = new Date(today);
+                                    yearAgo.setDate(yearAgo.getDate() - 365);
+                                    return transDate >= yearAgo;
+                                default:
+                                    return true;
+                            }
+                        });
+                    }
+
+                    this.contributions = filtered;
+                    this.page = 1;
+                },
+
+                performFilter() {
+                    this.applyFilters();
+                },
+
+                // Clear error method
+                clearError(field) {
+                    if (this.errors[field]) {
+                        delete this.errors[field];
+                    }
+                },
+
+                // Contribute form validation
+                validateContributeField(field, value) {
+                    if (!value || value === '' || value === null) {
+                        this.errors[field] = 'This field is required';
+                        return false;
+                    }
+
+                    switch(field) {
+                        case 'amount':
+                            const amount = parseFloat(value);
+                            if (isNaN(amount) || amount < 10.01) {
+                                this.errors[field] = 'Amount must be greater than KES 10.00';
+                                return false;
+                            }
+                            break;
+
+                        case 'transaction_date':
+                            const datePattern = /^\d{1,2}\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{4}$/;
+                            if (!datePattern.test(value)) {
+                                this.errors[field] = 'Date must be in format: DD MMM YYYY (e.g., 05 Apr 2026)';
+                                return false;
+                            }
+                            break;
+
+                        case 'transaction_code':
+                            if (this.contributeFormData.payment_mode !== 'Cash' && (!value || value.trim() === '')) {
+                                this.errors[field] = 'Transaction code is required for ' + this.contributeFormData.payment_mode;
+                                return false;
+                            }
+                            break;
+                    }
+
+                    delete this.errors[field];
+                    return true;
+                },
+
+                validateContributeForm() {
+                    this.errors = {};
+                    let isValid = true;
+
+                    const fields = ['amount', 'payment_mode', 'transaction_date', 'status'];
+
+                    for (const field of fields) {
+                        if (!this.validateContributeField(field, this.contributeFormData[field])) {
+                            isValid = false;
+                        }
+                    }
+
+                    if (this.contributeFormData.payment_mode !== 'Cash') {
+                        if (!this.validateContributeField('transaction_code', this.contributeFormData.transaction_code)) {
+                            isValid = false;
+                        }
+                    }
+
+                    return isValid;
+                },
+
+                handleContributePaymentModeChange(mode) {
+                    if (mode === 'Cash') {
+                        this.contributeTransactionCodeReadonly = true;
+                        this.contributeTransactionCodePlaceholder = 'Auto-generated on submit';
+                        this.contributeFormData.transaction_code = '';
+                    } else {
+                        this.contributeTransactionCodeReadonly = false;
+                        this.contributeTransactionCodePlaceholder = 'Enter transaction code';
+                    }
+                    this.clearError('transaction_code');
+                },
+
+                // Withdraw form validation
+                validateWithdrawField(field, value) {
+                    if (!value || value === '' || value === null) {
+                        this.errors[field] = 'This field is required';
+                        return false;
+                    }
+
+                    switch(field) {
+                        case 'amount':
+                            const amount = parseFloat(value);
+                            if (isNaN(amount)) {
+                                this.errors[field] = 'Please enter a valid amount';
+                                return false;
+                            }
+                            if (amount < 100.00) {
+                                this.errors[field] = 'Withdrawal amount must be at least KES 100.00';
+                                return false;
+                            }
+                            if (amount > Alpine.store('contributionData').memberBalance) {
+                                this.errors[field] = `Amount cannot exceed available balance of KES ${Alpine.store('contributionData').memberBalance.toFixed(2)}`;
+                                return false;
+                            }
+                            break;
+
+                        case 'transaction_date':
+                            const datePattern = /^\d{1,2}\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{4}$/;
+                            if (!datePattern.test(value)) {
+                                this.errors[field] = 'Date must be in format: DD MMM YYYY (e.g., 05 Apr 2026)';
+                                return false;
+                            }
+                            break;
+
+                        case 'transaction_code':
+                            if (this.withdrawFormData.payment_mode !== 'Cash' && (!value || value.trim() === '')) {
+                                this.errors[field] = 'Transaction code is required for ' + this.withdrawFormData.payment_mode;
+                                return false;
+                            }
+                            break;
+                    }
+
+                    delete this.errors[field];
+                    return true;
+                },
+
+                validateWithdrawForm() {
+                    this.errors = {};
+                    let isValid = true;
+
+                    const fields = ['amount', 'payment_mode', 'transaction_date', 'status'];
+
+                    for (const field of fields) {
+                        if (!this.validateWithdrawField(field, this.withdrawFormData[field])) {
+                            isValid = false;
+                        }
+                    }
+
+                    if (this.withdrawFormData.payment_mode !== 'Cash') {
+                        if (!this.validateWithdrawField('transaction_code', this.withdrawFormData.transaction_code)) {
+                            isValid = false;
+                        }
+                    }
+
+                    return isValid;
+                },
+
+                handleWithdrawPaymentModeChange(mode) {
+                    if (mode === 'Cash') {
+                        this.withdrawTransactionCodeReadonly = true;
+                        this.withdrawTransactionCodePlaceholder = 'Auto-generated on submit';
+                        this.withdrawFormData.transaction_code = '';
+                    } else {
+                        this.withdrawTransactionCodeReadonly = false;
+                        this.withdrawTransactionCodePlaceholder = 'Enter transaction code';
+                    }
+                    this.clearError('transaction_code');
+                },
+
+                resetContributeForm() {
+                    this.contributeFormData = {
+                        amount: '',
+                        payment_mode: '',
+                        transaction_code: '',
+                        transaction_date: '',
+                        status: ''
+                    };
+                    this.contributeTransactionCodeReadonly = false;
+                    this.setContributeCurrentDate();
+                    this.errors = {};
+                },
+
+                resetWithdrawForm() {
+                    this.withdrawFormData = {
+                        amount: '',
+                        payment_mode: '',
+                        transaction_code: '',
+                        transaction_date: '',
+                        status: ''
+                    };
+                    this.withdrawTransactionCodeReadonly = false;
+                    this.setWithdrawCurrentDate();
+                    this.errors = {};
+                },
+
+                // Contribute method with print receipt
+                contribute() {
+                    if (!this.validateContributeForm()) {
+                        alert('INVALID INPUTS! Fix errors to continue');
+                        return;
+                    }
+
+                    Alpine.store('contributionData').isContributing = true;
+
+                    const formattedDate = this.formatDateForDatabase(this.contributeFormData.transaction_date);
+
+                    const formData = {
+                        amount: this.contributeFormData.amount,
+                        payment_mode: this.contributeFormData.payment_mode,
+                        transaction_code: this.contributeFormData.transaction_code || '',
+                        transaction_date: formattedDate,
+                        status: this.contributeFormData.status,
+                        _token: document.querySelector('input[name="_token"]')?.value
+                    };
+
+                    fetch('/bodaboda-member/{{ $memberId }}/contribute', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        setTimeout(() => {
+                            Alpine.store('contributionData').isContributing = false;
+
+                            if (data.success) {
+                                // Store the transaction data for receipt
+                                Alpine.store('contributionData').lastTransaction = data.transaction;
+
+                                // Show success message with print prompt
+                                const printReceipt = confirm(
+                                    '✅ Contribution saved successfully!\n\nTransaction Code: ' +
+                                    (data.transaction?.transactionCode || 'N/A') +
+                                    '\nAmount: KES ' + parseFloat(formData.amount).toFixed(2) +
+                                    '\n\nWould you like to print the receipt?'
+                                );
+
+                                if (printReceipt) {
+                                    // User wants to print
+                                    this.printReceipt(data.transaction || formData);
+                                } else {
+                                    // User doesn't want to print, just reload
+                                    window.location.reload();
                                 }
-                                body {
-                                    font-family: 'Courier New', monospace;
-                                    font-size: 10pt;
-                                    line-height: 1.2;
-                                    max-width: 72mm;
-                                    margin: 0 auto;
-                                    padding: 0;
-                                }
-                                .receipt {
-                                    white-space: pre-wrap;
-                                    padding: 2mm;
-                                }
-                                .receipt-header {
-                                    text-align: center;
-                                    margin-bottom: 1mm;
-                                }
-                                .receipt-header img {
-                                    max-width: 15mm;
-                                    margin: 0 auto;
-                                }
-                                .receipt-header h2 {
-                                    margin: 1mm 0;
-                                    font-size: 12pt;
-                                    font-weight: bold;
-                                }
-                                .receipt-header small {
-                                    font-size: 8pt;
-                                    display: block;
-                                }
-                                .receipt-line {
-                                    border-top: 1px dashed #000;
-                                    margin: 1mm 0;
-                                }
-                                .receipt-row {
-                                    margin: 1.5mm 0;
-                                    font-size: 9pt;
-                                }
-                                .receipt-footer {
-                                    text-align: center;
-                                    margin: 0.5mm 0;
-                                    font-size: 8pt;
-                                }
-                                .text-bold {
-                                    font-weight: bold;
-                                }
-                                .amount {
-                                    font-size: 11pt;
-                                    font-weight: bold;
-                                }
-                                table {
-                                    width: 100%;
-                                    border-collapse: collapse;
-                                }
-                                td {
-                                    padding: 0.5mm 0;
-                                    font-size: 9pt;
-                                }
-                                .label {
-                                    width: 40%;
-                                }
-                                .value {
-                                    width: 60%;
-                                    font-weight: bold;
+                            } else {
+                                if (data.errors) {
+                                    for (const [field, messages] of Object.entries(data.errors)) {
+                                        const fieldMap = {
+                                            'amount': 'amount',
+                                            'payment_mode': 'payment_mode',
+                                            'transaction_code': 'transaction_code',
+                                            'transaction_date': 'transaction_date',
+                                            'status': 'status'
+                                        };
+                                        const mappedField = fieldMap[field] || field;
+                                        this.errors[mappedField] = messages[0];
+                                    }
+                                    alert('INVALID INPUTS! Fix errors to continue');
+                                } else {
+                                    alert('Error: ' + data.message);
                                 }
                             }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="receipt">
-                            ${receiptHTML}
-                        </div>
-                        <script>
-                            window.onload = function() {
-                                const style = document.createElement('style');
-                                style.innerHTML = \`
+                        }, 750);
+                    })
+                    .catch(error => {
+                        setTimeout(() => {
+                            Alpine.store('contributionData').isContributing = false;
+                            alert('Error processing contribution. Please try again.');
+                            console.error('Error:', error);
+                        }, 750);
+                    });
+                },
+
+                // Withdraw method with print receipt
+                withdraw() {
+                    if (!this.validateWithdrawForm()) {
+                        alert('INVALID INPUTS! Fix errors to continue');
+                        return;
+                    }
+
+                    Alpine.store('contributionData').isWithdrawing = true;
+
+                    const formattedDate = this.formatDateForDatabase(this.withdrawFormData.transaction_date);
+
+                    const formData = {
+                        amount: this.withdrawFormData.amount,
+                        payment_mode: this.withdrawFormData.payment_mode,
+                        transaction_code: this.withdrawFormData.transaction_code || '',
+                        transaction_date: formattedDate,
+                        status: this.withdrawFormData.status,
+                        _token: document.querySelector('input[name="_token"]')?.value
+                    };
+
+                    fetch('/bodaboda-member/{{ $memberId }}/withdraw', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        setTimeout(() => {
+                            Alpine.store('contributionData').isWithdrawing = false;
+
+                            if (data.success) {
+                                // Store the transaction data for receipt
+                                Alpine.store('contributionData').lastTransaction = data.transaction;
+
+                                // Show success message with print prompt
+                                const printReceipt = confirm(
+                                    '✅ Withdrawal processed successfully!\n\nTransaction Code: ' +
+                                    (data.transaction?.transactionCode || 'N/A') +
+                                    '\nAmount: KES ' + parseFloat(formData.amount).toFixed(2) +
+                                    '\n\nWould you like to print the receipt?'
+                                );
+
+                                if (printReceipt) {
+                                    // User wants to print
+                                    this.printReceipt(data.transaction || formData);
+                                } else {
+                                    // User doesn't want to print, just reload
+                                    window.location.reload();
+                                }
+                            } else {
+                                if (data.errors) {
+                                    for (const [field, messages] of Object.entries(data.errors)) {
+                                        const fieldMap = {
+                                            'amount': 'amount',
+                                            'payment_mode': 'payment_mode',
+                                            'transaction_code': 'transaction_code',
+                                            'transaction_date': 'transaction_date',
+                                            'status': 'status'
+                                        };
+                                        const mappedField = fieldMap[field] || field;
+                                        this.errors[mappedField] = messages[0];
+                                    }
+                                    alert('INVALID INPUTS! Fix errors to continue');
+                                } else {
+                                    alert('Error: ' + data.message);
+                                }
+                            }
+                        }, 750);
+                    })
+                    .catch(error => {
+                        setTimeout(() => {
+                            Alpine.store('contributionData').isWithdrawing = false;
+                            alert('Error processing withdrawal. Please try again.');
+                            console.error('Error:', error);
+                        }, 750);
+                    });
+                },
+
+                // Edit contribution modal
+                editContributionModal(contribution) {
+                    Alpine.store('contributionData').currentContribution = contribution;
+                    Alpine.store('contributionData').editContributionModal = true;
+
+                    this.editFormData.transactionId = contribution.transactionId || '';
+                    this.editFormData.amount = contribution.transactionAmount || '';
+                    this.editFormData.payment_mode = contribution.transactionMode || '';
+                    this.editFormData.transaction_code = contribution.transactionCode || '';
+                    this.editFormData.status = contribution.transactionStatus || '';
+
+                    if (contribution.transactionDate) {
+                        const date = new Date(contribution.transactionDate);
+                        const day = String(date.getDate()).padStart(2, '0');
+                        const month = date.toLocaleDateString('en-GB', { month: 'short' });
+                        const year = date.getFullYear();
+                        this.editFormData.transaction_date = `${day} ${month} ${year}`;
+                    } else {
+                        const today = new Date();
+                        const day = String(today.getDate()).padStart(2, '0');
+                        const month = today.toLocaleDateString('en-GB', { month: 'short' });
+                        const year = today.getFullYear();
+                        this.editFormData.transaction_date = `${day} ${month} ${year}`;
+                    }
+                },
+
+                // Update Contribution Transaction
+                updateContribution() {
+                    // Validation for edit form would go here
+                    alert('Update functionality - implement similar validation');
+                },
+
+                // Print receipt method
+                printReceipt(transaction) {
+                    // Create receipt HTML
+                    const receiptHTML = this.generateReceiptHTML(transaction);
+
+                    // Create filename: HH_mm_ss_dd_mm_Contribution_Receipt.pdf
+                    const now = new Date();
+                    const hours = String(now.getHours()).padStart(2, '0');
+                    const minutes = String(now.getMinutes()).padStart(2, '0');
+                    const seconds = String(now.getSeconds()).padStart(2, '0');
+                    const day = String(now.getDate()).padStart(2, '0');
+                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                    const filename = `${hours}_${minutes}_${seconds}_${day}_${month}_Contribution_Receipt.pdf`;
+
+                    // Create hidden iframe
+                    const iframe = document.createElement('iframe');
+                    iframe.style.position = 'absolute';
+                    iframe.style.width = '0';
+                    iframe.style.height = '0';
+                    iframe.style.border = 'none';
+                    iframe.style.opacity = '0';
+                    iframe.style.pointerEvents = 'none';
+
+                    document.body.appendChild(iframe);
+
+                    // Write receipt to iframe with compact styling
+                    const iframeDoc = iframe.contentWindow.document;
+                    iframeDoc.open();
+                    iframeDoc.write(`
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <title>Contribution Receipt</title>
+                            <style>
+                                @media print {
                                     @page {
                                         size: 80mm auto;
                                         margin: 2mm;
-                                        @bottom-center {
-                                            content: "Page " counter(page);
-                                            font-size: 7pt;
-                                        }
                                     }
-                                \`;
-                                document.head.appendChild(style);
+                                    body {
+                                        font-family: 'Courier New', monospace;
+                                        font-size: 10pt;
+                                        line-height: 1.2;
+                                        max-width: 72mm;
+                                        margin: 0 auto;
+                                        padding: 0;
+                                    }
+                                    .receipt {
+                                        white-space: pre-wrap;
+                                        padding: 2mm;
+                                    }
+                                    .receipt-header {
+                                        text-align: center;
+                                        margin-bottom: 1mm;
+                                    }
+                                    .receipt-header img {
+                                        max-width: 15mm;
+                                        margin: 0 auto;
+                                    }
+                                    .receipt-header h2 {
+                                        margin: 1mm 0;
+                                        font-size: 12pt;
+                                        font-weight: bold;
+                                    }
+                                    .receipt-header small {
+                                        font-size: 8pt;
+                                        display: block;
+                                    }
+                                    .receipt-line {
+                                        border-top: 1px dashed #000;
+                                        margin: 1mm 0;
+                                    }
+                                    .receipt-row {
+                                        margin: 1.5mm 0;
+                                        font-size: 9pt;
+                                    }
+                                    .receipt-footer {
+                                        text-align: center;
+                                        margin: 0.5mm 0;
+                                        font-size: 8pt;
+                                    }
+                                    .text-bold {
+                                        font-weight: bold;
+                                    }
+                                    .amount {
+                                        font-size: 11pt;
+                                        font-weight: bold;
+                                    }
+                                    table {
+                                        width: 100%;
+                                        border-collapse: collapse;
+                                    }
+                                    td {
+                                        padding: 0.5mm 0;
+                                        font-size: 9pt;
+                                    }
+                                    .label {
+                                        width: 40%;
+                                    }
+                                    .value {
+                                        width: 60%;
+                                        font-weight: bold;
+                                    }
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="receipt">
+                                ${receiptHTML}
+                            </div>
+                            <script>
+                                window.onload = function() {
+                                    const style = document.createElement('style');
+                                    style.innerHTML = \`
+                                        @page {
+                                            size: 80mm auto;
+                                            margin: 2mm;
+                                            @bottom-center {
+                                                content: "Page " counter(page);
+                                                font-size: 7pt;
+                                            }
+                                        }
+                                    \`;
+                                    document.head.appendChild(style);
 
-                                setTimeout(() => {
-                                    window.print();
-                                }, 100);
+                                    setTimeout(() => {
+                                        window.print();
+                                    }, 100);
 
-                                window.onafterprint = function() {
-                                    window.parent.location.reload();
-                                };
+                                    window.onafterprint = function() {
+                                        window.parent.location.reload();
+                                    };
 
-                                setTimeout(() => {
-                                    window.parent.location.reload();
-                                }, 5000);
-                            }
-                        <\/script>
-                    </body>
-                    </html>
-                `);
-                iframeDoc.close();
-            },
+                                    setTimeout(() => {
+                                        window.parent.location.reload();
+                                    }, 5000);
+                                }
+                            <\/script>
+                        </body>
+                        </html>
+                    `);
+                    iframeDoc.close();
+                },
 
-            // Generate compact receipt HTML
-            generateReceiptHTML(transaction) {
-                // Format date
-                const date = new Date();
-                const formattedDate = date.toLocaleString('en-US', {
-                    month: 'short',
-                    day: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: false
-                }).replace(',', '');
+                // Generate compact receipt HTML
+                generateReceiptHTML(transaction) {
+                    // Format date
+                    const date = new Date();
+                    const formattedDate = date.toLocaleString('en-US', {
+                        month: 'short',
+                        day: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    }).replace(',', '');
 
-                const memberId = '{{ $memberId }}';
-                const amount = parseFloat(transaction.amount || 0).toFixed(2);
-                const paymentMode = transaction.payment_mode || 'N/A';
-                const transactionCode = transaction.transactionCode || transaction.transaction_code || 'N/A';
-                const status = transaction.status || transaction.transactionStatus || 'Completed';
-                const transactionType = transaction.transactionType ||
-                                    (this.contributeFormData.amount ? 'Paid-In' : 'Paid-Out');
+                    const memberId = '{{ $memberId }}';
+                    const amount = parseFloat(transaction.amount || 0).toFixed(2);
+                    const paymentMode = transaction.payment_mode || 'N/A';
+                    const transactionCode = transaction.transactionCode || transaction.transaction_code || 'N/A';
+                    const status = transaction.status || transaction.transactionStatus || 'Completed';
+                    const transactionType = transaction.transactionType ||
+                                        (this.contributeFormData.amount ? 'Paid-In' : 'Paid-Out');
 
-                // Get auth ID from meta tag or use placeholder
-                const authId = '{{ Auth::id() }}';
+                    // Get auth ID from meta tag or use placeholder
+                    const authId = '{{ Auth::id() }}';
 
-                return `
-                    <div class="receipt-header">
-                        <img src="{{ asset('company_logo.png') }}" alt="Logo" style="max-width: 15mm;" onerror="this.style.display='none'" />
-                        <h2>KFBCL</h2>
-                        <small>Growing together</small>
-                    </div>
+                    return `
+                        <div class="receipt-header">
+                            <img src="{{ asset('company_logo.png') }}" alt="Logo" style="max-width: 15mm;" onerror="this.style.display='none'" />
+                            <h2>KFBCL</h2>
+                            <small>Growing together</small>
+                        </div>
 
-                    <div class="receipt-line"></div>
+                        <div class="receipt-line"></div>
 
-                    <table>
-                        <tr>
-                            <td class="label">Type:</td>
-                            <td class="value">${transactionType === 'Paid-In' ? 'Contribution' : 'Withdrawal'}</td>
-                        </tr>
-                        <tr>
-                            <td class="label">Member:</td>
-                            <td class="value">${memberId}</td>
-                        </tr>
-                        <tr>
-                            <td class="label">By:</td>
-                            <td class="value">${authId}</td>
-                        </tr>
-                    </table>
+                        <table>
+                            <tr>
+                                <td class="label">Type:</td>
+                                <td class="value">${transactionType === 'Paid-In' ? 'Contribution' : 'Withdrawal'}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Member:</td>
+                                <td class="value">${memberId}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">By:</td>
+                                <td class="value">${authId}</td>
+                            </tr>
+                        </table>
 
-                    <div class="receipt-line"></div>
+                        <div class="receipt-line"></div>
 
-                    <table>
-                        <tr>
-                            <td class="label">Amount:</td>
-                            <td class="value amount">KES ${amount}</td>
-                        </tr>
-                        <tr>
-                            <td class="label">Mode:</td>
-                            <td class="value">${paymentMode}</td>
-                        </tr>
-                        <tr>
-                            <td class="label">Code:</td>
-                            <td class="value">${transactionCode}</td>
-                        </tr>
-                        <tr>
-                            <td class="label">Status:</td>
-                            <td class="value">${status}</td>
-                        </tr>
-                        <tr>
-                            <td class="label">Date:</td>
-                            <td class="value">${formattedDate}</td>
-                        </tr>
-                    </table>
+                        <table>
+                            <tr>
+                                <td class="label">Amount:</td>
+                                <td class="value amount">KES ${amount}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Mode:</td>
+                                <td class="value">${paymentMode}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Code:</td>
+                                <td class="value">${transactionCode}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Status:</td>
+                                <td class="value">${status}</td>
+                            </tr>
+                            <tr>
+                                <td class="label">Date:</td>
+                                <td class="value">${formattedDate}</td>
+                            </tr>
+                        </table>
 
-                    <div class="receipt-line"></div>
+                        <div class="receipt-line"></div>
 
-                    <div class="receipt-footer">
-                        Thank you<br>
-                        &copy; KFBCL<br>
-                        Growing together
-                    </div>
+                        <div class="receipt-footer">
+                            Thank you<br>
+                            &copy; KFBCL<br>
+                            Growing together
+                        </div>
 
-                    <div class="receipt-line"></div>
-                `;
-            },
+                        <div class="receipt-line"></div>
+                    `;
+                },
 
-            // Pagination methods
-            prevPage() {
-                if (this.page > 1) this.page--;
-            },
+                // Pagination methods
+                prevPage() {
+                    if (this.page > 1) this.page--;
+                },
 
-            nextPage() {
-                if (this.page < this.totalPages) this.page++;
-            },
+                nextPage() {
+                    if (this.page < this.totalPages) this.page++;
+                },
 
-            goToPage(page) {
-                if (page >= 1 && page <= this.totalPages) this.page = page;
-            },
+                goToPage(page) {
+                    if (page >= 1 && page <= this.totalPages) this.page = page;
+                },
 
-            get totalPages() {
-                return Math.ceil(this.contributions.length / this.itemsPerPage);
-            },
+                get totalPages() {
+                    return Math.ceil(this.contributions.length / this.itemsPerPage);
+                },
 
-            get paginatedContributions() {
-                const start = (this.page - 1) * this.itemsPerPage;
-                const end = start + this.itemsPerPage;
-                return this.contributions.slice(start, end);
-            },
+                get paginatedContributions() {
+                    const start = (this.page - 1) * this.itemsPerPage;
+                    const end = start + this.itemsPerPage;
+                    return this.contributions.slice(start, end);
+                },
 
-            get startEntry() {
-                return (this.page - 1) * this.itemsPerPage + 1;
-            },
+                get startEntry() {
+                    return (this.page - 1) * this.itemsPerPage + 1;
+                },
 
-            get endEntry() {
-                const end = this.page * this.itemsPerPage;
-                return end > this.contributions.length ? this.contributions.length : end;
-            }
-        }));
-    });
-</script>
+                get endEntry() {
+                    const end = this.page * this.itemsPerPage;
+                    return end > this.contributions.length ? this.contributions.length : end;
+                }
+            }));
+        });
+    </script>
 
     <!-- Member Savings -->
     <script>
@@ -6573,9 +6600,11 @@
                 // Auto-calculated fields
                 startDate: '',
                 endDate: '',
+                defaultGracePeriod: 45,
+                totalInterest: 0,
 
                 // Selected loan type ID for assign form
-                selectedLoanTypeId: '', // Add this
+                selectedLoanTypeId: '',
 
                 // Initialize loan types
                 init() {
@@ -6615,28 +6644,101 @@
                     }
                 },
 
-                calculateDates(periodMonths) {
+                // Update calculateDates function
+                calculateDates(periodMonths, assignedDate = null) {
                     if (!periodMonths) return;
 
-                    const today = new Date();
-                    const start = new Date(today);
-                    start.setDate(start.getDate() + 30);
+                    let start, end;
 
-                    const end = new Date(start);
+                    if (assignedDate) {
+                        // Parse the assigned date
+                        const parsedDate = this.parseCustomDate(assignedDate);
+                        if (parsedDate) {
+                            start = new Date(parsedDate);
+                            start.setDate(start.getDate() + 30);
+                        } else {
+                            start = new Date();
+                            start.setDate(start.getDate() + 30);
+                        }
+                    } else {
+                        start = new Date();
+                        start.setDate(start.getDate() + 30);
+                    }
+
+                    end = new Date(start);
                     end.setDate(end.getDate() + (parseInt(periodMonths) * 30));
 
-                    this.startDate = start.toLocaleDateString('en-GB', {
-                        day: '2-digit',
-                        month: 'short',
-                        year: 'numeric'
-                    });
+                    this.startDate = this.formatDateToDisplay(start);
+                    this.endDate = this.formatDateToDisplay(end);
+                },
 
-                    this.endDate = end.toLocaleDateString('en-GB', {
-                        day: '2-digit',
-                        month: 'short',
-                        year: 'numeric'
-                    });
+                // New helper function to parse custom date formats
+                parseCustomDate(dateString) {
+                    if (!dateString) return null;
+
+                    // Try to parse various formats
+                    const patterns = [
+                        /(\d{1,2})\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{4})/i,
+                        /(\d{1,2})\/(\d{1,2})\/(\d{4})/,
+                        /(\d{4})-(\d{2})-(\d{2})/
+                    ];
+
+                    for (let pattern of patterns) {
+                        const match = dateString.match(pattern);
+                        if (match) {
+                            if (pattern.toString().includes('Jan|Feb')) {
+                                const months = {
+                                    'jan': 0, 'january': 0, 'feb': 1, 'february': 1,
+                                    'mar': 2, 'march': 2, 'apr': 3, 'april': 3,
+                                    'may': 4, 'jun': 5, 'june': 5, 'jul': 6, 'july': 6,
+                                    'aug': 7, 'august': 7, 'sep': 8, 'september': 8,
+                                    'oct': 9, 'october': 9, 'nov': 10, 'november': 10,
+                                    'dec': 11, 'december': 11
+                                };
+                                const month = months[match[2].toLowerCase()];
+                                if (month !== undefined) {
+                                    return new Date(parseInt(match[3]), month, parseInt(match[1]));
+                                }
+                            } else if (pattern.toString().includes('/')) {
+                                return new Date(parseInt(match[3]), parseInt(match[2]) - 1, parseInt(match[1]));
+                            } else {
+                                return new Date(dateString);
+                            }
+                        }
+                    }
+                    return null;
+                },
+
+                // Format date to display format
+                formatDateToDisplay(date) {
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = date.toLocaleDateString('en-GB', { month: 'short' });
+                    const year = date.getFullYear();
+                    return `${day} ${month} ${year}`;
+                },
+
+                // Get today's date in display format
+                getTodayDate() {
+                    return this.formatDateToDisplay(new Date());
+                },
+
+                // Calculate total interest
+                calculateTotalInterest(amount, totalRepayment) {
+                    return totalRepayment - amount;
+                },
+
+                // Check for defaulted loans
+                async checkDefaultedLoans(memberId) {
+                    try {
+                        const response = await fetch(`/bodaboda-member/${memberId}/check-defaulted-loans`);
+                        const data = await response.json();
+                        return data;
+                    } catch (error) {
+                        console.error('Error checking defaulted loans:', error);
+                        return { hasDefaulted: false, message: '' };
+                    }
                 }
+
             });
 
             Alpine.data('loansTable', () => ({
@@ -6666,6 +6768,10 @@
                 editAssignedDate: '',
                 editTotalAmount: '',
                 currentInterestRate: 0,
+                editMinBorrowable: 0,
+                editMaxBorrowable: 0,
+                editTotalInterest: 0,
+                editAmountRangeError: '',
 
                 // Repay form properties
                 repayLoanId: '',
@@ -6707,6 +6813,22 @@
                     }).replace(',', '');
                 },
 
+                // Round to nearest whole number (KES)
+                roundToNearestKes(value) {
+                    if (!value) return 0;
+                    return Math.round(value);
+                },
+
+                // Format amount with KES and rounding
+                formatAmountWithRounding(amount) {
+                    if (!amount) return '';
+                    const rounded = this.roundToNearestKes(parseFloat(amount));
+                    return 'KES ' + rounded.toLocaleString(undefined, {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
+                    });
+                },
+
                 calculateEndDate(startDate, periodMonths) {
                     if (!startDate || !periodMonths) return '';
                     const date = new Date(startDate);
@@ -6716,6 +6838,20 @@
                         day: '2-digit',
                         year: 'numeric'
                     });
+                },
+
+                // Calculate end date from start date
+                calculateEndDateFromStartDate() {
+                    if (!this.editStartDate || !this.editPeriodMonths) {
+                        return;
+                    }
+
+                    const parsedDate = Alpine.store('loanData').parseCustomDate(this.editStartDate);
+                    if (parsedDate) {
+                        const endDate = new Date(parsedDate);
+                        endDate.setMonth(endDate.getMonth() + parseInt(this.editPeriodMonths));
+                        this.editEndDate = Alpine.store('loanData').formatDateToDisplay(endDate);
+                    }
                 },
 
                 // Calculate total loan repayment using formula: A = P * (r(1+r)^n) / ((1+r)^n - 1)
@@ -6742,10 +6878,11 @@
                     return Math.round(totalLoan * 100) / 100; // Round to 2 decimal places
                 },
 
-                // Calculate total amount with compound interest
+                // Calculate total amount with rounding
                 calculateTotalAmount() {
                     if (!this.editAmount || !this.editPeriodMonths || !this.currentInterestRate) {
                         this.editTotalAmount = '';
+                        this.editTotalInterest = 0;
                         return;
                     }
 
@@ -6753,16 +6890,42 @@
                     const months = parseInt(this.editPeriodMonths);
                     const annualRate = parseFloat(this.currentInterestRate);
 
-                    // Simple interest calculation for loans (as per your existing assign form)
-                    const total = principal + (principal * annualRate / 100);
+                    // Simple interest calculation
+                    const interest = principal * (annualRate / 100);
+                    const total = principal + interest;
 
-                    this.editTotalAmount = 'KES ' + total.toLocaleString(undefined, {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
+                    // Round to nearest KES
+                    const roundedTotal = this.roundToNearestKes(total);
+                    const roundedInterest = this.roundToNearestKes(interest);
+
+                    this.editTotalAmount = 'KES ' + roundedTotal.toLocaleString(undefined, {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
                     });
+                    this.editTotalInterest = roundedInterest;
                 },
 
-                // Update editLoanModal to include interest rate display
+                // Calculate interest from total amount
+                calculateInterestFromTotal() {
+                    if (!this.editTotalAmount || !this.editAmount) {
+                        return;
+                    }
+
+                    // Parse total amount
+                    let totalValue = 0;
+                    if (this.editTotalAmount) {
+                        const match = this.editTotalAmount.match(/KES ([\d,]+)/);
+                        if (match) {
+                            totalValue = parseFloat(match[1].replace(/,/g, ''));
+                        }
+                    }
+
+                    const principal = parseFloat(this.editAmount);
+                    const interest = totalValue - principal;
+                    this.editTotalInterest = this.roundToNearestKes(interest);
+                },
+
+                // Update editLoanModal method
                 editLoanModal(loan) {
                     console.log('Editing loan:', loan);
 
@@ -6772,6 +6935,7 @@
 
                     // Clear previous errors
                     this.errors = {};
+                    this.editAmountRangeError = '';
 
                     // Find and set the current loan type from loanTypes
                     let loanType = null;
@@ -6779,6 +6943,9 @@
                         loanType = Alpine.store('loanData').loanTypes.find(lt => lt.loanId == loan.transactionLoan);
                         if (loanType) {
                             Alpine.store('loanData').currentLoanType = loanType;
+                            // Set min and max borrowable
+                            this.editMinBorrowable = loanType.min_amount;
+                            this.editMaxBorrowable = loanType.max_amount;
                         }
                     }
 
@@ -6797,7 +6964,6 @@
                     // Populate edit properties - from member_loans table
                     this.editAmount = loan.transactionLoanAmount || '';
                     this.editPeriodMonths = loan.transactionLoanPeriod || '';
-                    // Get payment mode from the joined transaction data
                     this.editPaymentMode = loan.transactionMode || 'Not Specified';
                     this.editTransactionCode = loan.transactionCode || '';
                     this.editLoanStatus = loan.transactionLoanStatus || loan.transactionStatus || '';
@@ -6805,11 +6971,27 @@
                     this.editEndDate = this.formatDateShort(loan.transactionLoanEndDate);
                     this.editAssignedDate = this.formatDateOnly(loan.transactionCreated);
 
-                    console.log('editPaymentMode from DB:', this.editPaymentMode);
-                    console.log('editTransactionCode from DB:', this.editTransactionCode);
-
-                    // Calculate total amount
+                    // Calculate total amount and interest with rounding
                     this.calculateTotalAmount();
+
+                    // If total amount exists from loan, use it with rounding
+                    if (loan.transactionTotalLoan) {
+                        const roundedTotal = this.roundToNearestKes(loan.transactionTotalLoan);
+                        this.editTotalAmount = 'KES ' + roundedTotal.toLocaleString(undefined, {
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0
+                        });
+
+                        // Calculate interest from total and principal
+                        if (this.editAmount) {
+                            const interest = roundedTotal - parseFloat(this.editAmount);
+                            this.editTotalInterest = this.roundToNearestKes(interest);
+                        }
+                    }
+
+                    console.log('editMinBorrowable:', this.editMinBorrowable);
+                    console.log('editMaxBorrowable:', this.editMaxBorrowable);
+                    console.log('currentInterestRate:', this.currentInterestRate);
 
                     // Populate DOM elements
                     setTimeout(() => {
@@ -6824,11 +7006,18 @@
                         const loanTypeNameField = document.getElementById('edit_loan_type_name');
                         if (loanTypeNameField) loanTypeNameField.value = loan.loan_type_name || '';
 
-                        // Interest Rate
-                        const interestRateField = document.getElementById('edit_interest_rate');
-                        if (interestRateField) {
-                            interestRateField.value = this.editInterestRateDisplay;
-                        }
+                        // Hidden min/max/interest fields
+                        const minField = document.getElementById('edit_min_borrowable');
+                        if (minField) minField.value = this.editMinBorrowable;
+
+                        const maxField = document.getElementById('edit_max_borrowable');
+                        if (maxField) maxField.value = this.editMaxBorrowable;
+
+                        const interestRateHidden = document.getElementById('edit_interest_rate_hidden');
+                        if (interestRateHidden) interestRateHidden.value = this.currentInterestRate;
+
+                        const totalInterestField = document.getElementById('edit_total_interest');
+                        if (totalInterestField) totalInterestField.value = this.editTotalInterest;
 
                         // Total Amount
                         const totalAmountField = document.getElementById('edit_total_amount');
@@ -6869,6 +7058,10 @@
                         // Assigned Date
                         const assignedDateField = document.getElementById('edit_assigned_date');
                         if (assignedDateField) assignedDateField.value = this.editAssignedDate;
+
+                        // Interest Rate Display
+                        const interestRateDisplayField = document.getElementById('edit_interest_rate_display');
+                        if (interestRateDisplayField) interestRateDisplayField.value = this.editInterestRateDisplay;
                     }, 100);
                 },
 
@@ -6942,12 +7135,26 @@
                     // Load member active loans count
                     this.loadMemberActiveLoans();
 
+                    // Initialize assign form if modal is opened
+                    this.$watch('$store.loanData.assignLoanModal', (value) => {
+                        if (value) {
+                            this.initAssignForm();
+                        }
+                    });
+
                     // Listen for edit events - Simplified version
                     window.addEventListener('open-edit-loan-modal', (event) => {
                         const rawLoan = event.detail.loan;
                         console.log('Raw loan data received:', rawLoan);
                         this.editLoanModal(rawLoan);
                     });
+                },
+
+                // Initialize assign form with today's date
+                initAssignForm() {
+                    const today = Alpine.store('loanData').getTodayDate();
+                    this.editAssignedDate = today;
+                    Alpine.store('loanData').calculateDates(this.loanPeriod, today);
                 },
 
                 // Load member active loans count
@@ -6979,6 +7186,37 @@
                     return true;
                 },
 
+                // Validate edit date
+                validateEditDate(field, dateString) {
+                    if (!dateString || dateString === '') {
+                        this.errors[field] = 'This field is required';
+                        return false;
+                    }
+
+                    // Check if matches accepted formats
+                    const patterns = [
+                        /^\d{1,2}\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4}$/i,
+                        /^\d{1,2}\/(\d{1,2})\/\d{4}$/,
+                        /^\d{4}-\d{2}-\d{2}$/
+                    ];
+
+                    let isValid = false;
+                    for (let pattern of patterns) {
+                        if (pattern.test(dateString.trim())) {
+                            isValid = true;
+                            break;
+                        }
+                    }
+
+                    if (!isValid) {
+                        this.errors[field] = 'Invalid date format. Use format: DD MMM YYYY (e.g., 06 Apr 2026)';
+                        return false;
+                    }
+
+                    delete this.errors[field];
+                    return true;
+                },
+
                 clearError(field) {
                     if (this.errors[field]) {
                         delete this.errors[field];
@@ -6997,77 +7235,139 @@
                     }
                 },
 
-                // Update validateEditForm to include start_date
+                // Update validateEditForm method
                 validateEditForm() {
                     this.errors = {};
                     let isValid = true;
 
                     const amount = this.editAmount;
+                    const totalAmount = this.editTotalAmount;
                     const period = this.editPeriodMonths;
                     const status = this.editLoanStatus;
                     const assignedDate = this.editAssignedDate;
                     const startDate = this.editStartDate;
+                    const endDate = this.editEndDate;
 
-                    if (!this.validateField('amount', amount)) isValid = false;
+                    // Validate amount
+                    if (!amount || amount === '' || amount === null) {
+                        this.errors.amount = 'This field is required';
+                        isValid = false;
+                    } else if (isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
+                        this.errors.amount = 'Please enter a valid amount greater than 0';
+                        isValid = false;
+                    } else if (!this.validateEditAmountRange()) {
+                        isValid = false;
+                    }
 
+                    // Validate total amount
+                    if (!totalAmount || totalAmount === '') {
+                        this.errors.total_amount = 'This field is required';
+                        isValid = false;
+                    }
+
+                    // Validate period
                     if (!period || period === '') {
-                        this.errors.loan_period = 'Please select repayment period';
+                        this.errors.loan_period = 'This field is required';
                         isValid = false;
                     }
 
+                    // Validate status
                     if (!status || status === '') {
-                        this.errors.loan_status = 'Please select loan status';
+                        this.errors.loan_status = 'This field is required';
                         isValid = false;
                     }
 
-                    if (!assignedDate || assignedDate === '') {
-                        this.errors.assigned_date = 'Assigned date is required';
-                        isValid = false;
-                    }
-
-                    if (!startDate || startDate === '') {
-                        this.errors.start_date = 'Start date is required';
-                        isValid = false;
-                    }
+                    // Validate dates
+                    if (!this.validateEditDate('assigned_date', assignedDate)) isValid = false;
+                    if (!this.validateEditDate('start_date', startDate)) isValid = false;
+                    if (!this.validateEditDate('end_date', endDate)) isValid = false;
 
                     return isValid;
                 },
 
+                // Override validateAssignForm
                 validateAssignForm() {
                     this.errors = {};
                     let isValid = true;
 
+                    // Get all values
                     const loanType = document.getElementById('loan_type_id')?.value;
-                    const amount = document.getElementById('assign_amount')?.value;
-                    const period = document.getElementById('loan_period')?.value;
-                    const paymentMode = document.getElementById('assign_payment_mode')?.value;
-                    const status = document.getElementById('assign_loan_status')?.value;
+                    const amount = this.loanAmount;
+                    const period = this.loanPeriod;
+                    const paymentMode = this.paymentMode;
+                    const status = this.loanStatus;
+                    const assignedDate = this.editAssignedDate;
+                    const startDate = Alpine.store('loanData').startDate;
+                    const endDate = Alpine.store('loanData').endDate;
 
+                    // Validate loan type
                     if (!loanType || loanType === '') {
-                        this.errors.loan_type = 'Please select a loan type';
+                        this.errors.loan_type = 'This field is required';
                         isValid = false;
                     }
 
-                    if (!this.validateField('amount', amount)) isValid = false;
+                    // Validate amount
+                    if (!amount || amount === '' || amount === null) {
+                        this.errors.amount = 'This field is required';
+                        isValid = false;
+                    } else if (isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
+                        this.errors.amount = 'Please enter a valid amount greater than 0';
+                        isValid = false;
+                    } else {
+                        // Check range
+                        const minAmount = Alpine.store('loanData').currentLoanType?.min_amount;
+                        const maxAmount = Alpine.store('loanData').currentLoanType?.max_amount;
+                        const amountNum = parseFloat(amount);
 
+                        if (minAmount && amountNum < minAmount) {
+                            this.errors.amount = `Amount must be at least ${minAmount.toLocaleString()}`;
+                            isValid = false;
+                        } else if (maxAmount && amountNum > maxAmount) {
+                            this.errors.amount = `Amount cannot exceed ${maxAmount.toLocaleString()}`;
+                            isValid = false;
+                        }
+                    }
+
+                    // Validate period
                     if (!period || period === '') {
-                        this.errors.loan_period = 'Please select repayment period';
+                        this.errors.loan_period = 'This field is required';
                         isValid = false;
                     }
 
+                    // Validate payment mode
                     if (!paymentMode || paymentMode === '') {
-                        this.errors.payment_mode = 'Please select payment mode';
+                        this.errors.payment_mode = 'This field is required';
                         isValid = false;
                     }
 
+                    // Validate status
                     if (!status || status === '') {
-                        this.errors.loan_status = 'Please select loan status';
+                        this.errors.loan_status = 'This field is required';
                         isValid = false;
                     }
 
-                    // If payment mode is not Cash, transaction code is required
-                    const transactionCode = document.getElementById('assign_transaction_code')?.value;
-                    if (paymentMode !== 'Cash' && (!transactionCode || transactionCode === '')) {
+                    // Validate assigned date
+                    if (!assignedDate || assignedDate === '') {
+                        this.errors.assigned_date = 'This field is required';
+                        isValid = false;
+                    } else if (!this.validateAssignedDate(assignedDate)) {
+                        isValid = false;
+                    }
+
+                    // Validate start date
+                    if (!startDate || startDate === '') {
+                        this.errors.start_date = 'This field is required';
+                        isValid = false;
+                    }
+
+                    // Validate end date
+                    if (!endDate || endDate === '') {
+                        this.errors.end_date = 'This field is required';
+                        isValid = false;
+                    }
+
+                    // Validate transaction code for non-cash payments
+                    if (paymentMode !== 'Cash' && (!this.transactionCode || this.transactionCode === '')) {
                         this.errors.transaction_code = 'Transaction code is required for non-cash payments';
                         isValid = false;
                     }
@@ -7110,67 +7410,24 @@
                     return isValid;
                 },
 
-                // Update editLoan function to include assigned_date and total_amount
+                // Update editLoan function
                 editLoan() {
                     if (!this.validateEditForm()) {
-                        alert('Please fix the errors in the form before submitting.');
+                        alert('INVALID INPUTS! Please fix error to continue.');
                         return;
                     }
 
                     Alpine.store('loanData').isUpdating = true;
 
-                    // Parse start date from "DD MMM YYYY" to "YYYY-MM-DD"
-                    let formattedStartDate = '';
-                    if (this.editStartDate) {
-                        const parts = this.editStartDate.match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/);
-                        if (parts) {
-                            const months = {
-                                'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
-                                'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
-                            };
-                            const day = parts[1].padStart(2, '0');
-                            const month = months[parts[2]];
-                            const year = parts[3];
-                            formattedStartDate = `${year}-${month}-${day} 00:00:00`;
-                        }
-                    }
-
-                    // Parse end date from "DD MMM YYYY" to "YYYY-MM-DD"
-                    let formattedEndDate = '';
-                    if (this.editEndDate) {
-                        const parts = this.editEndDate.match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/);
-                        if (parts) {
-                            const months = {
-                                'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
-                                'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
-                            };
-                            const day = parts[1].padStart(2, '0');
-                            const month = months[parts[2]];
-                            const year = parts[3];
-                            formattedEndDate = `${year}-${month}-${day} 00:00:00`;
-                        }
-                    }
-
-                    // Parse assigned date from "DD MMM YYYY" to "YYYY-MM-DD"
-                    let formattedAssignedDate = '';
-                    if (this.editAssignedDate) {
-                        const parts = this.editAssignedDate.match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/);
-                        if (parts) {
-                            const months = {
-                                'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
-                                'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
-                            };
-                            const day = parts[1].padStart(2, '0');
-                            const month = months[parts[2]];
-                            const year = parts[3];
-                            formattedAssignedDate = `${year}-${month}-${day} 00:00:00`;
-                        }
-                    }
+                    // Parse dates from display format to database format
+                    const formattedAssignedDate = this.parseDateToDatabase(this.editAssignedDate);
+                    const formattedStartDate = this.parseDateToDatabase(this.editStartDate);
+                    const formattedEndDate = this.parseDateToDatabase(this.editEndDate);
 
                     // Parse total amount to get numeric value
                     let totalAmountValue = 0;
                     if (this.editTotalAmount) {
-                        const match = this.editTotalAmount.match(/KES ([\d,]+\.\d{2})/);
+                        const match = this.editTotalAmount.match(/KES ([\d,]+)/);
                         if (match) {
                             totalAmountValue = parseFloat(match[1].replace(/,/g, ''));
                         }
@@ -7180,9 +7437,10 @@
 
                     const formData = {
                         loan_id: transactionId,
-                        amount: this.editAmount,
+                        amount: this.roundToNearestKes(parseFloat(this.editAmount)),
                         total_amount: totalAmountValue,
-                        period_months: this.editPeriodMonths,
+                        total_interest: this.editTotalInterest,
+                        period_months: parseInt(this.editPeriodMonths),
                         start_date: formattedStartDate,
                         end_date: formattedEndDate,
                         assigned_date: formattedAssignedDate,
@@ -7210,6 +7468,16 @@
                                 window.location.reload();
                             } else {
                                 alert('Error: ' + data.message);
+                                if (data.errors) {
+                                    console.error('Validation errors:', data.errors);
+                                    // Display field-specific errors
+                                    if (data.errors.amount) {
+                                        this.errors.amount = data.errors.amount[0];
+                                    }
+                                    if (data.errors.total_amount) {
+                                        this.errors.total_amount = data.errors.total_amount[0];
+                                    }
+                                }
                             }
                         }, 500);
                     })
@@ -7229,9 +7497,20 @@
                     }
                 },
 
-                assignLoan() {
+                // Override assignLoan method
+                async assignLoan() {
+                    // First, check for defaulted loans
+                    const memberId = {{ $memberId }};
+                    const defaultCheck = await Alpine.store('loanData').checkDefaultedLoans(memberId);
+
+                    if (defaultCheck.hasDefaulted) {
+                        alert(`Transaction Error!\n${defaultCheck.message}`);
+                        return;
+                    }
+
+                    // Validate form
                     if (!this.validateAssignForm()) {
-                        alert('Please fix the errors in the form before submitting.');
+                        alert('INVALID INPUTS! Please fix error to continue.');
                         return;
                     }
 
@@ -7246,20 +7525,33 @@
                         }
                     }
 
+                    // Calculate total interest
+                    const totalInterestValue = totalRepaymentValue - parseFloat(this.loanAmount);
+
+                    // Parse dates
+                    const assignedDate = this.parseDateToDatabase(this.editAssignedDate);
+                    const startDate = this.parseDateToDatabase(Alpine.store('loanData').startDate);
+                    const endDate = this.parseDateToDatabase(Alpine.store('loanData').endDate);
+
                     const formData = {
                         loan_type_id: document.getElementById('loan_type_id')?.value,
-                        amount: this.loanAmount,
+                        amount: parseFloat(this.loanAmount),
                         total_repayment: totalRepaymentValue,
-                        period_months: this.loanPeriod,
+                        total_interest: totalInterestValue,
+                        period_months: parseInt(this.loanPeriod),
                         payment_mode: this.paymentMode,
                         transaction_code: this.transactionCode || '',
                         status: this.loanStatus,
+                        assigned_date: assignedDate,
+                        start_date: startDate,
+                        end_date: endDate,
+                        grace_period: 45,
                         _token: document.querySelector('input[name="_token"]')?.value
                     };
 
                     console.log('Submitting assign form:', formData);
 
-                    fetch('/bodaboda-member/{{ $memberId }}/loan/assign', {
+                    fetch(`/bodaboda-member/${memberId}/loan/assign`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -7279,6 +7571,13 @@
                                 alert('Error: ' + data.message);
                                 if (data.errors) {
                                     console.error('Validation errors:', data.errors);
+                                    // Display field-specific errors
+                                    if (data.errors.amount) {
+                                        this.errors.amount = data.errors.amount[0];
+                                    }
+                                    if (data.errors.transaction_code) {
+                                        this.errors.transaction_code = data.errors.transaction_code[0];
+                                    }
                                 }
                             }
                         }, 750);
@@ -7290,6 +7589,37 @@
                             console.error('Error:', error);
                         }, 750);
                     });
+                },
+
+                // Parse date from display format to database format
+                parseDateToDatabase(dateString) {
+                    if (!dateString) return null;
+
+                    // Try to parse "DD MMM YYYY" format
+                    const parts = dateString.match(/(\d{1,2})\s+([A-Za-z]{3,})\s+(\d{4})/);
+                    if (parts) {
+                        const months = {
+                            'jan': 0, 'january': 0, 'feb': 1, 'february': 1,
+                            'mar': 2, 'march': 2, 'apr': 3, 'april': 3,
+                            'may': 4, 'jun': 5, 'june': 5, 'jul': 6, 'july': 6,
+                            'aug': 7, 'august': 7, 'sep': 8, 'september': 8,
+                            'oct': 9, 'october': 9, 'nov': 10, 'november': 10,
+                            'dec': 11, 'december': 11
+                        };
+                        const month = months[parts[2].toLowerCase()];
+                        if (month !== undefined) {
+                            const date = new Date(parseInt(parts[3]), month, parseInt(parts[1]));
+                            return date.toISOString().slice(0, 19).replace('T', ' ');
+                        }
+                    }
+
+                    // Try direct date parsing
+                    const date = new Date(dateString);
+                    if (!isNaN(date.getTime())) {
+                        return date.toISOString().slice(0, 19).replace('T', ' ');
+                    }
+
+                    return null;
                 },
 
                 // Load loan details when selected for repayment
@@ -7545,6 +7875,23 @@
                     }
                 },
 
+                // Recalculate dates from assigned date
+                recalculateDatesFromAssignedDate(assignedDate) {
+                    if (!assignedDate || !this.editPeriodMonths) return;
+
+                    const parsedDate = Alpine.store('loanData').parseCustomDate(assignedDate);
+                    if (parsedDate) {
+                        let start = new Date(parsedDate);
+                        start.setDate(start.getDate() + 30);
+
+                        let end = new Date(start);
+                        end.setDate(end.getDate() + (parseInt(this.editPeriodMonths) * 30));
+
+                        this.editStartDate = Alpine.store('loanData').formatDateToDisplay(start);
+                        this.editEndDate = Alpine.store('loanData').formatDateToDisplay(end);
+                    }
+                },
+
                 // Override handlePaymentModeChange for assign form
                 handlePaymentModeChange(mode, prefix = 'assign_') {
                     const codeField = document.getElementById(prefix + 'transaction_code');
@@ -7557,6 +7904,135 @@
                             this.transactionCode = '';
                         }
                     }
+                },
+
+                // Handle loan type change
+                handleLoanTypeChange(loanTypeId) {
+                    const selected = Alpine.store('loanData').loanTypes.find(lt => lt.loanId == loanTypeId);
+                    if (selected) {
+                        Alpine.store('loanData').currentLoanType = selected;
+
+                        // Clear amount validation if exists
+                        this.amountRangeError = '';
+                        if (this.loanAmount) {
+                            this.validateAmountRange();
+                        }
+
+                        // Trigger recalculation
+                        this.calculateAndUpdateTotal();
+                    }
+                },
+
+                // Handle edit period change
+                handleEditPeriodChange() {
+                    this.calculateTotalAmount();
+                    this.calculateEndDateFromStartDate();
+                    this.validateEditAmountRange();
+                },
+
+                // Handle edit assigned date change
+                handleEditAssignedDateChange(dateValue) {
+                    if (dateValue && this.editPeriodMonths) {
+                        this.recalculateDatesFromAssignedDate(dateValue);
+                    }
+                    this.validateEditDate('assigned_date', dateValue);
+                },
+
+                // Handle edit start date change
+                handleEditStartDateChange(dateValue) {
+                    if (dateValue && this.editPeriodMonths) {
+                        this.calculateEndDateFromStartDate();
+                    }
+                    this.validateEditDate('start_date', dateValue);
+                },
+
+                // Validate amount range
+                validateAmountRange() {
+                    const amount = parseFloat(this.loanAmount);
+                    const minAmount = Alpine.store('loanData').currentLoanType?.min_amount;
+                    const maxAmount = Alpine.store('loanData').currentLoanType?.max_amount;
+
+                    if (!amount || isNaN(amount)) {
+                        this.amountRangeError = '';
+                        return true;
+                    }
+
+                    if (minAmount && amount < minAmount) {
+                        this.amountRangeError = `Amount must be at least ${minAmount.toLocaleString()}`;
+                        return false;
+                    }
+
+                    if (maxAmount && amount > maxAmount) {
+                        this.amountRangeError = `Amount cannot exceed ${maxAmount.toLocaleString()}`;
+                        return false;
+                    }
+
+                    this.amountRangeError = '';
+                    return true;
+                },
+
+                // Validate edit amount range
+                validateEditAmountRange() {
+                    const amount = parseFloat(this.editAmount);
+                    const minAmount = this.editMinBorrowable;
+                    const maxAmount = this.editMaxBorrowable;
+
+                    if (!amount || isNaN(amount)) {
+                        this.editAmountRangeError = '';
+                        return true;
+                    }
+
+                    if (minAmount && amount < minAmount) {
+                        this.editAmountRangeError = `Amount must be at least ${minAmount.toLocaleString()}`;
+                        return false;
+                    }
+
+                    if (maxAmount && amount > maxAmount) {
+                        this.editAmountRangeError = `Amount cannot exceed ${maxAmount.toLocaleString()}`;
+                        return false;
+                    }
+
+                    this.editAmountRangeError = '';
+                    return true;
+                },
+
+                // Handle assigned date change
+                handleAssignedDateChange(dateValue) {
+                    if (dateValue && this.loanPeriod) {
+                        Alpine.store('loanData').calculateDates(this.loanPeriod, dateValue);
+                    }
+                    this.validateAssignedDate(dateValue);
+                },
+
+                // Validate assigned date format
+                validateAssignedDate(dateString) {
+                    if (!dateString || dateString === '') {
+                        this.errors.assigned_date = 'Assigned date is required';
+                        return false;
+                    }
+
+                    // Check if matches accepted formats
+                    const patterns = [
+                        /^\d{1,2}\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4}$/i,
+                        /^\d{1,2}\/(\d{1,2})\/\d{4}$/,
+                        /^\d{4}-\d{2}-\d{2}$/
+                    ];
+
+                    let isValid = false;
+                    for (let pattern of patterns) {
+                        if (pattern.test(dateString.trim())) {
+                            isValid = true;
+                            break;
+                        }
+                    }
+
+                    if (!isValid) {
+                        this.errors.assigned_date = 'Invalid date format. Use format: DD MMM YYYY (e.g., 06 Apr 2026)';
+                        return false;
+                    }
+
+                    delete this.errors.assigned_date;
+                    return true;
                 },
 
                 // Pagination methods
