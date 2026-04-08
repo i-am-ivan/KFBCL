@@ -20,7 +20,7 @@
 
     </head>
 
-<body x-data="{ page: 'profile', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'loanTypeModal' : false, 'personalInformationModal': false , 'sidebarToggle': false, 'scrollTop': false, 'identificationDocumentsModal': false, 'nextKinModal': false, 'vehiclesModal': false, 'contributionsModal': false, 'savingsModal': false, 'loansModal': false, 'finesPenaltiesModal': false, 'deleteMemberAccount': false, 'editNextKinModal': false, 'editMemberVehiclesModal': false, 'assignMemberVehicle': false, 'reassignMemberVehicle': false, 'withdrawContribution':false, 'withdrawSavingsModal': false, 'payLoan': false, 'withdrawContributionModal': false, 'editContributionModal': false, 'awardBonusModal': false, 'repayLoanModal': false, 'editLoanModal': false}"
+<body x-data="{ page: 'profile', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'loanTypeModal' : false, 'personalInformationModal': false , 'sidebarToggle': false, 'scrollTop': false, 'identificationDocumentsModal': false, 'nextKinModal': false, 'vehiclesModal': false, 'contributionsModal': false, 'savingsModal': false, 'loansModal': false, 'finesPenaltiesModal': false, 'deleteMemberAccount': false, 'editNextKinModal': false, 'editMemberVehiclesModal': false, 'assignMemberVehicle': false, 'reassignMemberVehicle': false, 'withdrawContribution':false, 'withdrawSavingsModal': false, 'payLoan': false, 'withdrawContributionModal': false, 'editContributionModal': false, 'awardBonusModal': false, 'repayLoanModal': false, 'editLoanModal': false, 'editLoanTransactionModal': false}"
       x-init="
          darkMode = JSON.parse(localStorage.getItem('darkMode'));
          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
@@ -358,6 +358,23 @@
                                                                                             :class="errors.last_name ? 'border-red-500' : ''"
                                                                                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                                                                         <span x-show="errors.last_name" x-text="errors.last_name" class="text-xs text-red-500 mt-1"></span>
+                                                                                    </div>
+
+                                                                                    <!-- Member Number -->
+                                                                                    <div class="w-full px-2.5 xl:w-1/2">
+                                                                                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                                                                                            Member Number
+                                                                                        </label>
+                                                                                        <input type="text"
+                                                                                            id="personal_first_name"
+                                                                                            name="personal_first_name"
+                                                                                            :value="memberData?.member?.member_number || 'N/A'"
+                                                                                            @input="clearError('first_name')"
+                                                                                            @blur="validateField('first_name', $event.target.value)"
+                                                                                            :class="errors.first_name ? 'border-red-500' : ''"
+                                                                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+
+                                                                                            <span x-show="errors.first_name" x-text="errors.first_name" class="text-xs text-red-500 mt-1"></span>
                                                                                     </div>
 
                                                                                     <!-- Email -->
@@ -3668,6 +3685,218 @@
         </div>
     </div>
 
+    <!-- editLoanTransaction -->
+    <div x-show="$store.loanData.editLoanTransactionModal" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999">
+        <div class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
+        <div @click.outside="$store.loanData.editLoanTransactionModal = false" class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+        <!-- close btn -->
+        <button @click="$store.loanData.editLoanTransactionModal = false" class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300">
+            <svg
+                    class="fill-current"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+            >
+            <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M6.04289 16.5418C5.65237 16.9323 5.65237 17.5655 6.04289 17.956C6.43342 18.3465 7.06658 18.3465 7.45711 17.956L11.9987 13.4144L16.5408 17.9565C16.9313 18.347 17.5645 18.347 17.955 17.9565C18.3455 17.566 18.3455 16.9328 17.955 16.5423L13.4129 12.0002L17.955 7.45808C18.3455 7.06756 18.3455 6.43439 17.955 6.04387C17.5645 5.65335 16.9313 5.65335 16.5408 6.04387L11.9987 10.586L7.45711 6.04439C7.06658 5.65386 6.43342 5.65386 6.04289 6.04439C5.65237 6.43491 5.65237 7.06808 6.04289 7.4586L10.5845 12.0002L6.04289 16.5418Z"
+                    fill=""
+            />
+            </svg>
+        </button>
+
+        <div class="px-2 pr-14">
+            <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Edit Loan Transaction</h4>
+            <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the amount you wish to pay.</p>
+        </div>
+
+        <form class="flex flex-col" method="POST" x-data="loansTable" @submit.prevent="updateLoanTransaction">
+            @csrf
+
+            <div class="-mx-2.5 flex flex-wrap gap-y-5 p-2">
+                <!-- Hidden Transaction ID -->
+                <input type="hidden" name="transaction_id" x-model="editLoanTransactionId">
+
+                <!-- Loan Details Section - First Row -->
+                <div class="w-full px-2.5">
+                    <label class="mb-1.5 block text-medium font-medium text-gray-700 dark:text-gray-400">
+                        Loan Details
+                    </label>
+                    <div class="relative z-20 bg-transparent bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
+                        <div class="flex flex-wrap items-center gap-4 md:gap-6">
+                            <div class="flex-1 min-w-[100px]">
+                                <p class="text-theme-xs text-center text-gray-500 dark:text-gray-400">Loan</p>
+                                <p class="text-sm font-semibold text-center text-gray-600 dark:text-white/90" x-text="editLoanTransactionLoanDisplay">N/A</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full px-2.5 border-b border-gray-200 dark:border-gray-700 my-2"></div>
+
+                <!-- Loan Details Section - Financial Info -->
+                <div class="w-full px-2.5">
+                    <div class="relative z-20 bg-transparent bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
+                        <div class="flex flex-wrap items-center gap-4 md:gap-6">
+                            <div class="flex-1 min-w-[100px]">
+                                <p class="text-medium font-semibold text-center text-gray-600 dark:text-white/90">
+                                    <span x-text="'KES ' + (editLoanTransactionBorrowedRaw ? editLoanTransactionBorrowedRaw.toLocaleString() : '0')">KES 0</span>
+                                </p>
+                                <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Borrowed</p>
+                            </div>
+
+                            <div class="w-px bg-gray-300 h-11 dark:bg-gray-700 hidden sm:block"></div>
+
+                            <div class="flex-1 min-w-[100px]">
+                                <p class="text-medium font-semibold text-center text-gray-600 dark:text-white/90">
+                                    <span x-text="'KES ' + (editLoanTransactionTotalLoanRaw ? editLoanTransactionTotalLoanRaw.toLocaleString() : '0')">KES 0</span>
+                                </p>
+                                <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Total Loan</p>
+                            </div>
+
+                            <div class="w-px bg-gray-300 h-11 dark:bg-gray-700 hidden sm:block"></div>
+
+                            <div class="flex-1 min-w-[100px]">
+                                <p class="text-medium font-semibold text-center text-brand-600 dark:text-brand-400">
+                                    <span x-text="'KES ' + (editLoanTransactionBalanceDueRaw ? editLoanTransactionBalanceDueRaw.toLocaleString() : '0')">KES 0</span>
+                                </p>
+                                <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Balance Due</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full px-2.5 border-b border-gray-200 dark:border-gray-700 my-2"></div>
+
+                <!-- Transaction Type Display (Read-only) -->
+                <div class="w-full px-2.5">
+                    <input type="text"
+                        readonly
+                        hidden
+                        x-model="editLoanTransactionType"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30">
+                </div>
+
+                <!-- Amount -->
+                <div class="w-full px-2.5">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Amount (KES)
+                    </label>
+                    <div class="relative">
+                        <input type="number"
+                            step="0.01"
+                            min="1"
+                            x-model="editLoanTransactionAmount"
+                            @input="clearError('edit_amount')"
+                            :class="errors.edit_amount ? 'border-red-500' : ''"
+                            placeholder="Enter amount"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    </div>
+                    <span x-show="errors.edit_amount" x-text="errors.edit_amount" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <!-- Payment Mode -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Payment Mode
+                    </label>
+                    <div class="relative z-20 bg-transparent">
+                        <select x-model="editLoanTransactionMode"
+                                @change="handleEditTransactionPaymentModeChange(editLoanTransactionMode)"
+                                :class="errors.edit_payment_mode ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value="">Select Payment Mode</option>
+                            <option value="Cash">Cash</option>
+                            <option value="MPesa">MPesa</option>
+                            <option value="Bank">Bank</option>
+                        </select>
+                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <span x-show="errors.edit_payment_mode" x-text="errors.edit_payment_mode" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <!-- Transaction Code -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Transaction Code
+                    </label>
+                    <div class="relative">
+                        <input type="text"
+                            x-model="editLoanTransactionCode"
+                            :readonly="editLoanTransactionMode === 'Cash'"
+                            @input="clearError('edit_transaction_code')"
+                            :class="errors.edit_transaction_code ? 'border-red-500' : ''"
+                            :placeholder="editLoanTransactionMode === 'Cash' ? 'Auto-generated' : 'Enter transaction code'"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    </div>
+                    <span x-show="errors.edit_transaction_code" x-text="errors.edit_transaction_code" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <!-- Transaction Date -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Transaction Date
+                    </label>
+                    <input type="text"
+                        x-model="editLoanTransactionDate"
+                        @input="clearError('edit_transaction_date')"
+                        @blur="validateRepayDateField('edit_transaction_date', editLoanTransactionDate)"
+                        :class="errors.edit_transaction_date ? 'border-red-500' : ''"
+                        placeholder="DD MMM YYYY (e.g., 07 Apr 2026)"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    <span x-show="errors.edit_transaction_date" x-text="errors.edit_transaction_date" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <!-- Status -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Transaction Status
+                    </label>
+                    <div class="relative z-20 bg-transparent">
+                        <select x-model="editLoanTransactionStatus"
+                                @change="clearError('edit_status')"
+                                :class="errors.edit_status ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value="">Select Status</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Cancelled">Cancelled</option>
+                            <option value="Reversed">Reversed</option>
+                        </select>
+                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <span x-show="errors.edit_status" x-text="errors.edit_status" class="text-xs text-error-500 mt-1"></span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+                <button @click="$store.loanData.editLoanTransactionModal = false" type="button"
+                        class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
+                    Cancel
+                </button>
+                <button type="submit"
+                        class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                        :disabled="$store.loanData.isUpdating">
+                    <span x-show="!$store.loanData.isUpdating">Update Transaction</span>
+                    <span x-show="$store.loanData.isUpdating">Updating...</span>
+                </button>
+            </div>
+        </form>
+
+        </div>
+    </div>
+
     <!-- finesPenaltiesModal -->
     <div x-show="finesPenaltiesModal" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999">
         <div class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
@@ -6739,6 +6968,8 @@
                 defaultGracePeriod: 45,
                 totalInterest: 0,
 
+                editLoanTransactionModal: false,
+
                 // Selected loan type ID for assign form
                 selectedLoanTypeId: '',
 
@@ -6932,6 +7163,26 @@
                 currentBalanceDue: 0,
                 selectedLoanData: null,
 
+                // Edit loan transaction properties
+                editLoanTransactionId: '',
+                editLoanTransactionAmount: '',
+                editLoanTransactionMode: '',
+                editLoanTransactionCode: '',
+                editLoanTransactionStatus: '',
+                editLoanTransactionDate: '',
+                editLoanTransactionRawAmount: 0,
+                editLoanTransactionLoanId: '',
+                editLoanTransactionLoanDisplay: '',
+                editLoanTransactionBorrowedRaw: 0,
+                editLoanTransactionTotalLoanRaw: 0,
+                editLoanTransactionTotalInterestRaw: 0,
+                editLoanTransactionBalanceDueRaw: 0,
+                editLoanTransactionAssignedDate: '',
+                editLoanTransactionStartDate: '',
+                editLoanTransactionEndDate: '',
+                editLoanTransactionLoanStatus: '',
+                editLoanTransactionType: '',
+
                 // Date formatting functions
                 formatDate(dateString) {
                     if (!dateString) return '';
@@ -6972,6 +7223,15 @@
                     const month = today.toLocaleDateString('en-GB', { month: 'short' });
                     const year = today.getFullYear();
                     this.repayTransactionDate = `${day} ${month} ${year}`;
+                },
+
+                // Set current date for edit transaction date field
+                setCurrentEditTransactionDate() {
+                    const today = new Date();
+                    const day = String(today.getDate()).padStart(2, '0');
+                    const month = today.toLocaleDateString('en-GB', { month: 'short' });
+                    const year = today.getFullYear();
+                    this.editLoanTransactionDate = `${day} ${month} ${year}`;
                 },
 
                 // Format date for database
@@ -7335,6 +7595,12 @@
                         console.log('Raw loan data received:', rawLoan);
                         this.editLoanModal(rawLoan);
                     });
+
+                    // Listen for edit loan transaction events
+                    window.addEventListener('open-edit-loan-transaction-modal', (event) => {
+                        const transaction = event.detail.transaction;
+                        this.loadLoanTransactionForEdit(transaction);
+                    });
                 },
 
                 // Initialize assign form with today's date
@@ -7355,6 +7621,42 @@
                             console.error('Error loading member active loans:', error);
                             this.memberActiveLoans = 0;
                         });
+                },
+
+                // Load loan transaction for editing
+                loadLoanTransactionForEdit(transaction) {
+                    // Get the loan details from the transaction
+                    const loanId = transaction.transactionId; // This is the transaction ID from member_loans_transactions
+
+                    // Store the transaction data
+                    this.editLoanTransactionId = transaction.transactionId;
+                    this.editLoanTransactionAmount = transaction.amount ? parseFloat(transaction.amount.replace(/[^0-9.-]/g, '')) : 0;
+                    this.editLoanTransactionRawAmount = this.editLoanTransactionAmount;
+                    this.editLoanTransactionMode = transaction.mode || '';
+                    this.editLoanTransactionCode = transaction.transactionCode || '';
+                    this.editLoanTransactionStatus = transaction.status || '';
+                    this.editLoanTransactionType = transaction.type || '';
+
+                    // Set current date for transaction date field
+                    this.setCurrentEditTransactionDate();
+
+                    // Extract loan display info
+                    this.editLoanTransactionLoanDisplay = transaction.loanDisplay || 'N/A';
+
+                    // Parse numeric values from formatted strings
+                    this.editLoanTransactionBorrowedRaw = parseFloat((transaction.borrowed || 'KES 0').replace(/[^0-9.-]/g, ''));
+                    this.editLoanTransactionTotalLoanRaw = parseFloat((transaction.totalLoan || 'KES 0').replace(/[^0-9.-]/g, ''));
+                    this.editLoanTransactionTotalInterestRaw = this.editLoanTransactionTotalLoanRaw - this.editLoanTransactionBorrowedRaw;
+                    this.editLoanTransactionBalanceDueRaw = parseFloat((transaction.repaid ? transaction.totalLoanRaw - transaction.repaidRaw : this.editLoanTransactionTotalLoanRaw));
+
+                    // Set date fields (you may need to fetch these from a separate API call)
+                    this.editLoanTransactionAssignedDate = transaction.assignedDate || this.formatDateOnly(new Date());
+                    this.editLoanTransactionStartDate = transaction.startDate || this.formatDateShort(new Date());
+                    this.editLoanTransactionEndDate = transaction.endDate || this.formatDateShort(new Date(new Date().setMonth(new Date().getMonth() + 12)));
+                    this.editLoanTransactionLoanStatus = transaction.loanStatus || 'Active';
+
+                    // Open the modal
+                    Alpine.store('loanData').editLoanTransactionModal = true;
                 },
 
                 // Validation methods
@@ -7420,6 +7722,20 @@
                             codeField.readOnly = false;
                         }
                     }
+                },
+
+                // Handle edit transaction payment mode change
+                handleEditTransactionPaymentModeChange(mode) {
+                    if (mode === 'Cash') {
+                        const randomNum = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+                        const randomChars = String.fromCharCode(65 + Math.floor(Math.random() * 26)) +
+                                        String.fromCharCode(65 + Math.floor(Math.random() * 26)) +
+                                        String.fromCharCode(65 + Math.floor(Math.random() * 26));
+                        this.editLoanTransactionCode = `CSH${randomNum}${randomChars}`;
+                    } else {
+                        this.editLoanTransactionCode = '';
+                    }
+                    this.clearError('edit_transaction_code');
                 },
 
                 // Update validateEditForm method
@@ -7597,6 +7913,44 @@
                     return isValid;
                 },
 
+                // Validate edit transaction form
+                validateEditTransactionForm() {
+                    this.errors = {};
+                    let isValid = true;
+
+                    const amount = this.editLoanTransactionAmount;
+                    const paymentMode = this.editLoanTransactionMode;
+                    const status = this.editLoanTransactionStatus;
+                    const transactionDate = this.editLoanTransactionDate;
+                    const transactionCode = this.editLoanTransactionCode;
+
+                    if (!amount || amount <= 0) {
+                        this.errors.edit_amount = 'Please enter a valid amount greater than 0';
+                        isValid = false;
+                    }
+
+                    if (!paymentMode || paymentMode === '') {
+                        this.errors.edit_payment_mode = 'Please select payment mode';
+                        isValid = false;
+                    }
+
+                    if (!status || status === '') {
+                        this.errors.edit_status = 'Please select status';
+                        isValid = false;
+                    }
+
+                    if (!this.validateRepayDateField('edit_transaction_date', transactionDate)) {
+                        isValid = false;
+                    }
+
+                    if (paymentMode !== 'Cash' && (!transactionCode || transactionCode === '')) {
+                        this.errors.edit_transaction_code = 'Transaction code is required for non-cash payments';
+                        isValid = false;
+                    }
+
+                    return isValid;
+                },
+
                 // Update editLoan function
                 editLoan() {
                     if (!this.validateEditForm()) {
@@ -7672,6 +8026,73 @@
                         setTimeout(() => {
                             Alpine.store('loanData').isUpdating = false;
                             alert('Error updating loan. Please try again.');
+                            console.error('Error:', error);
+                        }, 500);
+                    });
+                },
+
+                // Update loan transaction
+                updateLoanTransaction() {
+                    if (!this.validateEditTransactionForm()) {
+                        alert('INVALID INPUTS! Fix errors to continue');
+                        return;
+                    }
+
+                    Alpine.store('loanData').isUpdating = true;
+
+                    const formattedDate = this.formatDateForDatabase(this.editLoanTransactionDate);
+
+                    const formData = {
+                        transaction_id: this.editLoanTransactionId,
+                        amount: this.editLoanTransactionAmount,
+                        payment_mode: this.editLoanTransactionMode,
+                        transaction_code: this.editLoanTransactionCode || '',
+                        transaction_date: formattedDate,
+                        status: this.editLoanTransactionStatus,
+                        _token: document.querySelector('input[name="_token"]')?.value
+                    };
+
+                    fetch(`/bodaboda-member/{{ $memberId }}/loan-transaction/${this.editLoanTransactionId}/update`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        setTimeout(() => {
+                            Alpine.store('loanData').isUpdating = false;
+
+                            if (data.success) {
+                                alert(data.message);
+                                window.location.reload();
+                            } else {
+                                if (data.errors) {
+                                    for (const [field, messages] of Object.entries(data.errors)) {
+                                        const fieldMap = {
+                                            'amount': 'edit_amount',
+                                            'payment_mode': 'edit_payment_mode',
+                                            'transaction_code': 'edit_transaction_code',
+                                            'transaction_date': 'edit_transaction_date',
+                                            'status': 'edit_status'
+                                        };
+                                        const mappedField = fieldMap[field] || field;
+                                        this.errors[mappedField] = messages[0];
+                                    }
+                                    alert('INVALID INPUTS! Fix errors to continue');
+                                } else {
+                                    alert('Error: ' + data.message);
+                                }
+                            }
+                        }, 500);
+                    })
+                    .catch(error => {
+                        setTimeout(() => {
+                            Alpine.store('loanData').isUpdating = false;
+                            alert('Error updating loan transaction. Please try again.');
                             console.error('Error:', error);
                         }, 500);
                     });
@@ -8317,6 +8738,9 @@
                 frequencyFilter: 'All',
                 statusFilter: 'All',
 
+                editLoanTransactionModal: false,
+                currentEditTransaction: null,
+
                 init() {
                     this.loadTransactions();
                 },
@@ -8451,12 +8875,17 @@
                     return statusMap[status] || 'bg-gray-100 text-gray-600 dark:bg-gray-900/30 dark:text-gray-400';
                 },
 
-                // Edit loan transaction - dispatch event to open edit modal
+                // Edit loan transaction - open edit modal with transaction data
                 editLoanTransaction(transaction) {
+                    this.currentEditTransaction = transaction;
+                    this.editLoanTransactionModal = true;
+
+                    // Dispatch event to the loansTable component to load the transaction data
                     window.dispatchEvent(new CustomEvent('open-edit-loan-transaction-modal', {
                         detail: { transaction: transaction }
                     }));
-                }
+                },
+
             }));
 
         });

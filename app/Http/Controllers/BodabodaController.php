@@ -2769,7 +2769,7 @@ class BodabodaController extends Controller {
         }
     }
 
-    // Update loan transaction
+    // Update member loan
     public function updateMemberLoanTransaction(Request $request, $memberId)
     {
         try {
@@ -2874,6 +2874,75 @@ class BodabodaController extends Controller {
             return response()->json([
                 'success' => false,
                 'message' => 'Error updating loan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Update member loan transaction
+    public function updateMemberLoanTransactions(Request $request, $memberId, $transactionId)
+    {
+        try {
+            $validated = $request->validate([
+                'amount' => 'required|numeric|min:0.01',
+                'payment_mode' => 'required|in:Cash,MPesa,Bank',
+                'transaction_code' => 'nullable|string|max:255',
+                'transaction_date' => 'required|date',
+                'status' => 'required|in:Confirmed,Pending,Cancelled,Reversed'
+            ]);
+
+            // Check if transaction exists and belongs to member
+            $transaction = DB::table('member_loans_transactions')
+                ->where('transactionId', $transactionId)
+                ->where('memberId', $memberId)
+                ->first();
+
+            if (!$transaction) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Transaction not found'
+                ], 404);
+            }
+
+            // Generate transaction code if not provided or if Cash payment
+            $transactionCode = $validated['transaction_code'];
+            if ($validated['payment_mode'] === 'Cash' && empty($transactionCode)) {
+                $transactionCode = 'CSH' . rand(1000, 9999) . chr(rand(65, 90)) . chr(rand(65, 90)) . chr(rand(65, 90));
+            }
+
+            // Update the transaction
+            $updated = DB::table('member_loans_transactions')
+                ->where('transactionId', $transactionId)
+                ->update([
+                    'transactionAmount' => $validated['amount'],
+                    'transactionMode' => $validated['payment_mode'],
+                    'transactionCode' => $transactionCode,
+                    'transactionDate' => date('Y-m-d H:i:s', strtotime($validated['transaction_date'])),
+                    'transactionStatus' => $validated['status'],
+                    'transactionUpdatedOn' => now()
+                ]);
+
+            if ($updated) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Transaction updated successfully'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to update transaction'
+                ], 400);
+            }
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating transaction: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -3115,6 +3184,7 @@ class BodabodaController extends Controller {
                 })
                 ->leftJoin('member_loan_types as mem_loan_types', 'mem_loan_types.loanId', '=', 'mem_loans.transactionLoan')
                 ->where('mlt.memberId', $memberId)
+                ->where('mlt.transactionStatus', '!=', 'Paid-Out')
                 ->orderBy('mlt.transactionDate', 'DESC')
                 ->get();
 
@@ -3181,6 +3251,7 @@ class BodabodaController extends Controller {
             ], 500);
         }
     }
+
 
     // Savings -----------------------------------------------------------------------------------------------------------
     public function getAllMemberSavings($memberId)

@@ -334,6 +334,8 @@ Route::get('/bodaboda-member/{memberId}/loans/current', [BodabodaController::cla
 
 Route::get('/bodaboda-member/{memberId}/check-defaulted-loans', [BodabodaController::class, 'checkDefaultedLoans']);
 
+Route::post('/bodaboda-member/{memberId}/loan-transaction/{transactionId}/update', [BodabodaController::class, 'updateMemberLoanTransactions']);
+
 // Loan transactions route
 Route::get('/loans/transactions/all', [BodabodaController::class, 'getAllLoanTransactions'])->name('loans.transactions.all');
 

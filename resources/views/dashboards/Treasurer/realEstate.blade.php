@@ -53,13 +53,13 @@
 
         <div class="mx-auto max-w-(--breakpoint-2xl) p-4 pb-20 md:p-6 md:pb-6">
             <!-- Breadcrumb Start -->
-            <div x-data="{ pageName: `Real Estate` }">
+            <div x-data="{ pageName: `Real-Estate` }">
               <div class="flex flex-wrap items-center justify-between gap-3 pb-6">
                 <h2 class="text-xl font-semibold text-gray-800 dark:text-white/90" x-text="pageName"></h2>
                 <nav>
                   <ol class="flex items-center gap-1.5">
                     <li>
-                      <a class="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400" href="index.php">
+                      <a class="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400" href="#">
                         Home
                         <svg
                                 class="stroke-current"

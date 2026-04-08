@@ -118,14 +118,14 @@
                       </div>
 
                       <div class="relative grid grid-cols-1 gap-6 lg:grid-cols-1">
-                        <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                        <div class="grid grid-cols-1 gap-6 lg:grid-cols-2 border-b p-2">
                           <div>
-                            <span class="mb-1 text-xs text-gray-500 dark:text-gray-400">First Name</span>
-                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.firstname || 'Loading...'">+254 723 000 000</p>
+                            <span class="mb-1 text-xs text-gray-500 dark:text-gray-400">Fullname</span>
+                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.firstname || memberData?.member?.lastname ? (memberData.member.firstname || '') + ' ' + (memberData.member.lastname || '').trim() : 'Loading...'">+254 723 000 000</p>
                           </div>
                           <div>
-                            <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Last Name</p>
-                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.lastname || 'Loading...'">+254 725 000 000</p>
+                            <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Member Number</p>
+                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.member_number || 'Loading...'">+254 725 000 000</p>
                           </div>
                         </div>
                         <div>
@@ -149,9 +149,10 @@
                             <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Date of Birth</p>
                             <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.dob || 'Loading...'">+254 725 000 000</p>
                           </div>
+
                           <div>
                             <span class="mb-1 text-xs text-gray-500 dark:text-gray-400">Membership</span>
-                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.membership">+254 723 000 000</p>
+                            <p class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.membership || 'Loading ...'">+254 723 000 000</p>
                           </div>
                           <div>
                             <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">Membership Status</p>
@@ -1254,10 +1255,21 @@
                                                                 <!-- Filter by Frequency -->
                                                                 <div class="hidden lg:block">
                                                                     <select x-model="statusFilter" @change="performFilter()" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                                        <option value="All">Frequency</option>
+                                                                        <option value="All"> -- Frequency -- </option>
                                                                         <option value="Daily">Daily</option>
                                                                         <option value="Weekly">Weekly</option>
                                                                         <option value="Monthly">Monthly</option>
+                                                                    </select>
+                                                                </div>
+
+                                                                <!-- Filter by Status -->
+                                                                <div class="hidden lg:block">
+                                                                    <select x-model="statusFilter" @change="performFilter()" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                                        <option value="All"> -- Status -- </option>
+                                                                        <option value="Active">Active</option>
+                                                                        <option value="Defaulted">Defaulted</option>
+                                                                        <option value="Repaid">Repaid</option>
+                                                                        <option value="Stopped">Stopped</option>
                                                                     </select>
                                                                 </div>
 
@@ -1572,21 +1584,39 @@
                                                                 <!-- Filter by Frequency -->
                                                                 <div class="hidden lg:block">
                                                                     <select x-model="frequencyFilter" @change="performFilter()" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                                        <option value="All">All Time</option>
+                                                                        <option value="All"> -- Frequency -- </option>
                                                                         <option value="Daily">Daily</option>
                                                                         <option value="Weekly">Weekly</option>
                                                                         <option value="Monthly">Monthly</option>
                                                                     </select>
                                                                 </div>
 
+                                                                <!-- Filter by Type -->
+                                                                <div class="hidden lg:block">
+                                                                    <select x-model="statusFilter" @change="performFilter()" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                                        <option value="All"> -- Mode -- </option>
+                                                                        <option value="Bank">Bank</option>
+                                                                        <option value="Cash">Cash</option>
+                                                                        <option value="MPesa">MPesa</option>
+                                                                    </select>
+                                                                </div>
+
+                                                                <!-- Filter by Type -->
+                                                                <div class="hidden lg:block">
+                                                                    <select x-model="statusFilter" @change="performFilter()" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                                                        <option value="All"> -- Type -- </option>
+                                                                        <option value="Paid-In">Paid-In</option>
+                                                                        <option value="Paid-Out">Paid-Out</option>
+                                                                    </select>
+                                                                </div>
+
                                                                 <!-- Filter by Status -->
                                                                 <div class="hidden lg:block">
                                                                     <select x-model="statusFilter" @change="performFilter()" class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                                                                        <option value="All">All Status</option>
-                                                                        <option value="Active">Active</option>
-                                                                        <option value="Defaulted">Defaulted</option>
-                                                                        <option value="Repaid">Repaid</option>
-                                                                        <option value="Stopped">Stopped</option>
+                                                                        <option value="All"> -- Status -- </option>
+                                                                        <option value="Active">Confirmed</option>
+                                                                        <option value="Defaulted">Pending</option>
+                                                                        <option value="Repaid">Cancelled</option>
                                                                     </select>
                                                                 </div>
 
@@ -1809,6 +1839,7 @@
                                                                                             </svg>
                                                                                         </button>
                                                                                     </td>
+
                                                                                 </tr>
                                                                             </template>
                                                                         </tbody>
