@@ -3471,7 +3471,7 @@
                     <div class="relative z-20 bg-transparent bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
                         <div class="flex flex-wrap items-center gap-4 md:gap-6">
                             <div class="flex-1 min-w-[100px]">
-                                <p class="text-lg font-semibold text-center text-gray-800 dark:text-white/90">
+                                <p class="text-lg font-semibold text-center text-gray-600 dark:text-white/90">
                                     <span x-text="'KES ' + (repayBorrowedAmountRaw ? repayBorrowedAmountRaw.toLocaleString() : '0')">KES 0</span>
                                 </p>
                                 <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Borrowed</p>
@@ -3480,7 +3480,7 @@
                             <div class="w-px bg-gray-300 h-11 dark:bg-gray-700 hidden sm:block"></div>
 
                             <div class="flex-1 min-w-[100px]">
-                                <p class="text-lg font-semibold text-center text-gray-800 dark:text-white/90">
+                                <p class="text-lg font-semibold text-center text-gray-600 dark:text-white/90">
                                     <span x-text="'KES ' + (repayTotalInterestRaw ? repayTotalInterestRaw.toLocaleString() : '0')">KES 0</span>
                                 </p>
                                 <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Total Interest</p>
@@ -3489,7 +3489,7 @@
                             <div class="w-px bg-gray-300 h-11 dark:bg-gray-700 hidden sm:block"></div>
 
                             <div class="flex-1 min-w-[100px]">
-                                <p class="text-lg font-semibold text-center text-gray-800 dark:text-white/90">
+                                <p class="text-lg font-semibold text-center text-gray-600 dark:text-white/90">
                                     <span x-text="'KES ' + (repayTotalLoanRaw ? repayTotalLoanRaw.toLocaleString() : '0')">KES 0</span>
                                 </p>
                                 <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Total Loan</p>
@@ -3498,7 +3498,7 @@
                             <div class="w-px bg-gray-300 h-11 dark:bg-gray-700 hidden sm:block"></div>
 
                             <div class="flex-1 min-w-[100px]">
-                                <p class="text-lg font-semibold text-center text-gray-800 dark:text-white/90">
+                                <p class="text-lg font-semibold text-center text-brand-600 dark:text-brand-400' dark:text-white/90">
                                     <span x-text="'KES ' + (repayBalanceDueRaw ? repayBalanceDueRaw.toLocaleString() : '0')">KES 0</span>
                                 </p>
                                 <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Balance Due</p>
@@ -3512,21 +3512,21 @@
                     <div class="relative z-20 bg-transparent bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
                         <div class="flex flex-wrap items-center gap-4 md:gap-6">
                             <div class="flex-1 min-w-[100px]">
-                                <p class="text-sm font-semibold text-center text-gray-800 dark:text-white/90" x-text="repayAssignedDate || '—'">—</p>
+                                <p class="text-sm font-semibold text-center text-gray-700 dark:text-white/90" x-text="repayAssignedDate || '—'">—</p>
                                 <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Assigned On</p>
                             </div>
 
                             <div class="w-px bg-gray-300 h-11 dark:bg-gray-700 hidden sm:block"></div>
 
                             <div class="flex-1 min-w-[100px]">
-                                <p class="text-sm font-semibold text-center text-gray-800 dark:text-white/90" x-text="repayStartDate || '—'">—</p>
+                                <p class="text-sm font-semibold text-center text-gray-700 dark:text-white/90" x-text="repayStartDate || '—'">—</p>
                                 <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Start Date</p>
                             </div>
 
                             <div class="w-px bg-gray-300 h-11 dark:bg-gray-700 hidden sm:block"></div>
 
                             <div class="flex-1 min-w-[100px]">
-                                <p class="text-sm font-semibold text-center text-gray-800 dark:text-white/90" x-text="repayEndDate || '—'">—</p>
+                                <p class="text-sm font-semibold text-center text-gray-700 dark:text-white/90" x-text="repayEndDate || '—'">—</p>
                                 <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">End Date</p>
                             </div>
 
