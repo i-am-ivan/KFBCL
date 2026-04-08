@@ -1194,7 +1194,7 @@
                                             </div>
                                         </div>
 
-                                    </div>
+                        </div>
                     </div>
 
                     <!-- Loans Table -->
@@ -1300,7 +1300,7 @@
                                                                                     <th class="p-4 whitespace-nowrap">
                                                                                         <div class="flex items-center">
                                                                                             <p class="font-medium text-gray-500 text-theme-xs dark:text-gray-400">
-                                                                                                Transaction Code
+                                                                                                Transaction ID
                                                                                             </p>
                                                                                         </div>
                                                                                     </th>
@@ -1418,7 +1418,7 @@
                                                                                             <!-- Borrowed -->
                                                                                             <td class="p-4 whitespace-nowrap">
                                                                                                 <p class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="'KES ' + Number(loan.transactionLoanAmount || loan.amount || 0).toLocaleString()"></p>
-                                                                                                <p class="text-xs text-gray-500 dark:text-gray-400" x-text="'Outstanding: KES ' + Number(loan.outstanding_balance || loan.remaining_balance || 0).toLocaleString()"></p>
+                                                                                                <p class="text-xs text-brand-500 dark:text-brand-400" x-text="'Outstanding: KES ' + Number(loan.outstanding_balance || loan.remaining_balance || 0).toLocaleString()"></p>
                                                                                             </td>
 
                                                                                             <!-- Total Loan -->
@@ -1456,7 +1456,7 @@
                                                                                                     :class="{
                                                                                                         'bg-success-100 text-success-600 dark:bg-success-900/30 dark:text-success-400': loan.transactionLoanStatus === 'Active' || loan.transactionLoanStatus === 'Approved',
                                                                                                         'bg-warning-100 text-warning-600 dark:bg-warning-900/30 dark:text-warning-400': loan.transactionLoanStatus === 'Under Review' || loan.transactionLoanStatus === 'Pending',
-                                                                                                        'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400': loan.transactionLoanStatus === 'Repaid',
+                                                                                                        'bg-success-100 text-success-600 dark:bg-success-900/30 dark:text-success-400': loan.transactionLoanStatus === 'Repaid',
                                                                                                         'bg-error-100 text-error-600 dark:bg-error-900/30 dark:text-error-400': loan.transactionLoanStatus === 'Defaulted' || loan.transactionLoanStatus === 'Stopped' || loan.transactionLoanStatus === 'Cancelled'
                                                                                                     }"
                                                                                                     x-text="loan.transactionLoanStatus || loan.transactionStatus || 'N/A'">
@@ -1941,6 +1941,26 @@
                                                         <rect x="7" y="13" width="10" height="8" rx="2"></rect>
                                                     </svg>
                                                     Print
+                                                    </button>
+                                                </div>
+
+                                                <div>
+                                                    <button @click="awardBonusnModal = true"
+                                                        class="hover:text-dark-900 shadow-theme-xs relative flex inline-flex h-11 items-center justify-center  gap-2 rounded-lg border border-gray-300 bg-white px-4 py-3 whitespace-nowrap text-gray-700 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-700 hover:bg-gray-600 sm:w-auto">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                                            <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                        </svg>
+                                                        Award Bonus
+                                                    </button>
+                                                </div>
+
+                                                <!-- Create new loan type button -->
+                                                <div>
+                                                    <button @click="assignFineModal = true" class="shadow-theme-xs inline-flex flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                                            <path d="M5 10.0002H15.0006M10.0002 5V15.0006" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                        </svg>
+                                                        Assign Fine
                                                     </button>
                                                 </div>
 

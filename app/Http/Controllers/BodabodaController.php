@@ -2653,6 +2653,7 @@ class BodabodaController extends Controller {
                 'amount' => 'required|numeric|min:1',
                 'payment_mode' => 'required|in:Cash,MPesa,Bank',
                 'transaction_code' => 'nullable|string|max:255',
+                'transaction_date' => 'required|date',
                 'status' => 'required|in:Confirmed,Pending,Cancelled'
             ]);
 
@@ -2694,8 +2695,13 @@ class BodabodaController extends Controller {
                 ], 400);
             }
 
-            // Generate transaction code if not provided
-            $transactionCode = $validated['transaction_code'] ?? 'REPAY-' . strtoupper(uniqid());
+            // Generate transaction code if not provided or if Cash payment
+            $transactionCode = $validated['transaction_code'];
+            if ($validated['payment_mode'] === 'Cash' && empty($transactionCode)) {
+                $transactionCode = 'CSH' . rand(1000, 9999) . chr(rand(65, 90)) . chr(rand(65, 90)) . chr(rand(65, 90));
+            } elseif (empty($transactionCode)) {
+                $transactionCode = 'REPAY-' . strtoupper(uniqid());
+            }
 
             // Insert repayment transaction
             $transactionData = [
@@ -2703,7 +2709,7 @@ class BodabodaController extends Controller {
                 'transactionLoan' => $validated['loan_id'],
                 'transactionCode' => $transactionCode,
                 'transactionAmount' => $validated['amount'],
-                'transactionDate' => now(),
+                'transactionDate' => date('Y-m-d H:i:s', strtotime($validated['transaction_date'])),
                 'transactionType' => 'Paid-In',
                 'transactionMode' => $validated['payment_mode'],
                 'transactionAuthor' => Auth::id(),
