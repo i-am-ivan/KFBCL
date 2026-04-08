@@ -3081,74 +3081,42 @@ class BodabodaController extends Controller {
     }
 
     // Get member loan transactions for the table
-    public function getMemberLoanTransactions($memberId)
+    public function getMemberLoanTransactions(Request $request, $memberId)
     {
         try {
-            $transactions = DB::table('member_loans as ml')
-                ->join('member_loan_types as mlt', 'ml.transactionLoan', '=', 'mlt.loanId')
-                ->where('ml.memberId', $memberId)
-                ->select(
-                    'ml.transactionId',
-                    'ml.transactionLoanAmount',
-                    'ml.transactionTotalLoan',
-                    'ml.transactionTotalInterest',
-                    'ml.transactionLoanPeriod',
-                    'ml.transactionGracePeriod',
-                    'ml.transactionLoanStartDate',
-                    'ml.transactionLoanEndDate',
-                    'ml.transactionCreated',
-                    'ml.transactionLoanStatus',
-                    'ml.transactionStatus',
-                    'mlt.loan_type_name',
-                    'mlt.interest_rate',
-                    'mlt.grace_period_days',
-                    DB::raw('(SELECT COALESCE(SUM(transactionAmount), 0) FROM member_loans_transactions WHERE transactionLoan = ml.transactionId AND transactionType = "Paid-In" AND transactionStatus = "Confirmed") as total_repaid')
-                )
-                ->orderBy('ml.transactionCreated', 'desc')
+            $transactions = DB::table('member_loans_transactions as mlt')
+                ->select([
+                    'mlt.transactionId',
+                    DB::raw("CONCAT(mem_loans.transactionId, ': ', mem_loan_types.loan_type_name, ' @ ', mem_loan_types.interest_rate, '%') as loan_display"),
+                    'mlt.memberId',
+                    'mlt.transactionAmount',
+                    'mlt.transactionMode',
+                    'mlt.transactionCode',
+                    'mlt.transactionType',
+                    'mlt.transactionDate',
+                    'mlt.transactionStatus',
+                    'mem_loans.transactionLoanAmount',
+                    'mem_loans.transactionTotalLoan',
+                    'mem_loans.transactionTotalInterest',
+                    DB::raw("(
+                        SELECT SUM(transactionAmount)
+                        FROM member_loans_transactions
+                        WHERE memberId = mlt.memberId
+                        AND transactionLoan = mlt.transactionLoan
+                        AND transactionType = 'Paid-In'
+                        AND transactionStatus = 'Confirmed'
+                    ) as total_repaid"),
+                    'mem_loan_types.loan_type_name',
+                    'mem_loan_types.interest_rate'
+                ])
+                ->leftJoin('member_loans as mem_loans', function($join) {
+                    $join->on('mem_loans.memberId', '=', 'mlt.memberId')
+                        ->on('mem_loans.transactionId', '=', 'mlt.transactionLoan');
+                })
+                ->leftJoin('member_loan_types as mem_loan_types', 'mem_loan_types.loanId', '=', 'mem_loans.transactionLoan')
+                ->where('mlt.memberId', $memberId)
+                ->orderBy('mlt.transactionDate', 'DESC')
                 ->get();
-
-            // Calculate dynamic status and interest for each loan
-            foreach ($transactions as $transaction) {
-                // Calculate Interest = Total Loan - Borrowed
-                $transaction->calculated_interest = $transaction->transactionTotalLoan - $transaction->transactionLoanAmount;
-
-                // Calculate balance
-                $balance = $transaction->transactionTotalLoan - $transaction->total_repaid;
-
-                // Get grace period days from loan type or use default 0
-                $gracePeriodDays = $transaction->grace_period_days ?? 0;
-
-                // Get end date
-                $endDate = $transaction->transactionLoanEndDate ? new \DateTime($transaction->transactionLoanEndDate) : null;
-                $today = new \DateTime();
-
-                // Determine dynamic status based on date AND balance
-                if ($balance <= 0) {
-                    // If fully repaid, status is Repaid regardless of date
-                    $transaction->dynamic_status = 'Repaid';
-                } elseif ($endDate) {
-                    // Calculate grace period end date
-                    $graceEndDate = clone $endDate;
-                    $graceEndDate->modify("+{$gracePeriodDays} days");
-
-                    if ($graceEndDate < $today && $balance > 0) {
-                        // Past grace period AND still has balance
-                        $transaction->dynamic_status = 'Defaulted';
-                    } elseif ($endDate < $today && $graceEndDate >= $today && $balance > 0) {
-                        // Past end date but within grace period AND still has balance
-                        $transaction->dynamic_status = 'Late';
-                    } elseif ($endDate >= $today && $balance > 0) {
-                        // Still within loan period AND still has balance
-                        $transaction->dynamic_status = 'Active';
-                    } else {
-                        // Fallback to stored status
-                        $transaction->dynamic_status = $transaction->transactionLoanStatus ?? 'Unknown';
-                    }
-                } else {
-                    // No end date, use stored status
-                    $transaction->dynamic_status = $transaction->transactionLoanStatus ?? 'Unknown';
-                }
-            }
 
             return response()->json([
                 'success' => true,
@@ -3158,7 +3126,7 @@ class BodabodaController extends Controller {
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error fetching loan transactions: ' . $e->getMessage()
+                'message' => 'Error loading loan transactions: ' . $e->getMessage()
             ], 500);
         }
     }

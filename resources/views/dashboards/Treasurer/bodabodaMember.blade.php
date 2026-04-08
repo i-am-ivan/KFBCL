@@ -8328,17 +8328,28 @@
                         .then(data => {
                             if (data.success) {
                                 this.transactions = data.transactions.map(item => ({
+                                    // From member_loans_transactions
                                     transactionId: item.transactionId || '',
-                                    loanType: item.loan_type_name || 'N/A',
-                                    interestRate: item.interest_rate ? item.interest_rate + '%' : '0%',
-                                    borrowed: 'KES ' + Number(item.transactionLoanAmount || 0).toLocaleString(),
-                                    interest: 'KES ' + Number(item.calculated_interest || 0).toLocaleString(),
-                                    total: 'KES ' + Number(item.transactionTotalLoan || 0).toLocaleString(),
-                                    repaid: 'KES ' + Number(item.total_repaid || 0).toLocaleString(),
-                                    startDate: item.transactionLoanStartDate ? new Date(item.transactionLoanStartDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A',
-                                    endDate: item.transactionLoanEndDate ? new Date(item.transactionLoanEndDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A',
-                                    status: item.dynamic_status || item.transactionLoanStatus || 'N/A',
-                                    rawDate: item.transactionCreated ? new Date(item.transactionCreated) : new Date()
+                                    transactionCode: item.transactionCode || 'N/A',
+                                    amount: 'KES ' + Number(item.transactionAmount || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+                                    mode: item.transactionMode || 'N/A',
+                                    type: item.transactionType || 'N/A',
+                                    status: item.transactionStatus || 'N/A',
+                                    rawDate: item.transactionDate ? new Date(item.transactionDate) : new Date(),
+
+                                    // Loan display (formatted: "202605: Emergency Loan @ 10.60%")
+                                    loanDisplay: item.loan_display || 'N/A',
+
+                                    // From member_loans
+                                    borrowed: 'KES ' + Number(item.transactionLoanAmount || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+                                    totalLoan: 'KES ' + Number(item.transactionTotalLoan || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+
+                                    // Calculated total repaid
+                                    repaid: 'KES ' + Number(item.total_repaid || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+
+                                    // Loan type info
+                                    loanTypeName: item.loan_type_name || 'N/A',
+                                    interestRate: item.interest_rate ? item.interest_rate + '%' : '0%'
                                 }));
                             } else {
                                 this.transactions = [];
@@ -8362,7 +8373,7 @@
                         filtered = filtered.filter(t => t.status === this.statusFilter);
                     }
 
-                    // Apply frequency filter
+                    // Apply frequency filter based on transaction date
                     if (this.frequencyFilter !== 'All') {
                         const now = new Date();
                         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -8432,22 +8443,16 @@
                 // Get status class
                 getStatusClass(status) {
                     const statusMap = {
-                        'Active': 'bg-success-100 text-success-600 dark:bg-success-900/30 dark:text-success-400',
-                        'Approved': 'bg-success-100 text-success-600 dark:bg-success-900/30 dark:text-success-400',
-                        'Under Review': 'bg-warning-100 text-warning-600 dark:bg-warning-900/30 dark:text-warning-400',
+                        'Confirmed': 'bg-success-100 text-success-600 dark:bg-success-900/30 dark:text-success-400',
                         'Pending': 'bg-warning-100 text-warning-600 dark:bg-warning-900/30 dark:text-warning-400',
-                        'Late': 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400',
-                        'Repaid': 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400',
-                        'Defaulted': 'bg-error-100 text-error-600 dark:bg-error-900/30 dark:text-error-400',
-                        'Stopped': 'bg-error-100 text-error-600 dark:bg-error-900/30 dark:text-error-400',
-                        'Cancelled': 'bg-error-100 text-error-600 dark:bg-error-900/30 dark:text-error-400'
+                        'Cancelled': 'bg-error-100 text-error-600 dark:bg-error-900/30 dark:text-error-400',
+                        'Reversed': 'bg-error-100 text-error-600 dark:bg-error-900/30 dark:text-error-400'
                     };
                     return statusMap[status] || 'bg-gray-100 text-gray-600 dark:bg-gray-900/30 dark:text-gray-400';
                 },
 
                 // Edit loan transaction - dispatch event to open edit modal
                 editLoanTransaction(transaction) {
-                    // Dispatch event to open edit modal with the transaction data
                     window.dispatchEvent(new CustomEvent('open-edit-loan-transaction-modal', {
                         detail: { transaction: transaction }
                     }));
