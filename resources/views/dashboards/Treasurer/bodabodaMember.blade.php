@@ -2263,7 +2263,7 @@
 
             <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
                 <!-- Hidden Transaction ID -->
-                <input type="hidden" id="edit_transaction_id" name="transaction_id" :value="$store.contributionData.currentContribution?.transactionId">
+                <input type="hidden" id="edit_transaction_id" name="transaction_id" x-model="editFormData.transactionId">
 
                 <!-- Amount -->
                 <div class="w-full px-2.5">
@@ -2273,9 +2273,9 @@
                     <input type="number" step="0.01" min="0.01"
                         id="edit_contribution_Amount"
                         name="amount"
-                        :value="$store.contributionData.currentContribution?.transactionAmount"
+                        x-model="editFormData.amount"
                         @input="clearError('amount')"
-                        @blur="validateField('amount', $event.target.value)"
+                        @blur="validateEditField('amount', editFormData.amount)"
                         :class="errors.amount ? 'border-red-500' : ''"
                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     <span x-show="errors.amount" x-text="errors.amount" class="text-xs text-error-500 mt-1"></span>
@@ -2289,14 +2289,15 @@
                     <div class="relative z-20 bg-transparent">
                         <select id="edit_payment_mode"
                                 name="payment_mode"
-                                @change="handlePaymentModeChange($event.target.value, 'edit'); clearError('payment_mode')"
-                                @blur="validateField('payment_mode', $event.target.value)"
+                                x-model="editFormData.payment_mode"
+                                @change="handleEditPaymentModeChange(editFormData.payment_mode); clearError('payment_mode')"
+                                @blur="validateEditField('payment_mode', editFormData.payment_mode)"
                                 :class="errors.payment_mode ? 'border-red-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                             <option value="">Select Payment Mode</option>
-                            <option value="Cash" :selected="$store.contributionData.currentContribution?.transactionMode === 'Cash'">Cash</option>
-                            <option value="MPesa" :selected="$store.contributionData.currentContribution?.transactionMode === 'MPesa'">MPesa</option>
-                            <option value="Bank" :selected="$store.contributionData.currentContribution?.transactionMode === 'Bank'">Bank</option>
+                            <option value="Cash">Cash</option>
+                            <option value="MPesa">MPesa</option>
+                            <option value="Bank">Bank</option>
                         </select>
                         <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                             <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2315,15 +2316,15 @@
                     <input type="text"
                         id="edit_transaction_code"
                         name="transaction_code"
-                        :value="$store.contributionData.currentContribution?.transactionCode"
-                        :readonly="$store.contributionData.currentContribution?.transactionMode === 'Cash'"
+                        x-model="editFormData.transaction_code"
+                        :readonly="editTransactionCodeReadonly"
                         @input="clearError('transaction_code')"
-                        @blur="validateField('transaction_code', $event.target.value)"
+                        @blur="validateEditField('transaction_code', editFormData.transaction_code)"
                         :class="errors.transaction_code ? 'border-red-500' : ''"
+                        :placeholder="editTransactionCodePlaceholder"
                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
                 </div>
-
 
                 <!-- Transaction Date -->
                 <div class="w-full px-2.5 xl:w-1/2">
@@ -2333,10 +2334,11 @@
                     <input type="text"
                         id="edit_transaction_date"
                         name="transaction_date"
-                        :value="$store.contributionData.currentContribution?.transactionCode"
-                        @input="clearError('transaction_code')"
-                        @blur="validateField('transaction_code', $event.target.value)"
+                        x-model="editFormData.transaction_date"
+                        @input="clearError('transaction_date')"
+                        @blur="validateEditField('transaction_date', editFormData.transaction_date)"
                         :class="errors.transaction_date ? 'border-red-500' : ''"
+                        placeholder="DD MMM YYYY (e.g., 05 Apr 2026)"
                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     <span x-show="errors.transaction_date" x-text="errors.transaction_date" class="text-xs text-error-500 mt-1"></span>
                 </div>
@@ -2349,14 +2351,15 @@
                     <div class="relative z-20 bg-transparent">
                         <select id="edit_status"
                                 name="status"
+                                x-model="editFormData.status"
                                 @change="clearError('status')"
-                                @blur="validateField('status', $event.target.value)"
+                                @blur="validateEditField('status', editFormData.status)"
                                 :class="errors.status ? 'border-red-500' : ''"
                                 class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                             <option value="">Select Status</option>
-                            <option value="Confirmed" :selected="$store.contributionData.currentContribution?.transactionStatus === 'Confirmed'">Confirmed</option>
-                            <option value="Pending" :selected="$store.contributionData.currentContribution?.transactionStatus === 'Pending'">Pending</option>
-                            <option value="Cancelled" :selected="$store.contributionData.currentContribution?.transactionStatus === 'Cancelled'">Cancelled</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Cancelled">Cancelled</option>
                         </select>
                         <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
                             <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -5109,6 +5112,9 @@
                 page: 1,
                 itemsPerPage: 10,
                 errors: {},
+                // Edit form properties
+                editTransactionCodeReadonly: false,
+                editTransactionCodePlaceholder: 'Enter transaction code',
 
                 // Contribute form data
                 contributeFormData: {
@@ -5320,6 +5326,63 @@
                     return isValid;
                 },
 
+                // Validate edit field
+                validateEditField(field, value) {
+                    if (!value || value === '' || value === null) {
+                        this.errors[field] = 'This field is required';
+                        return false;
+                    }
+
+                    switch(field) {
+                        case 'amount':
+                            const amount = parseFloat(value);
+                            if (isNaN(amount) || amount < 10.01) {
+                                this.errors[field] = 'Amount must be greater than KES 10.00';
+                                return false;
+                            }
+                            break;
+
+                        case 'transaction_date':
+                            const datePattern = /^\d{1,2}\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{4}$/;
+                            if (!datePattern.test(value)) {
+                                this.errors[field] = 'Date must be in format: DD MMM YYYY (e.g., 05 Apr 2026)';
+                                return false;
+                            }
+                            break;
+
+                        case 'transaction_code':
+                            if (this.editFormData.payment_mode !== 'Cash' && (!value || value.trim() === '')) {
+                                this.errors[field] = 'Transaction code is required for ' + this.editFormData.payment_mode;
+                                return false;
+                            }
+                            break;
+                    }
+
+                    delete this.errors[field];
+                    return true;
+                },
+
+                validateEditForm() {
+                    this.errors = {};
+                    let isValid = true;
+
+                    const fields = ['amount', 'payment_mode', 'transaction_date', 'status'];
+
+                    for (const field of fields) {
+                        if (!this.validateEditField(field, this.editFormData[field])) {
+                            isValid = false;
+                        }
+                    }
+
+                    if (this.editFormData.payment_mode !== 'Cash') {
+                        if (!this.validateEditField('transaction_code', this.editFormData.transaction_code)) {
+                            isValid = false;
+                        }
+                    }
+
+                    return isValid;
+                },
+
                 handleContributePaymentModeChange(mode) {
                     if (mode === 'Cash') {
                         this.contributeTransactionCodeReadonly = true;
@@ -5328,6 +5391,18 @@
                     } else {
                         this.contributeTransactionCodeReadonly = false;
                         this.contributeTransactionCodePlaceholder = 'Enter transaction code';
+                    }
+                    this.clearError('transaction_code');
+                },
+
+                handleEditPaymentModeChange(mode) {
+                    if (mode === 'Cash') {
+                        this.editTransactionCodeReadonly = true;
+                        this.editTransactionCodePlaceholder = 'Auto-generated on submit';
+                        this.editFormData.transaction_code = '';
+                    } else {
+                        this.editTransactionCodeReadonly = false;
+                        this.editTransactionCodePlaceholder = 'Enter transaction code';
                     }
                     this.clearError('transaction_code');
                 },
@@ -5627,8 +5702,68 @@
 
                 // Update Contribution Transaction
                 updateContribution() {
-                    // Validation for edit form would go here
-                    alert('Update functionality - implement similar validation');
+                    if (!this.validateEditForm()) {
+                        alert('INVALID INPUTS! Fix errors to continue');
+                        return;
+                    }
+
+                    Alpine.store('contributionData').isUpdating = true;
+
+                    const formattedDate = this.formatDateForDatabase(this.editFormData.transaction_date);
+
+                    const formData = {
+                        amount: this.editFormData.amount,
+                        payment_mode: this.editFormData.payment_mode,
+                        transaction_code: this.editFormData.transaction_code || '',
+                        transaction_date: formattedDate,
+                        status: this.editFormData.status,
+                        _token: document.querySelector('input[name="_token"]')?.value
+                    };
+
+                    fetch(`/bodaboda-member/{{ $memberId }}/contribution/${this.editFormData.transactionId}/update`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        setTimeout(() => {
+                            Alpine.store('contributionData').isUpdating = false;
+
+                            if (data.success) {
+                                alert(data.message);
+                                window.location.reload();
+                            } else {
+                                if (data.errors) {
+                                    for (const [field, messages] of Object.entries(data.errors)) {
+                                        const fieldMap = {
+                                            'amount': 'amount',
+                                            'payment_mode': 'payment_mode',
+                                            'transaction_code': 'transaction_code',
+                                            'transaction_date': 'transaction_date',
+                                            'status': 'status'
+                                        };
+                                        const mappedField = fieldMap[field] || field;
+                                        this.errors[mappedField] = messages[0];
+                                    }
+                                    alert('INVALID INPUTS! Fix errors to continue');
+                                } else {
+                                    alert('Error: ' + data.message);
+                                }
+                            }
+                        }, 750);
+                    })
+                    .catch(error => {
+                        setTimeout(() => {
+                            Alpine.store('contributionData').isUpdating = false;
+                            alert('Error updating transaction. Please try again.');
+                            console.error('Error:', error);
+                        }, 750);
+                    });
                 },
 
                 // Print receipt method

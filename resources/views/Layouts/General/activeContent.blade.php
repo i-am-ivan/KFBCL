@@ -556,7 +556,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </div>
 
                     </div>
@@ -1005,13 +1005,17 @@
                                         <div>
                                             <div class="custom-scrollbar overflow-x-auto">
                                                 <table class="w-full table-auto">
+
                                                     <thead>
                                                         <tr class="border-b border-gray-200 dark:divide-gray-800 dark:border-gray-800">
                                                             <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                #Transaction Code
+                                                                Transaction ID
                                                             </th>
                                                             <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                 Amount
+                                                            </th>
+                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                Transaction Date
                                                             </th>
                                                             <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                 Mode
@@ -1020,13 +1024,13 @@
                                                                 Transaction Code
                                                             </th>
                                                             <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                Transaction Date
+                                                                Type
                                                             </th>
                                                             <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                 Status
                                                             </th>
                                                             <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
-                                                                Action
+                                                                Actions
                                                             </th>
                                                         </tr>
                                                     </thead>
@@ -1056,28 +1060,56 @@
                                                         <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800">
                                                             <template x-for="contribution in paginatedContributions" :key="contribution.transactionId">
                                                                 <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-900">
+                                                                    <!-- Transaction ID (clickable link) -->
                                                                     <td class="p-4 whitespace-nowrap">
                                                                         <div class="group flex items-center gap-3">
-                                                                            <span class="text-theme-xs font-medium text-gray-700 dark:text-gray-400" x-text="contribution.transactionCode || 'N/A'"></span>
+                                                                            <a href="#" @click.prevent="$dispatch('open-edit-contribution-modal', { contribution: contribution })"
+                                                                            class="text-theme-xs font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300 hover:underline cursor-pointer">
+                                                                                <span x-text="contribution.transactionId || 'N/A'"></span>
+                                                                            </a>
                                                                         </div>
                                                                     </td>
-                                                                    <!-- Amount -->
+
+                                                                    <!-- Amount with coloring based on type -->
                                                                     <td class="p-4 whitespace-nowrap">
                                                                         <div>
-                                                                            <span class="text-sm font-medium text-gray-700 dark:text-gray-400" x-text="'Ksh ' + (contribution.transactionAmount ? contribution.transactionAmount.toLocaleString() : '0')"></span>
+                                                                            <span x-show="contribution.transactionType === 'Paid-In'"
+                                                                                class="text-sm font-medium text-success-600 dark:text-success-400">
+                                                                                KES <span x-text="contribution.transactionAmount ? contribution.transactionAmount.toLocaleString('en-KE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00'"></span>
+                                                                            </span>
+                                                                            <span x-show="contribution.transactionType === 'Paid-Out'"
+                                                                                class="text-sm font-medium text-error-600 dark:text-error-400">
+                                                                                - KES <span x-text="contribution.transactionAmount ? contribution.transactionAmount.toLocaleString('en-KE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00'"></span>
+                                                                            </span>
                                                                         </div>
                                                                     </td>
+
+                                                                    <!-- Transaction Date -->
+                                                                    <td class="p-4 whitespace-nowrap">
+                                                                        <p class="text-sm text-gray-700 dark:text-gray-400" x-text="contribution.transactionDate ? new Date(contribution.transactionDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'"></p>
+                                                                    </td>
+
+                                                                    <!-- Mode -->
                                                                     <td class="p-4 whitespace-nowrap">
                                                                         <div>
                                                                             <span class="text-sm text-gray-700 dark:text-gray-400" x-text="contribution.transactionMode || 'N/A'"></span>
                                                                         </div>
                                                                     </td>
+
+                                                                    <!-- Transaction Code -->
                                                                     <td class="p-4 whitespace-nowrap">
-                                                                         <span class="text-sm text-gray-700 dark:text-gray-400" x-text="contribution.transactionType || 'N/A'"></span>
+                                                                        <span class="text-sm text-gray-700 dark:text-gray-400" x-text="contribution.transactionCode || 'N/A'"></span>
                                                                     </td>
+
+                                                                    <!-- Type with coloring -->
                                                                     <td class="p-4 whitespace-nowrap">
-                                                                        <p class="text-sm text-gray-700 dark:text-gray-400" x-text="contribution.transactionDate ? new Date(contribution.transactionDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'"></p>
+                                                                        <span :class="contribution.transactionType === 'Paid-In' ? 'bg-success-100 text-success-700 dark:bg-success-900/30 dark:text-success-400' : 'bg-warning-100 text-warning-700 dark:bg-warning-900/30 dark:text-warning-400'"
+                                                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">
+                                                                            <span x-text="contribution.transactionType || 'N/A'"></span>
+                                                                        </span>
                                                                     </td>
+
+                                                                    <!-- Status -->
                                                                     <td class="p-4 whitespace-nowrap">
                                                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" :class="{
                                                                                 'bg-success-100 text-success-600 dark:bg-success-900/30 dark:text-success-400': contribution.transactionStatus === 'Confirmed' || contribution.transactionStatus === 'Approved',
@@ -1086,6 +1118,8 @@
                                                                             }" x-text="contribution.transactionStatus || 'N/A'">
                                                                         </span>
                                                                     </td>
+
+                                                                    <!-- Actions -->
                                                                     <td class="p-4 whitespace-nowrap">
                                                                         <button @click="$dispatch('open-edit-contribution-modal', { contribution: contribution })"
                                                                             class="shadow-theme-xs inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
