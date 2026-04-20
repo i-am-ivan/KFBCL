@@ -322,11 +322,33 @@
                 @csrf
 
                 <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
+
+
                                                                                     <div class="w-full px-2.5">
                                                                                         <h4 class="border-b border-gray-200 pb-4 text-base font-medium text-gray-800 dark:border-gray-800 dark:text-white/90">
                                                                                             Personal Info
                                                                                         </h4>
                                                                                     </div>
+
+                                                                                    <!-- Member Number -->
+                                                                                    <div class="w-full px-2.5 xl:w-1/2">
+                                                                                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                                                                                            Member Number
+                                                                                        </label>
+                                                                                        <input type="text"
+                                                                                            id="member_number"
+                                                                                            name="member_number"
+                                                                                            :value="memberData?.member?.member_number || 'Loading ... '"
+                                                                                            @input="clearError('member_number')"
+                                                                                            @blur="validateField('member_number', $event.target.value)"
+                                                                                            :class="errors.member_number ? 'border-error-500' : ''"
+                                                                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+
+                                                                                            <span x-show="errors.member_number" x-text="errors.member_number" class="text-xs text-error-500 mt-1"></span>
+                                                                                    </div>
+
+                                                                                    <div class="w-full px-2.5 xl:w-1/2"></div>
+
                                                                                     <!-- First Name -->
                                                                                     <div class="w-full px-2.5 xl:w-1/2">
                                                                                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
@@ -358,23 +380,6 @@
                                                                                             :class="errors.last_name ? 'border-red-500' : ''"
                                                                                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                                                                         <span x-show="errors.last_name" x-text="errors.last_name" class="text-xs text-red-500 mt-1"></span>
-                                                                                    </div>
-
-                                                                                    <!-- Member Number -->
-                                                                                    <div class="w-full px-2.5 xl:w-1/2">
-                                                                                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                                                                                            Member Number
-                                                                                        </label>
-                                                                                        <input type="text"
-                                                                                            id="personal_first_name"
-                                                                                            name="personal_first_name"
-                                                                                            :value="memberData?.member?.member_number || 'N/A'"
-                                                                                            @input="clearError('first_name')"
-                                                                                            @blur="validateField('first_name', $event.target.value)"
-                                                                                            :class="errors.first_name ? 'border-red-500' : ''"
-                                                                                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-
-                                                                                            <span x-show="errors.first_name" x-text="errors.first_name" class="text-xs text-red-500 mt-1"></span>
                                                                                     </div>
 
                                                                                     <!-- Email -->
@@ -3001,11 +3006,11 @@
                         <input type="text"
                             id="total_repayment"
                             name="total_repayment"
-                            readonly
                             x-model="totalRepayment"
                             placeholder="Total Payable"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 bg-gray-50">
                     </div>
+                    <span x-show="errors.total_repayment" x-text="errors.total_repayment" class="text-xs text-error-500 mt-1"></span>
                 </div>
 
                 <!-- Total Interest (Hidden) -->
@@ -3022,7 +3027,7 @@
                         x-model="editAssignedDate"
                         @input="handleAssignedDateChange($event.target.value); clearError('assigned_date')"
                         @blur="validateAssignedDate($event.target.value)"
-                        :class="errors.assigned_date ? 'border-red-500' : ''"
+                        :class="errors.assigned_date ? 'border-error-500' : ''"
                         placeholder="DD MMM YYYY"
                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                     <span x-show="errors.assigned_date" x-text="errors.assigned_date" class="text-xs text-error-500 mt-1"></span>
@@ -3407,6 +3412,16 @@
                             class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
                         Cancel
                     </button>
+
+                    <button type="button"
+                        id="deleteMemberLoan"
+                        @click="deleteMemberLoan"
+                        class="rounded-lg border border-error-300 bg-white px-5 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]"
+                        :disabled="$store.memberLoanData.isDeleting">
+                        <span x-show="!$store.memberLoanData.isDeleting">Delete</span>
+                        <span x-show="$store.memberLoanData.isDeleting">Deleting...</span>
+                    </button>
+
                     <button type="submit"
                             class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
                             :disabled="$store.loanData.isUpdating">
@@ -3881,17 +3896,30 @@
             </div>
 
             <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+
                 <button @click="$store.loanData.editLoanTransactionModal = false" type="button"
                         class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
                     Cancel
                 </button>
+
+                <button type="button"
+                        id="deleteMemberLoanTransaction"
+                        @click="deleteMemberLoanTransaction"
+                        class="rounded-lg border border-error-300 bg-white px-5 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]"
+                        :disabled="$store.memberLoanTransactionData.isDeleting">
+                    <span x-show="!$store.memberLoanTransactionData.isDeleting">Delete</span>
+                    <span x-show="$store.memberLoanTransactionData.isDeleting">Deleting...</span>
+                </button>
+
                 <button type="submit"
                         class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
                         :disabled="$store.loanData.isUpdating">
                     <span x-show="!$store.loanData.isUpdating">Update Transaction</span>
                     <span x-show="$store.loanData.isUpdating">Updating...</span>
                 </button>
+
             </div>
+
         </form>
 
         </div>
@@ -3901,66 +3929,66 @@
     <div x-show="finesPenaltiesModal" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999">
         <div class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
         <div @click.outside="finesPenaltiesModal = false" class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
-        <!-- close btn -->
-        <button @click="finesPenaltiesModal = false" class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300">
-            <svg
-                    class="fill-current"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-            >
-            <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M6.04289 16.5418C5.65237 16.9323 5.65237 17.5655 6.04289 17.956C6.43342 18.3465 7.06658 18.3465 7.45711 17.956L11.9987 13.4144L16.5408 17.9565C16.9313 18.347 17.5645 18.347 17.955 17.9565C18.3455 17.566 18.3455 16.9328 17.955 16.5423L13.4129 12.0002L17.955 7.45808C18.3455 7.06756 18.3455 6.43439 17.955 6.04387C17.5645 5.65335 16.9313 5.65335 16.5408 6.04387L11.9987 10.586L7.45711 6.04439C7.06658 5.65386 6.43342 5.65386 6.04289 6.04439C5.65237 6.43491 5.65237 7.06808 6.04289 7.4586L10.5845 12.0002L6.04289 16.5418Z"
-                    fill=""
-            />
-            </svg>
-        </button>
-        <div class="px-2 pr-14">
-            <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Withdraw from Wallet</h4>
-            <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the amount you wish to withdraw.</p>
-        </div>
-        <form class="flex flex-col">
-            <div class="custom-scrollbar h-[450px] overflow-y-auto px-2">
-            <div class="mt-7">
-                <h5 class="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">Withdraw</h5>
+            <!-- close btn -->
+            <button @click="finesPenaltiesModal = false" class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300">
+                <svg
+                        class="fill-current"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                >
+                <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M6.04289 16.5418C5.65237 16.9323 5.65237 17.5655 6.04289 17.956C6.43342 18.3465 7.06658 18.3465 7.45711 17.956L11.9987 13.4144L16.5408 17.9565C16.9313 18.347 17.5645 18.347 17.955 17.9565C18.3455 17.566 18.3455 16.9328 17.955 16.5423L13.4129 12.0002L17.955 7.45808C18.3455 7.06756 18.3455 6.43439 17.955 6.04387C17.5645 5.65335 16.9313 5.65335 16.5408 6.04387L11.9987 10.586L7.45711 6.04439C7.06658 5.65386 6.43342 5.65386 6.04289 6.04439C5.65237 6.43491 5.65237 7.06808 6.04289 7.4586L10.5845 12.0002L6.04289 16.5418Z"
+                        fill=""
+                />
+                </svg>
+            </button>
+            <div class="px-2 pr-14">
+                <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Withdraw from Wallet</h4>
+                <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the amount you wish to withdraw.</p>
+            </div>
+            <form class="flex flex-col">
+                <div class="custom-scrollbar h-[450px] overflow-y-auto px-2">
+                <div class="mt-7">
+                    <h5 class="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">Withdraw</h5>
 
-                <div class="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-                <div class="col-span-2 lg:col-span-1">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Amount</label>
-                    <input type="text" placeholder="Enter Amount ..."
-                        class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"/>
-                </div>
+                    <div class="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                    <div class="col-span-2 lg:col-span-1">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Amount</label>
+                        <input type="text" placeholder="Enter Amount ..."
+                            class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"/>
+                    </div>
 
-                <div class="col-span-2 lg:col-span-1">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Confirm Password</label>
-                    <input type="password" placeholder="Confirm Password"
-                        class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"/>
+                    <div class="col-span-2 lg:col-span-1">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Confirm Password</label>
+                        <input type="password" placeholder="Confirm Password"
+                            class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"/>
+                    </div>
+                    </div>
                 </div>
                 </div>
-            </div>
-            </div>
-            <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-            <button @click="finesPenaltiesModal = false" type="button"
-                    class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
-                Cancel</button>
-            <button type="button" class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">Withdraw</button>
-            </div>
-        </form>
+                <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+                <button @click="finesPenaltiesModal = false" type="button"
+                        class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
+                    Cancel</button>
+                <button type="button" class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">Withdraw</button>
+                </div>
+            </form>
         </div>
     </div>
 
     <!-- deleteMemberAccount -->
-    <div x-show="deleteMemberAccount" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999">
+    <div x-show="$store.deactivationModal.open" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999">
 
         <div class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
 
-        <div @click.outside="deleteMemberAccount = false" class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+        <div @click.outside="$store.deactivationModal.closeModal()" class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11" x-data="memberInfo" x-init="init()">
             <!-- close btn -->
-            <button @click="deleteMemberAccount = false" class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300">
+            <button @click="$store.deactivationModal.closeModal()" class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300">
                 <svg
                         class="fill-current"
                         width="24"
@@ -3978,54 +4006,68 @@
                 </svg>
             </button>
 
-                <div class="text-center">
-
-                    <div class="relative z-1 mb-7 flex items-center justify-center">
-                        <svg class="fill-error-50 dark:fill-error-500/15" width="90" height="90" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M34.364 6.85053C38.6205 -2.28351 51.3795 -2.28351 55.636 6.85053C58.0129 11.951 63.5594 14.6722 68.9556 13.3853C78.6192 11.0807 86.5743 21.2433 82.2185 30.3287C79.7862 35.402 81.1561 41.5165 85.5082 45.0122C93.3019 51.2725 90.4628 63.9451 80.7747 66.1403C75.3648 67.3661 71.5265 72.2695 71.5572 77.9156C71.6123 88.0265 60.1169 93.6664 52.3918 87.3184C48.0781 83.7737 41.9219 83.7737 37.6082 87.3184C29.8831 93.6664 18.3877 88.0266 18.4428 77.9156C18.4735 72.2695 14.6352 67.3661 9.22531 66.1403C-0.462787 63.9451 -3.30193 51.2725 4.49185 45.0122C8.84391 41.5165 10.2138 35.402 7.78151 30.3287C3.42572 21.2433 11.3808 11.0807 21.0444 13.3853C26.4406 14.6722 31.9871 11.951 34.364 6.85053Z" fill="" fill-opacity=""></path>
+                <!-- Check if the Member account is Active/De-Activated -->
+                <!-- Activate Member Account -->
+                <div class="text-center" x-show="isDeactivated">
+                    <div class="relative flex items-center justify-center z-1 mb-7">
+                        <svg class="fill-success-50 dark:fill-success-500/15" width="90" height="90" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M34.364 6.85053C38.6205 -2.28351 51.3795 -2.28351 55.636 6.85053C58.0129 11.951 63.5594 14.6722 68.9556 13.3853C78.6192 11.0807 86.5743 21.2433 82.2185 30.3287C79.7862 35.402 81.1561 41.5165 85.5082 45.0122C93.3019 51.2725 90.4628 63.9451 80.7747 66.1403C75.3648 67.3661 71.5265 72.2695 71.5572 77.9156C71.6123 88.0265 60.1169 93.6664 52.3918 87.3184C48.0781 83.7737 41.9219 83.7737 37.6082 87.3184C29.8831 93.6664 18.3877 88.0266 18.4428 77.9156C18.4735 72.2695 14.6352 67.3661 9.22531 66.1403C-0.462787 63.9451 -3.30193 51.2725 4.49185 45.0122C8.84391 41.5165 10.2138 35.402 7.78151 30.3287C3.42572 21.2433 11.3808 11.0807 21.0444 13.3853C26.4406 14.6722 31.9871 11.951 34.364 6.85053Z" fill="" fill-opacity=""></path>
                         </svg>
 
-                        <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                        <svg class="fill-error-600 dark:fill-error-500" width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.62684 11.7496C9.04105 11.1638 9.04105 10.2141 9.62684 9.6283C10.2126 9.04252 11.1624 9.04252 11.7482 9.6283L18.9985 16.8786L26.2485 9.62851C26.8343 9.04273 27.7841 9.04273 28.3699 9.62851C28.9556 10.2143 28.9556 11.164 28.3699 11.7498L21.1198 18.9999L28.3699 26.25C28.9556 26.8358 28.9556 27.7855 28.3699 28.3713C27.7841 28.9571 26.8343 28.9571 26.2485 28.3713L18.9985 21.1212L11.7482 28.3715C11.1624 28.9573 10.2126 28.9573 9.62684 28.3715C9.04105 27.7857 9.04105 26.836 9.62684 26.2502L16.8771 18.9999L9.62684 11.7496Z" fill=""></path>
-                        </svg>
+                        <span class="absolute -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2">
+                            <svg class="fill-success-600 dark:fill-success-500" width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M5.9375 19.0004C5.9375 11.7854 11.7864 5.93652 19.0014 5.93652C26.2164 5.93652 32.0653 11.7854 32.0653 19.0004C32.0653 26.2154 26.2164 32.0643 19.0014 32.0643C11.7864 32.0643 5.9375 26.2154 5.9375 19.0004ZM19.0014 2.93652C10.1296 2.93652 2.9375 10.1286 2.9375 19.0004C2.9375 27.8723 10.1296 35.0643 19.0014 35.0643C27.8733 35.0643 35.0653 27.8723 35.0653 19.0004C35.0653 10.1286 27.8733 2.93652 19.0014 2.93652ZM24.7855 17.0575C25.3713 16.4717 25.3713 15.522 24.7855 14.9362C24.1997 14.3504 23.25 14.3504 22.6642 14.9362L17.7177 19.8827L15.3387 17.5037C14.7529 16.9179 13.8031 16.9179 13.2173 17.5037C12.6316 18.0894 12.6316 19.0392 13.2173 19.625L16.657 23.0647C16.9383 23.346 17.3199 23.504 17.7177 23.504C18.1155 23.504 18.4971 23.346 18.7784 23.0647L24.7855 17.0575Z" fill=""></path>
+                            </svg>
                         </span>
                     </div>
 
-                    <!-- De-Activate Account Component -->
-                    <div x-data="accountDeactivation">
-                        <h4 class="sm:text-title-sm mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-                            Confirm Account De-Activation
-                        </h4>
-                        <p class="text-sm leading-6 text-gray-500 dark:text-gray-400">
-                            Are you sure you want to De-Activate this member's account?.
-                        </p>
+                    <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90 sm:text-title-sm">
+                        Activate Member Account!
+                    </h4>
+                    <p class="text-sm leading-6 text-gray-500 dark:text-gray-400">
+                        Activate Member: <span class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.firstname || memberData?.member?.lastname ? (memberData.member.firstname || '') + ' ' + (memberData.member.lastname || '').trim() : 'Loading...'"></span>.
+                    </p>
 
-                        <!-- Error display -->
-                        <template x-if="errors.general">
-                            <div class="mt-4 rounded-lg bg-error-50 p-4 text-sm text-error-700 dark:bg-error-500/15 dark:text-error-500">
-                                <p x-text="errors.general"></p>
-                            </div>
-                        </template>
+                    <div class="flex items-center justify-center w-full gap-3 mt-7">
+                        <button @click="$store.deactivationModal.closeModal()" type="button" class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 sm:w-auto">
+                            Cancel
+                        </button>
+                        <button type="button" class="flex justify-center w-full px-4 py-3 text-sm font-medium text-white rounded-lg bg-success-500 shadow-theme-xs hover:bg-success-600 sm:w-auto">
+                            Activate
+                        </button>
+                    </div>
 
-                        <div class="mt-8 flex w-full items-center justify-center gap-3">
-                            <button
-                                @click="closeDeactivationModal"
-                                type="button"
-                                class="shadow-theme-xs flex justify-center rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-                                No, Cancel
-                            </button>
-                            <button
-                                @click="deactivateAccount"
-                                :disabled="isDeactivating"
-                                type="button"
-                                class="shadow-theme-xs flex justify-center rounded-lg bg-red-500 px-4 py-3 text-sm font-medium text-white hover:bg-red-600 disabled:opacity-70 disabled:cursor-not-allowed">
-                                <span x-show="!isDeactivating">Yes, Deactivate Account</span>
-                                <span x-show="isDeactivating" class="flex items-center">
-                                    Deactivating...
-                                </span>
-                            </button>
-                        </div>
+                </div>
+
+                <!-- De-Activate Member Account -->
+                <div class="text-center" x-show="!isDeactivated">
+
+                    <div class="relative flex items-center justify-center z-1 mb-7">
+                        <svg class="fill-error-50 dark:fill-error-500/15" width="90" height="90" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M34.364 6.85053C38.6205 -2.28351 51.3795 -2.28351 55.636 6.85053C58.0129 11.951 63.5594 14.6722 68.9556 13.3853C78.6192 11.0807 86.5743 21.2433 82.2185 30.3287C79.7862 35.402 81.1561 41.5165 85.5082 45.0122C93.3019 51.2725 90.4628 63.9451 80.7747 66.1403C75.3648 67.3661 71.5265 72.2695 71.5572 77.9156C71.6123 88.0265 60.1169 93.6664 52.3918 87.3184C48.0781 83.7737 41.9219 83.7737 37.6082 87.3184C29.8831 93.6664 18.3877 88.0266 18.4428 77.9156C18.4735 72.2695 14.6352 67.3661 9.22531 66.1403C-0.462787 63.9451 -3.30193 51.2725 4.49185 45.0122C8.84391 41.5165 10.2138 35.402 7.78151 30.3287C3.42572 21.2433 11.3808 11.0807 21.0444 13.3853C26.4406 14.6722 31.9871 11.951 34.364 6.85053Z" fill="" fill-opacity=""></path>
+                        </svg>
+
+                        <span class="absolute -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2">
+                            <svg class="fill-error-600 dark:fill-error-500" width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.62684 11.7496C9.04105 11.1638 9.04105 10.2141 9.62684 9.6283C10.2126 9.04252 11.1624 9.04252 11.7482 9.6283L18.9985 16.8786L26.2485 9.62851C26.8343 9.04273 27.7841 9.04273 28.3699 9.62851C28.9556 10.2143 28.9556 11.164 28.3699 11.7498L21.1198 18.9999L28.3699 26.25C28.9556 26.8358 28.9556 27.7855 28.3699 28.3713C27.7841 28.9571 26.8343 28.9571 26.2485 28.3713L18.9985 21.1212L11.7482 28.3715C11.1624 28.9573 10.2126 28.9573 9.62684 28.3715C9.04105 27.7857 9.04105 26.836 9.62684 26.2502L16.8771 18.9999L9.62684 11.7496Z" fill=""></path>
+                            </svg>
+                        </span>
+                    </div>
+
+                    <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90 sm:text-title-sm">
+                        De-Activate Member Account!
+                    </h4>
+                    <p class="text-sm leading-6 text-gray-500 dark:text-gray-400">
+                        De-Activate Member: <span class="text-sm font-medium text-gray-800 dark:text-white/90" x-text="memberData?.member?.firstname || memberData?.member?.lastname ? (memberData.member.firstname || '') + ' ' + (memberData.member.lastname || '').trim() : 'Loading...'"></span> Account
+                    </p>
+
+                    <div class="flex items-center justify-center w-full gap-3 mt-7">
+                        <button @click="$store.deactivationModal.closeModal()" type="button" class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 sm:w-auto">
+                            Cancel
+                        </button>
+                        <button type="button" class="flex justify-center w-full px-4 py-3 text-sm font-medium text-white rounded-lg bg-error-500 shadow-theme-xs hover:bg-error-600 sm:w-auto">
+                            De-Activate
+                        </button>
                     </div>
 
                 </div>
@@ -4042,19 +4084,36 @@
 
     <!-- Member -->
     <script>
+
         document.addEventListener('alpine:init', () => {
+
+            Alpine.store('deactivationModal', {
+                open: false,
+                toggle() {
+                    this.open = !this.open;
+                },
+                openModal() {
+                    this.open = true;
+                },
+                closeModal() {
+                    this.open = false;
+                }
+            });
+
             Alpine.data('memberInfo', () => ({
                 memberData: null,
                 errors: {},
                 isUpdating: false,
                 memberStatus: '',
+                deleteMemberAccount: false,
+                activateMemberAccount: false,
+                isDeactivating: false,
 
                 init() {
                     fetch('/treasurer/bodaboda-member/{{ $memberId }}/data')
                         .then(res => res.json())
                         .then(data => {
                             this.memberData = data;
-                            // Set the member status from the loaded data
                             if (data.member && data.member.status) {
                                 this.memberStatus = data.member.status;
                             }
@@ -4073,30 +4132,13 @@
                     });
                 },
 
-                // Phone validation for Kenyan numbers
                 validatePhone(phone) {
-                    if (!phone || phone === 'N/A') return true; // Optional field
-
-                    // Remove all spaces and common separators
+                    if (!phone || phone === 'N/A') return true;
                     const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
-
-                    // Kenyan phone patterns:
-                    // 07XX XXXXXX, 01XX XXXXXX
-                    // 2547XX XXXXXX, 2541XX XXXXXX
-                    // +2547XX XXXXXX, +2541XX XXXXXX
-                    // +254 20 XXX XXXX, 20 XXX XXXX (landline)
                     const patterns = [
-                        /^07\d{8}$/,           // 0712345678
-                        /^01\d{8}$/,           // 0112345678
-                        /^2547\d{8}$/,          // 254712345678
-                        /^2541\d{8}$/,          // 254112345678
-                        /^\+2547\d{8}$/,        // +254712345678
-                        /^\+2541\d{8}$/,        // +254112345678
-                        /^20\d{7}$/,            // 201234567 (landline)
-                        /^\+25420\d{7}$/,       // +254201234567 (landline)
-                        /^\d{9}$/               // Generic 9-digit (for other formats)
+                        /^07\d{8}$/, /^01\d{8}$/, /^2547\d{8}$/, /^2541\d{8}$/,
+                        /^\+2547\d{8}$/, /^\+2541\d{8}$/, /^20\d{7}$/, /^\+25420\d{7}$/, /^\d{9}$/
                     ];
-
                     return patterns.some(pattern => pattern.test(cleanPhone));
                 },
 
@@ -4112,59 +4154,53 @@
                         delete this.errors[field];
                         return true;
                     }
-
-                    // Check file size (5MB max)
                     if (file.size > 5 * 1024 * 1024) {
                         this.errors[field] = 'File size must not exceed 5MB';
                         return false;
                     }
-
-                    // Check file type
                     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
                     if (!allowedTypes.includes(file.type)) {
                         this.errors[field] = 'File must be PNG, JPG, or WebP';
                         return false;
                     }
-
                     delete this.errors[field];
                     return true;
                 },
 
                 validateField(field, value) {
-                    // Clear previous error for this field
-                    if (!value || value === 'N/A' || value === '' || value === null) {
+                    if (!value || value === 'Loading ...' || value === '' || value === null) {
                         this.errors[field] = 'This field is required';
                         return false;
                     }
-
                     if (field === 'email' && !this.validateEmail(value)) {
                         this.errors[field] = 'Please enter a valid email address';
                         return false;
                     }
-
-                    if ((field === 'primary_phone' || field === 'secondary_phone') && value !== 'N/A' && value !== '') {
+                    if ((field === 'primary_phone' || field === 'secondary_phone') && value !== 'Loading ...' && value !== '') {
                         if (!this.validatePhone(value)) {
                             this.errors[field] = 'Please enter a valid Kenyan phone number';
                             return false;
                         }
                     }
-
-                    // Clear error if validation passes
+                    if (field === 'member_number') {
+                        if (!value || value.trim() === '') {
+                            this.errors[field] = 'Member number is required';
+                            return false;
+                        }
+                        return true;
+                    }
                     delete this.errors[field];
                     return true;
                 },
 
                 clearError(field) {
-                    if (this.errors[field]) {
-                        delete this.errors[field];
-                    }
+                    if (this.errors[field]) delete this.errors[field];
                 },
 
                 validatePersonalForm() {
                     this.errors = {};
                     let isValid = true;
-
-                    // Get form values
+                    const memberNumber = document.getElementById('member_number')?.value;
                     const firstName = document.getElementById('personal_first_name')?.value;
                     const lastName = document.getElementById('personal_last_name')?.value;
                     const email = document.getElementById('personal_email')?.value;
@@ -4175,7 +4211,7 @@
                     const membership = document.getElementById('personal_membership')?.value;
                     const status = document.getElementById('personal_status')?.value;
 
-                    // Validate each field
+                    if (!this.validateField('member_number', memberNumber)) isValid = false;
                     if (!this.validateField('first_name', firstName)) isValid = false;
                     if (!this.validateField('last_name', lastName)) isValid = false;
                     if (!this.validateField('email', email)) isValid = false;
@@ -4199,7 +4235,6 @@
                         this.errors.status = 'Please select status';
                         isValid = false;
                     }
-
                     return isValid;
                 },
 
@@ -4208,12 +4243,9 @@
                         alert('Please fix the errors in the form before submitting.');
                         return;
                     }
-
-                    // Change button text
                     this.isUpdating = true;
-
-                    // Get form values
                     const formData = {
+                        member_number: document.getElementById('member_number')?.value,
                         first_name: document.getElementById('personal_first_name')?.value,
                         last_name: document.getElementById('personal_last_name')?.value,
                         email: document.getElementById('personal_email')?.value,
@@ -4225,66 +4257,48 @@
                         status: document.getElementById('personal_status')?.value,
                         _token: document.querySelector('input[name="_token"]')?.value
                     };
-
-                    // Send to backend
                     fetch('/bodaboda-member/{{ $memberId }}/update-personal', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value
-                        },
+                        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value },
                         body: JSON.stringify(formData)
                     })
                     .then(res => res.json())
                     .then(data => {
                         setTimeout(() => {
                             this.isUpdating = false;
-
                             if (data.success) {
                                 alert(data.message);
-                                // Reload the current page
                                 window.location.reload();
                             } else {
                                 alert('Error: ' + data.message);
                             }
-                        }, 750); // 0.75 second delay
+                        }, 500);
                     })
                     .catch(error => {
                         setTimeout(() => {
                             this.isUpdating = false;
                             alert('Error updating member information. Please try again.');
                             console.error('Error:', error);
-                        }, 750);
+                        }, 500);
                     });
                 },
 
                 validateIdentificationForm() {
                     this.errors = {};
                     let isValid = true;
-
-                    // Get form values
                     const nationalId = document.getElementById('identification_national_id')?.value;
-                    const drivingLicense = document.getElementById('identification_driving_license')?.value;
-                    const licenseType = document.getElementById('identification_license_type')?.value;
-                    const ntsaCompliant = document.getElementById('identification_ntsa_compliant')?.value;
                     const status = document.getElementById('identification_status')?.value;
-
-                    // Validate required fields
                     if (!nationalId || nationalId === '') {
                         this.errors['identification.national_id'] = 'National ID number is required';
                         isValid = false;
                     }
-
                     if (!status || status === '') {
                         this.errors['identification.status'] = 'Verification status is required';
                         isValid = false;
                     }
-
-                    // Check file validation errors (they would have been set during file change)
                     if (this.errors['identification.id_front'] || this.errors['identification.id_back']) {
                         isValid = false;
                     }
-
                     return isValid;
                 },
 
@@ -4293,50 +4307,29 @@
                         alert('Please fix the errors in the form before submitting.');
                         return;
                     }
-
-                    // Change button text
                     this.isUpdating = true;
-
-                    // Create FormData object for file upload
                     const formData = new FormData();
-
-                    // Add all form fields
                     formData.append('national_id', document.getElementById('identification_national_id')?.value || '');
                     formData.append('driving_license', document.getElementById('identification_driving_license')?.value || '');
                     formData.append('license_type', document.getElementById('identification_license_type')?.value || '');
                     formData.append('ntsa_compliant', document.getElementById('identification_ntsa_compliant')?.value || '');
                     formData.append('status', document.getElementById('identification_status')?.value || '');
-
-                    // Add files if selected
                     const idFront = document.getElementById('identification_id_front')?.files[0];
-                    if (idFront) {
-                        formData.append('id_front', idFront);
-                    }
-
+                    if (idFront) formData.append('id_front', idFront);
                     const idBack = document.getElementById('identification_id_back')?.files[0];
-                    if (idBack) {
-                        formData.append('id_back', idBack);
-                    }
-
-                    // Add CSRF token
+                    if (idBack) formData.append('id_back', idBack);
                     formData.append('_token', document.querySelector('input[name="_token"]')?.value);
-
-                    // Send to backend
                     fetch('/bodaboda-member/{{ $memberId }}/update-identification', {
                         method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value
-                        },
+                        headers: { 'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value },
                         body: formData
                     })
                     .then(res => res.json())
                     .then(data => {
                         setTimeout(() => {
                             this.isUpdating = false;
-
                             if (data.success) {
                                 alert(data.message);
-                                // Reload the current page
                                 window.location.reload();
                             } else {
                                 alert('Error: ' + data.message);
@@ -4351,16 +4344,14 @@
                         }, 750);
                     });
                 },
-                // Add status validation and update methods
+
                 validateStatusForm() {
                     this.errors = {};
                     let isValid = true;
-
                     if (!this.memberStatus || this.memberStatus === '') {
                         this.errors.memberStatus = 'Please select a member status';
                         isValid = false;
                     }
-
                     return isValid;
                 },
 
@@ -4370,27 +4361,19 @@
                         alert('INVALID! Inputs:\n' + errorMessages);
                         return;
                     }
-
                     this.isUpdating = true;
-
                     try {
                         const formData = {
                             memberId: this.memberData?.member?.memberId,
                             status: this.memberStatus,
                             _token: document.querySelector('input[name="_token"]')?.value
                         };
-
                         const response = await fetch('/treasurer/bodaboda/member/update-status', {
                             method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value
-                            },
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value },
                             body: JSON.stringify(formData)
                         });
-
                         const data = await response.json();
-
                         if (data.success) {
                             alert('Success: ' + data.message);
                             window.location.reload();
@@ -4405,20 +4388,102 @@
                     }
                 },
 
-                formatDate(dateString) {
-                    if (!dateString) return '';
-                    const date = new Date(dateString);
-                    return date.toLocaleDateString('en-US', {
-                        month: 'long',
-                        day: '2-digit',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
+                get isDeactivated() {
+                    return this.memberData?.member?.status === 'In-Active';
+                },
+
+                activateMemberAccount() {
+                    if (!confirm('Activate this member account? They will regain full access.')) return;
+                    this.isUpdating = true;
+                    const formData = {
+                        memberId: this.memberData?.member?.memberId,
+                        status: 'Active',
+                        _token: document.querySelector('input[name="_token"]')?.value
+                    };
+                    fetch('/treasurer/bodaboda/member/update-status', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': formData._token },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Account activated successfully.');
+                            window.location.reload();
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => alert('Error activating account'))
+                    .finally(() => this.isUpdating = false);
+                },
+
+                get memberCurrentStatus() {
+                    return this.memberData?.member?.status;
+                },
+
+                get isCurrentlyDeactivated() {
+                    return this.memberData?.member?.status === 'De-Activated';
+                },
+
+                deactivateAccount() {
+                    if (!confirm('Deactivate this member account?')) return;
+                    this.isDeactivating = true;
+                    fetch(`/treasurer/bodaboda-member/${this.memberData.member.memberId}/toggle-deactivation`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value },
+                        body: JSON.stringify({ action: 'deactivate' })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        setTimeout(() => {
+                            alert(data.message);
+                            if (data.success) window.location.reload();
+                            this.isDeactivating = false;
+                            Alpine.store('deactivationModal').closeModal();  // close modal
+                        }, 750);
+                    })
+                    .catch(() => {
+                        setTimeout(() => {
+                            alert('Error deactivating account.');
+                            this.isDeactivating = false;
+                            Alpine.store('deactivationModal').closeModal();
+                        }, 750);
                     });
                 },
 
+                activateAccount() {
+                    if (!confirm('Reactivate this member account?')) return;
+                    this.isDeactivating = true;
+                    fetch(`/treasurer/bodaboda-member/${this.memberData.member.memberId}/toggle-deactivation`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value },
+                        body: JSON.stringify({ action: 'activate' })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        setTimeout(() => {
+                            alert(data.message);
+                            if (data.success) window.location.reload();
+                            this.isDeactivating = false;
+                            this.deleteMemberAccount = false;
+                        }, 750);
+                    })
+                    .catch(() => {
+                        setTimeout(() => {
+                            alert('Error activating account.');
+                            this.isDeactivating = false;
+                            this.deleteMemberAccount = false;
+                        }, 750);
+                    });
+                },
+
+
+
             }));
+
         });
+
     </script>
 
     <!-- Member Kin -->
@@ -6948,7 +7013,7 @@
 
         document.addEventListener('alpine:init', () => {
 
-            // Store for loan data and modal states
+            // 01. Store for loan data and modal states
             Alpine.store('loanData', {
                 currentLoan: null,
                 currentLoanType: null,
@@ -7107,6 +7172,16 @@
                     }
                 }
 
+            });
+
+            // Store for member loan transaction delete state
+            Alpine.store('memberLoanTransactionData', {
+                isDeleting: false
+            });
+
+            // Store for member loan delete state
+            Alpine.store('memberLoanData', {
+                isDeleting: false
             });
 
             Alpine.data('loansTable', () => ({
@@ -7831,6 +7906,22 @@
                         }
                     }
 
+                    // Validate that total repayment is greater than borrowed amount
+                    if (this.totalRepayment) {
+                        const match = this.totalRepayment.match(/KES ([\d,]+)/);
+                        if (match) {
+                            const totalRepayValue = parseFloat(match[1].replace(/,/g, ''));
+                            const amountValue = parseFloat(this.loanAmount);
+                            if (totalRepayValue <= amountValue) {
+                                this.errors.total_repayment = 'Total repayment must be greater than borrowed amount';
+                                isValid = false;
+                            }
+                        }
+                    } else {
+                        this.errors.total_repayment = 'Total repayment is required';
+                        isValid = false;
+                    }
+
                     // Validate period
                     if (!period || period === '') {
                         this.errors.loan_period = 'This field is required';
@@ -8127,14 +8218,17 @@
                     // Parse total repayment to get numeric value
                     let totalRepaymentValue = 0;
                     if (this.totalRepayment) {
-                        const match = this.totalRepayment.match(/KES ([\d,]+\.\d{2})/);
+                        const match = this.totalRepayment.match(/KES ([\d,]+)/);
                         if (match) {
                             totalRepaymentValue = parseFloat(match[1].replace(/,/g, ''));
                         }
                     }
 
-                    // Calculate total interest
-                    const totalInterestValue = totalRepaymentValue - parseFloat(this.loanAmount);
+                    // Calculate total interest – ensure it is never negative
+                    const amountValue = parseFloat(this.loanAmount);
+                    let totalInterestValue = totalRepaymentValue - amountValue;
+
+                    if (totalInterestValue < 0) totalInterestValue = 0;
 
                     // Parse dates
                     const assignedDate = this.parseDateToDatabase(this.editAssignedDate);
@@ -8188,24 +8282,26 @@
                                     }
                                 }
                             }
-                        }, 750);
+                        }, 500);
                     })
                     .catch(error => {
                         setTimeout(() => {
                             Alpine.store('loanData').isAssigning = false;
                             alert('Error assigning loan. Please try again.');
                             console.error('Error:', error);
-                        }, 750);
+                        }, 500);
                     });
                 },
 
-                // Parse date from display format to database format
-                parseDateToDatabase(dateString) {
+                // Parse flexible date formats into a Date object
+                parseFlexibleDate(dateString) {
                     if (!dateString) return null;
 
-                    // Try to parse "DD MMM YYYY" format
-                    const parts = dateString.match(/(\d{1,2})\s+([A-Za-z]{3,})\s+(\d{4})/);
-                    if (parts) {
+                    const str = dateString.trim();
+
+                    // 1. DD MMM YYYY / DD Month YYYY (e.g., 06 Apr 2026, 06 April 2026)
+                    let match = str.match(/^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4}|\d{2})$/);
+                    if (match) {
                         const months = {
                             'jan': 0, 'january': 0, 'feb': 1, 'february': 1,
                             'mar': 2, 'march': 2, 'apr': 3, 'april': 3,
@@ -8214,19 +8310,72 @@
                             'oct': 9, 'october': 9, 'nov': 10, 'november': 10,
                             'dec': 11, 'december': 11
                         };
-                        const month = months[parts[2].toLowerCase()];
+                        const month = months[match[2].toLowerCase()];
                         if (month !== undefined) {
-                            const date = new Date(parseInt(parts[3]), month, parseInt(parts[1]));
-                            return date.toISOString().slice(0, 19).replace('T', ' ');
+                            let year = parseInt(match[3]);
+                            if (year < 100) year += 2000;
+                            return new Date(year, month, parseInt(match[1]));
                         }
                     }
 
-                    // Try direct date parsing
-                    const date = new Date(dateString);
-                    if (!isNaN(date.getTime())) {
-                        return date.toISOString().slice(0, 19).replace('T', ' ');
+                    // 2. DD/MM/YYYY, DD/MM/YY, DD-MM-YYYY, DD-MM-YY
+                    match = str.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4}|\d{2})$/);
+                    if (match) {
+                        let year = parseInt(match[3]);
+                        if (year < 100) year += 2000;
+                        return new Date(year, parseInt(match[2]) - 1, parseInt(match[1]));
                     }
 
+                    // 3. DD/MMM/YYYY, DD/MMMM/YYYY, DD/MMM/YY, etc.
+                    match = str.match(/^(\d{1,2})\/([A-Za-z]+)\/(\d{4}|\d{2})$/);
+                    if (match) {
+                        const months = {
+                            'jan': 0, 'january': 0, 'feb': 1, 'february': 1,
+                            'mar': 2, 'march': 2, 'apr': 3, 'april': 3,
+                            'may': 4, 'jun': 5, 'june': 5, 'jul': 6, 'july': 6,
+                            'aug': 7, 'august': 7, 'sep': 8, 'september': 8,
+                            'oct': 9, 'october': 9, 'nov': 10, 'november': 10,
+                            'dec': 11, 'december': 11
+                        };
+                        const month = months[match[2].toLowerCase()];
+                        if (month !== undefined) {
+                            let year = parseInt(match[3]);
+                            if (year < 100) year += 2000;
+                            return new Date(year, month, parseInt(match[1]));
+                        }
+                    }
+
+                    // 4. Try native Date parsing as fallback
+                    const date = new Date(str);
+                    if (!isNaN(date.getTime())) return date;
+
+                    return null;
+                },
+
+                // Updated validateAssignedDate
+                validateAssignedDate(dateString) {
+                    if (!dateString || dateString === '') {
+                        this.errors.assigned_date = 'This field is required';
+                        return false;
+                    }
+
+                    const parsed = this.parseFlexibleDate(dateString);
+                    if (!parsed) {
+                        this.errors.assigned_date = 'Invalid date format. Use e.g., 06 Apr 2026, 06/04/2026, 06-04-2026';
+                        return false;
+                    }
+
+                    delete this.errors.assigned_date;
+                    return true;
+                },
+
+                // Parse date from display format to database format
+                parseDateToDatabase(dateString) {
+                    if (!dateString) return null;
+                    const parsed = this.parseFlexibleDate(dateString);
+                    if (parsed) {
+                        return parsed.toISOString().slice(0, 19).replace('T', ' ');
+                    }
                     return null;
                 },
 
@@ -8448,24 +8597,27 @@
                     });
                 },
 
-                // Calculate and update total repayment
+                // Calculate and update total repayment (simple interest, rounded to nearest KES)
                 calculateAndUpdateTotal() {
                     if (!this.loanAmount || !this.loanPeriod || !Alpine.store('loanData').currentLoanType) {
                         this.totalRepayment = '';
                         return;
                     }
 
-                    const interestRate = Alpine.store('loanData').currentLoanType.interest_rate;
-                    const total = this.calculateTotalLoan(this.loanAmount, interestRate, this.loanPeriod);
+                    const principal = parseFloat(this.loanAmount);
+                    const months = parseInt(this.loanPeriod);
+                    const annualRate = parseFloat(Alpine.store('loanData').currentLoanType.interest_rate);
 
-                    if (total > 0) {
-                        this.totalRepayment = 'KES ' + total.toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        });
-                    } else {
-                        this.totalRepayment = '';
-                    }
+                    // Simple interest: total = principal + (principal * annualRate / 100)
+                    const total = principal + (principal * annualRate / 100);
+
+                    // Round to nearest whole KES
+                    const roundedTotal = Math.round(total);
+
+                    this.totalRepayment = 'KES ' + roundedTotal.toLocaleString(undefined, {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
+                    });
                 },
 
                 // Generate transaction code based on payment mode
@@ -8646,37 +8798,6 @@
                     this.validateAssignedDate(dateValue);
                 },
 
-                // Validate assigned date format
-                validateAssignedDate(dateString) {
-                    if (!dateString || dateString === '') {
-                        this.errors.assigned_date = 'Assigned date is required';
-                        return false;
-                    }
-
-                    // Check if matches accepted formats
-                    const patterns = [
-                        /^\d{1,2}\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4}$/i,
-                        /^\d{1,2}\/(\d{1,2})\/\d{4}$/,
-                        /^\d{4}-\d{2}-\d{2}$/
-                    ];
-
-                    let isValid = false;
-                    for (let pattern of patterns) {
-                        if (pattern.test(dateString.trim())) {
-                            isValid = true;
-                            break;
-                        }
-                    }
-
-                    if (!isValid) {
-                        this.errors.assigned_date = 'Invalid date format. Use format: DD MMM YYYY (e.g., 06 Apr 2026)';
-                        return false;
-                    }
-
-                    delete this.errors.assigned_date;
-                    return true;
-                },
-
                // Validate repay date field
                 validateRepayDateField(field, value) {
                     if (!value || value === '' || value === null) {
@@ -8692,6 +8813,90 @@
 
                     delete this.errors[field];
                     return true;
+                },
+
+                deleteMemberLoanTransaction() {
+                    const transactionId = this.editLoanTransactionId;
+                    if (!transactionId) {
+                        alert('No transaction selected for deletion.');
+                        return;
+                    }
+
+                    if (!confirm('Are you sure you want to delete this loan transaction? This action cannot be undone.')) {
+                        return;
+                    }
+
+                    Alpine.store('memberLoanTransactionData').isDeleting = true;
+
+                    fetch(`/bodaboda-member/{{ $memberId }}/loan-transaction/${transactionId}/delete`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value,
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        setTimeout(() => {
+                            Alpine.store('memberLoanTransactionData').isDeleting = false;
+                            if (data.success) {
+                                alert(data.message);
+                                window.location.reload();
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        }, 500);
+                    })
+                    .catch(error => {
+                        setTimeout(() => {
+                            Alpine.store('memberLoanTransactionData').isDeleting = false;
+                            alert('Error deleting transaction. Please try again.');
+                            console.error('Error:', error);
+                        }, 500);
+                    });
+                },
+
+                deleteMemberLoan() {
+                    const loanId = document.getElementById('edit_loan_id')?.value;
+                    if (!loanId) {
+                        alert('No loan selected for deletion.');
+                        return;
+                    }
+
+                    if (!confirm('Are you sure you want to delete this loan? All associated transactions will also be deleted. This action cannot be undone.')) {
+                        return;
+                    }
+
+                    Alpine.store('memberLoanData').isDeleting = true;
+
+                    fetch(`/bodaboda-member/{{ $memberId }}/loan/${loanId}/delete`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value,
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        setTimeout(() => {
+                            Alpine.store('memberLoanData').isDeleting = false;
+                            if (data.success) {
+                                alert(data.message);
+                                window.location.reload();
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        }, 500);
+                    })
+                    .catch(error => {
+                        setTimeout(() => {
+                            Alpine.store('memberLoanData').isDeleting = false;
+                            alert('Error deleting loan. Please try again.');
+                            console.error('Error:', error);
+                        }, 500);
+                    });
                 },
 
                 // Pagination methods

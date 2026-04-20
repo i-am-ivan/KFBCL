@@ -22,8 +22,16 @@ return new class extends Migration
             $table->date('date_of_birth')->nullable();
             $table->enum('role', ['Chairman', 'Secretary', 'Treasurer', 'Supervisor', 'IT', 'Receptionist'])->default('Receptionist');
             $table->enum('status', ['Active', 'Inactive', 'Suspended', 'Removed'])->default('Active');
+            $table->unsignedBigInteger('created_by')->nullable()->after('status'); // Add this line
             $table->timestamps();
             $table->softDeletes();
+
+            // Foreign key constraint for created_by referencing users.id
+            $table->foreign('created_by')
+                  ->references('id')
+                  ->on('users')
+                  ->onDelete('set null')
+                  ->onUpdate('cascade');
         });
     }
 

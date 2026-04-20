@@ -181,6 +181,8 @@ Route::get('/stats/members/non-member', [BodabodaController::class, 'countNonMem
 
 Route::post('/treasurer/bodaboda/member/update-status', [BodabodaController::class, 'updateMemberStatus'])->name('member.update.status');
 
+Route::post('/treasurer/bodaboda-member/{memberId}/toggle-deactivation', [BodabodaController::class, 'toggleMemberDeactivation'])->middleware('auth');
+
 // Member status count routes
 Route::get('/members/count/active', [BodabodaController::class, 'getCountActiveMembers'])->name('members.count.active');
 
@@ -340,6 +342,14 @@ Route::post('/bodaboda-member/{memberId}/loan-transaction/{transactionId}/update
 Route::get('/loans/transactions/all', [BodabodaController::class, 'getAllLoanTransactions'])->name('loans.transactions.all');
 
 Route::get('/bodaboda-member/{memberId}/loan-transactions', [BodabodaController::class, 'getMemberLoanTransactions']);
+
+// Delete loan transaction (child)
+Route::delete('/bodaboda-member/{memberId}/loan-transaction/{transactionId}/delete', [BodabodaController::class, 'deleteMemberLoanTransaction'])
+    ->middleware(['auth']);
+
+// Delete loan (parent)
+Route::delete('/bodaboda-member/{memberId}/loan/{loanId}/delete', [BodabodaController::class, 'deleteMemberLoan'])
+    ->middleware(['auth']);
 
 // Contributions ------------------------------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/contributions/all', [BodabodaController::class, 'getAllContributions']);

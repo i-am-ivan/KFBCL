@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Member extends Model
 {
@@ -13,8 +14,27 @@ class Member extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'firstname', 'lastname', 'email', 'phone1', 'phone2', 'gender', 'dob', 'author', 'membership', 'status'
+        'member_number', 'firstname', 'lastname', 'email', 'phone1', 'phone2', 'gender', 'dob', 'author', 'membership', 'status'
     ];
+
+    /**
+     * The accessors to append to the model's array form.
+     */
+    protected $appends = ['full_name', 'age'];
+
+    /**
+     * Boot method to auto-set author on creation
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (Auth::check() && !$model->author) {
+                $model->author = Auth::id();
+            }
+        });
+    }
 
     // Check Member profile Status
     public function isProfileActive()
@@ -61,6 +81,30 @@ class Member extends Model
     public function transactions()
     {
         return $this->hasMany(MemberTransaction::class, 'member', 'memberId');
+    }
+
+    /**
+     * Get the member's full name.
+     */
+    public function getFullNameAttribute()
+    {
+        return $this->firstname . ' ' . $this->lastname;
+    }
+
+    /**
+     * Get the member's age based on date of birth.
+     */
+    public function getAgeAttribute()
+    {
+        return $this->dob ? \Carbon\Carbon::parse($this->dob)->age : null;
+    }
+
+    /**
+     * Relationship: User who created/updated this member (using author)
+     */
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'author', 'id');
     }
 
 }

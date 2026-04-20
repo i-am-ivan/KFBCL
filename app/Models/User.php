@@ -6,31 +6,75 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class User extends Authenticatable  // Change from Users to User, and extend Authenticatable
+class User extends Authenticatable
 {
     use HasFactory, SoftDeletes;
+
+    protected $table = 'users';
+    protected $primaryKey = 'id';
+    public $incrementing = true;
+    protected $keyType = 'int';
+    public $timestamps = true;
 
     protected $fillable = [
         'first_name',
         'last_name',
         'email',
         'phone',
+        'street',
+        'city',
+        'state',
+        'county',
         'gender',
         'national_id',
         'date_of_birth',
-        'role',
+        'role',           // This is now a VARCHAR (string) again
         'status',
+        'created_by',     // Foreign key to users.id (kept as is)
     ];
 
     protected $casts = [
         'date_of_birth' => 'date',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
-    public function login()
+    /**
+     * Relationship: User created by another user (self-referential)
+     */
+    public function creator()
     {
-        return $this->hasOne(UserLogin::class);
+        return $this->belongsTo(User::class, 'created_by', 'id');
     }
 
+    /**
+     * Relationship: Users created by this user
+     */
+    public function createdUsers()
+    {
+        return $this->hasMany(User::class, 'created_by', 'id');
+    }
+
+    /**
+     * Relationship: User has many logins
+     */
+    public function logins()
+    {
+        return $this->hasMany(UserLogin::class, 'user_id', 'id');
+    }
+
+    /**
+     * Relationship: User has one latest login
+     */
+    public function latestLogin()
+    {
+        return $this->hasOne(UserLogin::class, 'user_id', 'id')->latest('logged_in_at');
+    }
+
+    /**
+     * Get aside view based on role string
+     */
     public function getAsideView()
     {
         $roleAside = [
@@ -48,8 +92,19 @@ class User extends Authenticatable  // Change from Users to User, and extend Aut
         return $roleAside[$this->role] ?? 'Layouts.Default.aside';
     }
 
+    /**
+     * Check if user can deactivate account
+     */
     public function canDeactivateAccount()
     {
-        return in_array($this->role, ['Admin', 'SuperAdmin', 'Treasurer']);
+        return in_array($this->role, ['Admin', 'Super Admin', 'Treasurer', 'IT']);
+    }
+
+    /**
+     * Get full name attribute
+     */
+    public function getFullNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
     }
 }

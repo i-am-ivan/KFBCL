@@ -27,12 +27,39 @@ use Illuminate\Support\Facades\File;
 
 class BodabodaController extends Controller {
 
+    // Render the list of members (Blade view)
+    public function bodabodaMembers()
+    {
+        // Paginate instead of loading all members
+        $members = Member::with(['kins', 'vehicles', 'identification'])
+            ->orderBy('memberId', 'desc')
+            ->paginate(20); // Adjust per page as needed
+
+        return view('dashboards.Treasurer.bodabodaMembers', compact('members'));
+    }
+
+    // Render a single member's details (Blade view)
+    public function bodabodaMember($memberId)
+    {
+        // Eager load all necessary relationships
+        $member = Member::with([
+            'kins',
+            'vehicles',
+            'identification',
+            'creator', // if you have the relationship
+            'latestTransaction',
+            'stagesManaged'
+        ])->findOrFail($memberId);
+
+        return view('dashboards.Treasurer.bodabodaMember', compact('member'));
+    }
+
     // A. Members (members table) ---------------------------------------------------------------------------------------
     // Return all members with their next-of-kin and vehicles (JSON)
     public function listAllMembers(Request $request): JsonResponse
     {
-        $members = Member::select('members.*')
-            ->with(['kins', 'vehicles', 'identification'])
+        $perPage = $request->input('per_page', 20);
+        $members = Member::with(['kins', 'vehicles', 'identification'])
             ->addSelect([
                 'last_contribution_amount' => MemberContribution::select('transactionAmount')
                     ->whereColumn('memberId', 'members.memberId')
@@ -48,9 +75,9 @@ class BodabodaController extends Controller {
                     ->limit(1),
             ])
             ->orderBy('memberId', 'asc')
-            ->get();
+            ->paginate($perPage); // Now paginated
 
-        return response()->json(['data' => $members], 200);
+        return response()->json($members, 200);
     }
 
     // Count all members (JSON)
@@ -264,6 +291,7 @@ class BodabodaController extends Controller {
     {
         try {
             $validated = $request->validate([
+                'member_number' => 'required|string|max:255|unique:members,member_number,' . $memberId . ',memberId',
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
                 'email' => 'required|email|max:255',
@@ -278,6 +306,7 @@ class BodabodaController extends Controller {
             $updated = DB::table('members')
                 ->where('memberId', $memberId)
                 ->update([
+                    'member_number' => $validated['member_number'],
                     'firstname' => $validated['first_name'],
                     'lastname' => $validated['last_name'],
                     'email' => $validated['email'],
@@ -604,6 +633,33 @@ class BodabodaController extends Controller {
                 'success' => false,
                 'message' => 'Failed to update member status: ' . $e->getMessage()
             ], 500);
+        }
+    }
+
+    // Activate/De-Activate Member Account
+    public function toggleMemberDeactivation(Request $request, $memberId)
+    {
+        $validator = Validator::make($request->all(), [
+            'action' => 'required|in:deactivate,activate',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
+        }
+
+        try {
+            $member = Member::findOrFail($memberId);
+            $newStatus = $request->action === 'deactivate' ? 'De-Activated' : 'Active';
+            $member->status = $newStatus;
+            $member->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => $request->action === 'deactivate' ? 'Account deactivated.' : 'Account activated.',
+                'status' => $newStatus
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Server error: ' . $e->getMessage()], 500);
         }
     }
 
@@ -3252,6 +3308,126 @@ class BodabodaController extends Controller {
         }
     }
 
+    /**
+     * Delete a member loan transaction (child)
+     */
+    public function deleteMemberLoanTransaction($memberId, $transactionId)
+    {
+        try {
+            // Check user role permission (only Treasurer, SuperAdmin, IT)
+            $user = Auth::user();
+            $allowedRoles = ['Treasurer', 'Super Admin', 'IT'];
+            if (!in_array($user->role, $allowedRoles)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized: You do not have permission to delete loan transactions.'
+                ], 403);
+            }
+
+            // Verify the transaction belongs to the member
+            $transaction = DB::table('member_loans_transactions')
+                ->where('transactionId', $transactionId)
+                ->where('memberId', $memberId)
+                ->first();
+
+            if (!$transaction) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Transaction not found.'
+                ], 404);
+            }
+
+            // Delete the transaction
+            DB::table('member_loans_transactions')
+                ->where('transactionId', $transactionId)
+                ->delete();
+
+            // Optional: Update parent loan status if needed (e.g., if last transaction deleted, set loan back to Active)
+            // Recalculate total repaid for the parent loan
+            $loanId = $transaction->transactionLoan;
+            $totalRepaid = DB::table('member_loans_transactions')
+                ->where('transactionLoan', $loanId)
+                ->where('transactionType', 'Paid-In')
+                ->where('transactionStatus', 'Confirmed')
+                ->sum('transactionAmount');
+
+            $loan = DB::table('member_loans')
+                ->where('transactionId', $loanId)
+                ->first();
+
+            if ($loan && $totalRepaid < $loan->transactionTotalLoan) {
+                // If no longer fully repaid, set status back to Active (or keep as is)
+                if ($loan->transactionLoanStatus === 'Repaid') {
+                    DB::table('member_loans')
+                        ->where('transactionId', $loanId)
+                        ->update(['transactionLoanStatus' => 'Active', 'transactionUpdatedOn' => now()]);
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Loan transaction deleted successfully.'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error deleting transaction: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Delete a member loan (parent) and all its transactions
+     */
+    public function deleteMemberLoan($memberId, $loanId)
+    {
+        try {
+            // Check user role permission
+            $user = Auth::user();
+            $allowedRoles = ['Treasurer', 'Super Admin', 'IT'];
+            if (!in_array($user->role, $allowedRoles)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized: You do not have permission to delete loans.'
+                ], 403);
+            }
+
+            // Verify the loan belongs to the member
+            $loan = DB::table('member_loans')
+                ->where('transactionId', $loanId)
+                ->where('memberId', $memberId)
+                ->first();
+
+            if (!$loan) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Loan not found.'
+                ], 404);
+            }
+
+            // Delete all associated transactions first
+            DB::table('member_loans_transactions')
+                ->where('transactionLoan', $loanId)
+                ->delete();
+
+            // Delete the loan itself
+            DB::table('member_loans')
+                ->where('transactionId', $loanId)
+                ->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Loan and all its transactions deleted successfully.'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error deleting loan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 
     // Savings -----------------------------------------------------------------------------------------------------------
     public function getAllMemberSavings($memberId)

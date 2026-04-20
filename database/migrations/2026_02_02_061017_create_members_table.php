@@ -10,18 +10,14 @@ class CreateMembersTable extends Migration
     public function up()
     {
         Schema::create('members', function (Blueprint $table) {
-            $table->bigIncrements('memberId');                      // primary starting from 101 (see DB::statement)
+            $table->bigIncrements('memberId');
+            $table->string('member_number')->nullable()->unique();                      // primary starting from 101 (see DB::statement)
             $table->string('firstname');
             $table->string('lastname');
             $table->string('email')->unique();
             $table->string('phone1')->unique();
             $table->string('phone2')->nullable();
-            $table->string('nationalID')->unique();
-            $table->binary('nationalID_front')->nullable();
-            $table->binary('nationalID_back')->nullable();
-            $table->string('license_type')->nullable();
-            $table->string('license_number')->unique()->nullable();
-            $table->enum('gender', ['Male', 'Female', 'Other'])->nullable();
+            $table->enum('gender', ['Male', 'Female'])->nullable();
             $table->date('dob')->nullable();
             $table->unsignedBigInteger('author'); // references users.id
             $table->timestamp('created_on')->useCurrent();
@@ -29,11 +25,17 @@ class CreateMembersTable extends Migration
             $table->enum('membership', ['Member', 'Non-Member'])->default('Non-Member');
             $table->enum('status', ['Active','Suspended','In-active','Blacklisted'])->default('Active');
 
-            $table->foreign('author')->references('id')->on('users')->onDelete('cascade');
+            // Foreign Keys
+            $table->foreign('author')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade')  // or 'cascade' or 'restrict'
+                ->onUpdate('cascade');
         });
 
         // set auto increment start to 101
         DB::statement('ALTER TABLE members AUTO_INCREMENT = 101;');
+
     }
 
     public function down()
