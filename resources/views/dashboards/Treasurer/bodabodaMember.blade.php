@@ -20,7 +20,7 @@
 
     </head>
 
-<body x-data="{ page: 'profile', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'loanTypeModal' : false, 'personalInformationModal': false , 'sidebarToggle': false, 'scrollTop': false, 'identificationDocumentsModal': false, 'nextKinModal': false, 'vehiclesModal': false, 'contributionsModal': false, 'savingsModal': false, 'loansModal': false, 'finesPenaltiesModal': false, 'deleteMemberAccount': false, 'editNextKinModal': false, 'editMemberVehiclesModal': false, 'assignMemberVehicle': false, 'reassignMemberVehicle': false, 'withdrawContribution':false, 'withdrawSavingsModal': false, 'payLoan': false, 'withdrawContributionModal': false, 'editContributionModal': false, 'awardBonusModal': false, 'repayLoanModal': false, 'editLoanModal': false, 'editLoanTransactionModal': false}"
+<body x-data="{ page: 'profile', 'loaded': true, 'darkMode': false, 'stickyMenu': false, 'loanTypeModal' : false, 'personalInformationModal': false , 'sidebarToggle': false, 'scrollTop': false, 'identificationDocumentsModal': false, 'nextKinModal': false, 'vehiclesModal': false, 'contributionsModal': false, 'savingsModal': false, 'loansModal': false, 'fineMemberModal': false, 'awardMemberBonusModal': false, 'editMemberBonusFineTransactionModal': false, 'deleteMemberBonusFineTransactionModal': false, 'deleteMemberAccount': false, 'editNextKinModal': false, 'editMemberVehiclesModal': false, 'assignMemberVehicle': false, 'reassignMemberVehicle': false, 'withdrawContribution':false, 'withdrawSavingsModal': false, 'payLoan': false, 'withdrawContributionModal': false, 'editContributionModal': false, 'awardBonusModal': false, 'repayLoanModal': false, 'editLoanModal': false, 'editLoanTransactionModal': false}"
       x-init="
          darkMode = JSON.parse(localStorage.getItem('darkMode'));
          $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))"
@@ -3925,12 +3925,235 @@
         </div>
     </div>
 
-    <!-- finesPenaltiesModal -->
-    <div x-show="finesPenaltiesModal" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999">
+    <!-- awardMemberBonusModal -->
+    <div x-show="awardMemberBonusModal" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999">
         <div class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
-        <div @click.outside="finesPenaltiesModal = false" class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+        <div @click.outside="awardMemberBonusModal = false" class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+        <!-- close btn -->
+        <button @click="awardMemberBonusModal = false" class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300">
+            <svg
+                    class="fill-current"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+            >
+            <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M6.04289 16.5418C5.65237 16.9323 5.65237 17.5655 6.04289 17.956C6.43342 18.3465 7.06658 18.3465 7.45711 17.956L11.9987 13.4144L16.5408 17.9565C16.9313 18.347 17.5645 18.347 17.955 17.9565C18.3455 17.566 18.3455 16.9328 17.955 16.5423L13.4129 12.0002L17.955 7.45808C18.3455 7.06756 18.3455 6.43439 17.955 6.04387C17.5645 5.65335 16.9313 5.65335 16.5408 6.04387L11.9987 10.586L7.45711 6.04439C7.06658 5.65386 6.43342 5.65386 6.04289 6.04439C5.65237 6.43491 5.65237 7.06808 6.04289 7.4586L10.5845 12.0002L6.04289 16.5418Z"
+                    fill=""
+            />
+            </svg>
+        </button>
+        <div class="px-2 pr-14">
+            <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Award Member Bonus</h4>
+            <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Select the bonus type and amount to award.</p>
+        </div>
+
+            <!-- Award Bonus Form -->
+            <form class="flex flex-col" id="addSavingsForm" x-data="savingsTable" @submit.prevent="addSavings">
+                @csrf
+                <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
+
+                    <!-- Select Bonus to award -->
+                <div class="w-full px-2.5">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Select Bonus to award
+                    </label>
+                    <div class="relative z-20 bg-transparent">
+                        <select id="repay_loan_id"
+                                name="loan_id"
+                                x-model="repayLoanId"
+                                @change="loadLoanDetailsForRepayment(repayLoanId)"
+                                :class="errors.repay_loan ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value="">Select Bonus</option>
+                            <template x-for="loan in loans" :key="loan.transactionId">
+                                <option :value="loan.transactionId"
+                                        x-text="loan.loan_type_name + ' - KES ' + Number(loan.transactionLoanAmount).toLocaleString() + ' (' + loan.transactionLoanStatus + ')'"></option>
+                            </template>
+                        </select>
+                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <span x-show="errors.repay_loan" x-text="errors.repay_loan" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <div class="w-full px-2.5 border-b border-gray-200 dark:border-gray-700 my-2"></div>
+
+                    <!-- Bonus Details Section - First Row -->
+                    <div class="w-full px-2.5">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Bonus Details
+                        </label>
+                        <div class="relative z-20 bg-transparent bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
+                            <div class="flex flex-wrap items-center gap-4 md:gap-6">
+                                <div class="flex-1 min-w-[100px]">
+                                    <p class="text-lg font-semibold text-center text-gray-600 dark:text-white/90">
+                                        <span x-text="'KES ' + (repayBorrowedAmountRaw ? repayBorrowedAmountRaw.toLocaleString() : '0')">TRCN1002</span>
+                                    </p>
+                                    <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Bonus Code</p>
+                                </div>
+
+                                <div class="w-px bg-gray-300 h-11 dark:bg-gray-700 hidden sm:block"></div>
+
+                                <div class="flex-1 min-w-[100px]">
+                                    <p class="text-lg font-semibold text-center text-gray-600 dark:text-white/90">
+                                        <span x-text="'KES ' + (repayTotalInterestRaw ? repayTotalInterestRaw.toLocaleString() : '0')">Yearly Bonus</span>
+                                    </p>
+                                    <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Bonus</p>
+                                </div>
+
+                                <div class="w-px bg-gray-300 h-11 dark:bg-gray-700 hidden sm:block"></div>
+
+                                <div class="flex-1 min-w-[100px]">
+                                    <p class="text-lg font-semibold text-center text-gray-600 dark:text-white/90">
+                                        <span x-text="'KES ' + (repayTotalLoanRaw ? repayTotalLoanRaw.toLocaleString() : '0')">KES 0</span>
+                                    </p>
+                                    <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Default</p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w-full px-2.5 border-b border-gray-200 dark:border-gray-700 my-2"></div>
+
+                    <!-- Amount -->
+                    <div class="w-full px-2.5">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Amount (KES)
+                        </label>
+                        <input type="number" step="0.01"
+                            id="savings_Amount"
+                            name="savings_Amount"
+                            x-model="formData.savings_Amount"
+                            @input="clearError('savings_Amount')"
+                            @blur="validateField('savings_Amount', formData.savings_Amount)"
+                            :class="errors.savings_Amount ? 'border-red-500' : ''"
+                            placeholder="Enter amount (minimum KES 10.00)"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.savings_Amount" x-text="errors.savings_Amount" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Payment Mode -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Payment Mode
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="payment_mode"
+                                    name="payment_mode"
+                                    x-model="formData.payment_mode"
+                                    @change="handlePaymentModeChange(formData.payment_mode)"
+                                    @blur="validateField('payment_mode', formData.payment_mode)"
+                                    :class="errors.payment_mode ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Select Payment Mode</option>
+                                <option value="Cash">Cash</option>
+                                <option value="MPesa">MPesa</option>
+                                <option value="Bank">Bank</option>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Transaction Code -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Transaction Code
+                        </label>
+                        <input type="text"
+                            id="transaction_code"
+                            name="transaction_code"
+                            x-model="formData.transaction_code"
+                            :readonly="transactionCodeReadonly"
+                            @input="clearError('transaction_code')"
+                            @blur="validateField('transaction_code', formData.transaction_code)"
+                            :class="errors.transaction_code ? 'border-red-500' : ''"
+                            :placeholder="transactionCodePlaceholder"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Transaction Date -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Transaction Date
+                        </label>
+                        <input type="text"
+                            id="savings_transaction_date"
+                            name="savings_transaction_date"
+                            x-model="formData.transaction_date"
+                            @input="clearError('savings_transaction_date')"
+                            @blur="validateField('savings_transaction_date', formData.transaction_date)"
+                            :class="errors.savings_transaction_date ? 'border-red-500' : ''"
+                            placeholder="DD MMM YYYY (e.g., 05 Apr 2026)"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.savings_transaction_date" x-text="errors.savings_transaction_date" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Status
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="Status"
+                                    name="Status"
+                                    x-model="formData.Status"
+                                    @change="clearError('Status')"
+                                    @blur="validateField('Status', formData.Status)"
+                                    :class="errors.Status ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Select Status</option>
+                                <option value="Confirmed">Confirmed</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.Status" x-text="errors.Status" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+                    <button @click="closeModal" type="button"
+                            class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                            :disabled="$store.savingData?.isAdding">
+                        <span x-show="!$store.savingData?.isAdding">Award Bonus</span>
+                        <span x-show="$store.savingData?.isAdding">Transacting ...</span>
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- fineMemberModal -->
+    <div x-show="fineMemberModal" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999">
+        <div class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
+        <div @click.outside="fineMemberModal = false" class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
             <!-- close btn -->
-            <button @click="finesPenaltiesModal = false" class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300">
+            <button @click="fineMemberModal = false" class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300">
                 <svg
                         class="fill-current"
                         width="24"
@@ -3947,37 +4170,398 @@
                 />
                 </svg>
             </button>
+
             <div class="px-2 pr-14">
-                <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Withdraw from Wallet</h4>
-                <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the amount you wish to withdraw.</p>
+                <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Fine Member</h4>
+                <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Enter the amount you wish to fine member.</p>
             </div>
-            <form class="flex flex-col">
-                <div class="custom-scrollbar h-[450px] overflow-y-auto px-2">
-                <div class="mt-7">
-                    <h5 class="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">Withdraw</h5>
 
-                    <div class="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-                    <div class="col-span-2 lg:col-span-1">
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Amount</label>
-                        <input type="text" placeholder="Enter Amount ..."
-                            class="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"/>
+            <!-- Fine Member Form -->
+            <form class="flex flex-col" id="addSavingsForm" x-data="savingsTable" @submit.prevent="addSavings">
+                @csrf
+                <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
+
+                    <!-- Select fine to award -->
+                <div class="w-full px-2.5">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Select Fine to award
+                    </label>
+                    <div class="relative z-20 bg-transparent">
+                        <select id="repay_loan_id"
+                                name="loan_id"
+                                x-model="repayLoanId"
+                                @change="loadLoanDetailsForRepayment(repayLoanId)"
+                                :class="errors.repay_loan ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value="">Select Fine</option>
+                            <template x-for="loan in loans" :key="loan.transactionId">
+                                <option :value="loan.transactionId"
+                                        x-text="loan.loan_type_name + ' - KES ' + Number(loan.transactionLoanAmount).toLocaleString() + ' (' + loan.transactionLoanStatus + ')'"></option>
+                            </template>
+                        </select>
+                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <span x-show="errors.repay_loan" x-text="errors.repay_loan" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <div class="w-full px-2.5 border-b border-gray-200 dark:border-gray-700 my-2"></div>
+
+                    <!-- Bonus Details Section - First Row -->
+                    <div class="w-full px-2.5">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Bonus Details
+                        </label>
+                        <div class="relative z-20 bg-transparent bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
+                            <div class="flex flex-wrap items-center gap-4 md:gap-6">
+                                <div class="flex-1 min-w-[100px]">
+                                    <p class="text-lg font-semibold text-center text-gray-600 dark:text-white/90">
+                                        <span x-text="'KES ' + (repayBorrowedAmountRaw ? repayBorrowedAmountRaw.toLocaleString() : '0')">FN1002</span>
+                                    </p>
+                                    <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Fine Code</p>
+                                </div>
+
+                                <div class="w-px bg-gray-300 h-11 dark:bg-gray-700 hidden sm:block"></div>
+
+                                <div class="flex-1 min-w-[100px]">
+                                    <p class="text-lg font-semibold text-center text-gray-600 dark:text-white/90">
+                                        <span x-text="'KES ' + (repayTotalInterestRaw ? repayTotalInterestRaw.toLocaleString() : '0')">Indiscipline Fine</span>
+                                    </p>
+                                    <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Fine</p>
+                                </div>
+
+                                <div class="w-px bg-gray-300 h-11 dark:bg-gray-700 hidden sm:block"></div>
+
+                                <div class="flex-1 min-w-[100px]">
+                                    <p class="text-lg font-semibold text-center text-gray-600 dark:text-white/90">
+                                        <span x-text="'KES ' + (repayTotalLoanRaw ? repayTotalLoanRaw.toLocaleString() : '0')">KES 0</span>
+                                    </p>
+                                    <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Default</p>
+                                </div>
+
+
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="col-span-2 lg:col-span-1">
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">Confirm Password</label>
-                        <input type="password" placeholder="Confirm Password"
-                            class="dark:bg-dark-900 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"/>
+                    <div class="w-full px-2.5 border-b border-gray-200 dark:border-gray-700 my-2"></div>
+
+                    <!-- Amount -->
+                    <div class="w-full px-2.5">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Amount (KES)
+                        </label>
+                        <input type="number" step="0.01"
+                            id="savings_Amount"
+                            name="savings_Amount"
+                            x-model="formData.savings_Amount"
+                            @input="clearError('savings_Amount')"
+                            @blur="validateField('savings_Amount', formData.savings_Amount)"
+                            :class="errors.savings_Amount ? 'border-red-500' : ''"
+                            placeholder="Enter amount (minimum KES 10.00)"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.savings_Amount" x-text="errors.savings_Amount" class="text-xs text-error-500 mt-1"></span>
                     </div>
+
+                    <!-- Payment Mode -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Payment Mode
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="payment_mode"
+                                    name="payment_mode"
+                                    x-model="formData.payment_mode"
+                                    @change="handlePaymentModeChange(formData.payment_mode)"
+                                    @blur="validateField('payment_mode', formData.payment_mode)"
+                                    :class="errors.payment_mode ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Select Payment Mode</option>
+                                <option value="Cash">Cash</option>
+                                <option value="MPesa">MPesa</option>
+                                <option value="Bank">Bank</option>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Transaction Code -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Transaction Code
+                        </label>
+                        <input type="text"
+                            id="transaction_code"
+                            name="transaction_code"
+                            x-model="formData.transaction_code"
+                            :readonly="transactionCodeReadonly"
+                            @input="clearError('transaction_code')"
+                            @blur="validateField('transaction_code', formData.transaction_code)"
+                            :class="errors.transaction_code ? 'border-red-500' : ''"
+                            :placeholder="transactionCodePlaceholder"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Transaction Date -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Transaction Date
+                        </label>
+                        <input type="text"
+                            id="savings_transaction_date"
+                            name="savings_transaction_date"
+                            x-model="formData.transaction_date"
+                            @input="clearError('savings_transaction_date')"
+                            @blur="validateField('savings_transaction_date', formData.transaction_date)"
+                            :class="errors.savings_transaction_date ? 'border-red-500' : ''"
+                            placeholder="DD MMM YYYY (e.g., 05 Apr 2026)"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                        <span x-show="errors.savings_transaction_date" x-text="errors.savings_transaction_date" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="w-full px-2.5 xl:w-1/2">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Status
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select id="Status"
+                                    name="Status"
+                                    x-model="formData.Status"
+                                    @change="clearError('Status')"
+                                    @blur="validateField('Status', formData.Status)"
+                                    :class="errors.Status ? 'border-red-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Select Status</option>
+                                <option value="Confirmed">Confirmed</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.Status" x-text="errors.Status" class="text-xs text-error-500 mt-1"></span>
                     </div>
                 </div>
-                </div>
+
                 <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-                <button @click="finesPenaltiesModal = false" type="button"
-                        class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
-                    Cancel</button>
-                <button type="button" class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto">Withdraw</button>
+                    <button @click="closeModal" type="button"
+                            class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                            :disabled="$store.savingData?.isAdding">
+                        <span x-show="!$store.savingData?.isAdding">Fine</span>
+                        <span x-show="$store.savingData?.isAdding">Transacting ...</span>
+                    </button>
                 </div>
             </form>
+
+        </div>
+    </div>
+
+    <!-- editMemberBonusFineTransactionModal -->
+    <div x-show="$store.loanData.editMemberBonusFineTransactionModal" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999">
+        <div class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
+        <div @click.outside="$store.loanData.editMemberBonusFineTransactionModal = false" class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+        <!-- close btn -->
+        <button @click="$store.loanData.editMemberBonusFineTransactionModal = false" class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300">
+            <svg
+                    class="fill-current"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+            >
+            <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M6.04289 16.5418C5.65237 16.9323 5.65237 17.5655 6.04289 17.956C6.43342 18.3465 7.06658 18.3465 7.45711 17.956L11.9987 13.4144L16.5408 17.9565C16.9313 18.347 17.5645 18.347 17.955 17.9565C18.3455 17.566 18.3455 16.9328 17.955 16.5423L13.4129 12.0002L17.955 7.45808C18.3455 7.06756 18.3455 6.43439 17.955 6.04387C17.5645 5.65335 16.9313 5.65335 16.5408 6.04387L11.9987 10.586L7.45711 6.04439C7.06658 5.65386 6.43342 5.65386 6.04289 6.04439C5.65237 6.43491 5.65237 7.06808 6.04289 7.4586L10.5845 12.0002L6.04289 16.5418Z"
+                    fill=""
+            />
+            </svg>
+        </button>
+
+        <div class="px-2 pr-14">
+            <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Edit Transaction</h4>
+            <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Edit where you want.</p>
+        </div>
+
+        <!-- Edit Bonsus & Fine transaction Form -->
+        <form class="flex flex-col" method="POST" x-data="loansTable" @submit.prevent="updateLoanTransaction">
+            @csrf
+
+            <div class="-mx-2.5 flex flex-wrap gap-y-5 p-2">
+                <!-- Hidden Transaction ID -->
+                <input type="hidden" name="transaction_id" x-model="editLoanTransactionId">
+
+                <!-- Loan Details Section - First Row -->
+                <div class="w-full px-2.5">
+                    <label class="mb-1.5 block text-medium font-medium text-gray-700 dark:text-gray-400">
+                        Transaction Details
+                    </label>
+                    <div class="relative z-20 bg-transparent bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
+                        <div class="flex flex-wrap items-center gap-4 md:gap-6">
+                            <div class="flex-1 min-w-[100px]">
+                                <p class="text-theme-xs text-center text-gray-500 dark:text-gray-400">Transaction</p>
+                                <p class="text-sm font-semibold text-center text-gray-600 dark:text-white/90" x-text="editLoanTransactionLoanDisplay">N/A</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full px-2.5 border-b border-gray-200 dark:border-gray-700 my-2"></div>
+
+                <!-- Transaction Type Display (Read-only) -->
+                <div class="w-full px-2.5">
+                    <input type="text"
+                        readonly
+                        hidden
+                        x-model="editLoanTransactionType"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-800 dark:text-white/90 dark:placeholder:text-white/30">
+                </div>
+
+                <!-- Amount -->
+                <div class="w-full px-2.5">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Amount (KES)
+                    </label>
+                    <div class="relative">
+                        <input type="number"
+                            step="0.01"
+                            min="1"
+                            x-model="editLoanTransactionAmount"
+                            @input="clearError('edit_amount')"
+                            :class="errors.edit_amount ? 'border-red-500' : ''"
+                            placeholder="Enter amount"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    </div>
+                    <span x-show="errors.edit_amount" x-text="errors.edit_amount" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <!-- Payment Mode -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Payment Mode
+                    </label>
+                    <div class="relative z-20 bg-transparent">
+                        <select x-model="editLoanTransactionMode"
+                                @change="handleEditTransactionPaymentModeChange(editLoanTransactionMode)"
+                                :class="errors.edit_payment_mode ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value="">Select Payment Mode</option>
+                            <option value="Cash">Cash</option>
+                            <option value="MPesa">MPesa</option>
+                            <option value="Bank">Bank</option>
+                        </select>
+                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <span x-show="errors.edit_payment_mode" x-text="errors.edit_payment_mode" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <!-- Transaction Code -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Transaction Code
+                    </label>
+                    <div class="relative">
+                        <input type="text"
+                            x-model="editLoanTransactionCode"
+                            :readonly="editLoanTransactionMode === 'Cash'"
+                            @input="clearError('edit_transaction_code')"
+                            :class="errors.edit_transaction_code ? 'border-red-500' : ''"
+                            :placeholder="editLoanTransactionMode === 'Cash' ? 'Auto-generated' : 'Enter transaction code'"
+                            class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    </div>
+                    <span x-show="errors.edit_transaction_code" x-text="errors.edit_transaction_code" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <!-- Transaction Date -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Transaction Date
+                    </label>
+                    <input type="text"
+                        x-model="editLoanTransactionDate"
+                        @input="clearError('edit_transaction_date')"
+                        @blur="validateRepayDateField('edit_transaction_date', editLoanTransactionDate)"
+                        :class="errors.edit_transaction_date ? 'border-red-500' : ''"
+                        placeholder="DD MMM YYYY (e.g., 07 Apr 2026)"
+                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                    <span x-show="errors.edit_transaction_date" x-text="errors.edit_transaction_date" class="text-xs text-error-500 mt-1"></span>
+                </div>
+
+                <!-- Status -->
+                <div class="w-full px-2.5 xl:w-1/2">
+                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        Transaction Status
+                    </label>
+                    <div class="relative z-20 bg-transparent">
+                        <select x-model="editLoanTransactionStatus"
+                                @change="clearError('edit_status')"
+                                :class="errors.edit_status ? 'border-red-500' : ''"
+                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                            <option value="">Select Status</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Cancelled">Cancelled</option>
+                            <option value="Reversed">Reversed</option>
+                        </select>
+                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <span x-show="errors.edit_status" x-text="errors.edit_status" class="text-xs text-error-500 mt-1"></span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
+
+                <button @click="$store.loanData.editMemberBonusFineTransactionModal = false" type="button"
+                        class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
+                    Cancel
+                </button>
+
+                <button type="button"
+                        id="deleteMemberLoanTransaction"
+                        @click="deleteMemberLoanTransaction"
+                        class="rounded-lg border border-error-300 bg-white px-5 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]"
+                        :disabled="$store.memberLoanTransactionData.isDeleting">
+                    <span x-show="!$store.memberLoanTransactionData.isDeleting">Delete</span>
+                    <span x-show="$store.memberLoanTransactionData.isDeleting">Deleting...</span>
+                </button>
+
+                <button type="submit"
+                        class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+                        :disabled="$store.loanData.isUpdating">
+                    <span x-show="!$store.loanData.isUpdating">Update Transaction</span>
+                    <span x-show="$store.loanData.isUpdating">Updating...</span>
+                </button>
+
+            </div>
+
+        </form>
+
         </div>
     </div>
 
@@ -7174,12 +7758,12 @@
 
             });
 
-            // Store for member loan transaction delete state
+            // 02. Store for member loan transaction delete state
             Alpine.store('memberLoanTransactionData', {
                 isDeleting: false
             });
 
-            // Store for member loan delete state
+            // 03. Store for member loan delete state
             Alpine.store('memberLoanData', {
                 isDeleting: false
             });
@@ -7188,6 +7772,7 @@
                 loans: [],
                 page: 1,
                 itemsPerPage: 10,
+                isLoading: true,
                 errors: {},
                 memberActiveLoans: 0,
                 editInterestRateDisplay: '',
@@ -7257,6 +7842,85 @@
                 editLoanTransactionEndDate: '',
                 editLoanTransactionLoanStatus: '',
                 editLoanTransactionType: '',
+
+                // Filter properties (NEW)
+                frequencyFilter: 'All',
+                statusFilter: 'All',
+
+                init() {
+                    // Load member-specific loans data
+                    fetch('/bodaboda-member/{{ $memberId }}/loans/current')
+                        .then(res => res.json())
+                        .then(data => {
+                            console.log('Loans data received:', data); // Debug log
+                            if (data.success) {
+                                this.loans = data.loans;
+                                console.log('Loans set:', this.loans); // Debug log
+                            } else {
+                                console.error('Failed to load loans:', data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error loading loans:', error);
+                        });
+
+                    // Load loan types for dropdown
+                    fetch('/loans/all-data')
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                Alpine.store('loanData').loanTypes = data.loanTypes;
+                            }
+                        });
+
+                    this.loadLoans();
+
+                    // Load member active loans count
+                    this.loadMemberActiveLoans();
+
+                    this.setCurrentRepayDate();
+
+                    // Initialize assign form if modal is opened
+                    this.$watch('$store.loanData.assignLoanModal', (value) => {
+                        if (value) {
+                            this.initAssignForm();
+                        }
+                    });
+
+                    // Listen for edit events - Simplified version
+                    window.addEventListener('open-edit-loan-modal', (event) => {
+                        const rawLoan = event.detail.loan;
+                        console.log('Raw loan data received:', rawLoan);
+                        this.editLoanModal(rawLoan);
+                    });
+
+                    // Listen for edit loan transaction events
+                    window.addEventListener('open-edit-loan-transaction-modal', (event) => {
+                        const transaction = event.detail.transaction;
+                        this.loadLoanTransactionForEdit(transaction);
+                    });
+                },
+
+                // NEW: Load loans method
+                loadLoans() {
+                    this.isLoading = true;
+                    fetch('/bodaboda-member/{{ $memberId }}/loans/current')
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                this.loans = data.loans;
+                            } else {
+                                this.loans = [];
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error loading loans:', error);
+                            this.loans = [];
+                        })
+                        .finally(() => {
+                            this.isLoading = false;
+                        });
+                },
 
                 // Date formatting functions
                 formatDate(dateString) {
@@ -7624,58 +8288,6 @@
                         outstandingBalance: loan.outstanding_balance || 0,
                         lastRepayment: loan.last_repayment || null
                     };
-                },
-
-                init() {
-                    // Load member-specific loans data
-                    fetch('/bodaboda-member/{{ $memberId }}/loans/current')
-                        .then(res => res.json())
-                        .then(data => {
-                            console.log('Loans data received:', data); // Debug log
-                            if (data.success) {
-                                this.loans = data.loans;
-                                console.log('Loans set:', this.loans); // Debug log
-                            } else {
-                                console.error('Failed to load loans:', data.message);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error loading loans:', error);
-                        });
-
-                    // Load loan types for dropdown
-                    fetch('/loans/all-data')
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.success) {
-                                Alpine.store('loanData').loanTypes = data.loanTypes;
-                            }
-                        });
-
-                    // Load member active loans count
-                    this.loadMemberActiveLoans();
-
-                    this.setCurrentRepayDate();
-
-                    // Initialize assign form if modal is opened
-                    this.$watch('$store.loanData.assignLoanModal', (value) => {
-                        if (value) {
-                            this.initAssignForm();
-                        }
-                    });
-
-                    // Listen for edit events - Simplified version
-                    window.addEventListener('open-edit-loan-modal', (event) => {
-                        const rawLoan = event.detail.loan;
-                        console.log('Raw loan data received:', rawLoan);
-                        this.editLoanModal(rawLoan);
-                    });
-
-                    // Listen for edit loan transaction events
-                    window.addEventListener('open-edit-loan-transaction-modal', (event) => {
-                        const transaction = event.detail.transaction;
-                        this.loadLoanTransactionForEdit(transaction);
-                    });
                 },
 
                 // Initialize assign form with today's date
@@ -8930,17 +9542,91 @@
                     const end = this.page * this.itemsPerPage;
                     return end > this.loans.length ? this.loans.length : end;
                 },
+
+                // NEW: Filtered loans based on frequency and status
+                get filteredLoans() {
+                    let filtered = this.loans;
+
+                    // Apply status filter
+                    if (this.statusFilter !== 'All') {
+                        filtered = filtered.filter(loan => {
+                            const status = loan.transactionLoanStatus || loan.transactionStatus || '';
+                            return status === this.statusFilter;
+                        });
+                    }
+
+                    // Apply frequency filter (based on assigned date: transactionCreated)
+                    if (this.frequencyFilter !== 'All') {
+                        const now = new Date();
+                        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+                        filtered = filtered.filter(loan => {
+                            const assignedDate = loan.transactionCreated ? new Date(loan.transactionCreated) : null;
+                            if (!assignedDate) return false;
+
+                            const assignedDay = new Date(assignedDate.getFullYear(), assignedDate.getMonth(), assignedDate.getDate());
+
+                            switch (this.frequencyFilter) {
+                                case 'This Week':
+                                    const dayOfWeek = today.getDay();
+                                    const startOfWeek = new Date(today);
+                                    startOfWeek.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+                                    return assignedDay >= startOfWeek;
+
+                                case 'This Month':
+                                    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                                    return assignedDay >= startOfMonth;
+
+                                case 'This Year':
+                                    const startOfYear = new Date(today.getFullYear(), 0, 1);
+                                    return assignedDay >= startOfYear;
+
+                                default:
+                                    return true;
+                            }
+                        });
+                    }
+
+                    return filtered;
+                },
+
+                // NEW: Reset page when filters change
+                performFilter() {
+                    this.page = 1;
+                },
+
+                // Override pagination getters to use filteredLoans
+                get totalPages() {
+                    return Math.ceil(this.filteredLoans.length / this.itemsPerPage);
+                },
+
+                get paginatedLoans() {
+                    const start = (this.page - 1) * this.itemsPerPage;
+                    const end = start + this.itemsPerPage;
+                    return this.filteredLoans.slice(start, end);
+                },
+
+                get startEntry() {
+                    return (this.page - 1) * this.itemsPerPage + 1;
+                },
+
+                get endEntry() {
+                    const end = this.page * this.itemsPerPage;
+                    return end > this.filteredLoans.length ? this.filteredLoans.length : end;
+                },
             }));
 
-            // Loan Transactions Table Component
+            // 04. Loan Transactions Table Component
             Alpine.data('loanTransactionsTable', () => ({
                 transactions: [],
                 page: 1,
                 itemsPerPage: 10,
                 isLoading: true,
 
-                // Filter properties
+                // Filter properties (all four)
                 frequencyFilter: 'All',
+                modeFilter: 'All',
+                typeFilter: 'All',
                 statusFilter: 'All',
 
                 editLoanTransactionModal: false,
@@ -8957,7 +9643,6 @@
                         .then(data => {
                             if (data.success) {
                                 this.transactions = data.transactions.map(item => ({
-                                    // From member_loans_transactions
                                     transactionId: item.transactionId || '',
                                     transactionCode: item.transactionCode || 'N/A',
                                     amount: 'KES ' + Number(item.transactionAmount || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
@@ -8965,18 +9650,10 @@
                                     type: item.transactionType || 'N/A',
                                     status: item.transactionStatus || 'N/A',
                                     rawDate: item.transactionDate ? new Date(item.transactionDate) : new Date(),
-
-                                    // Loan display (formatted: "202605: Emergency Loan @ 10.60%")
                                     loanDisplay: item.loan_display || 'N/A',
-
-                                    // From member_loans
                                     borrowed: 'KES ' + Number(item.transactionLoanAmount || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
                                     totalLoan: 'KES ' + Number(item.transactionTotalLoan || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-
-                                    // Calculated total repaid
                                     repaid: 'KES ' + Number(item.total_repaid || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-
-                                    // Loan type info
                                     loanTypeName: item.loan_type_name || 'N/A',
                                     interestRate: item.interest_rate ? item.interest_rate + '%' : '0%'
                                 }));
@@ -8993,39 +9670,55 @@
                         });
                 },
 
-                // Filtered transactions
+                // Updated filteredTransactions with all four filters
                 get filteredTransactions() {
                     let filtered = this.transactions;
 
-                    // Apply status filter
-                    if (this.statusFilter !== 'All') {
-                        filtered = filtered.filter(t => t.status === this.statusFilter);
-                    }
-
-                    // Apply frequency filter based on transaction date
+                    // Frequency filter (unchanged)
                     if (this.frequencyFilter !== 'All') {
                         const now = new Date();
                         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
                         filtered = filtered.filter(t => {
                             const transDate = new Date(t.rawDate);
+                            const transDay = new Date(transDate.getFullYear(), transDate.getMonth(), transDate.getDate());
 
-                            switch(this.frequencyFilter) {
+                            switch (this.frequencyFilter) {
                                 case 'Daily':
-                                    const txDate = new Date(transDate.getFullYear(), transDate.getMonth(), transDate.getDate());
-                                    return txDate.getTime() === today.getTime();
+                                    return transDay.getTime() === today.getTime();
                                 case 'Weekly':
-                                    const weekAgo = new Date(today);
-                                    weekAgo.setDate(weekAgo.getDate() - 7);
-                                    return transDate >= weekAgo;
+                                    const dayOfWeek = today.getDay();
+                                    const startOfWeek = new Date(today);
+                                    startOfWeek.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+                                    return transDay >= startOfWeek;
                                 case 'Monthly':
-                                    const monthAgo = new Date(today);
-                                    monthAgo.setDate(monthAgo.getDate() - 30);
-                                    return transDate >= monthAgo;
+                                    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                                    return transDay >= startOfMonth;
                                 default:
                                     return true;
                             }
                         });
+                    }
+
+                    // Mode filter (case‑insensitive)
+                    if (this.modeFilter !== 'All') {
+                        filtered = filtered.filter(t =>
+                            t.mode.toLowerCase() === this.modeFilter.toLowerCase()
+                        );
+                    }
+
+                    // Type filter (case‑insensitive)
+                    if (this.typeFilter !== 'All') {
+                        filtered = filtered.filter(t =>
+                            t.type.toLowerCase() === this.typeFilter.toLowerCase()
+                        );
+                    }
+
+                    // Status filter (case‑insensitive)
+                    if (this.statusFilter !== 'All') {
+                        filtered = filtered.filter(t =>
+                            t.status.toLowerCase() === this.statusFilter.toLowerCase()
+                        );
                     }
 
                     return filtered;
@@ -9069,7 +9762,7 @@
                     this.page = 1;
                 },
 
-                // Get status class
+                // Status class helper
                 getStatusClass(status) {
                     const statusMap = {
                         'Confirmed': 'bg-success-100 text-success-600 dark:bg-success-900/30 dark:text-success-400',
@@ -9080,24 +9773,21 @@
                     return statusMap[status] || 'bg-gray-100 text-gray-600 dark:bg-gray-900/30 dark:text-gray-400';
                 },
 
-                // Edit loan transaction - open edit modal with transaction data
+                // Edit loan transaction
                 editLoanTransaction(transaction) {
                     this.currentEditTransaction = transaction;
                     this.editLoanTransactionModal = true;
-
-                    // Dispatch event to the loansTable component to load the transaction data
                     window.dispatchEvent(new CustomEvent('open-edit-loan-transaction-modal', {
                         detail: { transaction: transaction }
                     }));
                 },
-
             }));
 
         });
 
     </script>
 
-    <!-- Member Fines -->
+    <!-- Member Bonuses & Fines -->
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('finesTable', () => ({

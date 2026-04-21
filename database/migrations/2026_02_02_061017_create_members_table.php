@@ -24,6 +24,7 @@ class CreateMembersTable extends Migration
             $table->timestamp('updated_on')->nullable()->useCurrentOnUpdate();
             $table->enum('membership', ['Member', 'Non-Member'])->default('Non-Member');
             $table->enum('status', ['Active','Suspended','In-active','Blacklisted'])->default('Active');
+            $table->index(['memberId', 'transactionStatus', 'transactionType', 'transactionDate'], 'idx_member_contrib_latest');
 
             // Foreign Keys
             $table->foreign('author')

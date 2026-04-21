@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Cache;
 
 
 class BodabodaController extends Controller {
@@ -58,26 +59,25 @@ class BodabodaController extends Controller {
     // Return all members with their next-of-kin and vehicles (JSON)
     public function listAllMembers(Request $request): JsonResponse
     {
-        $perPage = $request->input('per_page', 20);
-        $members = Member::with(['kins', 'vehicles', 'identification'])
-            ->addSelect([
-                'last_contribution_amount' => MemberContribution::select('transactionAmount')
-                    ->whereColumn('memberId', 'members.memberId')
-                    ->where('transactionStatus', 'Confirmed')
-                    ->where('transactionType', 'Paid-In')
-                    ->orderBy('transactionDate', 'desc')
-                    ->limit(1),
-                'last_contribution_date' => MemberContribution::select('transactionDate')
-                    ->whereColumn('memberId', 'members.memberId')
-                    ->where('transactionStatus', 'Confirmed')
-                    ->where('transactionType', 'Paid-In')
-                    ->orderBy('transactionDate', 'desc')
-                    ->limit(1),
-            ])
-            ->orderBy('memberId', 'asc')
-            ->paginate($perPage); // Now paginated
+        $cacheKey = 'members.all.with.contributions';
 
-        return response()->json($members, 200);
+        $members = Cache::remember($cacheKey, now()->addMinutes(10), function () {
+            // Eager load relationships, including latestContribution
+            return Member::with(['kins', 'vehicles', 'identification', 'latestContribution'])
+                ->orderBy('memberId', 'asc')
+                ->get()
+                ->map(function ($member) {
+                    // Attach contribution data directly to the model
+                    $member->last_contribution_amount = $member->latestContribution->transactionAmount ?? 0;
+                    $member->last_contribution_date   = $member->latestContribution->transactionDate ?? null;
+                    // Unset the relationship to keep JSON lean (optional)
+                    unset($member->latestContribution);
+                    return $member;
+                });
+        });
+
+        // Return in the exact structure the frontend expects
+        return response()->json(['data' => $members], 200);
     }
 
     // Count all members (JSON)

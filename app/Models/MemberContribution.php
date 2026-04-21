@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class MemberContribution extends Model
 {
@@ -28,4 +29,34 @@ class MemberContribution extends Model
         'transactionUpdatedOn' => 'datetime',
         'transactionAmount' => 'decimal:2'
     ];
+
+    /**
+     * Relationship: Contribution belongs to a Member.
+     */
+    public function member()
+    {
+        return $this->belongsTo(Member::class, 'memberId', 'memberId');
+    }
+
+    /**
+     * Relationship: Contribution was authored by a User.
+     */
+    public function author()
+    {
+        return $this->belongsTo(User::class, 'transactionAuthor', 'id');
+    }
+
+    /**
+     * Boot method – clear member list cache when a contribution changes.
+     */
+    protected static function booted()
+    {
+        static::saved(function () {
+            Cache::forget('members.all.with.contributions');
+        });
+
+        static::deleted(function () {
+            Cache::forget('members.all.with.contributions');
+        });
+    }
 }

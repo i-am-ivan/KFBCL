@@ -222,8 +222,10 @@
                                                                         class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                                                     <option value="All">All Status</option>
                                                                     <option value="Active">Active Members</option>
+                                                                    <option value="In-Active">In-Active Members</option>
                                                                     <option value="Suspended">Suspended Members</option>
                                                                     <option value="Blacklisted">Blacklisted Members</option>
+                                                                    <option value="De-Activated">De-Activated Members</option>
                                                                 </select>
                                                             </div>
 
@@ -248,10 +250,15 @@
                                                             <div class="custom-scrollbar overflow-x-auto">
 
                                                                 <table class="w-full table-auto">
+                                                                    
                                                                     <thead>
                                                                         <tr class="border-b border-gray-200 dark:divide-gray-800 dark:border-gray-800">
                                                                             <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                                 #MemberID
+                                                                            </th>
+                                                                            <!-- New column: Member Number -->
+                                                                            <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
+                                                                                Member Number
                                                                             </th>
                                                                             <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
                                                                                 Member
@@ -279,109 +286,143 @@
                                                                             </th>
                                                                         </tr>
                                                                     </thead>
-                                                                    <!-- Message  if no members data found -->
-                                                                        <template x-if="rows.length === 0">
-                                                                            <tbody>
-                                                                                <tr>
-                                                                                    <td colspan="10" class="px-4 py-12 text-center">
-                                                                                        <div class="inline-flex flex-col items-center justify-center space-y-4 p-4">
-                                                                                            <!-- Users Outline SVG Icon -->
-                                                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                                                                            </svg>
-                                                                                            <div class="space-y-2">
-                                                                                                <h1 class="text-xl font-semibold text-gray-700">No Bodaboda members found.</h1>
-                                                                                                <p class="text-gray-500">Add new members to manage here.</p>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </td>
-                                                                                </tr>
-                                                                            </tbody>
-                                                                        </template>
 
-                                                                        <template x-if="rows.length > 0">
-                                                                            <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800">
-                                                                                <!-- Else if there is data display -->
-                                                                                <template x-for="row in paginatedRows" :key="row.id">
-                                                                                    <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-900">
-                                                                                        <!-- #MemberID -->
-                                                                                        <td class="p-4 whitespace-nowrap">
-                                                                                            <div class="group flex items-center gap-3">
-                                                                                                <a href="view-member.php"
-                                                                                                    class="text-theme-xs font-medium text-gray-700 group-hover:underline dark:text-gray-400"
-                                                                                                    x-text="row.memberId"></a>
-                                                                                            </div>
-                                                                                        </td>
-
-                                                                                        <!-- Member Name & Email -->
-                                                                                        <td class="p-4 whitespace-nowrap">
-                                                                                            <div>
-                                                                                                <span class="text-sm font-medium text-gray-700 dark:text-gray-400"
-                                                                                                    x-text="row.member"></span>
-                                                                                                <p class="text-xs text-gray-500 dark:text-gray-400" x-text="row.memberEmail"></p>
-                                                                                            </div>
-                                                                                        </td>
-
-                                                                                        <!-- Phone -->
-                                                                                        <td class="p-4 whitespace-nowrap">
-                                                                                            <p class="text-sm text-gray-700 dark:text-gray-400 truncate max-w-[200px]"
-                                                                                            x-text="row.phone"
-                                                                                            :title="row.phone"></p>
-                                                                                        </td>
-
-                                                                                        <!-- Last Contribution -->
-                                                                                        <td class="p-4 whitespace-nowrap">
-                                                                                            <div>
-                                                                                                <p class="text-sm font-medium text-gray-700 dark:text-gray-400"
-                                                                                                    x-text="row.lastContribution"></p>
-                                                                                                <p class="text-xs text-gray-500 dark:text-gray-400" x-text="row.lastContributionDate"></p>
-                                                                                            </div>
-                                                                                        </td>
-
-                                                                                        <!-- Joined -->
-                                                                                        <td class="p-4 whitespace-nowrap">
-                                                                                            <p class="text-sm text-gray-700 dark:text-gray-400 truncate max-w-[200px]"
-                                                                                            x-text="row.joined"
-                                                                                            :title="row.joined"></p>
-                                                                                        </td>
-
-                                                                                        <!-- Membership -->
-                                                                                        <td class="p-4 whitespace-nowrap">
-                                                                                            <span class="text-sm text-gray-700 dark:text-gray-400" x-text="row.membership"></span>
-                                                                                        </td>
-
-                                                                                        <!-- DL Type -->
-                                                                                        <td class="p-4 whitespace-nowrap">
-                                                                                            <span class="text-sm text-gray-700 dark:text-gray-400" x-text="row.dlType"></span>
-                                                                                        </td>
-
-                                                                                        <!-- Status -->
-                                                                                        <td class="p-4 whitespace-nowrap">
-                                                                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                                                                                                :class="{
-                                                                                                    'bg-success-100 text-success-600 dark:bg-success-900/30 dark:text-success-400': row.status === 'Active',
-                                                                                                    'bg-warning-100 text-warning-600 dark:bg-warning-900/30 dark:text-warning-400': row.status === 'Suspended',
-                                                                                                    'bg-error-100 text-error-600 dark:bg-error-900/30 dark:text-error-400': row.status === 'Blacklisted',
-                                                                                                    'bg-gray-100 text-gray-600 dark:bg-gray-900/30 dark:text-gray-400': !['Active', 'Suspended', 'Blacklisted'].includes(row.status)
-                                                                                                }"
-                                                                                                x-text="row.status.charAt(0).toUpperCase() + row.status.slice(1)">
-                                                                                            </span>
-                                                                                        </td>
-
-                                                                                        <!-- Action -->
-                                                                                        <td class="p-4 whitespace-nowrap">
-                                                                                            <button @click="window.location.href = `/treasurer/bodaboda/member/${row.memberId}`"
-                                                                                                class="shadow-theme-xs inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
-                                                                                                <svg class="w-[22px] h-[22px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                                                                    <path stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.1" d="M7 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h1m4-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm7.441 1.559a1.907 1.907 0 0 1 0 2.698l-6.069 6.069L10 19l.674-3.372 6.07-6.07a1.907 1.907 0 0 1 2.697 0Z"></path>
+                                                                    <tbody class="divide-x divide-y divide-gray-200 dark:divide-gray-800">
+                                                                                <!-- LOADING STATE -->
+                                                                                <template x-if="isLoading">
+                                                                                    <tr>
+                                                                                        <td colspan="11" class="px-4 py-12 text-center">
+                                                                                            <div class="inline-flex flex-col items-center justify-center space-y-4 p-4">
+                                                                                                <svg class="h-8 w-8 animate-spin text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                                                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                                                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                                                                                 </svg>
-                                                                                            </button>
+                                                                                                <h1 class="text-xl font-semibold text-gray-700">Loading Members ...</h1>
+                                                                                            </div>
                                                                                         </td>
                                                                                     </tr>
                                                                                 </template>
+                                                                                <!-- NO MEMBERS IN DATABASE -->
+                                                                                <template x-if="!isLoading && rows.length === 0">
+                                                                                    <tr>
+                                                                                        <td colspan="11" class="px-4 py-12 text-center">
+                                                                                            <div class="inline-flex flex-col items-center justify-center space-y-4 p-4">
+                                                                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                                                                                </svg>
+                                                                                                <div class="space-y-2">
+                                                                                                    <h1 class="text-xl font-semibold text-gray-700">No Bodaboda members found.</h1>
+                                                                                                    <p class="text-gray-500">Add new members to manage here.</p>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </template>
+                                                                                <!-- NO SEARCH/FILTER RESULTS (but rows exist) -->
+                                                                                <template x-if="!isLoading && rows.length > 0 && filteredRows.length === 0">
+                                                                                    <tr>
+                                                                                        <td colspan="11" class="px-4 py-12 text-center">
+                                                                                            <div class="inline-flex flex-col items-center justify-center space-y-4 p-4">
+                                                                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                                                                                </svg>
+                                                                                                <div class="space-y-2">
+                                                                                                    <h1 class="text-xl font-semibold text-gray-700">No results found!</h1>
+                                                                                                    <p class="text-gray-500">Try adjusting your search or filter.</p>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </template>
+                                                                                <!-- DATA ROWS -->
+                                                                                <template x-if="!isLoading && filteredRows.length > 0">
+                                                                                    <!-- The existing table rows template -->
+                                                                                    <template x-for="row in paginatedRows" :key="row.id">
+                                                                                        <tr class="transition hover:bg-gray-50 dark:hover:bg-gray-900">
+                                                                                            <!-- #MemberID -->
+                                                                                            <td class="p-4 whitespace-nowrap">
+                                                                                                <div class="group flex items-center gap-3">
+                                                                                                    <a @click="window.location.href = `/treasurer/bodaboda/member/${row.memberId}`"
+                                                                                                        class="text-theme-xs font-medium text-gray-700 group-hover:underline dark:text-gray-400"
+                                                                                                        x-text="row.memberId"></a>
+                                                                                                </div>
+                                                                                            </td>
 
-                                                                            </tbody>
-                                                                        </template>
+                                                                                            <!-- Member Number (NEW) -->
+                                                                                            <td class="p-4 whitespace-nowrap">
+                                                                                                <span class="text-sm text-gray-700 dark:text-gray-400" x-text="row.memberNumber"></span>
+                                                                                            </td>
+
+                                                                                            <!-- Member Name & Email -->
+                                                                                            <td class="p-4 whitespace-nowrap">
+                                                                                                <div>
+                                                                                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-400"
+                                                                                                        x-text="row.member"></span>
+                                                                                                    <p class="text-xs text-gray-500 dark:text-gray-400" x-text="row.memberEmail"></p>
+                                                                                                </div>
+                                                                                            </td>
+
+                                                                                            <!-- Phone -->
+                                                                                            <td class="p-4 whitespace-nowrap">
+                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400 truncate max-w-[200px]"
+                                                                                                x-text="row.phone"
+                                                                                                :title="row.phone"></p>
+                                                                                            </td>
+
+                                                                                            <!-- Last Contribution -->
+                                                                                            <td class="p-4 whitespace-nowrap">
+                                                                                                <div>
+                                                                                                    <p class="text-sm font-medium text-gray-700 dark:text-gray-400"
+                                                                                                        x-text="row.lastContribution"></p>
+                                                                                                    <p class="text-xs text-gray-500 dark:text-gray-400" x-text="row.lastContributionDate"></p>
+                                                                                                </div>
+                                                                                            </td>
+
+                                                                                            <!-- Joined -->
+                                                                                            <td class="p-4 whitespace-nowrap">
+                                                                                                <p class="text-sm text-gray-700 dark:text-gray-400 truncate max-w-[200px]"
+                                                                                                x-text="row.joined"
+                                                                                                :title="row.joined"></p>
+                                                                                            </td>
+
+                                                                                            <!-- Membership -->
+                                                                                            <td class="p-4 whitespace-nowrap">
+                                                                                                <span class="text-sm text-gray-700 dark:text-gray-400" x-text="row.membership"></span>
+                                                                                            </td>
+
+                                                                                            <!-- DL Type -->
+                                                                                            <td class="p-4 whitespace-nowrap">
+                                                                                                <span class="text-sm text-gray-700 dark:text-gray-400" x-text="row.dlType"></span>
+                                                                                            </td>
+
+                                                                                            <!-- Status -->
+                                                                                            <td class="p-4 whitespace-nowrap">
+                                                                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                                                                                                    :class="{
+                                                                                                        'bg-success-100 text-success-600 dark:bg-success-900/30 dark:text-success-400': row.status === 'Active',
+                                                                                                        'bg-warning-100 text-warning-600 dark:bg-warning-900/30 dark:text-warning-400': row.status === 'Suspended',
+                                                                                                        'bg-error-100 text-error-600 dark:bg-error-900/30 dark:text-error-400': row.status === 'Blacklisted',
+                                                                                                        'bg-gray-100 text-gray-600 dark:bg-gray-900/30 dark:text-gray-400': !['Active', 'Suspended', 'Blacklisted'].includes(row.status)
+                                                                                                    }"
+                                                                                                    x-text="row.status.charAt(0).toUpperCase() + row.status.slice(1)">
+                                                                                                </span>
+                                                                                            </td>
+
+                                                                                            <!-- Action -->
+                                                                                            <td class="p-4 whitespace-nowrap">
+                                                                                                <button @click="window.location.href = `/treasurer/bodaboda/member/${row.memberId}`"
+                                                                                                    class="shadow-theme-xs inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+                                                                                                    <svg class="w-[22px] h-[22px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                                                                        <path stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.1" d="M7 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h1m4-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm7.441 1.559a1.907 1.907 0 0 1 0 2.698l-6.069 6.069L10 19l.674-3.372 6.07-6.07a1.907 1.907 0 0 1 2.697 0Z"></path>
+                                                                                                    </svg>
+                                                                                                </button>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </template>
+                                                                                </template>
+
+                                                                    </tbody>
+
                                                                 </table>
 
                                                             </div>
@@ -986,6 +1027,7 @@
                                 this.rows = data.data.map(member => ({
                                     id: member.memberId || member.id,
                                     memberId: member.memberId,
+                                    memberNumber: member.member_number || '',   // ← Add member_number mapping
                                     member: `${member.firstname || ''} ${member.lastname || ''}`.trim(),
                                     memberEmail: member.email || '',
                                     phone: member.phone1 || '',
@@ -1098,7 +1140,7 @@
                         filtered = filtered.filter(row => row.membership === this.membershipFilter);
                     }
 
-                    // Apply status filter (Active/Suspended/Blacklisted)
+                    // Apply status filter (Active/In-Active/Suspended/Blacklisted/De-Activated)
                     if (this.statusFilter !== "All") {
                         filtered = filtered.filter(row => row.status === this.statusFilter);
                     }
@@ -1113,6 +1155,10 @@
                             }
                             // Search in memberId
                             if (row.memberId && row.memberId.toString().toLowerCase().includes(query)) {
+                                return true;
+                            }
+                            // Search in member_number (NEW)
+                            if (row.memberNumber && row.memberNumber.toString().toLowerCase().includes(query)) {
                                 return true;
                             }
                             // Search in phone

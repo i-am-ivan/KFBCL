@@ -107,4 +107,15 @@ class Member extends Model
         return $this->belongsTo(User::class, 'author', 'id');
     }
 
+    /**
+     * Get the member's most recent confirmed paid‑in contribution.
+     */
+    public function latestContribution()
+    {
+        return $this->hasOne(MemberContribution::class, 'memberId', 'memberId')
+                    ->where('transactionStatus', 'Confirmed')
+                    ->where('transactionType', 'Paid-In')
+                    ->latest('transactionDate');
+    }
+
 }
