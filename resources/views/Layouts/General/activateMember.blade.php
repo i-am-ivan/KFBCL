@@ -490,14 +490,14 @@
                                 <div class="flex items-center justify-between border-t border-gray-200 p-5 dark:border-gray-800" x-data="memberInfo">
 
                                     <div class="flex gap-3">
-                                        <div class="order-3 xl:order-2">
+                                        <div class="order-3 xl:order-2" x-data="memberInfo">
                                             <h4 class="mb-2 text-center text-medium font-semibold text-gray-600 xl:text-left dark:text-white/90">
                                             Account Status
                                             </h4>
                                             <div class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
                                                 <p class="text-sm text-gray-500 dark:text-gray-400" x-text="memberData?.member?.memberId"></p>
                                             <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
-                                                <p class="text-sm text-gray-500 dark:text-gray-400">Membership: <span x-text="memberData?.member?.membership">Member</span></p>
+                                                <p class="text-sm text-gray-500 dark:text-gray-400">Membership: <span x-text="memberData?.member?.membership || 'Loading ...'">Member</span></p>
                                             <div class="hidden h-3.5 w-px bg-gray-300 xl:block dark:bg-gray-700"></div>
                                                 <p class="text-sm text-gray-500 dark:text-gray-400">
                                                     <span class="bg-success-50 text-success-600 dark:bg-success-500/15 dark:text-success-500 rounded-full px-2 py-0.5 text-xs font-medium" x-text="memberData?.member?.status"></span>
@@ -511,13 +511,13 @@
 
                                         @if(Auth::user()->canDeactivateAccount())
                                             <!-- Show De-Activate button only if member is NOT deactivated -->
-                                            <button x-show="!isDeactivated"
+                                            <button x-show="!isCurrentlyDeactivated"
                                                     @click="$store.deactivationModal.openModal()"
                                                     class="rounded-lg border border-error-300 bg-white px-5 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
                                                 De-Activate Account
                                             </button>
                                             <!-- Show Activate button only if member IS deactivated -->
-                                            <button x-show="isDeactivated"
+                                            <button x-show="isCurrentlyDeactivated"
                                                     @click="$store.deactivationModal.openModal()"
                                                     class="rounded-lg border border-success-300 bg-white px-5 py-2.5 text-sm font-medium text-success-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03]">
                                                 Activate Account

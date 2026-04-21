@@ -49,14 +49,6 @@ class User extends Authenticatable
     }
 
     /**
-     * Relationship: Users created by this user
-     */
-    public function createdUsers()
-    {
-        return $this->hasMany(User::class, 'created_by', 'id');
-    }
-
-    /**
      * Relationship: User has many logins
      */
     public function logins()
