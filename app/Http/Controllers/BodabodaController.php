@@ -138,6 +138,33 @@ class BodabodaController extends Controller {
         ], 200);
     }
 
+    /**
+     * Generate a unique member number with given prefix.
+     * Example outputs: MBR000123, NMB000456, etc.
+     */
+    private function generateUniqueMemberNumber($prefix = 'MBR')
+    {
+        $maxAttempts = 10;
+        $attempts = 0;
+
+        do {
+            // Generate random number (e.g., 6 digits, zero-padded)
+            $randomNum = str_pad(random_int(1, 999999), 6, '0', STR_PAD_LEFT);
+            $memberNumber = $prefix . $randomNum;
+            $attempts++;
+
+            // Check if it already exists
+            $exists = DB::table('members')->where('member_number', $memberNumber)->exists();
+
+            if (!$exists) {
+                return $memberNumber;
+            }
+        } while ($attempts < $maxAttempts);
+
+        // Fallback: use timestamp + random (very unlikely collision)
+        return $prefix . now()->format('YmdHis') . random_int(10, 99);
+    }
+
     // Add a new member with file uploads
     public function addMember(Request $request)
     {
@@ -170,6 +197,11 @@ class BodabodaController extends Controller {
 
             DB::beginTransaction();
 
+            // --- Generate unique member number BEFORE insert ---
+            // Define prefix (you can customize based on membership type or any logic)
+            $prefix = 'MBR'; // or use $validated['memberType'] === 'Member' ? 'MBR' : 'NMB'
+            $memberNumber = $this->generateUniqueMemberNumber($prefix);
+
             // Insert into members table (without member_number)
             $memberId = DB::table('members')->insertGetId([
                 'firstname' => $validated['personal']['firstName'],
@@ -182,15 +214,10 @@ class BodabodaController extends Controller {
                 'author' => Auth::id(),
                 'membership' => $validated['memberType'],
                 'status' => 'Active',
+                'member_number' => $memberNumber,
                 'created_on' => now(),
                 'updated_on' => now(),
             ]);
-
-            // Generate unique member number (e.g., MBR000001)
-            $memberNumber = 'MBR' . str_pad($memberId, 6, '0', STR_PAD_LEFT);
-
-            // Update the members record with member_number
-            DB::table('members')->where('memberId', $memberId)->update(['member_number' => $memberNumber]);
 
             // Insert into member_kin
             DB::table('member_kin')->insert([
