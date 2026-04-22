@@ -15,7 +15,7 @@ use App\Models\MemberContribution;
 use App\Models\MemberLoanType;
 use App\Models\MemberSaving;
 use App\Models\MemberLoan;
-use App\Models\MemberLoanTransaction;
+use App\Models\MemberBonusFineTransaction;
 use App\Models\MemberBonusType;
 use App\Models\MemberFineType;
 use Illuminate\Support\Facades\Validator;
@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Validation\ValidationException;
 
 
 class BodabodaController extends Controller {
@@ -141,12 +142,12 @@ class BodabodaController extends Controller {
     public function addMember(Request $request)
     {
         try {
-            // Validate incoming data
+            // Validate incoming data with unique checks
             $validated = $request->validate([
                 'personal.firstName' => 'required|string|max:255',
                 'personal.lastName' => 'required|string|max:255',
-                'personal.email' => 'required|email|max:255',
-                'personal.primaryPhone' => 'required|string|max:20',
+                'personal.email' => 'required|email|max:255|unique:members,email',
+                'personal.primaryPhone' => 'required|string|max:20|unique:members,phone1',
                 'personal.secondaryPhone' => 'nullable|string|max:20',
                 'personal.gender' => 'required|in:Male,Female',
                 'personal.dob' => 'required|date_format:d-m-Y',
@@ -157,8 +158,8 @@ class BodabodaController extends Controller {
                 'kin.phone' => 'required|string|max:20',
                 'kin.relation' => 'required|string|max:255',
 
-                'identification.nationalId' => 'required|string|max:50',
-                'identification.drivingLicense' => 'required|string|max:50',
+                'identification.nationalId' => 'required|string|max:50|unique:member_identifications,national_id',
+                'identification.drivingLicense' => 'required|string|max:50|unique:member_identifications,driver_license',
                 'identification.licenseType' => 'required|string|max:255',
 
                 'memberType' => 'required|in:Member,Non-Member',
@@ -167,10 +168,9 @@ class BodabodaController extends Controller {
                 'id_back' => 'required|file|mimes:png,jpg,jpeg,webp|max:5120',
             ]);
 
-            // Start database transaction
             DB::beginTransaction();
 
-            // 1. Insert into members table
+            // Insert into members table (without member_number)
             $memberId = DB::table('members')->insertGetId([
                 'firstname' => $validated['personal']['firstName'],
                 'lastname' => $validated['personal']['lastName'],
@@ -186,7 +186,13 @@ class BodabodaController extends Controller {
                 'updated_on' => now(),
             ]);
 
-            // 2. Insert into member_kin table
+            // Generate unique member number (e.g., MBR000001)
+            $memberNumber = 'MBR' . str_pad($memberId, 6, '0', STR_PAD_LEFT);
+
+            // Update the members record with member_number
+            DB::table('members')->where('memberId', $memberId)->update(['member_number' => $memberNumber]);
+
+            // Insert into member_kin
             DB::table('member_kin')->insert([
                 'member' => $memberId,
                 'firstname' => $validated['kin']['firstName'],
@@ -199,30 +205,26 @@ class BodabodaController extends Controller {
                 'updated_on' => now(),
             ]);
 
-            // 3. Create directory for identification files (using memberId as folder name)
-            $folderName = $memberId;
-            $directoryPath = database_path("etc/configs/dumps/raw/{$folderName}");
-
-            // Create directory if it doesn't exist
+            // Create directory for identification files
+            $directoryPath = database_path("etc/configs/dumps/raw/{$memberId}");
             if (!File::exists($directoryPath)) {
                 File::makeDirectory($directoryPath, 0755, true);
             }
 
-            // 4. Save uploaded files
+            // Save uploaded files
             $idFrontFile = $request->file('id_front');
             $idBackFile = $request->file('id_back');
 
             $frontFileName = 'front.' . $idFrontFile->getClientOriginalExtension();
             $backFileName = 'back.' . $idBackFile->getClientOriginalExtension();
 
-            $frontPath = "database/etc/configs/dumps/raw/{$folderName}/{$frontFileName}";
-            $backPath = "database/etc/configs/dumps/raw/{$folderName}/{$backFileName}";
+            $frontPath = "database/etc/configs/dumps/raw/{$memberId}/{$frontFileName}";
+            $backPath = "database/etc/configs/dumps/raw/{$memberId}/{$backFileName}";
 
-            // Move files to directory
             $idFrontFile->move($directoryPath, $frontFileName);
             $idBackFile->move($directoryPath, $backFileName);
 
-            // 5. Insert into members_identification table
+            // Insert into member_identifications
             DB::table('member_identifications')->insert([
                 'member_id' => $memberId,
                 'national_id' => $validated['identification']['nationalId'],
@@ -237,20 +239,47 @@ class BodabodaController extends Controller {
                 'updated_at' => now(),
             ]);
 
-            // Commit transaction
             DB::commit();
+
+            Cache::forget('members.all.with.contributions');
 
             return response()->json([
                 'success' => true,
                 'message' => 'Member added successfully!',
-                'redirect' => route('treasurer.bodaboda')
+                'reload' => true  // Make sure this route name exists
             ]);
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
+            // Handle validation errors (including unique violations)
+            $errors = $e->errors();
+            $customMessages = [];
+
+            // Convert unique validation messages to friendly ones
+            if (isset($errors['personal.email'])) {
+                $customMessages[] = 'Email address already exists.';
+            }
+            if (isset($errors['personal.primaryPhone'])) {
+                $customMessages[] = 'Primary phone number already exists.';
+            }
+            if (isset($errors['identification.nationalId'])) {
+                $customMessages[] = 'National ID number already exists.';
+            }
+            if (isset($errors['identification.drivingLicense'])) {
+                $customMessages[] = 'Driving license number already exists.';
+            }
+
+            if (!empty($customMessages)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => implode(' ', $customMessages),
+                    'errors' => $errors
+                ], 422);
+            }
+
             return response()->json([
                 'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $e->errors()
+                'message' => 'INVALID Inputs!',
+                'errors' => $errors
             ], 422);
 
         } catch (\Exception $e) {
@@ -2218,6 +2247,125 @@ class BodabodaController extends Controller {
             ->get();
 
         return response()->json($fines);
+    }
+
+    /**
+     * 2.0 Get all active bonus types (for dropdown)
+     */
+    public function getMemberBonusTypes(): JsonResponse
+    {
+        $bonusTypes = MemberBonusType::where('status', 'Active')
+            ->select('bonusId', 'bonus_name', 'percentage')
+            ->get();
+        return response()->json($bonusTypes);
+    }
+
+    /**
+     * 2.1 Get all active fine types (for dropdown)
+     */
+    public function getMemberFineTypes(): JsonResponse
+    {
+        $fineTypes = MemberFineType::where('status', 'Active')
+            ->select('fineId', 'fine_name', 'percentage')
+            ->get();
+        return response()->json($fineTypes);
+    }
+
+    /**
+     * 2.2 Get all bonus/fine transactions for a member
+     */
+    public function getAllMemberBonusFineTransactions($memberId): JsonResponse
+    {
+        $transactions = MemberBonusFineTransaction::with(['bonusType', 'fineType'])
+            ->where('member_id', $memberId)
+            ->orderBy('transactionDate', 'desc')
+            ->get()
+            ->map(function ($tx) {
+                return [
+                    'transactionID'     => $tx->transactionID,
+                    'type_category'     => $tx->type_category,
+                    'type_name'         => $tx->type_name,
+                    'bonus_type_id'     => $tx->bonus_type_id,
+                    'fine_type_id'      => $tx->fine_type_id,
+                    'transactionAmount' => $tx->transactionAmount,
+                    'transactionDate'   => $tx->transactionDate,
+                    'transactionMode'   => $tx->transactionMode,
+                    'transactionCode'   => $tx->transactionCode,
+                    'transactionStatus' => $tx->transactionStatus,
+                    'author'            => $tx->author->name ?? 'System',
+                ];
+            });
+
+        return response()->json(['success' => true, 'data' => $transactions]);
+    }
+
+    // 2.3 Store a new bonus/fine transaction
+    public function storeMemberBonusFineTransaction(Request $request, $memberId): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'type'                => 'required|in:bonus,fine',
+            'type_id'             => 'required|integer',
+            'transactionAmount'   => 'required|numeric|min:100',
+            'transactionDate'     => 'required|date_format:Y-m-d H:i:s',
+            'transactionMode'     => 'required|in:Cash,MPesa,Bank',
+            'transactionCode'     => 'nullable|string|max:255',
+            'transactionStatus'   => 'required|in:Confirmed,Pending,Cancelled',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
+        }
+
+        $data = $validator->validated();
+        $data['member_id'] = $memberId;
+
+        // Set the correct type foreign key
+        if ($data['type'] === 'bonus') {
+            $data['bonus_type_id'] = $data['type_id'];
+            $data['fine_type_id'] = null;
+        } else {
+            $data['fine_type_id'] = $data['type_id'];
+            $data['bonus_type_id'] = null;
+        }
+        unset($data['type'], $data['type_id']);
+
+        // transactionAuthor will be set by the model's creating event
+        MemberBonusFineTransaction::create($data);
+
+        return response()->json(['success' => true, 'message' => 'Transaction saved successfully.']);
+    }
+
+    // 2.4 Update an existing transaction
+    public function updateMemberBonusFineTransaction(Request $request, $transactionId): JsonResponse
+    {
+        $transaction = MemberBonusFineTransaction::findOrFail($transactionId);
+
+        $validator = Validator::make($request->all(), [
+            'transactionAmount'   => 'required|numeric|min:100',
+            'transactionDate'     => 'required|date_format:Y-m-d H:i:s',
+            'transactionMode'     => 'required|in:Cash,MPesa,Bank',
+            'transactionCode'     => 'nullable|string|max:255',
+            'transactionStatus'   => 'required|in:Confirmed,Pending,Cancelled',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->errors()], 422);
+        }
+
+        $transaction->update($validator->validated()); // automatically sets transactionUpdated_On
+
+        return response()->json(['success' => true, 'message' => 'Transaction updated.']);
+    }
+
+    /**
+     * 2.5 Delete a transaction
+     */
+    public function deleteMemberBonusFineTransaction($transactionId): JsonResponse
+    {
+        $transaction = MemberBonusFineTransaction::findOrFail($transactionId);
+        $transaction->delete();
+
+        return response()->json(['success' => true, 'message' => 'Transaction deleted.']);
     }
 
     // Loans ------------------------------------------------------------------------------------------------------------

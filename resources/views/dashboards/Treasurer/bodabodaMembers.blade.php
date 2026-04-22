@@ -250,7 +250,7 @@
                                                             <div class="custom-scrollbar overflow-x-auto">
 
                                                                 <table class="w-full table-auto">
-                                                                    
+
                                                                     <thead>
                                                                         <tr class="border-b border-gray-200 dark:divide-gray-800 dark:border-gray-800">
                                                                             <th class="p-4 text-left text-xs font-medium whitespace-nowrap text-gray-500 dark:text-gray-400">
@@ -1353,7 +1353,9 @@
     </script>
 
     <script>
+
         document.addEventListener('alpine:init', () => {
+
             Alpine.data('newMemberForm', () => ({
                 // Existing properties
                 currentStep: 1,
@@ -1639,7 +1641,7 @@
                     const originalText = submitBtn.textContent;
 
                     // Change button text to show loading state IMMEDIATELY
-                    submitBtn.textContent = 'Adding Member...';
+                    submitBtn.textContent = ' Adding Member ... ';
                     submitBtn.disabled = true;
 
                     try {
@@ -1688,7 +1690,7 @@
                         });
 
                         // WAIT FOR 0.75 SECONDS - Button already shows "Adding Member..." at this point
-                        await new Promise(resolve => setTimeout(resolve, 750));
+                        await new Promise(resolve => setTimeout(resolve, 500));
 
                         const result = await response.json();
 
@@ -1697,11 +1699,16 @@
 
                         // Redirect on success
                         if (result.success) {
-                            window.location.href = result.redirect;
+                            alert(result.message);
+                            if (result.reload) {
+                                window.location.reload();  // Reload current page
+                            } else if (result.redirect) {
+                                window.location.href = result.redirect;
+                            }
                         } else {
                             // Show validation errors if any
                             if (result.errors) {
-                                let errorMessages = 'Please fix the following errors:\n\n';
+                                let errorMessages = 'INVALID Input! Fix errors to continue.\n\n';
                                 Object.keys(result.errors).forEach(key => {
                                     if (typeof result.errors[key] === 'object') {
                                         Object.keys(result.errors[key]).forEach(nestedKey => {
@@ -1760,8 +1767,11 @@
                 },
 
             }));
+
         });
+
     </script>
+
 
 </body>
 

@@ -238,6 +238,21 @@ Route::post('/treasurer/bodaboda/fine-types/update', [BodabodaController::class,
 
 Route::post('/treasurer/bodaboda/fine-types/delete', [BodabodaController::class, 'deleteFineType'])->name('treasurer.bodaboda.fine-types.delete');
 
+Route::prefix('bodaboda-member/{memberId}')->group(function () {
+
+    Route::get('/bonus-types', [BodabodaController::class, 'getMemberBonusTypes']);
+
+    Route::get('/fine-types', [BodabodaController::class, 'getMemberFineTypes']);
+
+    Route::get('/bonus-fine-transactions', [BodabodaController::class, 'getAllMemberBonusFineTransactions']);
+
+    Route::post('/bonus-fine-transaction/store', [BodabodaController::class, 'storeMemberBonusFineTransaction']);
+
+    Route::post('/bonus-fine-transaction/{transactionId}/update', [BodabodaController::class, 'updateMemberBonusFineTransaction']);
+    
+    Route::delete('/bonus-fine-transaction/{transactionId}/delete', [BodabodaController::class, 'deleteMemberBonusFineTransaction']);
+});
+
 // Vehicles ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Route::get('/bodaboda-member/{memberId}/vehicles/member/all', [BodabodaController::class, 'getAllMemberVehicleData']);
 

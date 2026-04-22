@@ -3929,64 +3929,69 @@
     <div x-show="awardMemberBonusModal" class="fixed inset-0 flex items-center justify-center p-5 overflow-y-auto z-99999">
         <div class="modal-close-btn fixed inset-0 h-full w-full bg-gray-400/50 backdrop-blur-[32px]"></div>
         <div @click.outside="awardMemberBonusModal = false" class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
-        <!-- close btn -->
-        <button @click="awardMemberBonusModal = false" class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300">
-            <svg
-                    class="fill-current"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-            >
-            <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M6.04289 16.5418C5.65237 16.9323 5.65237 17.5655 6.04289 17.956C6.43342 18.3465 7.06658 18.3465 7.45711 17.956L11.9987 13.4144L16.5408 17.9565C16.9313 18.347 17.5645 18.347 17.955 17.9565C18.3455 17.566 18.3455 16.9328 17.955 16.5423L13.4129 12.0002L17.955 7.45808C18.3455 7.06756 18.3455 6.43439 17.955 6.04387C17.5645 5.65335 16.9313 5.65335 16.5408 6.04387L11.9987 10.586L7.45711 6.04439C7.06658 5.65386 6.43342 5.65386 6.04289 6.04439C5.65237 6.43491 5.65237 7.06808 6.04289 7.4586L10.5845 12.0002L6.04289 16.5418Z"
-                    fill=""
-            />
-            </svg>
-        </button>
-        <div class="px-2 pr-14">
-            <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Award Member Bonus</h4>
-            <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Select the bonus type and amount to award.</p>
-        </div>
+            <!-- close btn -->
+            <button @click="awardMemberBonusModal = false" class="transition-color absolute right-5 top-5 z-999 flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-400 hover:bg-gray-200 hover:text-gray-600 dark:bg-gray-700 dark:bg-white/[0.05] dark:text-gray-400 dark:hover:bg-white/[0.07] dark:hover:text-gray-300">
+                <svg
+                        class="fill-current"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                >
+                <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M6.04289 16.5418C5.65237 16.9323 5.65237 17.5655 6.04289 17.956C6.43342 18.3465 7.06658 18.3465 7.45711 17.956L11.9987 13.4144L16.5408 17.9565C16.9313 18.347 17.5645 18.347 17.955 17.9565C18.3455 17.566 18.3455 16.9328 17.955 16.5423L13.4129 12.0002L17.955 7.45808C18.3455 7.06756 18.3455 6.43439 17.955 6.04387C17.5645 5.65335 16.9313 5.65335 16.5408 6.04387L11.9987 10.586L7.45711 6.04439C7.06658 5.65386 6.43342 5.65386 6.04289 6.04439C5.65237 6.43491 5.65237 7.06808 6.04289 7.4586L10.5845 12.0002L6.04289 16.5418Z"
+                        fill=""
+                />
+                </svg>
+            </button>
+            <div class="px-2 pr-14">
+                <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Award Member Bonus</h4>
+                <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">Select the bonus type and amount to award.</p>
+            </div>
 
             <!-- Award Bonus Form -->
-            <form class="flex flex-col" id="addSavingsForm" x-data="savingsTable" @submit.prevent="addSavings">
+            <form x-data="awardBonusForm" class="flex flex-col" @submit.prevent="submitForm">
                 @csrf
+
                 <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
 
                     <!-- Select Bonus to award -->
-                <div class="w-full px-2.5">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Select Bonus to award
-                    </label>
-                    <div class="relative z-20 bg-transparent">
-                        <select id="repay_loan_id"
-                                name="loan_id"
-                                x-model="repayLoanId"
-                                @change="loadLoanDetailsForRepayment(repayLoanId)"
-                                :class="errors.repay_loan ? 'border-red-500' : ''"
-                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                            <option value="">Select Bonus</option>
-                            <template x-for="loan in loans" :key="loan.transactionId">
-                                <option :value="loan.transactionId"
-                                        x-text="loan.loan_type_name + ' - KES ' + Number(loan.transactionLoanAmount).toLocaleString() + ' (' + loan.transactionLoanStatus + ')'"></option>
-                            </template>
-                        </select>
-                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </span>
+                    <div class="w-full px-2.5">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Select Bonus to award
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select x-model="form.type_id"
+                                    @change="onBonusTypeChange()"
+                                    :class="errors.type_id ? 'border-error-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Select Bonus</option>
+                                <template x-for="bonus in bonusTypes" :key="bonus.bonusId">
+                                    <option :value="bonus.bonusId"
+                                            :data-name="bonus.bonus_name"
+                                            :data-percentage="bonus.percentage"
+                                            x-text="bonus.bonus_name + ' (' + bonus.percentage + '%)'"></option>
+                                </template>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.type_id" x-text="errors.type_id" class="text-xs text-error-500 mt-1"></span>
                     </div>
-                    <span x-show="errors.repay_loan" x-text="errors.repay_loan" class="text-xs text-error-500 mt-1"></span>
-                </div>
 
-                <div class="w-full px-2.5 border-b border-gray-200 dark:border-gray-700 my-2"></div>
+                    <div class="w-full px-2.5 border-b border-gray-200 dark:border-gray-700 my-2"></div>
 
-                    <!-- Bonus Details Section - First Row -->
+                    <!-- Hidden fields for bonus -->
+                    <input type="hidden" name="bonus_type_id" :value="form.type_id">
+                    <input type="hidden" name="bonus_name" x-model="selectedBonusName">
+
+                    <!-- Bonus Details Section -->
                     <div class="w-full px-2.5">
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                             Bonus Details
@@ -3995,7 +4000,7 @@
                             <div class="flex flex-wrap items-center gap-4 md:gap-6">
                                 <div class="flex-1 min-w-[100px]">
                                     <p class="text-lg font-semibold text-center text-gray-600 dark:text-white/90">
-                                        <span x-text="'KES ' + (repayBorrowedAmountRaw ? repayBorrowedAmountRaw.toLocaleString() : '0')">TRCN1002</span>
+                                        <span x-text="selectedBonusCode || '—'">—</span>
                                     </p>
                                     <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Bonus Code</p>
                                 </div>
@@ -4004,20 +4009,19 @@
 
                                 <div class="flex-1 min-w-[100px]">
                                     <p class="text-lg font-semibold text-center text-gray-600 dark:text-white/90">
-                                        <span x-text="'KES ' + (repayTotalInterestRaw ? repayTotalInterestRaw.toLocaleString() : '0')">Yearly Bonus</span>
+                                        <span x-text="selectedBonusName || '—'">—</span>
                                     </p>
-                                    <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Bonus</p>
+                                    <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Bonus Name</p>
                                 </div>
 
                                 <div class="w-px bg-gray-300 h-11 dark:bg-gray-700 hidden sm:block"></div>
 
                                 <div class="flex-1 min-w-[100px]">
                                     <p class="text-lg font-semibold text-center text-gray-600 dark:text-white/90">
-                                        <span x-text="'KES ' + (repayTotalLoanRaw ? repayTotalLoanRaw.toLocaleString() : '0')">KES 0</span>
+                                        <span x-text="selectedBonusPercentage ? selectedBonusPercentage + '%' : '—'">—</span>
                                     </p>
-                                    <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Default</p>
+                                    <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Percentage</p>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -4029,16 +4033,13 @@
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                             Amount (KES)
                         </label>
-                        <input type="number" step="0.01"
-                            id="savings_Amount"
-                            name="savings_Amount"
-                            x-model="formData.savings_Amount"
-                            @input="clearError('savings_Amount')"
-                            @blur="validateField('savings_Amount', formData.savings_Amount)"
-                            :class="errors.savings_Amount ? 'border-red-500' : ''"
-                            placeholder="Enter amount (minimum KES 10.00)"
+                        <input type="number" step="0.01" min="100"
+                            x-model="form.transactionAmount"
+                            @input="delete errors.transactionAmount"
+                            :class="errors.transactionAmount ? 'border-error-500' : ''"
+                            placeholder="Enter amount (minimum KES 100.00)"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                        <span x-show="errors.savings_Amount" x-text="errors.savings_Amount" class="text-xs text-error-500 mt-1"></span>
+                        <span x-show="errors.transactionAmount" x-text="errors.transactionAmount" class="text-xs text-error-500 mt-1"></span>
                     </div>
 
                     <!-- Payment Mode -->
@@ -4047,12 +4048,9 @@
                             Payment Mode
                         </label>
                         <div class="relative z-20 bg-transparent">
-                            <select id="payment_mode"
-                                    name="payment_mode"
-                                    x-model="formData.payment_mode"
-                                    @change="handlePaymentModeChange(formData.payment_mode)"
-                                    @blur="validateField('payment_mode', formData.payment_mode)"
-                                    :class="errors.payment_mode ? 'border-red-500' : ''"
+                            <select x-model="form.transactionMode"
+                                    @change="handlePaymentModeChange(); delete errors.transactionMode"
+                                    :class="errors.transactionMode ? 'border-error-500' : ''"
                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                 <option value="">Select Payment Mode</option>
                                 <option value="Cash">Cash</option>
@@ -4065,7 +4063,7 @@
                                 </svg>
                             </span>
                         </div>
-                        <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
+                        <span x-show="errors.transactionMode" x-text="errors.transactionMode" class="text-xs text-error-500 mt-1"></span>
                     </div>
 
                     <!-- Transaction Code -->
@@ -4074,16 +4072,13 @@
                             Transaction Code
                         </label>
                         <input type="text"
-                            id="transaction_code"
-                            name="transaction_code"
-                            x-model="formData.transaction_code"
-                            :readonly="transactionCodeReadonly"
-                            @input="clearError('transaction_code')"
-                            @blur="validateField('transaction_code', formData.transaction_code)"
-                            :class="errors.transaction_code ? 'border-red-500' : ''"
-                            :placeholder="transactionCodePlaceholder"
+                            x-model="form.transactionCode"
+                            :readonly="form.transactionMode === 'Cash'"
+                            @input="delete errors.transactionCode"
+                            :class="errors.transactionCode ? 'border-error-500' : ''"
+                            :placeholder="form.transactionMode === 'Cash' ? 'Auto-generated' : 'Enter transaction code'"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                        <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
+                        <span x-show="errors.transactionCode" x-text="errors.transactionCode" class="text-xs text-error-500 mt-1"></span>
                     </div>
 
                     <!-- Transaction Date -->
@@ -4092,15 +4087,12 @@
                             Transaction Date
                         </label>
                         <input type="text"
-                            id="savings_transaction_date"
-                            name="savings_transaction_date"
-                            x-model="formData.transaction_date"
-                            @input="clearError('savings_transaction_date')"
-                            @blur="validateField('savings_transaction_date', formData.transaction_date)"
-                            :class="errors.savings_transaction_date ? 'border-red-500' : ''"
-                            placeholder="DD MMM YYYY (e.g., 05 Apr 2026)"
+                            x-model="form.transactionDate"
+                            @input="delete errors.transactionDate"
+                            :class="errors.transactionDate ? 'border-error-500' : ''"
+                            placeholder="DD MMM YYYY (e.g., 08 Apr 2026)"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                        <span x-show="errors.savings_transaction_date" x-text="errors.savings_transaction_date" class="text-xs text-error-500 mt-1"></span>
+                        <span x-show="errors.transactionDate" x-text="errors.transactionDate" class="text-xs text-error-500 mt-1"></span>
                     </div>
 
                     <!-- Status -->
@@ -4109,12 +4101,9 @@
                             Status
                         </label>
                         <div class="relative z-20 bg-transparent">
-                            <select id="Status"
-                                    name="Status"
-                                    x-model="formData.Status"
-                                    @change="clearError('Status')"
-                                    @blur="validateField('Status', formData.Status)"
-                                    :class="errors.Status ? 'border-red-500' : ''"
+                            <select x-model="form.transactionStatus"
+                                    @change="delete errors.transactionStatus"
+                                    :class="errors.transactionStatus ? 'border-error-500' : ''"
                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                 <option value="">Select Status</option>
                                 <option value="Confirmed">Confirmed</option>
@@ -4127,20 +4116,20 @@
                                 </svg>
                             </span>
                         </div>
-                        <span x-show="errors.Status" x-text="errors.Status" class="text-xs text-error-500 mt-1"></span>
+                        <span x-show="errors.transactionStatus" x-text="errors.transactionStatus" class="text-xs text-error-500 mt-1"></span>
                     </div>
                 </div>
 
                 <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-                    <button @click="closeModal" type="button"
+                    <button @click="awardBonusModal = false" type="button"
                             class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
                         Cancel
                     </button>
                     <button type="submit"
                             class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
-                            :disabled="$store.savingData?.isAdding">
-                        <span x-show="!$store.savingData?.isAdding">Award Bonus</span>
-                        <span x-show="$store.savingData?.isAdding">Transacting ...</span>
+                            :disabled="isSubmitting">
+                        <span x-show="!isSubmitting">Award Bonus</span>
+                        <span x-show="isSubmitting">Transacting ...</span>
                     </button>
                 </div>
             </form>
@@ -4177,49 +4166,54 @@
             </div>
 
             <!-- Fine Member Form -->
-            <form class="flex flex-col" id="addSavingsForm" x-data="savingsTable" @submit.prevent="addSavings">
+            <form x-data="assignFineForm" class="flex flex-col" @submit.prevent="submitForm">
                 @csrf
+
                 <div class="-mx-2.5 flex flex-wrap gap-y-5 p-4">
 
-                    <!-- Select fine to award -->
-                <div class="w-full px-2.5">
-                    <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                        Select Fine to award
-                    </label>
-                    <div class="relative z-20 bg-transparent">
-                        <select id="repay_loan_id"
-                                name="loan_id"
-                                x-model="repayLoanId"
-                                @change="loadLoanDetailsForRepayment(repayLoanId)"
-                                :class="errors.repay_loan ? 'border-red-500' : ''"
-                                class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                            <option value="">Select Fine</option>
-                            <template x-for="loan in loans" :key="loan.transactionId">
-                                <option :value="loan.transactionId"
-                                        x-text="loan.loan_type_name + ' - KES ' + Number(loan.transactionLoanAmount).toLocaleString() + ' (' + loan.transactionLoanStatus + ')'"></option>
-                            </template>
-                        </select>
-                        <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
-                            <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        </span>
-                    </div>
-                    <span x-show="errors.repay_loan" x-text="errors.repay_loan" class="text-xs text-error-500 mt-1"></span>
-                </div>
-
-                <div class="w-full px-2.5 border-b border-gray-200 dark:border-gray-700 my-2"></div>
-
-                    <!-- Bonus Details Section - First Row -->
+                    <!-- Select Fine to assign -->
                     <div class="w-full px-2.5">
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                            Bonus Details
+                            Select Fine to assign
+                        </label>
+                        <div class="relative z-20 bg-transparent">
+                            <select x-model="form.type_id"
+                                    @change="onFineTypeChange()"
+                                    :class="errors.type_id ? 'border-error-500' : ''"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
+                                <option value="">Select Fine</option>
+                                <template x-for="fine in fineTypes" :key="fine.fineId">
+                                    <option :value="fine.fineId"
+                                            :data-name="fine.fine_name"
+                                            :data-percentage="fine.percentage"
+                                            x-text="fine.fine_name + ' (' + fine.percentage + '%)'"></option>
+                                </template>
+                            </select>
+                            <span class="absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                <svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </div>
+                        <span x-show="errors.type_id" x-text="errors.type_id" class="text-xs text-error-500 mt-1"></span>
+                    </div>
+
+                    <div class="w-full px-2.5 border-b border-gray-200 dark:border-gray-700 my-2"></div>
+
+                    <!-- Hidden fields for fine -->
+                    <input type="hidden" name="fine_type_id" :value="form.type_id">
+                    <input type="hidden" name="fine_name" x-model="selectedFineName">
+
+                    <!-- Fine Details Section -->
+                    <div class="w-full px-2.5">
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                            Fine Details
                         </label>
                         <div class="relative z-20 bg-transparent bg-gray-100 dark:bg-gray-800 rounded-lg p-4">
                             <div class="flex flex-wrap items-center gap-4 md:gap-6">
                                 <div class="flex-1 min-w-[100px]">
                                     <p class="text-lg font-semibold text-center text-gray-600 dark:text-white/90">
-                                        <span x-text="'KES ' + (repayBorrowedAmountRaw ? repayBorrowedAmountRaw.toLocaleString() : '0')">FN1002</span>
+                                        <span x-text="selectedFineCode || '—'">—</span>
                                     </p>
                                     <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Fine Code</p>
                                 </div>
@@ -4228,21 +4222,19 @@
 
                                 <div class="flex-1 min-w-[100px]">
                                     <p class="text-lg font-semibold text-center text-gray-600 dark:text-white/90">
-                                        <span x-text="'KES ' + (repayTotalInterestRaw ? repayTotalInterestRaw.toLocaleString() : '0')">Indiscipline Fine</span>
+                                        <span x-text="selectedFineName || '—'">—</span>
                                     </p>
-                                    <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Fine</p>
+                                    <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Fine Name</p>
                                 </div>
 
                                 <div class="w-px bg-gray-300 h-11 dark:bg-gray-700 hidden sm:block"></div>
 
                                 <div class="flex-1 min-w-[100px]">
                                     <p class="text-lg font-semibold text-center text-gray-600 dark:text-white/90">
-                                        <span x-text="'KES ' + (repayTotalLoanRaw ? repayTotalLoanRaw.toLocaleString() : '0')">KES 0</span>
+                                        <span x-text="selectedFinePercentage ? selectedFinePercentage + '%' : '—'">—</span>
                                     </p>
-                                    <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Default</p>
+                                    <p class="text-theme-xs mt-0.5 text-center text-gray-500 dark:text-gray-400">Percentage</p>
                                 </div>
-
-
                             </div>
                         </div>
                     </div>
@@ -4254,16 +4246,13 @@
                         <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
                             Amount (KES)
                         </label>
-                        <input type="number" step="0.01"
-                            id="savings_Amount"
-                            name="savings_Amount"
-                            x-model="formData.savings_Amount"
-                            @input="clearError('savings_Amount')"
-                            @blur="validateField('savings_Amount', formData.savings_Amount)"
-                            :class="errors.savings_Amount ? 'border-red-500' : ''"
-                            placeholder="Enter amount (minimum KES 10.00)"
+                        <input type="number" step="0.01" min="100"
+                            x-model="form.transactionAmount"
+                            @input="delete errors.transactionAmount"
+                            :class="errors.transactionAmount ? 'border-error-500' : ''"
+                            placeholder="Enter amount (minimum KES 100.00)"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                        <span x-show="errors.savings_Amount" x-text="errors.savings_Amount" class="text-xs text-error-500 mt-1"></span>
+                        <span x-show="errors.transactionAmount" x-text="errors.transactionAmount" class="text-xs text-error-500 mt-1"></span>
                     </div>
 
                     <!-- Payment Mode -->
@@ -4272,12 +4261,9 @@
                             Payment Mode
                         </label>
                         <div class="relative z-20 bg-transparent">
-                            <select id="payment_mode"
-                                    name="payment_mode"
-                                    x-model="formData.payment_mode"
-                                    @change="handlePaymentModeChange(formData.payment_mode)"
-                                    @blur="validateField('payment_mode', formData.payment_mode)"
-                                    :class="errors.payment_mode ? 'border-red-500' : ''"
+                            <select x-model="form.transactionMode"
+                                    @change="handlePaymentModeChange(); delete errors.transactionMode"
+                                    :class="errors.transactionMode ? 'border-error-500' : ''"
                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                 <option value="">Select Payment Mode</option>
                                 <option value="Cash">Cash</option>
@@ -4290,7 +4276,7 @@
                                 </svg>
                             </span>
                         </div>
-                        <span x-show="errors.payment_mode" x-text="errors.payment_mode" class="text-xs text-error-500 mt-1"></span>
+                        <span x-show="errors.transactionMode" x-text="errors.transactionMode" class="text-xs text-error-500 mt-1"></span>
                     </div>
 
                     <!-- Transaction Code -->
@@ -4299,16 +4285,13 @@
                             Transaction Code
                         </label>
                         <input type="text"
-                            id="transaction_code"
-                            name="transaction_code"
-                            x-model="formData.transaction_code"
-                            :readonly="transactionCodeReadonly"
-                            @input="clearError('transaction_code')"
-                            @blur="validateField('transaction_code', formData.transaction_code)"
-                            :class="errors.transaction_code ? 'border-red-500' : ''"
-                            :placeholder="transactionCodePlaceholder"
+                            x-model="form.transactionCode"
+                            :readonly="form.transactionMode === 'Cash'"
+                            @input="delete errors.transactionCode"
+                            :class="errors.transactionCode ? 'border-error-500' : ''"
+                            :placeholder="form.transactionMode === 'Cash' ? 'Auto-generated' : 'Enter transaction code'"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                        <span x-show="errors.transaction_code" x-text="errors.transaction_code" class="text-xs text-error-500 mt-1"></span>
+                        <span x-show="errors.transactionCode" x-text="errors.transactionCode" class="text-xs text-error-500 mt-1"></span>
                     </div>
 
                     <!-- Transaction Date -->
@@ -4317,15 +4300,12 @@
                             Transaction Date
                         </label>
                         <input type="text"
-                            id="savings_transaction_date"
-                            name="savings_transaction_date"
-                            x-model="formData.transaction_date"
-                            @input="clearError('savings_transaction_date')"
-                            @blur="validateField('savings_transaction_date', formData.transaction_date)"
-                            :class="errors.savings_transaction_date ? 'border-red-500' : ''"
-                            placeholder="DD MMM YYYY (e.g., 05 Apr 2026)"
+                            x-model="form.transactionDate"
+                            @input="delete errors.transactionDate"
+                            :class="errors.transactionDate ? 'border-error-500' : ''"
+                            placeholder="DD MMM YYYY (e.g., 08 Apr 2026)"
                             class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
-                        <span x-show="errors.savings_transaction_date" x-text="errors.savings_transaction_date" class="text-xs text-error-500 mt-1"></span>
+                        <span x-show="errors.transactionDate" x-text="errors.transactionDate" class="text-xs text-error-500 mt-1"></span>
                     </div>
 
                     <!-- Status -->
@@ -4334,12 +4314,9 @@
                             Status
                         </label>
                         <div class="relative z-20 bg-transparent">
-                            <select id="Status"
-                                    name="Status"
-                                    x-model="formData.Status"
-                                    @change="clearError('Status')"
-                                    @blur="validateField('Status', formData.Status)"
-                                    :class="errors.Status ? 'border-red-500' : ''"
+                            <select x-model="form.transactionStatus"
+                                    @change="delete errors.transactionStatus"
+                                    :class="errors.transactionStatus ? 'border-error-500' : ''"
                                     class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent bg-none px-4 py-3 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30">
                                 <option value="">Select Status</option>
                                 <option value="Confirmed">Confirmed</option>
@@ -4352,20 +4329,20 @@
                                 </svg>
                             </span>
                         </div>
-                        <span x-show="errors.Status" x-text="errors.Status" class="text-xs text-error-500 mt-1"></span>
+                        <span x-show="errors.transactionStatus" x-text="errors.transactionStatus" class="text-xs text-error-500 mt-1"></span>
                     </div>
                 </div>
 
                 <div class="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-                    <button @click="closeModal" type="button"
+                    <button @click="assignFineModal = false" type="button"
                             class="flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-error-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] sm:w-auto">
                         Cancel
                     </button>
                     <button type="submit"
                             class="flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
-                            :disabled="$store.savingData?.isAdding">
-                        <span x-show="!$store.savingData?.isAdding">Fine</span>
-                        <span x-show="$store.savingData?.isAdding">Transacting ...</span>
+                            :disabled="isSubmitting">
+                        <span x-show="!isSubmitting">Assign Fine</span>
+                        <span x-show="isSubmitting">Transacting ...</span>
                     </button>
                 </div>
             </form>
@@ -9789,64 +9766,650 @@
 
     <!-- Member Bonuses & Fines -->
     <script>
+
         document.addEventListener('alpine:init', () => {
-            Alpine.data('finesTable', () => ({
-                fines: [],
+
+            Alpine.data('bonusFineTable', () => ({
+                // State
+                transactions: [],
+                bonusTypes: [],
+                fineTypes: [],
                 page: 1,
                 itemsPerPage: 10,
+                isLoading: true,
+                // Filters
+                typeFilter: 'All',
+                frequencyFilter: 'All',
+                modeFilter: 'All',
+                statusFilter: 'All',
+                // Modals
+                awardBonusModal: false,
+                assignFineModal: false,
+                editModal: false,
+                deleteModal: false,
+                currentTransaction: null,
+                // Form
+                form: {
+                    type: 'bonus', // 'bonus' or 'fine'
+                    type_id: '',
+                    transactionAmount: '',
+                    transactionDate: '',
+                    transactionMode: '',
+                    transactionCode: '',
+                    transactionStatus: '',
+                },
+                errors: {},
+                isSubmitting: false,
+                isDeleting: false,
+
+                // Selected type details for display
+                selectedBonusCode: '',
+                selectedBonusName: '',
+                selectedBonusPercentage: '',
+                selectedFineCode: '',
+                selectedFineName: '',
+                selectedFinePercentage: '',
 
                 init() {
-                    fetch('/bodaboda-member/{{ $memberId }}/fines')
-                        .then(res => res.json())
-                        .then(data => {
-                            this.fines = data;
-                        });
+                    this.loadTransactions();
+                    this.loadBonusTypes();
+                    this.loadFineTypes();
+                    this.setDefaultDate();
                 },
 
-                get totalPages() {
-                    return Math.ceil(this.fines.length / this.itemsPerPage);
+                setDefaultDate() {
+                    const d = new Date();
+                    const day = String(d.getDate()).padStart(2, '0');
+                    const month = d.toLocaleDateString('en-GB', { month: 'short' });
+                    const year = d.getFullYear();
+                    this.form.transactionDate = `${day} ${month} ${year}`;
                 },
 
-                get paginatedFines() {
-                    const start = (this.page - 1) * this.itemsPerPage;
-                    const end = start + this.itemsPerPage;
-                    return this.fines.slice(start, end);
-                },
-
-                get startEntry() {
-                    return (this.page - 1) * this.itemsPerPage + 1;
-                },
-
-                get endEntry() {
-                    const end = this.page * this.itemsPerPage;
-                    return end > this.fines.length ? this.fines.length : end;
-                },
-
-                prevPage() {
-                    if (this.page > 1) this.page--;
-                },
-
-                nextPage() {
-                    if (this.page < this.totalPages) this.page++;
-                },
-
-                goToPage(page) {
-                    if (page >= 1 && page <= this.totalPages) this.page = page;
-                },
-
-                editFineModal(fine) {
-                    if (Alpine.store('fineData')) {
-                        Alpine.store('fineData').currentFine = fine;
-                        Alpine.store('fineData').editFineModal = true;
+                async loadTransactions() {
+                    this.isLoading = true;
+                    try {
+                        const res = await fetch(`/bodaboda-member/{{ $memberId }}/bonus-fine-transactions`);
+                        const data = await res.json();
+                        this.transactions = data.success ? data.data : [];
+                    } catch (e) {
+                        console.error(e);
+                        this.transactions = [];
+                    } finally {
+                        this.isLoading = false;
                     }
-                }
+                },
+
+                async loadBonusTypes() {
+                    const res = await fetch(`/bodaboda-member/{{ $memberId }}/bonus-types`);
+                    this.bonusTypes = await res.json();
+                },
+
+                async loadFineTypes() {
+                    const res = await fetch(`/bodaboda-member/{{ $memberId }}/fine-types`);
+                    this.fineTypes = await res.json();
+                },
+
+                // Filters
+                get filteredTransactions() {
+                    let arr = this.transactions;
+                    if (this.typeFilter !== 'All') arr = arr.filter(t => t.type_category === this.typeFilter);
+                    if (this.modeFilter !== 'All') arr = arr.filter(t => t.transactionMode === this.modeFilter);
+                    if (this.statusFilter !== 'All') arr = arr.filter(t => t.transactionStatus === this.statusFilter);
+                    if (this.frequencyFilter !== 'All') {
+                        const now = new Date();
+                        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                        arr = arr.filter(t => {
+                            const d = new Date(t.transactionDate);
+                            const day = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+                            switch (this.frequencyFilter) {
+                                case 'Daily': return day.getTime() === today.getTime();
+                                case 'Weekly': const start = new Date(today); start.setDate(today.getDate() - (today.getDay() || 7) + 1); return day >= start;
+                                case 'Monthly': return day.getMonth() === today.getMonth() && day.getFullYear() === today.getFullYear();
+                                case 'Yearly': return day.getFullYear() === today.getFullYear();
+                                default: return true;
+                            }
+                        });
+                    }
+                    return arr;
+                },
+
+                get totalPages() { return Math.ceil(this.filteredTransactions.length / this.itemsPerPage) || 1; },
+
+                get paginatedTransactions() {
+                    const start = (this.page - 1) * this.itemsPerPage;
+                    return this.filteredTransactions.slice(start, start + this.itemsPerPage);
+                },
+
+                get startEntry() { return (this.page - 1) * this.itemsPerPage + 1; },
+
+                get endEntry() { return Math.min(this.page * this.itemsPerPage, this.filteredTransactions.length); },
+
+                performFilter() { this.page = 1; },
+
+                prevPage() { if (this.page > 1) this.page--; },
+
+                nextPage() { if (this.page < this.totalPages) this.page++; },
+
+                goToPage(p) { if (p >= 1 && p <= this.totalPages) this.page = p; },
+
+                // Helpers
+                formatDate(dateStr) {
+                    const d = new Date(dateStr);
+                    return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) +
+                        ', ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+                },
+
+                formatCurrency(amt) { return 'KES ' + Number(amt).toLocaleString(undefined, { minimumFractionDigits: 2 }); },
+
+                getStatusClass(status) {
+                    return {
+                        'Confirmed': 'bg-success-100 text-success-600',
+                        'Pending': 'bg-warning-100 text-warning-600',
+                        'Cancelled': 'bg-error-100 text-error-600',
+                    }[status] || 'bg-gray-100 text-gray-600';
+                },
+
+                // Modal openers
+                openAwardBonusModal() {
+                    this.resetForm('bonus');
+                    this.awardBonusModal = true;
+                },
+
+                openAssignFineModal() {
+                    this.resetForm('fine');
+                    this.assignFineModal = true;
+                },
+
+                openEditModal(tx) {
+                    this.currentTransaction = tx;
+                    this.form = {
+                        type: tx.type_category.toLowerCase(),
+                        type_id: tx.type_category === 'Bonus' ? tx.bonus_type_id : tx.fine_type_id,
+                        transactionAmount: tx.transactionAmount,
+                        transactionDate: this.formatDateForInput(tx.transactionDate),
+                        transactionMode: tx.transactionMode,
+                        transactionCode: tx.transactionCode,
+                        transactionStatus: tx.transactionStatus,
+                    };
+                    this.errors = {};
+                    this.editModal = true;
+                },
+
+                resetForm(type) {
+                    this.form = {
+                        type: type,
+                        type_id: '',
+                        transactionAmount: '',
+                        transactionDate: this.form.transactionDate,
+                        transactionMode: '',
+                        transactionCode: '',
+                        transactionStatus: '',
+                    };
+                    this.errors = {};
+
+                    // Clear selection displays
+                    if (type === 'bonus') {
+                        this.selectedBonusCode = '';
+                        this.selectedBonusName = '';
+                        this.selectedBonusPercentage = '';
+                    } else {
+                        this.selectedFineCode = '';
+                        this.selectedFineName = '';
+                        this.selectedFinePercentage = '';
+                    }
+                },
+
+                formatDateForInput(dateStr) {
+                    const d = new Date(dateStr);
+                    const day = String(d.getDate()).padStart(2, '0');
+                    const month = d.toLocaleDateString('en-GB', { month: 'short' });
+                    const year = d.getFullYear();
+                    return `${day} ${month} ${year}`;
+                },
+
+                // Validation & submission
+                validateForm() {
+                    this.errors = {};
+                    let ok = true;
+                    if (!this.form.type_id) { this.errors.type_id = 'Required'; ok = false; }
+                    const amt = parseFloat(this.form.transactionAmount);
+                    if (isNaN(amt) || amt < 100) { this.errors.transactionAmount = 'Minimum KES 100'; ok = false; }
+                    if (!this.form.transactionMode) { this.errors.transactionMode = 'Required'; ok = false; }
+                    if (this.form.transactionMode !== 'Cash' && !this.form.transactionCode) {
+                        this.errors.transactionCode = 'Required for non-cash'; ok = false;
+                    }
+                    if (!this.form.transactionDate) { this.errors.transactionDate = 'Required'; ok = false; }
+                    else if (!this.isValidDate(this.form.transactionDate)) {
+                        this.errors.transactionDate = 'Invalid format (DD MMM YYYY)'; ok = false;
+                    }
+                    if (!this.form.transactionStatus) { this.errors.transactionStatus = 'Required'; ok = false; }
+                    return ok;
+                },
+
+                isValidDate(str) {
+                    return /^\d{1,2}[-\/\s]+[A-Za-z]{3,}[-\/\s]+\d{2,4}$/.test(str.trim());
+                },
+
+                parseDateToDB(str) {
+                    const parts = str.match(/^(\d{1,2})[-\/\s]+([A-Za-z]{3,})[-\/\s]+(\d{2,4})$/);
+                    if (!parts) return null;
+                    const months = { jan:1, feb:2, mar:3, apr:4, may:5, jun:6, jul:7, aug:8, sep:9, oct:10, nov:11, dec:12 };
+                    const m = months[parts[2].toLowerCase().substring(0,3)];
+                    if (!m) return null;
+                    let y = parseInt(parts[3]);
+                    if (y < 100) y += 2000;
+                    return `${y}-${String(m).padStart(2,'0')}-${String(parts[1]).padStart(2,'0')} 00:00:00`;
+                },
+
+                handlePaymentModeChange() {
+                    if (this.form.transactionMode === 'Cash') {
+                        const r = Math.floor(Math.random()*10000).toString().padStart(4,'0');
+                        const chars = String.fromCharCode(65+Math.floor(Math.random()*26), 65+Math.floor(Math.random()*26), 65+Math.floor(Math.random()*26));
+                        this.form.transactionCode = `CSH${r}${chars}`;
+                    } else {
+                        this.form.transactionCode = '';
+                    }
+                },
+
+                async submitForm() {
+                    if (!this.validateForm()) { alert('INVALID Inputs! Fix the errors to continue'); return; }
+                    this.isSubmitting = true;
+                    const payload = {
+                        type: this.form.type,
+                        type_id: this.form.type_id,
+                        transactionAmount: parseFloat(this.form.transactionAmount),
+                        transactionDate: this.parseDateToDB(this.form.transactionDate),
+                        transactionMode: this.form.transactionMode,
+                        transactionCode: this.form.transactionCode || '',
+                        transactionStatus: this.form.transactionStatus,
+                    };
+                    try {
+                        const res = await fetch(`/bodaboda-member/{{ $memberId }}/bonus-fine-transaction/store`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                            },
+                            body: JSON.stringify(payload)
+                        });
+                        const data = await res.json();
+                        if (data.success) { alert(data.message); window.location.reload(); }
+                        else {
+                            if (data.errors) Object.assign(this.errors, data.errors);
+                            alert('Error: ' + (data.message || 'Validation failed'));
+                        }
+                    } catch (e) { alert('Network error'); }
+                    finally { this.isSubmitting = false; }
+                },
+
+                async updateTransaction() {
+                    if (!this.validateForm()) { alert('INVALID Inputs! Fix the errors to continue'); return; }
+                    this.isSubmitting = true;
+                    const payload = {
+                        transactionAmount: parseFloat(this.form.transactionAmount),
+                        transactionDate: this.parseDateToDB(this.form.transactionDate),
+                        transactionMode: this.form.transactionMode,
+                        transactionCode: this.form.transactionCode || '',
+                        transactionStatus: this.form.transactionStatus,
+                    };
+                    try {
+                        const res = await fetch(`/bodaboda-member/{{ $memberId }}/bonus-fine-transaction/${this.currentTransaction.transactionID}/update`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                            },
+                            body: JSON.stringify(payload)
+                        });
+                        const data = await res.json();
+                        if (data.success) { alert(data.message); window.location.reload(); }
+                        else { alert('Error: ' + data.message); }
+                    } catch (e) { alert('Network error'); }
+                    finally { this.isSubmitting = false; }
+                },
+
+                confirmDelete(tx) {
+                    this.currentTransaction = tx;
+                    this.deleteModal = true;
+                },
+
+                async deleteTransaction() {
+                    this.isDeleting = true;
+                    try {
+                        const res = await fetch(`/bodaboda-member/{{ $memberId }}/bonus-fine-transaction/${this.currentTransaction.transactionID}/delete`, {
+                            method: 'DELETE',
+                            headers: { 'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value },
+                        });
+                        const data = await res.json();
+                        if (data.success) { alert(data.message); window.location.reload(); }
+                        else { alert('Error: ' + data.message); }
+                    } catch (e) { alert('Network error'); }
+                    finally { this.isDeleting = false; this.deleteModal = false; }
+                },
+
+                // Called when bonus type is selected
+                onBonusTypeChange() {
+                    const select = document.querySelector('#awardBonusModal select[x-model="form.type_id"]');
+                    const selectedOption = select?.options[select.selectedIndex];
+
+                    if (selectedOption && this.form.type_id) {
+                        const bonus = this.bonusTypes.find(b => b.bonusId == this.form.type_id);
+                        if (bonus) {
+                            this.selectedBonusCode = 'BNS' + String(bonus.bonusId).padStart(4, '0');
+                            this.selectedBonusName = bonus.bonus_name;
+                            this.selectedBonusPercentage = bonus.percentage;
+                        }
+                    } else {
+                        this.selectedBonusCode = '';
+                        this.selectedBonusName = '';
+                        this.selectedBonusPercentage = '';
+                    }
+                },
+
+                // Called when fine type is selected
+                onFineTypeChange() {
+                    if (this.form.type_id) {
+                        const fine = this.fineTypes.find(f => f.fineId == this.form.type_id);
+                        if (fine) {
+                            this.selectedFineCode = 'FNE' + String(fine.fineId).padStart(4, '0');
+                            this.selectedFineName = fine.fine_name;
+                            this.selectedFinePercentage = fine.percentage;
+                        }
+                    } else {
+                        this.selectedFineCode = '';
+                        this.selectedFineName = '';
+                        this.selectedFinePercentage = '';
+                    }
+                },
+
+                printReport() { /* implement print similar to other tables */ },
+
             }));
 
-            Alpine.store('fineData', () => ({
-                editFineModal: false,
-                currentFine: null
+            // Award Bonus Form Component
+            Alpine.data('awardBonusForm', () => ({
+                bonusTypes: [],
+                form: {
+                    type: 'bonus',
+                    type_id: '',
+                    transactionAmount: '',
+                    transactionDate: '',
+                    transactionMode: '',
+                    transactionCode: '',
+                    transactionStatus: '',
+                },
+                errors: {},
+                isSubmitting: false,
+                selectedBonusCode: '',
+                selectedBonusName: '',
+                selectedBonusPercentage: '',
+
+                async init() {
+                    await this.loadBonusTypes();
+                    this.setDefaultDate();
+                },
+
+                setDefaultDate() {
+                    const d = new Date();
+                    const day = String(d.getDate()).padStart(2, '0');
+                    const month = d.toLocaleDateString('en-GB', { month: 'short' });
+                    const year = d.getFullYear();
+                    this.form.transactionDate = `${day} ${month} ${year}`;
+                },
+
+                async loadBonusTypes() {
+                    try {
+                        const res = await fetch(`/bodaboda-member/{{ $memberId }}/bonus-types`);
+                        this.bonusTypes = await res.json();
+                    } catch (e) {
+                        console.error('Failed to load bonus types:', e);
+                    }
+                },
+
+                onBonusTypeChange() {
+                    if (this.form.type_id) {
+                        const bonus = this.bonusTypes.find(b => b.bonusId == this.form.type_id);
+                        if (bonus) {
+                            this.selectedBonusCode = 'BNS' + String(bonus.bonusId).padStart(4, '0');
+                            this.selectedBonusName = bonus.bonus_name;
+                            this.selectedBonusPercentage = bonus.percentage;
+                        }
+                    } else {
+                        this.selectedBonusCode = '';
+                        this.selectedBonusName = '';
+                        this.selectedBonusPercentage = '';
+                    }
+                },
+
+                handlePaymentModeChange() {
+                    if (this.form.transactionMode === 'Cash') {
+                        const r = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+                        const chars = String.fromCharCode(65 + Math.floor(Math.random() * 26),
+                                                        65 + Math.floor(Math.random() * 26),
+                                                        65 + Math.floor(Math.random() * 26));
+                        this.form.transactionCode = `CSH${r}${chars}`;
+                    } else {
+                        this.form.transactionCode = '';
+                    }
+                },
+
+                validateForm() {
+                    this.errors = {};
+                    let ok = true;
+                    if (!this.form.type_id) { this.errors.type_id = 'Required'; ok = false; }
+                    const amt = parseFloat(this.form.transactionAmount);
+                    if (isNaN(amt) || amt < 100) { this.errors.transactionAmount = 'Minimum KES 100'; ok = false; }
+                    if (!this.form.transactionMode) { this.errors.transactionMode = 'Required'; ok = false; }
+                    if (this.form.transactionMode !== 'Cash' && !this.form.transactionCode) {
+                        this.errors.transactionCode = 'Required for non-cash'; ok = false;
+                    }
+                    if (!this.form.transactionDate) { this.errors.transactionDate = 'Required'; ok = false; }
+                    else if (!this.isValidDate(this.form.transactionDate)) {
+                        this.errors.transactionDate = 'Invalid format (DD MMM YYYY)'; ok = false;
+                    }
+                    if (!this.form.transactionStatus) { this.errors.transactionStatus = 'Required'; ok = false; }
+                    return ok;
+                },
+
+                isValidDate(str) {
+                    return /^\d{1,2}[-\/\s]+[A-Za-z]{3,}[-\/\s]+\d{2,4}$/.test(str.trim());
+                },
+
+                parseDateToDB(str) {
+                    const parts = str.match(/^(\d{1,2})[-\/\s]+([A-Za-z]{3,})[-\/\s]+(\d{2,4})$/);
+                    if (!parts) return null;
+                    const months = { jan:1, feb:2, mar:3, apr:4, may:5, jun:6, jul:7, aug:8, sep:9, oct:10, nov:11, dec:12 };
+                    const m = months[parts[2].toLowerCase().substring(0,3)];
+                    if (!m) return null;
+                    let y = parseInt(parts[3]);
+                    if (y < 100) y += 2000;
+                    return `${y}-${String(m).padStart(2,'0')}-${String(parts[1]).padStart(2,'0')} 00:00:00`;
+                },
+
+                async submitForm() {
+                    if (!this.validateForm()) {
+                        alert('INVALID Inputs! Fix the errors to continue');
+                        return;
+                    }
+                    this.isSubmitting = true;
+                    const payload = {
+                        type: this.form.type,
+                        type_id: this.form.type_id,
+                        transactionAmount: parseFloat(this.form.transactionAmount),
+                        transactionDate: this.parseDateToDB(this.form.transactionDate),
+                        transactionMode: this.form.transactionMode,
+                        transactionCode: this.form.transactionCode || '',
+                        transactionStatus: this.form.transactionStatus,
+                    };
+                    try {
+                        const res = await fetch(`/bodaboda-member/{{ $memberId }}/bonus-fine-transaction/store`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                            },
+                            body: JSON.stringify(payload)
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                            alert(data.message);
+                            window.location.reload();
+                        } else {
+                            if (data.errors) Object.assign(this.errors, data.errors);
+                            alert('Error: ' + (data.message || 'Validation failed'));
+                        }
+                    } catch (e) {
+                        alert('Network error');
+                    } finally {
+                        this.isSubmitting = false;
+                    }
+                },
+
             }));
+
+            // Assign Fine Form Component
+            Alpine.data('assignFineForm', () => ({
+                fineTypes: [],
+                form: {
+                    type: 'fine',
+                    type_id: '',
+                    transactionAmount: '',
+                    transactionDate: '',
+                    transactionMode: '',
+                    transactionCode: '',
+                    transactionStatus: '',
+                },
+                errors: {},
+                isSubmitting: false,
+                selectedFineCode: '',
+                selectedFineName: '',
+                selectedFinePercentage: '',
+
+                async init() {
+                    await this.loadFineTypes();
+                    this.setDefaultDate();
+                },
+
+                setDefaultDate() {
+                    const d = new Date();
+                    const day = String(d.getDate()).padStart(2, '0');
+                    const month = d.toLocaleDateString('en-GB', { month: 'short' });
+                    const year = d.getFullYear();
+                    this.form.transactionDate = `${day} ${month} ${year}`;
+                },
+
+                async loadFineTypes() {
+                    try {
+                        const res = await fetch(`/bodaboda-member/{{ $memberId }}/fine-types`);
+                        this.fineTypes = await res.json();
+                    } catch (e) {
+                        console.error('Failed to load fine types:', e);
+                    }
+                },
+
+                onFineTypeChange() {
+                    if (this.form.type_id) {
+                        const fine = this.fineTypes.find(f => f.fineId == this.form.type_id);
+                        if (fine) {
+                            this.selectedFineCode = 'FNE' + String(fine.fineId).padStart(4, '0');
+                            this.selectedFineName = fine.fine_name;
+                            this.selectedFinePercentage = fine.percentage;
+                        }
+                    } else {
+                        this.selectedFineCode = '';
+                        this.selectedFineName = '';
+                        this.selectedFinePercentage = '';
+                    }
+                },
+
+                handlePaymentModeChange() {
+                    if (this.form.transactionMode === 'Cash') {
+                        const r = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+                        const chars = String.fromCharCode(65 + Math.floor(Math.random() * 26),
+                                                        65 + Math.floor(Math.random() * 26),
+                                                        65 + Math.floor(Math.random() * 26));
+                        this.form.transactionCode = `CSH${r}${chars}`;
+                    } else {
+                        this.form.transactionCode = '';
+                    }
+                },
+
+                validateForm() {
+                    this.errors = {};
+                    let ok = true;
+                    if (!this.form.type_id) { this.errors.type_id = 'Required'; ok = false; }
+                    const amt = parseFloat(this.form.transactionAmount);
+                    if (isNaN(amt) || amt < 100) { this.errors.transactionAmount = 'Minimum KES 100'; ok = false; }
+                    if (!this.form.transactionMode) { this.errors.transactionMode = 'Required'; ok = false; }
+                    if (this.form.transactionMode !== 'Cash' && !this.form.transactionCode) {
+                        this.errors.transactionCode = 'Required for non-cash'; ok = false;
+                    }
+                    if (!this.form.transactionDate) { this.errors.transactionDate = 'Required'; ok = false; }
+                    else if (!this.isValidDate(this.form.transactionDate)) {
+                        this.errors.transactionDate = 'Invalid format (DD MMM YYYY)'; ok = false;
+                    }
+                    if (!this.form.transactionStatus) { this.errors.transactionStatus = 'Required'; ok = false; }
+                    return ok;
+                },
+
+                isValidDate(str) {
+                    return /^\d{1,2}[-\/\s]+[A-Za-z]{3,}[-\/\s]+\d{2,4}$/.test(str.trim());
+                },
+
+                parseDateToDB(str) {
+                    const parts = str.match(/^(\d{1,2})[-\/\s]+([A-Za-z]{3,})[-\/\s]+(\d{2,4})$/);
+                    if (!parts) return null;
+                    const months = { jan:1, feb:2, mar:3, apr:4, may:5, jun:6, jul:7, aug:8, sep:9, oct:10, nov:11, dec:12 };
+                    const m = months[parts[2].toLowerCase().substring(0,3)];
+                    if (!m) return null;
+                    let y = parseInt(parts[3]);
+                    if (y < 100) y += 2000;
+                    return `${y}-${String(m).padStart(2,'0')}-${String(parts[1]).padStart(2,'0')} 00:00:00`;
+                },
+
+                async submitForm() {
+                    if (!this.validateForm()) {
+                        alert('INVALID Inputs! Fix the errors to continue');
+                        return;
+                    }
+                    this.isSubmitting = true;
+                    const payload = {
+                        type: this.form.type,
+                        type_id: this.form.type_id,
+                        transactionAmount: parseFloat(this.form.transactionAmount),
+                        transactionDate: this.parseDateToDB(this.form.transactionDate),
+                        transactionMode: this.form.transactionMode,
+                        transactionCode: this.form.transactionCode || '',
+                        transactionStatus: this.form.transactionStatus,
+                    };
+                    try {
+                        const res = await fetch(`/bodaboda-member/{{ $memberId }}/bonus-fine-transaction/store`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                            },
+                            body: JSON.stringify(payload)
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                            alert(data.message);
+                            window.location.reload();
+                        } else {
+                            if (data.errors) Object.assign(this.errors, data.errors);
+                            alert('Error: ' + (data.message || 'Validation failed'));
+                        }
+                    } catch (e) {
+                        alert('Network error');
+                    } finally {
+                        this.isSubmitting = false;
+                    }
+                },
+
+            }));
+
         });
+
     </script>
 
     <!-- Member Settings -->

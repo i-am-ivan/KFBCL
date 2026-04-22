@@ -11,7 +11,7 @@ class CreateMembersTable extends Migration
     {
         Schema::create('members', function (Blueprint $table) {
             $table->bigIncrements('memberId');
-            $table->string('member_number')->nullable()->unique();                      // primary starting from 101 (see DB::statement)
+            $table->string('member_number')->unique();                      // primary starting from 101 (see DB::statement)
             $table->string('firstname');
             $table->string('lastname');
             $table->string('email')->unique();
@@ -32,6 +32,7 @@ class CreateMembersTable extends Migration
                 ->on('users')
                 ->onDelete('cascade')  // or 'cascade' or 'restrict'
                 ->onUpdate('cascade');
+
         });
 
         // set auto increment start to 101
