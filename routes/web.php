@@ -18,7 +18,7 @@ use App\Http\Controllers\UsersController;
 
 use App\Http\Controllers\BodabodaController;
 
-use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\RealEstateController;
 
 /*
 
@@ -38,6 +38,7 @@ use Illuminate\Support\Facades\DB;
 
 */
 
+// ========================================================================= OAuth Routes ================================================================================== //
 // Redirect Laravel's default 'login' route to your 'signin' route
 
 Route::get('/login', function () {
@@ -54,12 +55,9 @@ Route::get('/', function () {
 
 })->name('signin');
 
-
-
 // Route for the signup page.
 
 Route::get('/signup', [RegisterController::class, 'showRegistrationForm'])->name('signup');
-
 
 // Registration routes
 
@@ -68,9 +66,10 @@ Route::post('/register', [RegisterController::class, 'register'])->name('registe
 Route::post('/check-email', [RegisterController::class, 'checkEmail']);
 
 Route::post('/check-phone', [RegisterController::class, 'checkPhone']);
+// =========================================================================================================================================================================== //
 
+// ======================================================================= Bodaboda Routes =================================================================================== //
 // Appointments route -------------------------------------------------------------------------------------------------------------------------------------
-
 Route::post('/appointments', [AppointmentController::class, 'store'])->name('appointments.store');
 
 Route::get('/appointments/get-all', [AppointmentController::class, 'getAllAppointments']);
@@ -249,7 +248,7 @@ Route::prefix('bodaboda-member/{memberId}')->group(function () {
     Route::post('/bonus-fine-transaction/store', [BodabodaController::class, 'storeMemberBonusFineTransaction']);
 
     Route::post('/bonus-fine-transaction/{transactionId}/update', [BodabodaController::class, 'updateMemberBonusFineTransaction']);
-    
+
     Route::delete('/bonus-fine-transaction/{transactionId}/delete', [BodabodaController::class, 'deleteMemberBonusFineTransaction']);
 });
 
@@ -833,3 +832,38 @@ Route::middleware('auth')->group(function () {
 });
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ============================================================================================================================================================================ //
+
+// ======================================================================= Real Estate Routes ================================================================================ //
+Route::middleware('auth:sanctum')->group(function () {
+
+    // Real Estate Units
+    Route::get('/units', [RealEstateController::class, 'indexUnits']);
+    Route::post('/units', [RealEstateController::class, 'storeUnit']);
+    Route::get('/units/{unit}', [RealEstateController::class, 'showUnit']);
+    Route::put('/units/{unit}', [RealEstateController::class, 'updateUnit']);
+    Route::delete('/units/{unit}', [RealEstateController::class, 'destroyUnit']);
+
+    // Unit Counts
+    Route::get('/units/count/all', [RealEstateController::class, 'countAllRealEstate']);
+    Route::get('/units/count/sold', [RealEstateController::class, 'countSoldRealEstate']);
+    Route::get('/units/count/available', [RealEstateController::class, 'countAvailableRealEstate']);
+
+    // Clients
+    Route::get('/clients', [RealEstateController::class, 'getAllClients']);
+    Route::post('/clients', [RealEstateController::class, 'storeClient']);
+    Route::get('/clients/{client}', [RealEstateController::class, 'showClient']);
+    Route::put('/clients/{client}', [RealEstateController::class, 'updateClient']);
+    Route::delete('/clients/{client}', [RealEstateController::class, 'destroyClient']);
+
+    // Client Properties
+    Route::post('/properties', [RealEstateController::class, 'storeProperty']);
+    Route::put('/properties/{property}', [RealEstateController::class, 'updateProperty']);
+    Route::delete('/properties/{property}', [RealEstateController::class, 'destroyProperty']);
+
+    // Client Transactions
+    Route::post('/transactions', [RealEstateController::class, 'storeTransaction']);
+    Route::put('/transactions/{transaction}', [RealEstateController::class, 'updateTransaction']);
+    Route::delete('/transactions/{transaction}', [RealEstateController::class, 'destroyTransaction']);
+});
+// ============================================================================================================================================================================ //
